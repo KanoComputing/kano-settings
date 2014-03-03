@@ -34,8 +34,13 @@ def activate(_win, table, box):
 
     # Create Country Combo box
     country_store = Gtk.ListStore(str)
-    for country in keyboard_layouts.layouts:
+    
+    # Sort the countries into alphabetical order
+    countries = sorted(keyboard_layouts.layouts)
+
+    for country in countries:
         country_store.append([country])
+        print(country)
     country_combo = Gtk.ComboBox.new_with_model(country_store)
     country_combo.connect("changed", on_country_changed)
     renderer_text = Gtk.CellRendererText()
@@ -63,6 +68,7 @@ def apply_changes(button):
     # print("Set the keyboard layout to %s, with variant" % selected_country, selected_variant)
     keyboard_config.set_keyboard(selected_country, selected_variant)
     button.hide()
+    
     # Refresh window
     win.show_all()
 
