@@ -12,4 +12,4 @@
 ./keyboard/keyboard_layouts.py /usr/lib/python3/dist-packages/kano_settings
 
 ./icon/Settings /usr/share/kano-desktop/extras
-./icon/kano-unlocker.png /usr/share/kano-desktop/icons
+./icon/kano-settings.png /usr/share/kano-desktop/icons
