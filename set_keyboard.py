@@ -40,7 +40,6 @@ def activate(_win, table, box):
 
     for country in countries:
         country_store.append([country])
-        print(country)
     country_combo = Gtk.ComboBox.new_with_model(country_store)
     country_combo.connect("changed", on_country_changed)
     renderer_text = Gtk.CellRendererText()

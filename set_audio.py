@@ -31,6 +31,8 @@ def file_replace(fname, pat, s_after):
 
 def activate(_win, table, box):
 
+    
+
     # Table
     table = Gtk.Table(4, 1, True)
     box.add(table)
@@ -48,6 +50,10 @@ def activate(_win, table, box):
     button2 = Gtk.RadioButton.new_from_widget(button1)
     button2.set_label("HDMI")
     button2.connect("toggled", on_button_toggled)
+
+    # Show the current setting by electing the appropriate radio button
+    current_setting(button1, button2)
+
     table.attach(button2, 0, 1, 2, 3)
 
     # Apply button
@@ -70,6 +76,25 @@ def apply_changes(button):
     else:
         new_line = "amixer -c 0 cset numid=3 1"
     file_replace(file_name, pattern, new_line)
+
+
+def current_setting(analogue_button, hdmi_button):
+
+    #file_name = "/etc/rc.local"
+    file_name = "/home/caroline/blah"
+    f = open(file_name, 'r')
+    file_string = str(f.read())
+    analogue_string = "amixer -c 0 cset numid=3 1"
+    hdmi_string = "amixer -c 0 cset numid=3 2"
+
+    if file_string.find(analogue_string) != -1:
+        analogue_button.set_active(True)
+
+    elif file_string.find(hdmi_string) != -1:
+        hdmi_button.set_active(True)
+
+    # Default, first button is active
+
 
 
 def on_button_toggled(button):
