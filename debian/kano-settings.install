@@ -1,4 +1,4 @@
-./bin/kano-settings.py /usr/bin
+./bin/kano-settings /usr/bin
 
 ./__init__.py /usr/lib/python3/dist-packages/kano_settings
 ./set_audio.py /usr/lib/python3/dist-packages/kano_settings
