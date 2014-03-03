@@ -6,7 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-TMP_FILE=/var/tmp/kano-settings_conf
+TMP_FILE=/tmp/kano-settings_conf
 
 case "$1" in
     configure)
@@ -15,10 +15,10 @@ case "$1" in
         echo -n "%sudo   ALL=NOPASSWD: /usr/bin/kano-settings" > $TMP_FILE
 
         # The owner and group for the sudoers file must both be 0
-        chown -c root:root $TMP_FILE
+        chown root:root $TMP_FILE
 
         # The file permissions must be set to 0440
-        chmod -c 0440 $TMP_FILE
+        chmod 0440 $TMP_FILE
 
         # Move the file to the sudoers directory
         mv $TMP_FILE /etc/sudoers.d/
