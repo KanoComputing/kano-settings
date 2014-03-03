@@ -1,5 +1,33 @@
-kano-settings (1.0-1) UNRELEASED; urgency=low
+kano-settings (1.0-6) unstable; urgency=low
 
+  * Package rebuilt, updated to revision bb1c6e46.
+
+ -- Team Kano <dev@kano.me>  Mon, 03 Mar 2014 21:02:12 +0000
+
+kano-settings (1.0-5) unstable; urgency=low
+
+  * Package rebuilt, updated to revision 54f93581.
+
+ -- Team Kano <dev@kano.me>  Mon, 03 Mar 2014 17:31:06 +0000
+
+kano-settings (1.0-4) unstable; urgency=low
+
+  * Package rebuilt, updated to revision 789f27ea.
+
+ -- Team Kano <dev@kano.me>  Mon, 03 Mar 2014 16:48:55 +0000
+
+kano-settings (1.0-3) unstable; urgency=low
+
+  * Package rebuilt, updated to revision 971a910c.
+
+ -- Team Kano <dev@kano.me>  Mon, 03 Mar 2014 14:18:10 +0000
+
+kano-settings (1.0-2) unstable; urgency=low
+
+  [ Alex ]
   * Initial release. (Closes: #XXXXXX)
 
- -- Alex <alex@Kano>  Mon, 03 Mar 2014 13:20:59 +0000
+  [ Team Kano ]
+  * Package rebuilt, updated to revision 52a5cb59.
+
+ -- Team Kano <dev@kano.me>  Mon, 03 Mar 2014 13:59:12 +0000
