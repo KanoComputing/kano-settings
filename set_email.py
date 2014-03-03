@@ -10,6 +10,7 @@ from gi.repository import Gtk
 from pwd import getpwnam
 import os
 import re
+import dialog_box
 
 USER = os.environ['LOGNAME']
 USER_ID = getpwnam(USER).pw_uid
@@ -68,8 +69,17 @@ def apply_changes(button):
     email = entry.get_text()
     # Valudate email
     if not is_email(email):
-        print("Email validation failed")
-        return
+        #print("Email validation failed")
+
+        # Bring in message dialog box
+        dialog = Gtk.Dialog()
+        bad_email_alert = dialog_box.DialogExample(dialog, "The email you enetered is invalid.  Please enter a different one.")
+        response = bad_email_alert.run()
+
+        if response == Gtk.ResponseType.OK:
+            print("The OK button was clicked")
+            bad_email_alert.destroy() 
+            return
 
     # First time user introduces the email
     if current_email is None:
