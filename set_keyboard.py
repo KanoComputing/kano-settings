@@ -7,8 +7,8 @@
 #
 
 from gi.repository import Gtk
-import keyboard_layouts
-import keyboard_config
+import kano_settings.keyboard_layouts as keyboard_layouts
+import kano_settings.keyboard_config as keyboard_config
 
 win = None  # TODO: Is it needed?
 selected_country = None

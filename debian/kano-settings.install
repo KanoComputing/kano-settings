@@ -1,0 +1,15 @@
+./__init__.py /usr/lib/python3/dist-packages/kano_settings
+./set_audio.py /usr/lib/python3/dist-packages/kano_settings
+./set_display.py /usr/lib/python3/dist-packages/kano_settings
+./set_email.py /usr/lib/python3/dist-packages/kano_settings
+./set_intro.py /usr/lib/python3/dist-packages/kano_settings
+./set_keyboard.py /usr/lib/python3/dist-packages/kano_settings
+./set_wifi.py /usr/lib/python3/dist-packages/kano_settings
+
+./screen/screen_config.py /usr/lib/python3/dist-packages/kano_settings
+
+./keyboard/keyboard_config.py /usr/lib/python3/dist-packages/kano_settings
+./keyboard/keyboard_layouts.py /usr/lib/python3/dist-packages/kano_settings
+
+./icon/Settings /usr/share/kano-desktop/extras
+./icon/kano-unlocker.png /usr/share/kano-desktop/icons

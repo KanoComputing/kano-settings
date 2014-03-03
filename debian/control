@@ -1,0 +1,11 @@
+Source: kano-settings
+Maintainer: Team Kano <dev@kano.me>
+Section: admin
+Priority: optional
+Standards-Version: 3.9.2
+Build-Depends: debhelper (>= 9)
+
+Package: kano-settings
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, python3-gi
+Description: Tool to unlock all projects in Kanux

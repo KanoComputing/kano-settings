@@ -9,7 +9,7 @@
 #
 
 import os
-import keyboard_layouts
+import kano_settings.keyboard_layouts as keyboard_layouts
 
 # GLOBAL variables
 keyboard_conffile = '/etc/default/keyboard'
