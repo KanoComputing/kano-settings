@@ -51,7 +51,7 @@ def activate(_win, table, box):
     # Text entry
     text = "Email"
     if current_email is not None:
-        text = current_email
+        text = current_email.replace('\n', '')
     entry = Gtk.Entry()
     entry.set_text(text)
     table.attach(entry, 0, 1, 1, 2)
