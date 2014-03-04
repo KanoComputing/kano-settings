@@ -80,8 +80,7 @@ def apply_changes(button):
 
 def current_setting(analogue_button, hdmi_button):
 
-    #file_name = "/etc/rc.local"
-    file_name = "/home/caroline/blah"
+    file_name = "/etc/rc.local"
     f = open(file_name, 'r')
     file_string = str(f.read())
     analogue_string = "amixer -c 0 cset numid=3 1"
