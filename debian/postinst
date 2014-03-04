@@ -13,6 +13,8 @@ case "$1" in
 
         # Create custom sudoers file
         echo -n "%sudo   ALL=(root) NOPASSWD: /usr/bin/kano-settings" > $TMP_FILE
+        # It needs a breakline at the end of line
+        printf "\n" >> $TMP_FILE
 
         # The owner and group for the sudoers file must both be 0
         chown root:root $TMP_FILE
