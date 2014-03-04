@@ -69,12 +69,9 @@ def activate(_win, table, box):
     # Refresh window
     win.show_all()
 
-    
     # Set up in file in .kano-settings  
-
     try:
         f = open(settings_path, 'r+')
-
         # Format, "keyboard:country,second_choice"
         file_content = str(f.read())
         file_index = file_content.index('Keyboard:') + len("Keyboard:")
@@ -114,17 +111,16 @@ def apply_changes(button):
         file_index = file_content.index('Keyboard:')
         file_index3 = file_content[file_index:].index('\n') # Get selected variant of that country
         old_string = file_content[file_index: file_index3]
-        print(old_string + '.')
 
         selected_country_index = country_combo.get_active()
         selected_variants_index = variants_combo.get_active()
         new_string = "Keyboard:" + str(selected_country_index) + "," + str(selected_variants_index)
-        print(new_string + '.')
 
         config_file.file_replace(settings_path, old_string, new_string)
 
     except:
-        return #fail silently
+        # Fail silently
+        return 
 
 
 def on_country_changed(combo):
@@ -161,7 +157,6 @@ def on_variants_changed(combo):
             for v in variants:
                 if v[0] == variant:
                     selected_variant = v[1]
-    # Refresh window
     button.show()
     # Refresh window
     win.show_all()
