@@ -13,5 +13,4 @@ def activate(_win, table, box):
 
     label = Gtk.Label()
     label.set_text("Hi! This is some kind of introductory text!")
-    label.set_justify(Gtk.Justification.LEFT)
     box.pack_start(label, True, True, 0)

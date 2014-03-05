@@ -1,0 +1,52 @@
+/* Define colours */
+
+@define-color button_color rgb(92,191,72);
+
+
+
+/* All */
+* {
+    -GtkButton-inner-border: 0;
+    -unico-focus-border-color: transparent; /* Removes the annoying red outline on active buttons*/
+    engine: none; /* Turns off annoying borders */
+}
+
+.window {
+    background: #ffffff;
+}
+.button { /* Same as GtkButton*/
+    color: #000000;
+    background:transparent;
+    border-style: none; /* Remove grey border on outside */
+    border-width:0px;
+}
+.button:selected {
+    border-style:none;
+}
+
+.apply_changes {
+    background: #9ed874;
+    color:#ffffff;
+    padding:8px;
+    border-radius:3px;
+}
+
+.top_bar_container {
+    background: #eeeeee;
+}
+.title{
+    padding-top:30px;
+    font-weight:bold;
+}
+.description {
+    padding-bottom: 20px;
+    color:#aaaaaa;
+}
+
+.info {
+    color:#000000;
+}
+
+GtkImage {
+    background: transparent;
+}

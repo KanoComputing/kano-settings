@@ -11,7 +11,8 @@ import os
 import re
 
 HDMI = False
-
+reboot = False
+file_name = "/etc/rc.local"
 
 def file_replace(fname, pat, s_after):
     # first, see if the pattern is even in the file.
@@ -30,8 +31,6 @@ def file_replace(fname, pat, s_after):
 
 
 def activate(_win, table, box):
-
-    
 
     # Table
     table = Gtk.Table(4, 1, True)
@@ -63,24 +62,25 @@ def activate(_win, table, box):
 
 
 def apply_changes(button):
-    global HDMI
+    global HDMI, reboot
     # amixer -c 0 cset numid=3 N
     # 1 analog
     # 2 hdmi
 
-    file_name = "/etc/rc.local"
     pattern = "amixer -c 0 cset numid=3 [0-9]"
     new_line = None
     if HDMI is True:
         new_line = "amixer -c 0 cset numid=3 2"
     else:
         new_line = "amixer -c 0 cset numid=3 1"
+
     file_replace(file_name, pattern, new_line)
+    # Tell user to reboot to see changes
+    reboot = True
 
 
 def current_setting(analogue_button, hdmi_button):
 
-    file_name = "/etc/rc.local"
     f = open(file_name, 'r')
     file_string = str(f.read())
     analogue_string = "amixer -c 0 cset numid=3 1"
@@ -93,7 +93,6 @@ def current_setting(analogue_button, hdmi_button):
         hdmi_button.set_active(True)
 
     # Default, first button is active
-
 
 
 def on_button_toggled(button):

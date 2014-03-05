@@ -11,7 +11,7 @@ import screen_config
 
 mode = 'auto'
 overscan = False
-
+reboot = False
 
 def activate(_win, table, box):
 
@@ -62,6 +62,9 @@ def apply_changes(button):
         screen_config.set_config_option("disable_overscan", 0)
     else:
         screen_config.set_config_option("disable_overscan", 1)
+
+    # Display message to tell user to reboot to see changes.
+    reboot = True
 
 
 def on_button_toggled(button):

@@ -73,7 +73,7 @@ def apply_changes(button):
 
         # Bring in message dialog box
         dialog = Gtk.Dialog()
-        bad_email_alert = dialog_box.DialogExample(dialog, "The email you enetered is invalid.  Please enter a different one.")
+        bad_email_alert = dialog_box.DialogWindow(dialog, "The email you enetred is invalid.  Please enter a different one.")
         response = bad_email_alert.run()
 
         if response == Gtk.ResponseType.OK:
