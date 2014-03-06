@@ -8,9 +8,23 @@
 
 from gi.repository import Gtk
 
+import set_keyboard
+import set_display
+import set_audio
+import set_wifi
+import set_email
 
-def activate(_win, table, box):
+def activate(win, grid, box, title, description):
 
-    label = Gtk.Label()
-    label.set_text("Hi! This is some kind of introductory text!")
-    box.pack_start(label, True, True, 0)
+    image = Gtk.Image()
+    image.set_from_file("media/Graphics/Intro-illustration.png")
+    box.add(image)
+
+    title.set_text("You just made a computer!")
+    description.set_text("Now I just need to ask a few questions, so I'll work out the way")
+
+    # button needs to have label - get started >
+
+def apply_changes(button):
+
+    return

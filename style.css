@@ -9,10 +9,12 @@
     -GtkButton-inner-border: 0;
     -unico-focus-border-color: transparent; /* Removes the annoying red outline on active buttons*/
     engine: none; /* Turns off annoying borders */
+    background: #ffffff;
+    border-width: 0px;
 }
 
 .window {
-    background: #ffffff;
+    
 }
 .button { /* Same as GtkButton*/
     color: #000000;
@@ -22,6 +24,7 @@
 }
 .button:selected {
     border-style:none;
+    color: #ffffff;
 }
 
 .apply_changes {
@@ -35,11 +38,11 @@
     background: #eeeeee;
 }
 .title{
-    padding-top:30px;
+    padding-top:25px;
     font-weight:bold;
 }
 .description {
-    padding-bottom: 20px;
+    padding-bottom: 18px;
     color:#aaaaaa;
 }
 
@@ -49,4 +52,44 @@
 
 GtkImage {
     background: transparent;
+}
+
+.intro_label {
+    color: #ff842A;
+    font-weight:bold;
+}
+.custom_label {
+    color: #888888;
+}
+.header {
+    color: #222222;
+    font-weight: bold;
+}
+
+/* Workaround for lp:949368 */
+GtkComboBox .button {
+    border-color: #bbbbbb;
+    border-style: solid;
+    border-width: 2px;
+    border-radius:2px;
+}
+GtkComboBox .menuitem * {
+    color: @button_color;
+}
+GtkComboBox .menuitem *:hover {
+    color: @button_color;
+}
+.entry {
+    border-color: #bbbbbb;
+    border-style: solid;
+    border-width: 2px;
+    border-radius:3px;
+    padding: 10px;
+}
+.entry:insensitive {
+    border-color: #dddddd;
+    border-style: solid;
+    border-width: 2px;
+    border-radius:2px;
+    color: #dddddd;
 }

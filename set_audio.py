@@ -30,17 +30,17 @@ def file_replace(fname, pat, s_after):
         os.rename(out_fname, fname)
 
 
-def activate(_win, table, box):
+def activate(_win, table, box, title, description):
 
     # Table
     table = Gtk.Table(4, 1, True)
     box.add(table)
 
-    # Label
-    label = Gtk.Label()
-    label.set_text("Audio")
-    label.set_justify(Gtk.Justification.LEFT)
-    table.attach(label, 0, 1, 0, 1)
+    # Title
+    title.set_text("Audio settings")
+
+    # Description
+    description.set_text("Can you hear me?")
 
     # Analog radio button
     button1 = Gtk.RadioButton.new_with_label_from_widget(None, "Analog")
@@ -54,11 +54,6 @@ def activate(_win, table, box):
     current_setting(button1, button2)
 
     table.attach(button2, 0, 1, 2, 3)
-
-    # Apply button
-    button = Gtk.Button("Apply changes")
-    button.connect("clicked", apply_changes)
-    table.attach(button, 0, 1, 3, 4)
 
 
 def apply_changes(button):

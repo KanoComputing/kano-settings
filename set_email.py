@@ -6,7 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Pango
 from pwd import getpwnam
 import os
 import re
@@ -26,7 +26,7 @@ def is_email(email):
         return False
 
 
-def activate(_win, table, box):
+def activate(_win, table, box, title, description):
     global entry, current_email
 
     # Get existent email
@@ -36,31 +36,34 @@ def activate(_win, table, box):
             current_email = f.readline()
     except:
         pass
-    print(email_path)
-    print(current_email)
+
+    # Title
+    title.set_text("Change your email")
+
+    #description
+    description.set_text("Change the email address")
 
     # Table
     table = Gtk.Table(4, 1, True)
     box.add(table)
 
-    # Label
-    label = Gtk.Label()
-    label.set_text("Email")
-    label.set_justify(Gtk.Justification.LEFT)
-    table.attach(label, 0, 1, 0, 1)
-
     # Text entry
     text = "Email"
+
+    entry1 = Gtk.Entry()
+    entry1.modify_font(Pango.FontDescription("Bariol 13"))
+    entry2 = Gtk.Entry()
+    entry2.modify_font(Pango.FontDescription("Bariol 13"))
+    entry2.set_sensitive(False)
+
     if current_email is not None:
         text = current_email.replace('\n', '')
-    entry = Gtk.Entry()
-    entry.set_text(text)
-    table.attach(entry, 0, 1, 1, 2)
+        entry2.set_sensitive(True)
 
-    # Apply button
-    button = Gtk.Button("Apply changes")
-    button.connect("clicked", apply_changes)
-    table.attach(button, 0, 1, 3, 4)
+    entry1.set_text(text)
+    
+    table.attach(entry1, 0, 1, 0, 1)
+    table.attach(entry2, 0, 1, 1, 2)
 
 
 def apply_changes(button):
@@ -73,11 +76,10 @@ def apply_changes(button):
 
         # Bring in message dialog box
         dialog = Gtk.Dialog()
-        bad_email_alert = dialog_box.DialogWindow(dialog, "The email you enetred is invalid.  Please enter a different one.")
+        bad_email_alert = dialog_box.DialogWindow(dialog, "The email you entered is invalid.  Please enter a different one.")
         response = bad_email_alert.run()
 
         if response == Gtk.ResponseType.OK:
-            print("The OK button was clicked")
             bad_email_alert.destroy() 
             return
 

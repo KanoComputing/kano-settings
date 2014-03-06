@@ -24,9 +24,13 @@ def is_internet():
         return False
 
 
-def activate(_win, table, box):
+def activate(_win, table, box, title, description):
     global internet
 
+    # Title
+    title.set_text("Wifi")
+    # Description
+    description.set_text("Let me talk to the world")
     # Table
     table = Gtk.Table(4, 1, True)
     box.add(table)
@@ -34,12 +38,6 @@ def activate(_win, table, box):
     # TODO: this should be done when starting the tool and only once
     # Check for internet
     internet = is_internet()
-
-    # Label
-    label = Gtk.Label()
-    label.set_text("WiFi")
-    label.set_justify(Gtk.Justification.LEFT)
-    table.attach(label, 0, 1, 0, 1)
 
     if internet is False:
         label = Gtk.Label()

@@ -13,16 +13,22 @@ mode = 'auto'
 overscan = False
 reboot = False
 
-def activate(_win, table, box):
+def activate(_win, table, box, title, description):
 
     # Table
     table = Gtk.Table(5, 1, True)
     box.add(table)
 
+    # Title
+    title.set_text("Display - how sharp can you go?")
+
+    # Description
+    description.set_text("Make the OS look the best it can")
+
     # Label
     label = Gtk.Label()
     label.set_text("Display")
-    label.set_justify(Gtk.Justification.LEFT)
+    label.set_justify(Gtk.Justification.CENTER)
     table.attach(label, 0, 1, 0, 1)
 
     # HDMI mode combo box
@@ -44,11 +50,6 @@ def activate(_win, table, box):
     button2.set_label("Overscan yes")
     button2.connect("toggled", on_button_toggled)
     table.attach(button2, 0, 1, 3, 4)
-
-    # Apply button
-    button = Gtk.Button("Apply changes")
-    button.connect("clicked", apply_changes)
-    table.attach(button, 0, 1, 4, 5)
 
 
 def apply_changes(button):

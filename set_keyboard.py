@@ -23,20 +23,20 @@ USER = os.environ['LOGNAME']
 settings_path = "/home/%s/.kano-settings" % (USER) 
 
 
-def activate(_win, table, box):
+def activate(_win, table, box, title, description):
     global win, variants_combo, button, country_combo
 
     win = _win
 
+    # Title
+    title.set_text("Change your keyboard settings")
+
+    # Description
+    description.set_text("Which country do you live?")
+    
     # Table
     table = Gtk.Table(4, 1, True)
     box.add(table)
-
-    # Label
-    label = Gtk.Label()
-    label.set_text("Keyboard")
-    label.set_justify(Gtk.Justification.LEFT)
-    table.attach(label, 0, 1, 0, 1)
 
     # Create Country Combo box
     country_store = Gtk.ListStore(str)
@@ -61,11 +61,6 @@ def activate(_win, table, box):
     variants_combo.connect("changed", on_variants_changed)
     table.attach(variants_combo, 0, 1, 2, 3)
 
-    # Apply button
-    button = Gtk.Button("Apply changes")
-    button.connect("clicked", apply_changes)
-    table.attach(button, 0, 1, 3, 4)
-    button.hide()
     # Refresh window
     win.show_all()
 
