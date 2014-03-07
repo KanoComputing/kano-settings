@@ -46,7 +46,7 @@
     color:#aaaaaa;
 }
 
-.info {
+.title_container {
     color:#000000;
 }
 
@@ -92,4 +92,18 @@ GtkComboBox .menuitem *:hover {
     border-width: 2px;
     border-radius:2px;
     color: #dddddd;
+}
+/*.background-image {
+    url: "media/Graphics/keyboard.png"
+}*/
+
+.radio {
+    border-style: solid;
+    border-color: #dddddd;
+    border-width: 1px;
+
+}
+
+.radio:active {
+    color: #9ed874;
 }

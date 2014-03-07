@@ -6,7 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Pango
 import os
 import re
 
@@ -30,11 +30,32 @@ def file_replace(fname, pat, s_after):
         os.rename(out_fname, fname)
 
 
-def activate(_win, table, box, title, description):
+def activate(_win, box, apply_changes):
 
-    # Table
-    table = Gtk.Table(4, 1, True)
-    box.add(table)
+    title = Gtk.Label("TITLE")
+    title.modify_font(Pango.FontDescription("Bariol 16"))
+    description = Gtk.Label("Description of project")
+    description.modify_font(Pango.FontDescription("Bariol 14"))
+
+    title_style = title.get_style_context()
+    title_style.add_class('title')
+
+    description_style = description.get_style_context()
+    description_style.add_class('description')
+
+    title_container = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing=0)
+    title_container.add(title)
+    title_container.set_size_request(300, 100)
+    title_container.pack_start(description, True, True, 10)
+    info_style = title_container.get_style_context()
+    info_style.add_class('title_container')
+
+    # Settings container
+    settings_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+    settings_container.set_size_request(500, 250)
+    box.add(settings_container)
+
+    settings_container.pack_start(title_container, False, False, 0)
 
     # Title
     title.set_text("Audio settings")
@@ -43,17 +64,27 @@ def activate(_win, table, box, title, description):
     description.set_text("Can you hear me?")
 
     # Analog radio button
-    button1 = Gtk.RadioButton.new_with_label_from_widget(None, "Analog")
-    table.attach(button1, 0, 1, 1, 2)
+    analog_button = Gtk.RadioButton.new_with_label_from_widget(None, "Analog")
     # HDMI radio button
-    button2 = Gtk.RadioButton.new_from_widget(button1)
-    button2.set_label("HDMI")
-    button2.connect("toggled", on_button_toggled)
+    hdmi_button = Gtk.RadioButton.new_from_widget(analog_button)
+    hdmi_button.set_label("HDMI")
+    hdmi_button.connect("toggled", on_button_toggled)
+
+    img = Gtk.Image()
+    img.set_from_file("media/Graphics/Audio-jack.png")
+
+    radio_button_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+    radio_button_container.pack_start(hdmi_button, False, False, 10)
+    radio_button_container.pack_start(img, False, False, 10)
+    radio_button_container.pack_start(analog_button, False, False, 10)
+
+    settings_container.pack_start(radio_button_container, False, False, 0)
 
     # Show the current setting by electing the appropriate radio button
-    current_setting(button1, button2)
+    current_setting(analog_button, hdmi_button)
 
-    table.attach(button2, 0, 1, 2, 3)
+    # Add apply changes button under the main settings content
+    box.pack_start(apply_changes, False, False, 0)
 
 
 def apply_changes(button):

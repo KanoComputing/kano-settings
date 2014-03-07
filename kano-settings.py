@@ -3,7 +3,6 @@
 # http://python-gtk-3-tutorial.readthedocs.org/en/latest/layout.html
 
 from gi.repository import Gtk, Gdk,GdkPixbuf, Pango
-import set_template
 import set_intro
 import set_email
 import set_keyboard
@@ -27,8 +26,8 @@ class MainWindow(Gtk.Window):
         global grid, box
 
         TOP_BAR_HEIGHT = 50
-        WINDOW_WIDTH = 500
-        WINDOW_HEIGHT = 200
+        WINDOW_WIDTH = 600
+        WINDOW_HEIGHT = 380
 
         # Create main window
         Gtk.Window.__init__(self, title="Kano-Settings")
@@ -37,14 +36,16 @@ class MainWindow(Gtk.Window):
 
         self.set_size_request(WINDOW_WIDTH, WINDOW_HEIGHT)
 
-        self.new_grid = Gtk.Grid()
+        # Main container of the window
+        self.grid = Gtk.Grid()
 
+        # This is to give the correct colour of the top bar as Event Boxes are the only containers that we can colour
         self.top_bar_container = Gtk.EventBox()
         self.top_bar_container.set_size_request(WINDOW_WIDTH, TOP_BAR_HEIGHT)
-
         top_bar_container_style = self.top_bar_container.get_style_context()
         top_bar_container_style.add_class('top_bar_container')
 
+        # Main title of he window bar.
         header = Gtk.Label("Kano Settings")
         header.props.halign = Gtk.Align.CENTER
         header.modify_font(Pango.FontDescription("Bariol 13"))
@@ -82,37 +83,18 @@ class MainWindow(Gtk.Window):
         close_button.connect("clicked", Gtk.main_quit)
 
         # Dynamic box
-        # Heading
-
-        self.title = Gtk.Label("TITLE")
-        self.title.modify_font(Pango.FontDescription("Bariol 16"))
-        self.description = Gtk.Label("Description of project")
-        self.description.modify_font(Pango.FontDescription("Bariol 14"))
-
-        title_style = self.title.get_style_context()
-        title_style.add_class('title')
-
-        description_style = self.description.get_style_context()
-        description_style.add_class('description')
 
         #############################################################################
         # Move this into set_email etc (or separate file)
         # Needed for everything but intro screens.
-
-        self.title_container = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing=0)
-        self.title_container.add(self.title)
-        self.title_container.set_size_request(WINDOW_WIDTH, 100)
-        self.title_container.pack_start(self.description, True, True, 10)
-        info_style = self.title_container.get_style_context()
-        info_style.add_class('info')
 
         self.apply_changes_text = Gtk.Label("Next")
         self.apply_changes = Gtk.Button()
         self.apply_changes.props.halign = Gtk.Align.CENTER
         self.apply_changes.set_size_request(70, 30)
         self.apply_changes_label = Gtk.Box()
-        self.apply_changes_label.pack_start(images[5], False, False, 2)
         self.apply_changes_label.pack_start(self.apply_changes_text, False, False, 2)
+        self.apply_changes_label.pack_start(images[0], False, False, 2)
         self.apply_changes.add(self.apply_changes_label)
         self.apply_changes_text.modify_font(Pango.FontDescription("Bariol 14"))
         self.apply_changes.connect('clicked', self.update_and_next)
@@ -120,32 +102,31 @@ class MainWindow(Gtk.Window):
         next_button_style = self.apply_changes.get_style_context()
         next_button_style.add_class('apply_changes')
 
-        self.main_part = Gtk.Grid()
-        self.main_part.get_style_context().add_class("main_part")
-        self.main_part.set_size_request(WINDOW_WIDTH, 300)
-        self.changable_content = Gtk.Box(spacing=6)
+        #self.main_part = Gtk.Grid()
+        #self.main_part.get_style_context().add_class("main_part")
+        #self.main_part.set_size_request(WINDOW_WIDTH, 300)
+        self.changable_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.changable_content.props.halign = Gtk.Align.CENTER
-        self.main_part.attach(self.changable_content, 0, 1, 1, 2)
-        self.main_part.props.halign = Gtk.Align.CENTER
+        #self.main_part.attach(self.changable_content, 0, 1, 1, 2)
+        #self.main_part.props.halign = Gtk.Align.CENTER
 
         # Init
         if config_file.read_from_file('finished'):
             self.default_intro(self.title, self.description) #, self.main_part, self.changable_content, self.title, self.description)
         else:
-            set_template.activate(self, self.main_part, self.title_container, self.apply_changes)
-            set_intro.activate(self, self.main_part, self.changable_content, self.title, self.description)
+            set_intro.activate(self, self.changable_content, self.apply_changes)
 
         self.top_bar.add(prev_button)
         self.top_bar.pack_start(next_button, False, False, 0)
         self.top_bar.pack_start(header, True, True, 0)
         self.top_bar.pack_end(close_button, False, False, 0)
         self.top_bar_container.add(self.top_bar)
-        self.new_grid.attach(self.top_bar_container, 0, 0, 1, 1)
+        self.grid.attach(self.top_bar_container, 0, 0, 1, 1)
 
-        self.new_grid.attach(self.main_part, 0, 2, 1, 1)
-        self.new_grid.set_row_spacing(20)
+        self.grid.attach(self.changable_content, 0, 2, 1, 1)
+        self.grid.set_row_spacing(0)
 
-        self.add(self.new_grid)
+        self.add(self.grid)
 
     def default_intro(self, title, description):
         global grid, box, state
@@ -206,7 +187,7 @@ class MainWindow(Gtk.Window):
         # Update current state
         self.state = (self.state + 1) % MAX_STATE
         # Call next state
-        self.state_to_widget(self.state).activate(self, self.grid, self.changable_content, self.title, self.description)
+        self.state_to_widget(self.state).activate(self, self.changable_content, self.apply_changes)
         # Refresh window
         win.show_all()
 
@@ -217,7 +198,7 @@ class MainWindow(Gtk.Window):
         # Update current state
         self.state = (self.state - 1) % MAX_STATE
         # Call next state
-        self.state_to_widget(self.state).activate(self, self.grid, self.changable_content, self.title, self.description)
+        self.state_to_widget(self.state).activate(self, self.changable_content, self.apply_changes)
         # Refresh window
         win.show_all()
 
@@ -227,10 +208,8 @@ class MainWindow(Gtk.Window):
             self.changable_content.remove(i)
         # Update current state
         self.state = widget.state
-        print("widget.state = " + str(widget.state))
-        print("self.state = " + str(self.state))
         # Call next state
-        self.state_to_widget(self.state).activate(self, self.grid, self.changable_content, self.title, self.description)
+        self.state_to_widget(self.state).activate(self, self.changable_content, self.apply_changes)
         # Refresh window
         win.show_all()
 
@@ -267,16 +246,13 @@ def main():
     Gtk.main()
 
 def close_window(arg1, arg2):
-    print(arg1)
-    print(arg2)
-    print("set_audio.reboot = " + str(set_audio.reboot))
+
     if set_audio.reboot or set_display.reboot:
         dialog = Gtk.Dialog()
         reboot_message = dialog_box.DialogWindow(dialog, "Some of the changes you made will only take place after a reboot.")
         response = reboot_message.run()
 
         if response == Gtk.ResponseType.OK:
-            print("The OK button was clicked")
             reboot_message.destroy() 
             Gtk.main_quit()
             return

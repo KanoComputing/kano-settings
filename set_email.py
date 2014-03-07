@@ -26,7 +26,7 @@ def is_email(email):
         return False
 
 
-def activate(_win, table, box, title, description):
+def activate(_win, box, apply_changes):
     global entry, current_email
 
     # Get existent email
@@ -37,15 +37,35 @@ def activate(_win, table, box, title, description):
     except:
         pass
 
+     # Heading
+
+    title = Gtk.Label("TITLE")
+    title.modify_font(Pango.FontDescription("Bariol 16"))
+    description = Gtk.Label("Description of project")
+    description.modify_font(Pango.FontDescription("Bariol 14"))
+
+    title_style = title.get_style_context()
+    title_style.add_class('title')
+
+    description_style = description.get_style_context()
+    description_style.add_class('description')
+
+    title_container = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing=0)
+    title_container.add(title)
+    title_container.set_size_request(300, 100)
+    title_container.pack_start(description, True, True, 10)
+    info_style = title_container.get_style_context()
+    info_style.add_class('title_container')
+
     # Title
     title.set_text("Change your email")
 
-    #description
+    # Description
     description.set_text("Change the email address")
 
-    # Table
-    table = Gtk.Table(4, 1, True)
-    box.add(table)
+    # Settings container
+    settings_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+    settings_container.set_size_request(300, 250)
 
     # Text entry
     text = "Email"
@@ -62,8 +82,12 @@ def activate(_win, table, box, title, description):
 
     entry1.set_text(text)
     
-    table.attach(entry1, 0, 1, 0, 1)
-    table.attach(entry2, 0, 1, 1, 2)
+    settings_container.pack_start(title_container, False, False, 0)
+    settings_container.pack_start(entry1, False, False, 10)
+    settings_container.pack_start(entry2, False, False, 10)
+
+    box.pack_start(settings_container, False, False, 0)
+    box.pack_start(apply_changes, False, False, 0)
 
 
 def apply_changes(button):

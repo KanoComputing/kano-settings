@@ -6,7 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk, GdkPixbuf, Pango
 import keyboard_layouts
 import keyboard_config
 import os
@@ -23,10 +23,28 @@ USER = os.environ['LOGNAME']
 settings_path = "/home/%s/.kano-settings" % (USER) 
 
 
-def activate(_win, table, box, title, description):
+def activate(_win, box, apply_changes):
     global win, variants_combo, button, country_combo
 
     win = _win
+
+    title = Gtk.Label("TITLE")
+    title.modify_font(Pango.FontDescription("Bariol 16"))
+    description = Gtk.Label("Description of project")
+    description.modify_font(Pango.FontDescription("Bariol 14"))
+
+    title_style = title.get_style_context()
+    title_style.add_class('title')
+
+    description_style = description.get_style_context()
+    description_style.add_class('description')
+
+    title_container = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing=0)
+    title_container.add(title)
+    title_container.set_size_request(200, 100)
+    title_container.pack_start(description, True, True, 10)
+    info_style = title_container.get_style_context()
+    info_style.add_class('title_container')
 
     # Title
     title.set_text("Change your keyboard settings")
@@ -34,9 +52,12 @@ def activate(_win, table, box, title, description):
     # Description
     description.set_text("Which country do you live?")
     
-    # Table
-    table = Gtk.Table(4, 1, True)
-    box.add(table)
+    # Contains all the settings
+    settings_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+    settings_box.set_size_request(200, 250)
+    box.add(settings_box)
+
+    settings_box.pack_start(title_container, False, False, 0)
 
     # Create Country Combo box
     country_store = Gtk.ListStore(str)
@@ -54,12 +75,24 @@ def activate(_win, table, box, title, description):
     renderer_text = Gtk.CellRendererText()
     country_combo.pack_start(renderer_text, True)
     country_combo.add_attribute(renderer_text, "text", 0)
-    table.attach(country_combo, 0, 1, 1, 2)
+
+    #cblist = countries.child
+    #cblist.modify_font(pango.FontDescription("Bariol 32"))
+    #country_combo.modify_font(Pango.FontDescription("Bariol 20"))
 
     # Create Variants Combo box
     variants_combo = Gtk.ComboBoxText.new()
     variants_combo.connect("changed", on_variants_changed)
-    table.attach(variants_combo, 0, 1, 2, 3)
+
+    # Needs to contain dropdownlists and have a background image of a keyboard
+    dropdown_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+    dropdown_box.pack_start(country_combo, False, False, 10)
+    dropdown_box.pack_start(variants_combo, False, False, 10)
+    dropdown_box.set_size_request(100, 40)
+
+    settings_box.pack_start(dropdown_box, False, False, 30)
+
+    box.pack_start(apply_changes, False, False, 0)
 
     # Refresh window
     win.show_all()
@@ -83,9 +116,10 @@ def activate(_win, table, box, title, description):
         country_combo.set_active(usa_index)
         variants_combo.set_active(0)
         f.write("Keyboard:" + str(usa_index) + "," + str(0) + "\n")
-        
-    f.close()
 
+    variants_combo.get_child().modify_font(Pango.FontDescription("Bariol 13"))
+    country_combo.get_child().modify_font(Pango.FontDescription("Bariol 13"))   
+    f.close()
 
 def apply_changes(button):
     global win, selected_country
@@ -125,7 +159,7 @@ def on_country_changed(combo):
     if tree_iter is not None:
         model = combo.get_model()
         country = model[tree_iter][0]
-    button.show()
+    #button.show()
     # Remove entries from variants combo box
     variants_combo.remove_all()
     # Refresh variants combo box
@@ -135,6 +169,8 @@ def on_country_changed(combo):
     if variants is not None:
         for v in variants:
             variants_combo.append_text(v[0])
+
+    
     # Refresh window
     win.show_all()
 
@@ -152,6 +188,6 @@ def on_variants_changed(combo):
             for v in variants:
                 if v[0] == variant:
                     selected_variant = v[1]
-    button.show()
+    #button.show()
     # Refresh window
     win.show_all()
