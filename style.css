@@ -1,0 +1,132 @@
+/* Define colours */
+
+@define-color button_color rgb(92,191,72);
+
+
+
+/* All */
+* {
+    -GtkButton-inner-border: 0;
+    -unico-focus-border-color: transparent; /* Removes the annoying red outline on active buttons*/
+    engine: none; /* Turns off annoying borders */
+    background: #ffffff;
+    border-width: 0px;
+}
+
+.window {
+    
+}
+.button { /* Same as GtkButton*/
+    color: #000000;
+    background:transparent;
+    border-style: none; /* Remove grey border on outside */
+    border-width:0px;
+}
+
+.apply_changes {
+    background: #9ed874;
+    color:#ffffff;
+    padding:9px 4px 9px 17px;
+    /* For Next -> : padding:9px 4px 9px 17px;*/
+    border-radius:3px;
+    font-weight:bold;
+}
+
+.top_bar_container {
+    background: #eeeeee;
+}
+.title{
+    padding-top:25px;
+    font-weight:bold;
+}
+.description {
+    padding-bottom: 18px;
+    color:#aaaaaa;
+}
+
+GtkImage {
+    background: transparent;
+}
+
+.intro_label {
+    color: #ff842A;
+    font-weight:bold;
+}
+.custom_label {
+    color: #888888;
+}
+.header {
+    color: #222222;
+    font-weight: bold;
+}
+
+/* Workaround for lp:949368 */
+GtkComboBox .button {
+    border-color: #bbbbbb;
+    border-style: solid;
+    border-width: 2px;
+    border-radius:2px;
+}
+GtkComboBox .menuitem * {
+    color: @button_color;
+}
+GtkComboBox .menuitem *:hover {
+    color: @button_color;
+}
+.entry {
+    border-color: #bbbbbb;
+    border-style: solid;
+    border-width: 2px;
+    border-radius:3px;
+    padding: 10px;
+}
+.entry:insensitive {
+    border-color: #dddddd;
+    border-style: solid;
+    border-width: 2px;
+    border-radius:2px;
+    color: #dddddd;
+}
+/*.background-image {
+    url: "media/Graphics/keyboard.png"
+}*/
+
+.radio {
+    border-style: solid;
+    border-color: #dddddd;
+    border-width: 1px;
+
+}
+
+.radio:active {
+    color: #9ed874;
+}
+
+.internet_status_top {
+    padding:0px 10px;
+}
+
+.internet_status_bottom {
+    padding:0px 10px;
+}
+
+.connected {
+    background: #9ed874;
+    font-weight:bold;
+    margin:10px;
+}
+
+.not_connected {
+    background: #F76868;
+    font-weight:bold;
+    margin:10px;
+}
+.white {
+    color: #ffffff;
+}
+.dark_green {
+    color: #0A5200;
+}
+.dark_red {
+    color: #520000;
+}

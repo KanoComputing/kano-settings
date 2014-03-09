@@ -6,10 +6,11 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Pango
 from pwd import getpwnam
 import os
 import re
+import dialog_box
 
 USER = os.environ['LOGNAME']
 USER_ID = getpwnam(USER).pw_uid
@@ -25,7 +26,7 @@ def is_email(email):
         return False
 
 
-def activate(_win, table, box):
+def activate(_win, box, apply_changes):
     global entry, current_email
 
     # Get existent email
@@ -35,31 +36,58 @@ def activate(_win, table, box):
             current_email = f.readline()
     except:
         pass
-    print(email_path)
-    print(current_email)
 
-    # Table
-    table = Gtk.Table(4, 1, True)
-    box.add(table)
+     # Heading
 
-    # Label
-    label = Gtk.Label()
-    label.set_text("Email")
-    label.set_justify(Gtk.Justification.LEFT)
-    table.attach(label, 0, 1, 0, 1)
+    title = Gtk.Label("TITLE")
+    title.modify_font(Pango.FontDescription("Bariol 16"))
+    description = Gtk.Label("Description of project")
+    description.modify_font(Pango.FontDescription("Bariol 14"))
+
+    title_style = title.get_style_context()
+    title_style.add_class('title')
+
+    description_style = description.get_style_context()
+    description_style.add_class('description')
+
+    title_container = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing=0)
+    title_container.add(title)
+    title_container.set_size_request(300, 100)
+    title_container.pack_start(description, True, True, 10)
+    info_style = title_container.get_style_context()
+    info_style.add_class('title_container')
+
+    # Title
+    title.set_text("Change your email")
+
+    # Description
+    description.set_text("Change the email address")
+
+    # Settings container
+    settings_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+    settings_container.set_size_request(300, 250)
 
     # Text entry
     text = "Email"
+
+    entry1 = Gtk.Entry()
+    entry1.modify_font(Pango.FontDescription("Bariol 13"))
+    entry2 = Gtk.Entry()
+    entry2.modify_font(Pango.FontDescription("Bariol 13"))
+    entry2.set_sensitive(False)
+
     if current_email is not None:
         text = current_email.replace('\n', '')
-    entry = Gtk.Entry()
-    entry.set_text(text)
-    table.attach(entry, 0, 1, 1, 2)
+        entry2.set_sensitive(True)
 
-    # Apply button
-    button = Gtk.Button("Apply changes")
-    button.connect("clicked", apply_changes)
-    table.attach(button, 0, 1, 3, 4)
+    entry1.set_text(text)
+    
+    settings_container.pack_start(title_container, False, False, 0)
+    settings_container.pack_start(entry1, False, False, 10)
+    settings_container.pack_start(entry2, False, False, 10)
+
+    box.pack_start(settings_container, False, False, 0)
+    box.pack_start(apply_changes, False, False, 0)
 
 
 def apply_changes(button):
@@ -68,8 +96,16 @@ def apply_changes(button):
     email = entry.get_text()
     # Valudate email
     if not is_email(email):
-        print("Email validation failed")
-        return
+        #print("Email validation failed")
+
+        # Bring in message dialog box
+        dialog = Gtk.Dialog()
+        bad_email_alert = dialog_box.DialogWindow(dialog, "The email you entered is invalid.  Please enter a different one.")
+        response = bad_email_alert.run()
+
+        if response == Gtk.ResponseType.OK:
+            bad_email_alert.destroy() 
+            return
 
     # First time user introduces the email
     if current_email is None:

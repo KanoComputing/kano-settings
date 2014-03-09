@@ -6,24 +6,46 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk
-import kano_settings.screen_config as screen_config
+from gi.repository import Gtk, Pango
+#import kano_settings.screen_config as screen_config
+import screen_config
 
 mode = 'auto'
 overscan = False
+reboot = False
+
+def activate(_win, box, apply_changes_button):
+
+    title = Gtk.Label("TITLE")
+    title.modify_font(Pango.FontDescription("Bariol 16"))
+    description = Gtk.Label("Description of project")
+    description.modify_font(Pango.FontDescription("Bariol 14"))
+
+    title_style = title.get_style_context()
+    title_style.add_class('title')
+
+    description_style = description.get_style_context()
+    description_style.add_class('description')
+
+    title_container = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing=0)
+    title_container.add(title)
+    title_container.set_size_request(450, 100)
+    title_container.pack_start(description, True, True, 10)
+    info_style = title_container.get_style_context()
+    info_style.add_class('title_container')
 
 
-def activate(_win, table, box):
+    # Conatins main buttons
+    settings_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+    settings_box.set_size_request(450, 250)
+    box.add(settings_box)
+    settings_box.pack_start(title_container, False, False, 0)
 
-    # Table
-    table = Gtk.Table(5, 1, True)
-    box.add(table)
+    # Title
+    title.set_text("Display - how sharp can you go?")
 
-    # Label
-    label = Gtk.Label()
-    label.set_text("Display")
-    label.set_justify(Gtk.Justification.LEFT)
-    table.attach(label, 0, 1, 0, 1)
+    # Description
+    description.set_text("Make the OS look the best it can")
 
     # HDMI mode combo box
     mode_combo = Gtk.ComboBoxText.new()
@@ -34,21 +56,19 @@ def activate(_win, table, box):
     if modes is not None:
         for v in modes:
             mode_combo.append_text(v)
-    table.attach(mode_combo, 0, 1, 1, 2)
+    settings_box.pack_start(mode_combo, False, False, 0)
 
     # Overscan-no radio button
     button1 = Gtk.RadioButton.new_with_label_from_widget(None, "Overscan no")
-    table.attach(button1, 0, 1, 2, 3)
+    settings_box.pack_start(button1, False, False, 0)
     # Overscan-yes radio button
     button2 = Gtk.RadioButton.new_from_widget(button1)
     button2.set_label("Overscan yes")
     button2.connect("toggled", on_button_toggled)
-    table.attach(button2, 0, 1, 3, 4)
+    settings_box.pack_start(button2, False, False, 0)
 
-    # Apply button
-    button = Gtk.Button("Apply changes")
-    button.connect("clicked", apply_changes)
-    table.attach(button, 0, 1, 4, 5)
+    # Add apply changes button under the main settings content
+    box.pack_start(apply_changes_button, False, False, 0)
 
 
 def apply_changes(button):
@@ -62,6 +82,9 @@ def apply_changes(button):
         screen_config.set_config_option("disable_overscan", 0)
     else:
         screen_config.set_config_option("disable_overscan", 1)
+
+    # Display message to tell user to reboot to see changes.
+    reboot = True
 
 
 def on_button_toggled(button):

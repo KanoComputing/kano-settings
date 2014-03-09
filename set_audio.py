@@ -6,12 +6,14 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Pango
 import os
 import re
 
 HDMI = False
-
+reboot = False
+file_name = "/etc/rc.local"
+current_img = None
 
 def file_replace(fname, pat, s_after):
     # first, see if the pattern is even in the file.
@@ -29,50 +31,107 @@ def file_replace(fname, pat, s_after):
         os.rename(out_fname, fname)
 
 
-def activate(_win, table, box):
+def activate(_win, box, apply_changes_button):
+    global current_img
 
-    # Table
-    table = Gtk.Table(4, 1, True)
-    box.add(table)
+    title = Gtk.Label("TITLE")
+    title.modify_font(Pango.FontDescription("Bariol 16"))
+    description = Gtk.Label("Description of project")
+    description.modify_font(Pango.FontDescription("Bariol 14"))
 
-    # Label
-    label = Gtk.Label()
-    label.set_text("Audio")
-    label.set_justify(Gtk.Justification.LEFT)
-    table.attach(label, 0, 1, 0, 1)
+    title_style = title.get_style_context()
+    title_style.add_class('title')
+
+    description_style = description.get_style_context()
+    description_style.add_class('description')
+
+    title_container = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing=0)
+    title_container.add(title)
+    title_container.set_size_request(300, 100)
+    title_container.pack_start(description, True, True, 10)
+    info_style = title_container.get_style_context()
+    info_style.add_class('title_container')
+
+    # Settings container
+    settings_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+    settings_container.set_size_request(300, 250)
+    box.add(settings_container)
+
+    settings_container.pack_start(title_container, False, False, 0)
+
+    # Title
+    title.set_text("Audio settings")
+
+    # Description
+    description.set_text("Can you hear me?")
 
     # Analog radio button
-    button1 = Gtk.RadioButton.new_with_label_from_widget(None, "Analog")
-    table.attach(button1, 0, 1, 1, 2)
+    analog_button = Gtk.RadioButton.new_with_label_from_widget(None, "Analog")
+    analog_button.set_can_focus(False)
     # HDMI radio button
-    button2 = Gtk.RadioButton.new_from_widget(button1)
-    button2.set_label("HDMI")
-    button2.connect("toggled", on_button_toggled)
-    table.attach(button2, 0, 1, 2, 3)
+    hdmi_button = Gtk.RadioButton.new_from_widget(analog_button)
+    hdmi_button.set_label("HDMI")
+    hdmi_button.connect("toggled", on_button_toggled)
+    hdmi_button.set_can_focus(False)
 
-    # Apply button
-    button = Gtk.Button("Apply changes")
-    button.connect("clicked", apply_changes)
-    table.attach(button, 0, 1, 3, 4)
+    current_img = Gtk.Image()
+    current_img.set_from_file("media/Graphics/Audio-jack.png")
+
+    radio_button_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+    radio_button_container.pack_start(hdmi_button, False, False, 10)
+    radio_button_container.pack_start(current_img, False, False, 10)
+    radio_button_container.pack_start(analog_button, False, False, 10)
+
+    settings_container.pack_start(radio_button_container, False, False, 0)
+
+    # Show the current setting by electing the appropriate radio button
+    current_setting(analog_button, hdmi_button)
+
+    # Add apply changes button under the main settings content
+    box.pack_start(apply_changes_button, False, False, 0)
 
 
 def apply_changes(button):
-    global HDMI
+    global HDMI, reboot, hdmi_img, analogue_img
     # amixer -c 0 cset numid=3 N
     # 1 analog
     # 2 hdmi
 
-    file_name = "/etc/rc.local"
     pattern = "amixer -c 0 cset numid=3 [0-9]"
     new_line = None
     if HDMI is True:
         new_line = "amixer -c 0 cset numid=3 2"
     else:
         new_line = "amixer -c 0 cset numid=3 1"
+
     file_replace(file_name, pattern, new_line)
+    # Tell user to reboot to see changes
+    reboot = True
+
+
+def current_setting(analogue_button, hdmi_button):
+
+    f = open(file_name, 'r')
+    file_string = str(f.read())
+    analogue_string = "amixer -c 0 cset numid=3 1"
+    hdmi_string = "amixer -c 0 cset numid=3 2"
+
+    if file_string.find(analogue_string) != -1:
+        analogue_button.set_active(True)
+
+    elif file_string.find(hdmi_string) != -1:
+        hdmi_button.set_active(True)
+
+    # Default, first button is active
 
 
 def on_button_toggled(button):
-    global HDMI
+    global current_img, HDMI
 
     HDMI = button.get_active()
+
+    if HDMI:
+        current_img.set_from_file("media/Graphics/Audio-HDMI.png")
+
+    else:
+        current_img.set_from_file("media/Graphics/Audio-jack.png")
