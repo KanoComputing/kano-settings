@@ -10,6 +10,21 @@ import os
 import re
 
 
+USER = os.environ['LOGNAME']
+settings_path = "/home/%s/.kano-settings" % (USER)
+
+def init():
+    # Update .kano-settings with new current_country and current_variant   
+    try:
+        f = open(path, 'r+')
+        f.write('finished:0\n')
+        f.close()
+
+    except:
+        # Fail silently
+        return 
+
+
 def file_replace(fname, pat, s_after):
 
     # See if the pattern is even in the file.
@@ -27,11 +42,11 @@ def file_replace(fname, pat, s_after):
         os.rename(out_fname, fname)
 
 
-def write_to_file(setting_name):
+def write_to_file(setting_name, setting, path=settings_path):
 
     # Update .kano-settings with new current_country and current_variant   
     try:
-        f = open(settings_path, 'r+')
+        f = open(path, 'r+')
         file_content = str(f.read())
         f.close()
 
@@ -39,14 +54,30 @@ def write_to_file(setting_name):
         file_index3 = file_content[file_index:].index('\n') # Get selected variant of that country
         old_string = file_content[file_index: file_index3]
 
-        selected_country_index = country_combo.get_active()
-        selected_variants_index = variants_combo.get_active()
-        new_string = setting_name + ':' + str(selected_country_index) + "," + str(selected_variants_index)
+        new_string = setting_name + ':' + setting
 
-        config_file.file_replace(settings_path, old_string, new_string)
+        config_file.file_replace(path, old_string, new_string)
 
     except:
         # Fail silently
+        return 
+
+def read_from_file(setting_name, path=settings_path):
+
+    # Update .kano-settings with new current_country and current_variant   
+    try:
+        f = open(path, 'r')
+        file_content = str(f.read())
+        f.close()
+
+        file_index = file_content.index(setting_name + ':')
+        file_index3 = file_content[file_index:].index('\n') # Get selected variant of that country
+        setting = file_content[file_index + len(setting_name + ':'): file_index3]
+        return setting
+
+    except:
+        # Fail silently
+        write_to_file(setting_name, '0')
         return 
 
 """def read_from_file(setting_name):
