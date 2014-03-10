@@ -25,7 +25,7 @@ def init():
         return 
 
 
-def file_replace(fname, pat, s_after):
+def replace(fname, pat, s_after):
 
     # See if the pattern is even in the file.
     with open(fname) as f:
@@ -42,63 +42,66 @@ def file_replace(fname, pat, s_after):
         os.rename(out_fname, fname)
 
 
-def write_to_file(setting_name, setting, path=settings_path):
-
-    # Update .kano-settings with new current_country and current_variant   
-    try:
-        f = open(path, 'r+')
-        file_content = str(f.read())
-        f.close()
-
-        file_index = file_content.index(setting_name + ':')
-        file_index3 = file_content[file_index:].index('\n') # Get selected variant of that country
-        old_string = file_content[file_index: file_index3]
-
-        new_string = setting_name + ':' + setting
-
-        config_file.file_replace(path, old_string, new_string)
-
-    except:
-        # Fail silently
-        return 
-
-def read_from_file(setting_name, path=settings_path):
-
+def replace_setting(setting_name, setting, path=settings_path):
+    setting = str(setting)
     # Update .kano-settings with new current_country and current_variant   
     try:
         f = open(path, 'r')
         file_content = str(f.read())
         f.close()
-
         file_index = file_content.index(setting_name + ':')
         file_index3 = file_content[file_index:].index('\n') # Get selected variant of that country
-        setting = file_content[file_index + len(setting_name + ':'): file_index3]
+        old_string = file_content[file_index: file_index3 + file_index]
+        new_string = setting_name + ':' + setting
+        replace(path, old_string, new_string)
+        print("Successfully completed replace_setting")
+        return 0
+
+    except:
+        # Failure is probably down to the setting not existing 
+        print("FAIL: replace_settings")
+        f.close()
+        write_to_file(setting_name, setting)
+        return 
+
+
+
+def write_to_file(setting_name, setting, path=settings_path):
+    setting = str(setting)
+
+    # Update .kano-settings with new current_country and current_variant   
+    try:
+        f = open(path, "a+")
+        new_string = setting_name + ":" + setting + "\n"
+        f.write(new_string)
+        f.close()
+        return
+
+    except:
+        print("FAIL: write_to_file")
+        f.close()
+        return 
+
+def read_from_file(setting_name, path=settings_path):
+
+    try:
+        f = open(path, 'r')
+        file_content = str(f.read())
+        f.close()
+        file_index = file_content.index(setting_name + ':')
+
+        file_index2 = file_content[file_index:].index('\n')
+        # file_index2 is the distance from file_index, so you have to add them to find total distance
+        # file_index does not take into account the length of the setting name
+        setting = file_content[file_index + len(setting_name) + 1: file_index2 + file_index]
+        f.close()
         return setting
 
     except:
         # Fail silently
+        print("FAIL: read_from_file")
         write_to_file(setting_name, '0')
         return 
 
-"""def read_from_file(setting_name):
-    # Set up in file in .kano-settings  
-    try:
-        f = open(settings_path, 'r+')
-        # Format, "keyboard:country,second_choice"
-        file_content = str(f.read())
-        file_index = file_content.index(setting_name + ':') + len(setting_name + ":")
-        file_index2 = file_content[file_index:].index(',') # Return first comma after Keyboard
-        file_index3 = file_content[file_index:].index('\n') # Get selected variant of that country
-        country_substring = file_content[file_index: file_index + file_index2]
-        variant_substring = file_content[file_index + file_index2 + 1: file_index + file_index3]
-        country_combo.set_active(int(country_substring))
-        variants_combo.set_active(int(variant_substring))
-
-    except:
-        f = open(settings_path, "w+")
-        usa_index = countries.index('USA')
-        country_combo.set_active(usa_index)
-        variants_combo.set_active(0)
-        f.write("Keyboard:" + str(usa_index) + "," + str(0) + "\n")
         
-    f.close()"""
+    

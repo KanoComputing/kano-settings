@@ -1,14 +1,19 @@
 #!/usr/bin/env python3
 
-# http://python-gtk-3-tutorial.readthedocs.org/en/latest/layout.html
+# kano-settings.py
+#
+# Copyright (C) 2014 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+
 
 from gi.repository import Gtk
-import set_intro
-import set_email
-import set_keyboard
-import set_audio
-import set_display
-import set_wifi
+import kano_settings.set_intro as set_intro
+import kano_settings.set_email as set_email
+import kano_settings.set_keyboard as set_keyboard
+import kano_settings.set_audio as set_audio
+import kano_settings.set_display as set_display
+import kano_settings.set_wifi as set_wifi
 
 win = None
 MAX_STATE = 6

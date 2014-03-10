@@ -7,6 +7,10 @@
 #
 
 from gi.repository import Gtk, Gdk, GdkPixbuf, Pango
+#import kano_settings.keyboard_layouts as keyboard_layouts
+#import kano_settings.keyboard_config as keyboard_config
+
+
 import keyboard_layouts
 import keyboard_config
 import os
@@ -23,7 +27,7 @@ USER = os.environ['LOGNAME']
 settings_path = "/home/%s/.kano-settings" % (USER) 
 
 
-def activate(_win, box, apply_changes):
+def activate(_win, box, apply_changes_button):
     global win, variants_combo, button, country_combo
 
     win = _win
@@ -76,50 +80,44 @@ def activate(_win, box, apply_changes):
     country_combo.pack_start(renderer_text, True)
     country_combo.add_attribute(renderer_text, "text", 0)
 
-    #cblist = countries.child
-    #cblist.modify_font(pango.FontDescription("Bariol 32"))
-    #country_combo.modify_font(Pango.FontDescription("Bariol 20"))
-
     # Create Variants Combo box
     variants_combo = Gtk.ComboBoxText.new()
     variants_combo.connect("changed", on_variants_changed)
 
     # Needs to contain dropdownlists and have a background image of a keyboard
+    keyboard_image = Gtk.Image()
+    keyboard_image.set_from_file("media/Graphics/Intro-illustration.png")
+
     dropdown_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     dropdown_box.pack_start(country_combo, False, False, 10)
     dropdown_box.pack_start(variants_combo, False, False, 10)
-    dropdown_box.set_size_request(100, 40)
+    dropdown_box.set_size_request(20, 20)
 
     settings_box.pack_start(dropdown_box, False, False, 30)
 
-    box.pack_start(apply_changes, False, False, 0)
+    box.pack_start(apply_changes_button, False, False, 0)
 
     # Refresh window
     win.show_all()
 
     # Set up in file in .kano-settings  
     try:
-        f = open(settings_path, 'r+')
-        # Format, "keyboard:country,second_choice"
-        file_content = str(f.read())
-        file_index = file_content.index('Keyboard:') + len("Keyboard:")
-        file_index2 = file_content[file_index:].index(',') # Return first comma after Keyboard
-        file_index3 = file_content[file_index:].index('\n') # Get selected variant of that country
-        country_substring = file_content[file_index: file_index + file_index2]
-        variant_substring = file_content[file_index + file_index2 + 1: file_index + file_index3]
-        country_combo.set_active(int(country_substring))
-        variants_combo.set_active(int(variant_substring))
+        country = config_file.read_from_file("Keyboard-country")
+        variant = config_file.read_from_file("Keyboard-variant")
+        country_combo.set_active(country)
+        variants_combo.set_active(variant)
 
     except:
-        f = open(settings_path, "w+")
-        usa_index = countries.index('USA')
+        usa_index = countries.index("USA")
         country_combo.set_active(usa_index)
         variants_combo.set_active(0)
-        f.write("Keyboard:" + str(usa_index) + "," + str(0) + "\n")
+        config_file.replace_setting("Keyboard-country", str(usa_index))
+        config_file.replace_setting("Keyboard-variant", str(0))
+        config_file.replace_setting("Keyboard-country-human", "USA")
+        config_file.replace_setting("Keyboard-variant-human", "Generic")
 
     variants_combo.get_child().modify_font(Pango.FontDescription("Bariol 13"))
     country_combo.get_child().modify_font(Pango.FontDescription("Bariol 13"))   
-    f.close()
 
 def apply_changes(button):
     global win, selected_country
@@ -132,24 +130,14 @@ def apply_changes(button):
     win.show_all()
 
     # Update .kano-settings with new current_country and current_variant   
-    try:
-        f = open(settings_path, 'r+')
-        file_content = str(f.read())
-        f.close()
+    
+    selected_country_index = country_combo.get_active()
+    selected_variants_index = variants_combo.get_active()
 
-        file_index = file_content.index('Keyboard:')
-        file_index3 = file_content[file_index:].index('\n') # Get selected variant of that country
-        old_string = file_content[file_index: file_index3]
-
-        selected_country_index = country_combo.get_active()
-        selected_variants_index = variants_combo.get_active()
-        new_string = "Keyboard:" + str(selected_country_index) + "," + str(selected_variants_index)
-
-        config_file.file_replace(settings_path, old_string, new_string)
-
-    except:
-        # Fail silently
-        return 
+    config_file.replace_setting("Keyboard-country", str(selected_country_index))
+    config_file.replace_setting("Keyboard-variant", str(selected_variants_index))
+    config_file.replace_setting("Keyboard-country-human", str(selected_country))
+    config_file.replace_setting("Keyboard-variant-human", str(selected_variant))   
 
 
 def on_country_changed(combo):
@@ -170,7 +158,6 @@ def on_country_changed(combo):
         for v in variants:
             variants_combo.append_text(v[0])
 
-    
     # Refresh window
     win.show_all()
 
@@ -188,6 +175,7 @@ def on_variants_changed(combo):
             for v in variants:
                 if v[0] == variant:
                     selected_variant = v[1]
+           
     #button.show()
     # Refresh window
     win.show_all()

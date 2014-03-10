@@ -13,6 +13,7 @@ import re
 HDMI = False
 reboot = False
 file_name = "/etc/rc.local"
+current_img = None
 
 def file_replace(fname, pat, s_after):
     # first, see if the pattern is even in the file.
@@ -30,7 +31,8 @@ def file_replace(fname, pat, s_after):
         os.rename(out_fname, fname)
 
 
-def activate(_win, box, apply_changes):
+def activate(_win, box, apply_changes_button):
+    global current_img
 
     title = Gtk.Label("TITLE")
     title.modify_font(Pango.FontDescription("Bariol 16"))
@@ -52,7 +54,7 @@ def activate(_win, box, apply_changes):
 
     # Settings container
     settings_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-    settings_container.set_size_request(500, 250)
+    settings_container.set_size_request(300, 250)
     box.add(settings_container)
 
     settings_container.pack_start(title_container, False, False, 0)
@@ -65,17 +67,19 @@ def activate(_win, box, apply_changes):
 
     # Analog radio button
     analog_button = Gtk.RadioButton.new_with_label_from_widget(None, "Analog")
+    analog_button.set_can_focus(False)
     # HDMI radio button
     hdmi_button = Gtk.RadioButton.new_from_widget(analog_button)
     hdmi_button.set_label("HDMI")
     hdmi_button.connect("toggled", on_button_toggled)
+    hdmi_button.set_can_focus(False)
 
-    img = Gtk.Image()
-    img.set_from_file("media/Graphics/Audio-jack.png")
+    current_img = Gtk.Image()
+    current_img.set_from_file("media/Graphics/Audio-jack.png")
 
     radio_button_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     radio_button_container.pack_start(hdmi_button, False, False, 10)
-    radio_button_container.pack_start(img, False, False, 10)
+    radio_button_container.pack_start(current_img, False, False, 10)
     radio_button_container.pack_start(analog_button, False, False, 10)
 
     settings_container.pack_start(radio_button_container, False, False, 0)
@@ -84,11 +88,11 @@ def activate(_win, box, apply_changes):
     current_setting(analog_button, hdmi_button)
 
     # Add apply changes button under the main settings content
-    box.pack_start(apply_changes, False, False, 0)
+    box.pack_start(apply_changes_button, False, False, 0)
 
 
 def apply_changes(button):
-    global HDMI, reboot
+    global HDMI, reboot, hdmi_img, analogue_img
     # amixer -c 0 cset numid=3 N
     # 1 analog
     # 2 hdmi
@@ -122,6 +126,12 @@ def current_setting(analogue_button, hdmi_button):
 
 
 def on_button_toggled(button):
-    global HDMI
+    global current_img, HDMI
 
     HDMI = button.get_active()
+
+    if HDMI:
+        current_img.set_from_file("media/Graphics/Audio-HDMI.png")
+
+    else:
+        current_img.set_from_file("media/Graphics/Audio-jack.png")

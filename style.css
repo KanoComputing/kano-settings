@@ -1,6 +1,6 @@
 /* Define colours */
 
-@define-color button_color rgb(92,191,72);
+@define-color button_color #9ed874;
 
 
 
@@ -17,21 +17,19 @@
     
 }
 .button { /* Same as GtkButton*/
-    color: #000000;
+    color: #ffffff;
     background:transparent;
     border-style: none; /* Remove grey border on outside */
     border-width:0px;
 }
-.button:selected {
-    border-style:none;
-    color: #ffffff;
-}
 
 .apply_changes {
-    background: #9ed874;
+    background: @button_color;
     color:#ffffff;
-    padding:8px;
+    padding:9px 4px 9px 17px;
+    /* For Next -> : padding:9px 4px 9px 17px;*/
     border-radius:3px;
+    font-weight:bold;
 }
 
 .top_bar_container {
@@ -44,10 +42,6 @@
 .description {
     padding-bottom: 18px;
     color:#aaaaaa;
-}
-
-.title_container {
-    color:#000000;
 }
 
 GtkImage {
@@ -72,13 +66,14 @@ GtkComboBox .button {
     border-style: solid;
     border-width: 2px;
     border-radius:2px;
+    color: #000000;
 }
-GtkComboBox .menuitem * {
+/*GtkComboBox .menuitem * {
     color: @button_color;
 }
 GtkComboBox .menuitem *:hover {
     color: @button_color;
-}
+}*/
 .entry {
     border-color: #bbbbbb;
     border-style: solid;
@@ -97,13 +92,52 @@ GtkComboBox .menuitem *:hover {
     url: "media/Graphics/keyboard.png"
 }*/
 
+.check, 
 .radio {
     border-style: solid;
     border-color: #dddddd;
-    border-width: 1px;
+    border-width: 2px;
 
 }
 
+.check:active,
 .radio:active {
     color: #9ed874;
+}
+
+/*.check {
+    border-st
+    -unico-outer-stroke-gradient: -gtk-gradient (linear, left top, left bottom,
+                                                 from (alpha (shade (@bg_color, 0.85), 0.2)),
+                                                 to (alpha (shade (@bg_color, 1.25), 0.6)));
+    -unico-outer-stroke-width: 1px;
+}*/
+
+.internet_status_top {
+    padding:0px 10px;
+}
+
+.internet_status_bottom {
+    padding:0px 10px;
+}
+
+.connected {
+    background: @button_color;
+    font-weight:bold;
+    margin:10px;
+}
+
+.not_connected {
+    background: #F76868;
+    font-weight:bold;
+    margin:10px;
+}
+.white {
+    color: #ffffff;
+}
+.dark_green {
+    color: #0A5200;
+}
+.dark_red {
+    color: #520000;
 }
