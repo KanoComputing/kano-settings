@@ -1,4 +1,5 @@
 ./bin/kano-settings /usr/bin
+./style.css /usr/bin
 
 ./__init__.py /usr/lib/python3/dist-packages/kano_settings
 ./set_audio.py /usr/lib/python3/dist-packages/kano_settings
@@ -8,7 +9,6 @@
 ./set_keyboard.py /usr/lib/python3/dist-packages/kano_settings
 ./set_wifi.py /usr/lib/python3/dist-packages/kano_settings
 ./config_file.py /usr/lib/python3/dist-packages/kano_settings
-./style.css /usr/lib/python3/dist-packages/kano_settings
 ./media/Icons/* /usr/lib/python3/dist-packages/kano_settings/media/Icons/
 ./media/Graphics/* /usr/lib/python3/dist-packages/kano_settings/media/Graphics/
 
