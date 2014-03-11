@@ -7,6 +7,10 @@
 ./set_intro.py /usr/lib/python3/dist-packages/kano_settings
 ./set_keyboard.py /usr/lib/python3/dist-packages/kano_settings
 ./set_wifi.py /usr/lib/python3/dist-packages/kano_settings
+./config_file.py /usr/lib/python3/dist-packages/kano_settings
+./style.css /usr/lib/python3/dist-packages/kano_settings
+./media/Icons/* /usr/lib/python3/dist-packages/kano_settings/media/Icons/
+./media/Graphics/* /usr/lib/python3/dist-packages/kano_settings/media/Graphics/
 
 ./screen/screen_config.py /usr/lib/python3/dist-packages/kano_settings
 

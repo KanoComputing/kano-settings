@@ -46,11 +46,8 @@ def replace(fname, pat, s_after):
 def replace_setting(setting_name, setting):
 
     USER = os.environ['SUDO_USER']
-    USER_ID = getpwnam(USER).pw_uid
+    #USER_ID = getpwnam(USER).pw_uid
     path = "/home/%s/.kano-settings" % (USER)
-
-    # Get existent email
-    email_path = "/home/%s/.useremail" % (USER)
 
     setting = str(setting)
     # Update .kano-settings with new current_country and current_variant   
@@ -78,7 +75,7 @@ def replace_setting(setting_name, setting):
 def write_to_file(setting_name, setting):
 
     USER = os.environ.get('SUDO_USER')
-    USER_ID = getpwnam(USER).pw_uid
+    #USER_ID = getpwnam(USER).pw_uid
     path = "/home/%s/.kano-settings" % (USER)
 
     setting = str(setting)
@@ -99,7 +96,7 @@ def write_to_file(setting_name, setting):
 def read_from_file(setting_name):
 
     USER = os.environ.get('SUDO_USER')
-    USER_ID = getpwnam(USER).pw_uid
+    #USER_ID = getpwnam(USER).pw_uid
     path = "/home/%s/.kano-settings" % (USER)
 
     try:
@@ -116,21 +113,31 @@ def read_from_file(setting_name):
         return setting
 
     except:
-        # Fail silently
         print("FAIL: read_from_file")
-        write_to_file(setting_name, '0') #change to custom defaults
+        #set_defaults(setting_name) #change to custom defaults
         return 
 
 custom_info = ["Email", "Keyboard-country-human", "Audio", "Wifi", "Display"]
 
 def set_defaults(setting_name):
+
     if setting_name == "Email":
-        custom_info = ""
+        setting_prop = ""
+    elif setting_name == "Keyboard-country":
+        setting_prop = str(108)
+    elif setting_name == "Keyboard-variant":
+        setting_prop = str(0)
     elif setting_name == "Keyboard-country-human":
-        custom_info = "USA"
+        setting_prop = "USA"
+    elif setting_name == "Keyboard-variant-human":
+        setting_prop = "Generic"
     elif setting_name == "Audio":
-        custom_info = "Analogue"
+        setting_prop = "Analogue"
     elif setting_name == "Wifi":
-        custom_info = ""
+        setting_prop = ""
     elif setting_name == "Display":
-        custom_info = "Auto"
+        setting_prop = "Auto"
+    elif setting_name == "Completed":
+        setting_prop = "0"
+
+    write_to_file(setting_name, setting_prop)

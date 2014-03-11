@@ -11,6 +11,8 @@
     engine: none; /* Turns off annoying borders */
     background: #ffffff;
     border-width: 0px;
+    /*background-origin: padding-box;
+    background-clip: padding-box;*/
 }
 
 .window {

@@ -6,16 +6,14 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk, Gdk, GdkPixbuf, Pango
+from gi.repository import Gtk, Pango
 #import kano_settings.keyboard_layouts as keyboard_layouts
 #import kano_settings.keyboard_config as keyboard_config
 
 
-import keyboard_layouts
-import keyboard_config
-import os
-import config_file
-import re
+import kano_settings.keyboard_layouts as keyboard_layouts
+import kano_settings.keyboard_config as keyboard_config
+import kano_settings.config_file as config_file
 
 win = None  # TODO: Is it needed?
 selected_country = None
@@ -23,8 +21,6 @@ selected_variant = "Generic"
 variants_combo = None
 country_combo = None
 button = None
-USER = os.environ['LOGNAME']
-settings_path = "/home/%s/.kano-settings" % (USER) 
 
 
 def activate(_win, box, apply_changes_button):
@@ -112,10 +108,6 @@ def activate(_win, box, apply_changes_button):
         usa_index = countries.index("USA")
         country_combo.set_active(usa_index)
         variants_combo.set_active(0)
-        config_file.replace_setting("Keyboard-country", str(usa_index))
-        config_file.replace_setting("Keyboard-variant", str(0))
-        #config_file.replace_setting("Keyboard-country-human", "USA")
-        #config_file.replace_setting("Keyboard-variant-human", "Generic")
 
     variants_combo.get_child().modify_font(Pango.FontDescription("Bariol 13"))
     country_combo.get_child().modify_font(Pango.FontDescription("Bariol 13"))   
