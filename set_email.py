@@ -11,8 +11,8 @@ from pwd import getpwnam
 import os
 import re
 
-USER = os.environ['SUDO_USER']
-USER_ID = getpwnam(USER).pw_uid
+USER = None
+USER_ID = None
 entry = None
 current_email = None
 
@@ -26,7 +26,11 @@ def is_email(email):
 
 
 def activate(_win, table, box):
-    global entry, current_email
+    global entry, current_email, USER, USER_ID
+
+    # Init user detail
+    USER = os.environ['SUDO_USER']
+    USER_ID = getpwnam(USER).pw_uid
 
     # Get existent email
     email_path = "/home/%s/.useremail" % (USER)
