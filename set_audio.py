@@ -7,19 +7,22 @@
 #
 
 from gi.repository import Gtk, Pango
+import config_file 
 import os
 import re
 
 HDMI = False
 reboot = False
-file_name = "/etc/rc.local"
+#file_name = "/etc/rc.local"
+file_name = "/home/caroline/blah"
 current_img = None
 
 def file_replace(fname, pat, s_after):
     # first, see if the pattern is even in the file.
     with open(fname) as f:
         if not any(re.search(pat, line) for line in f):
-            return  # pattern does not occur in file so we are done.
+            print("FAIL: set_audio.py, file_replace, pattern not found in file")
+            return -1 # pattern does not occur in file so we are done.
 
     # pattern is in the file, so perform replace operation.
     with open(fname) as f:
@@ -101,10 +104,17 @@ def apply_changes(button):
     new_line = None
     if HDMI is True:
         new_line = "amixer -c 0 cset numid=3 2"
+        config = "HDMI"
     else:
         new_line = "amixer -c 0 cset numid=3 1"
+        config = "Analogue"
 
-    file_replace(file_name, pattern, new_line)
+    outcome = file_replace(file_name, pattern, new_line)
+    # Don't continue if we don't manage to change the audio settings in the file.
+    if outcome == -1:
+        return
+
+    config_file.replace_setting("Audio", config)
     # Tell user to reboot to see changes
     reboot = True
 
@@ -121,6 +131,7 @@ def current_setting(analogue_button, hdmi_button):
 
     elif file_string.find(hdmi_string) != -1:
         hdmi_button.set_active(True)
+        
 
     # Default, first button is active
 

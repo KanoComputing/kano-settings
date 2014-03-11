@@ -21,6 +21,7 @@
     background:transparent;
     border-style: none; /* Remove grey border on outside */
     border-width:0px;
+    border-color: transparent;
 }
 
 .apply_changes {

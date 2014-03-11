@@ -102,6 +102,3 @@ def read_from_file(setting_name, path=settings_path):
         print("FAIL: read_from_file")
         write_to_file(setting_name, '0')
         return 
-
-        
-    

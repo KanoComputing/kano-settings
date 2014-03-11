@@ -14,6 +14,8 @@ import config_file
 
 win = None
 MAX_STATE = 6
+names = ["Email", "Keyboard", "Audio", "Wifi", "Display"]
+custom_info = ["Email", "Keyboard-country-human", "Audio", "Wifi", "Display"]
 
 
 # Window class
@@ -110,7 +112,7 @@ class MainWindow(Gtk.Window):
         self.changable_content.props.halign = Gtk.Align.CENTER
 
         # Init
-        if config_file.read_from_file('Completed'):
+        if config_file.read_from_file('Completed') == "1":
             print("Settings has been completed before")
             self.default_intro = Gtk.Table(3, 2, True)
             self.default_intro_init()
@@ -141,6 +143,8 @@ class MainWindow(Gtk.Window):
         for i in self.changable_content.get_children():
             self.changable_content.remove(i)
 
+        self.default_intro_text()
+
         self.changable_content.pack_start(self.default_intro, True, True, 0)
 
 
@@ -154,11 +158,10 @@ class MainWindow(Gtk.Window):
         # If value is 1:
         self.default_intro = Gtk.Table(3, 2, True)
 
-        names = ["Email", "Keyboard", "Audio", "Display", "Wifi"]
-        custom_info = ["Email", "Keyboard-country-human", "Audio", "Display", "Wifi"]
         buttons = []
-        label_styles = []
+        self.labels = []
 
+        #names at top of file
         for x in range(len(names)):
             label_box = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing=0)
             button_box = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing=0)
@@ -166,32 +169,35 @@ class MainWindow(Gtk.Window):
             label = Gtk.Label(names[x])
             label.get_style_context().add_class("intro_label")
 
+            print(custom_info[x])
             info = config_file.read_from_file(custom_info[x])
 
-            # Replace some of the info displayed with whitespace so it fits
-            if len(info) >= 12:
-                info = info[0:12] + '...'
-            else:
-                whitespace = 15 - len(info)
-                info = info.ljust(whitespace)
+            if info != None:
+                # Replace some of the info displayed with whitespace so it fits
+                if len(info) >= 12:
+                    info = info[0:12] + '...'
+
             label2 = Gtk.Label(info)
             label2.get_style_context().add_class("custom_label")
+            self.labels.append(label2)
             button = Gtk.Button()
-            button.set_size_request(150, 50)
             button.set_can_focus(False)
             img = Gtk.Image()
             img.set_from_file("media/Icons/Icon-" + names[x] + ".png")
 
             label_box.pack_start(label, True, True, 0)
             label_box.pack_start(label2, True, True, 0)
+            label_box.set_size_request(90,20)
             #label.set_justify(Gtk.Justification.LEFT)
             #label2.set_justify(Gtk.Justification.LEFT)
 
-            button_box.pack_start(img, True, True, 0)
-            button_box.pack_start(label_box, True, True, 5)
+            button_box.pack_start(img, True, True, 10)
+            button_box.pack_start(label_box, True, True, 0)
+            button_box.set_size_request(180, 80)
             button.add(button_box)
             buttons.append(button)
             button.state = x
+            button.set_size_request(200, 100)
             button.connect("clicked", self.go_to_level)
 
         # Attach to table
@@ -204,6 +210,12 @@ class MainWindow(Gtk.Window):
         self.default_intro.set_size_request(450, 100)
 
         self.changable_content.pack_start(self.default_intro, True, True, 0)
+
+
+    def default_intro_text(self):
+        for x in range(len(custom_info)):
+            config_file.read_from_file(custom_info[x])
+            self.labels[x].set_text(str(config_file.read_from_file(custom_info[x])))
 
 
     def update_and_next(self, widget):
@@ -329,14 +341,20 @@ def main():
 def close_window(event="delete-event", button=win):
 
     if set_audio.reboot or set_display.reboot:
-        dialog = Gtk.Dialog()
-        reboot_message = dialog_box.DialogWindow(dialog, "Some of the changes you made will only take place after a reboot.")
-        response = reboot_message.run()
+        #Bring in message dialog box
+        dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.INFO,
+            Gtk.ButtonsType.OK, "This is an INFO MessageDialog")
+        dialog.format_secondary_text(
+            "And this is the secondary text that explains things.")
+        dialog.run()
+        print("INFO dialog closed")
 
         if response == Gtk.ResponseType.OK:
-            reboot_message.destroy() 
+            dialog.destroy() 
             Gtk.main_quit()
             return
+        else:
+            dialog.destroy()
 
     else:
         Gtk.main_quit()

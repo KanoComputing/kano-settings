@@ -106,7 +106,7 @@ def activate(_win, box, apply_changes_button):
     box.pack_start(apply_changes_button, False, False, 0)
 
 
-def apply_changes(arg1, arg2):
+def apply_changes(button):
     # Call WiFi config
 
     os.system('rxvt -title \'WiFi\' -e sudo /usr/bin/kano-wifi')

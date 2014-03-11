@@ -102,12 +102,13 @@ def activate(_win, box, apply_changes_button):
 
     # Set up in file in .kano-settings  
     try:
-        country = config_file.read_from_file("Keyboard-country")
-        variant = config_file.read_from_file("Keyboard-variant")
+        country = int(config_file.read_from_file("Keyboard-country"))
+        variant = int(config_file.read_from_file("Keyboard-variant"))
         country_combo.set_active(country)
         variants_combo.set_active(variant)
 
     except:
+        print("Exception in keyboard activate")
         usa_index = countries.index("USA")
         country_combo.set_active(usa_index)
         variants_combo.set_active(0)
