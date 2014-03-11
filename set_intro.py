@@ -8,12 +8,6 @@
 
 from gi.repository import Gtk, Pango
 
-import set_keyboard
-import set_display
-import set_audio
-import set_wifi
-import set_email
-
 def activate(win, box, apply_changes):
 
     title = Gtk.Label("TITLE")

@@ -7,9 +7,6 @@
 #
 
 from gi.repository import Gtk, Pango
-#import kano_settings.keyboard_layouts as keyboard_layouts
-#import kano_settings.keyboard_config as keyboard_config
-
 
 import kano_settings.keyboard_layouts as keyboard_layouts
 import kano_settings.keyboard_config as keyboard_config

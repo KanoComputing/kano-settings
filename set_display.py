@@ -7,8 +7,7 @@
 #
 
 from gi.repository import Gtk, Pango
-#import kano_settings.screen_config as screen_config
-import screen_config
+import kano_settings.screen_config as screen_config
 
 mode = 'auto'
 overscan = False

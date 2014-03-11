@@ -8,13 +8,15 @@
 
 import os
 import re
-from pwd import getpwnam
-
 
 USER = None
 USER_ID = None
 
 def init():
+
+    USER = os.environ['SUDO_USER']
+    #USER_ID = getpwnam(USER).pw_uid
+    path = "/home/%s/.kano-settings" % (USER)
     # Update .kano-settings with new current_country and current_variant   
     try:
         f = open(path, 'r+')
