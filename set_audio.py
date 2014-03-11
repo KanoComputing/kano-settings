@@ -7,7 +7,7 @@
 #
 
 from gi.repository import Gtk, Pango
-import config_file 
+import kano_settings.config_file as config_file 
 import os
 import re
 

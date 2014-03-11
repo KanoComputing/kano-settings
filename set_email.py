@@ -6,11 +6,11 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk, Pango, GdkPixbuf, Gdk
+from gi.repository import Gtk, Pango, GdkPixbuf
 from pwd import getpwnam
 import os
 import re
-import config_file
+import kano_settings.config_file as config_file
 
 entry1 = None
 entry2 = None
