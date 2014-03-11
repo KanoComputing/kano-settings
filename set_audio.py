@@ -13,8 +13,8 @@ import re
 
 HDMI = False
 reboot = False
-#file_name = "/etc/rc.local"
-file_name = "/home/caroline/blah"
+file_name = "/etc/rc.local"
+#file_name = "/home/caroline/blah"
 current_img = None
 
 def file_replace(fname, pat, s_after):

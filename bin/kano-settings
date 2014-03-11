@@ -6,7 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-
+import os
 from gi.repository import Gtk
 import kano_settings.set_intro as set_intro
 import kano_settings.set_email as set_email
@@ -106,5 +106,8 @@ def main():
 if __name__ == "__main__":
     # Print system python version for debugging purposes only
     print(str(Gtk.get_major_version()) + "." + str(Gtk.get_minor_version()) + "." + str(Gtk.get_micro_version()))
+
+    if os.environ['LOGNAME'] != 'root':
+        exit("Error: kano-settings must be executed with root privileges")
 
     main()

@@ -114,8 +114,8 @@ def activate(_win, box, apply_changes_button):
         variants_combo.set_active(0)
         config_file.replace_setting("Keyboard-country", str(usa_index))
         config_file.replace_setting("Keyboard-variant", str(0))
-        config_file.replace_setting("Keyboard-country-human", "USA")
-        config_file.replace_setting("Keyboard-variant-human", "Generic")
+        #config_file.replace_setting("Keyboard-country-human", "USA")
+        #config_file.replace_setting("Keyboard-variant-human", "Generic")
 
     variants_combo.get_child().modify_font(Pango.FontDescription("Bariol 13"))
     country_combo.get_child().modify_font(Pango.FontDescription("Bariol 13"))   

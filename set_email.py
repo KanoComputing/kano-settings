@@ -12,10 +12,10 @@ import os
 import re
 import config_file
 
-USER = os.environ['LOGNAME']
-USER_ID = getpwnam(USER).pw_uid
 entry1 = None
 entry2 = None
+USER = None
+USER_ID = None
 current_email = None
 success_icon = None
 tick = None
@@ -31,11 +31,16 @@ def is_email(email):
     else:
         return False
 
+    
 
 def activate(_win, box, apply_changes):
-    global current_email, tick, cross, success_icon, entry1, entry2
+    global current_email, USER, USER_ID, tick, cross, success_icon, entry1, entry2
 
     win = _win
+
+    # Init user detail
+    USER = os.environ['SUDO_USER']
+    USER_ID = getpwnam(USER).pw_uid
 
     # Get existent email
     email_path = "/home/%s/.useremail" % (USER)
@@ -114,6 +119,7 @@ def activate(_win, box, apply_changes):
 
     entry1.connect('key_press_event', check_email)
 
+
 def check_email(entry, event):
     global success_icon, entry2
 
@@ -127,7 +133,6 @@ def check_email(entry, event):
     else:
         success_icon.set_from_pixbuf(tick)
         entry2.set_sensitive(True)
-
 
 
 def apply_changes(button):

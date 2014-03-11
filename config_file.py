@@ -8,10 +8,11 @@
 
 import os
 import re
+from pwd import getpwnam
 
 
-USER = os.environ['LOGNAME']
-settings_path = "/home/%s/.kano-settings" % (USER)
+USER = None
+USER_ID = None
 
 def init():
     # Update .kano-settings with new current_country and current_variant   
@@ -42,7 +43,15 @@ def replace(fname, pat, s_after):
         os.rename(out_fname, fname)
 
 
-def replace_setting(setting_name, setting, path=settings_path):
+def replace_setting(setting_name, setting):
+
+    USER = os.environ['SUDO_USER']
+    USER_ID = getpwnam(USER).pw_uid
+    path = "/home/%s/.kano-settings" % (USER)
+
+    # Get existent email
+    email_path = "/home/%s/.useremail" % (USER)
+
     setting = str(setting)
     # Update .kano-settings with new current_country and current_variant   
     try:
@@ -60,13 +69,18 @@ def replace_setting(setting_name, setting, path=settings_path):
     except:
         # Failure is probably down to the setting not existing 
         print("FAIL: replace_settings")
-        f.close()
+        #f.close()
         write_to_file(setting_name, setting)
         return 
 
 
 
-def write_to_file(setting_name, setting, path=settings_path):
+def write_to_file(setting_name, setting):
+
+    USER = os.environ.get('SUDO_USER')
+    USER_ID = getpwnam(USER).pw_uid
+    path = "/home/%s/.kano-settings" % (USER)
+
     setting = str(setting)
 
     # Update .kano-settings with new current_country and current_variant   
@@ -79,10 +93,14 @@ def write_to_file(setting_name, setting, path=settings_path):
 
     except:
         print("FAIL: write_to_file")
-        f.close()
+        #f.close()
         return 
 
-def read_from_file(setting_name, path=settings_path):
+def read_from_file(setting_name):
+
+    USER = os.environ.get('SUDO_USER')
+    USER_ID = getpwnam(USER).pw_uid
+    path = "/home/%s/.kano-settings" % (USER)
 
     try:
         f = open(path, 'r')
@@ -100,5 +118,19 @@ def read_from_file(setting_name, path=settings_path):
     except:
         # Fail silently
         print("FAIL: read_from_file")
-        write_to_file(setting_name, '0')
+        write_to_file(setting_name, '0') #change to custom defaults
         return 
+
+custom_info = ["Email", "Keyboard-country-human", "Audio", "Wifi", "Display"]
+
+def set_defaults(setting_name):
+    if setting_name == "Email":
+        custom_info = ""
+    elif setting_name == "Keyboard-country-human":
+        custom_info = "USA"
+    elif setting_name == "Audio":
+        custom_info = "Analogue"
+    elif setting_name == "Wifi":
+        custom_info = ""
+    elif setting_name == "Display":
+        custom_info = "Auto"
