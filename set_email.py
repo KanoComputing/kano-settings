@@ -11,7 +11,7 @@ from pwd import getpwnam
 import os
 import re
 
-USER = os.environ['LOGNAME']
+USER = os.environ['SUDO_USER']
 USER_ID = getpwnam(USER).pw_uid
 entry = None
 current_email = None
