@@ -32,7 +32,7 @@ def activate(win, box, apply_changes):
     description.set_text("Now I just need to ask a few questions, so I'll work out the way")
 
     image = Gtk.Image()
-    image.set_from_file("media/Graphics/Intro-illustration.png")
+    image.set_from_file("/usr/lib/python3/dist-packages/kano_settings/media/Graphics/Intro-illustration.png")
 
     image_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
     image_box.pack_start(image, False, False, 0)
