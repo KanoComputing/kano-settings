@@ -66,7 +66,7 @@ class MainWindow(Gtk.Window):
         self.top_bar = Gtk.Box()
         self.top_bar.set_homogeneous(False)
 
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("media/Icons/systemsetup-icons.png", 192, 24)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("/usr/lib/python3/dist-packages/kano_settings/media/Icons/systemsetup-icons.png", 192, 24)
         icons = []
         images = []
 
@@ -204,7 +204,7 @@ class MainWindow(Gtk.Window):
             button = Gtk.Button()
             button.set_can_focus(False)
             img = Gtk.Image()
-            img.set_from_file("media/Icons/Icon-" + names[x] + ".png")
+            img.set_from_file("/usr/lib/python3/dist-packages/kano_settings/media/Icons/Icon-" + names[x] + ".png")
 
             label_box.pack_start(label, True, True, 0)
             label_box.pack_start(label2, True, True, 0)
