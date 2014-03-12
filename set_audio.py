@@ -79,7 +79,7 @@ def activate(_win, box, apply_changes_button):
     hdmi_button.set_can_focus(False)
 
     current_img = Gtk.Image()
-    current_img.set_from_file("media/Graphics/Audio-jack.png")
+    current_img.set_from_file("/usr/lib/python3/dist-packages/kano_settings/media/Graphics/Audio-jack.png")
 
     radio_button_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     radio_button_container.pack_start(hdmi_button, False, False, 10)

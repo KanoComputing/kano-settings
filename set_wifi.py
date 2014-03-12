@@ -85,7 +85,7 @@ def activate(_win, box, apply_changes_button):
     event_box.connect("button-press-event", apply_changes)
     
     if internet is False:
-        internet_img.set_from_file("media/Graphics/Internet-connection.png")
+        internet_img.set_from_file("/usr/lib/python3/dist-packages/kano_settings/media/Graphics/Internet-connection.png")
         title.set_text("Weee you have internet")
         description.set_text("Great!")
         internet_status.set_text("Weee you have internet")
@@ -94,7 +94,7 @@ def activate(_win, box, apply_changes_button):
         internet_action.set_text("Configure")
         event_box_style.add_class("connected")
     else:
-        internet_img.set_from_file("media/Graphics/Internet-noConnection.png")
+        internet_img.set_from_file("/usr/lib/python3/dist-packages/kano_settings/media/Graphics/Internet-noConnection.png")
         title.set_text("No network found")
         description.set_text("Shit man")
         internet_status.set_text("No network found")
