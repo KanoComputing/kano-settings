@@ -11,7 +11,7 @@
 ./style.css /usr/lib/python3/dist-packages/kano_settings/
 ./media/Icons/* /usr/lib/python3/dist-packages/kano_settings/media/Icons/
 ./media/Graphics/* /usr/lib/python3/dist-packages/kano_settings/media/Graphics/
-./components/* /usr/lib/python3/dist-packages/kano_settings/components/
+./components/* /usr/lib/python3/dist-packages/kano_settings/
 
 ./screen/screen_config.py /usr/lib/python3/dist-packages/kano_settings
 

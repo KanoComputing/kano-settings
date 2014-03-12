@@ -1,6 +1,6 @@
         
 from gi.repository import Gtk, Pango
-import components.icons as icons
+import kano_settings.icons as icons
 
 TOP_BAR_HEIGHT = 50
 WINDOW_WIDTH = 600

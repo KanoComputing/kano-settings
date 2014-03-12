@@ -7,7 +7,7 @@
 #
 
 from gi.repository import Gtk
-import kano_settings.components.heading as heading
+import kano_settings.heading as heading
 
 def activate(win, box, apply_changes):
 
