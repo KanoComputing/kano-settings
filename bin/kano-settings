@@ -4,13 +4,21 @@
 
 from gi.repository import Gtk, Gdk, GdkPixbuf, Pango
 import os
-import kano_settings.set_intro as set_intro
-import kano_settings.set_email as set_email
-import kano_settings.set_keyboard as set_keyboard
-import kano_settings.set_audio as set_audio
-import kano_settings.set_display as set_display
-import kano_settings.set_wifi as set_wifi
-import kano_settings.config_file as config_file
+#import kano_settings.set_intro as set_intro
+#import kano_settings.set_email as set_email
+#import kano_settings.set_keyboard as set_keyboard
+#import kano_settings.set_audio as set_audio
+#import kano_settings.set_display as set_display
+#import kano_settings.set_wifi as set_wifi
+#import kano_settings.config_file as config_file
+import set_intro
+import set_email
+import set_keyboard
+import set_display
+import set_audio
+import set_wifi
+import config_file
+
 
 win = None
 MAX_STATE = 6
@@ -340,7 +348,7 @@ def main():
     global win
     # Create style sheet
     cssProvider = Gtk.CssProvider()
-    cssProvider.load_from_path('style.css')
+    cssProvider.load_from_path('/usr/lib/python3/dist-packages/kano_settings/style.css')
     screen = Gdk.Screen.get_default()
     styleContext = Gtk.StyleContext()
     styleContext.add_provider_for_screen(screen, cssProvider,
