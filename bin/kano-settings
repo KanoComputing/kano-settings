@@ -11,10 +11,10 @@ import kano_settings.set_audio as set_audio
 import kano_settings.set_display as set_display
 import kano_settings.set_wifi as set_wifi
 import kano_settings.config_file as config_file
-import components.top_bar as top_bar
-import components.apply_changes as apply_changes
-import components.icons as icons
-import components.menu_button as menu_button
+import kano_settings.top_bar as top_bar
+import kano_settings.apply_changes as apply_changes
+import kano_settings.icons as icons
+import kano_settings.menu_button as menu_button
 
 win = None
 MAX_STATE = 6
