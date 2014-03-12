@@ -11,8 +11,8 @@ from pwd import getpwnam
 import os
 import re
 import kano_settings.config_file as config_file
-import components.icons as icons
-import components.heading as heading
+import kano_settings.components.icons as icons
+import kano_settings.components.heading as heading
 
 entry1 = None
 entry2 = None

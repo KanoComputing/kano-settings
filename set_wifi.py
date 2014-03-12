@@ -8,7 +8,7 @@
 
 from gi.repository import Gtk, Pango
 import os
-import components.heading as heading
+import kano_settings.components.heading as heading
 
 internet = False
 

@@ -8,8 +8,8 @@
 
 from gi.repository import Gtk
 #import kano_settings.config_file as config_file 
-import config_file
-import components.heading as heading
+import kano_settings.config_file as config_file
+import kano_settings.components.heading as heading
 import os
 import re
 

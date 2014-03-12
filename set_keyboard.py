@@ -11,7 +11,7 @@ from gi.repository import Gtk, Pango
 import kano_settings.keyboard_layouts as keyboard_layouts
 import kano_settings.keyboard_config as keyboard_config
 import kano_settings.config_file as config_file
-import components.heading as heading
+import kano_settings.components.heading as heading
 
 win = None  # TODO: Is it needed?
 selected_country = None
