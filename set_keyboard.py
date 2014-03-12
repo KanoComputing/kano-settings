@@ -11,6 +11,9 @@ from gi.repository import Gtk, Pango
 import kano_settings.keyboard_layouts as keyboard_layouts
 import kano_settings.keyboard_config as keyboard_config
 import kano_settings.config_file as config_file
+#import keyboard_layouts
+#import keyboard_config
+#import config_file
 
 win = None  # TODO: Is it needed?
 selected_country = None
@@ -79,7 +82,7 @@ def activate(_win, box, apply_changes_button):
 
     # Needs to contain dropdownlists and have a background image of a keyboard
     keyboard_image = Gtk.Image()
-    keyboard_image.set_from_file("media/Graphics/Intro-illustration.png")
+    keyboard_image.set_from_file("/usr/lib/python3/dist-packages/kano_settings/media/Graphics/Intro-illustration.png")
 
     dropdown_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     dropdown_box.pack_start(country_combo, False, False, 10)

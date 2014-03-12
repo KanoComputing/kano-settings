@@ -11,6 +11,7 @@ from pwd import getpwnam
 import os
 import re
 import kano_settings.config_file as config_file
+#import config_file
 
 entry1 = None
 entry2 = None
@@ -35,8 +36,6 @@ def is_email(email):
 
 def activate(_win, box, apply_changes):
     global current_email, USER, USER_ID, tick, cross, success_icon, entry1, entry2
-
-    win = _win
 
     # Init user detail
     USER = os.environ['SUDO_USER']
@@ -86,7 +85,7 @@ def activate(_win, box, apply_changes):
 
     email_entry = Gtk.Table(2, 2, False)
     success_icon = Gtk.Image()
-    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("media/Icons/systemsetup-icons.png", 192, 24)
+    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("/usr/lib/python3/dist-packages/kano_settings/media/Icons/systemsetup-icons.png", 192, 24)
     tick = pixbuf.new_subpixbuf(120, 0, 24, 24).add_alpha(True,255,255,255)
     # To change image to tick:
     # success_icon.set_from_pixbuf(cross)
