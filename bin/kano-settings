@@ -2,7 +2,7 @@
 
 # http://python-gtk-3-tutorial.readthedocs.org/en/latest/layout.html
 
-from gi.repository import Gtk, Gdk, GdkPixbuf, Pango
+from gi.repository import Gtk, Gdk
 import os
 import kano_settings.set_intro as set_intro
 import kano_settings.set_email as set_email
@@ -11,14 +11,10 @@ import kano_settings.set_audio as set_audio
 import kano_settings.set_display as set_display
 import kano_settings.set_wifi as set_wifi
 import kano_settings.config_file as config_file
-#import set_intro
-#import set_email
-#import set_keyboard
-#import set_display
-#import set_audio
-#import set_wifi
-#import config_file
-
+import components.top_bar as top_bar
+import components.apply_changes as apply_changes
+import components.icons as icons
+import components.menu_button as menu_button
 
 win = None
 MAX_STATE = 6
@@ -37,7 +33,6 @@ class MainWindow(Gtk.Window):
 
         self.last_level_visited = 0
 
-        TOP_BAR_HEIGHT = 50
         WINDOW_WIDTH = 600
         WINDOW_HEIGHT = 380
 
@@ -51,107 +46,37 @@ class MainWindow(Gtk.Window):
         # Main container of the window
         self.grid = Gtk.Grid()
 
-        # This is to give the correct colour of the top bar as Event Boxes are the only containers that we can colour
-        self.top_bar_container = Gtk.EventBox()
-        self.top_bar_container.set_size_request(WINDOW_WIDTH, TOP_BAR_HEIGHT)
-        top_bar_container_style = self.top_bar_container.get_style_context()
-        top_bar_container_style.add_class('top_bar_container')
-
-        # Main title of he window bar.
-        header = Gtk.Label("Kano Settings")
-        header.props.halign = Gtk.Align.CENTER
-        header.modify_font(Pango.FontDescription("Bariol 13"))
-        header.get_style_context().add_class("header")
-
-        self.top_bar = Gtk.Box()
-        self.top_bar.set_homogeneous(False)
-
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("/usr/lib/python3/dist-packages/kano_settings/media/Icons/systemsetup-icons.png", 192, 24)
-        icons = []
-        images = []
-
-        for x in range(int(192/24)):
-            subpixel = pixbuf.new_subpixbuf(24*x, 0, 24, 24).add_alpha(True,255,255,255)
-            icons.append(subpixel)
-            images.append(Gtk.Image())
-            images[x].set_from_pixbuf(icons[x])
-
-        # Prev Button
-        #bPrev = Gtk.Button(label="Previous", halign=Gtk.Align.START)
-        prev_button = Gtk.Button()
-        prev_button.set_image(images[2])
-        prev_button.set_size_request(TOP_BAR_HEIGHT, TOP_BAR_HEIGHT)
-        prev_button.set_can_focus(False)
-
-        # Next button
-        next_button = Gtk.Button()
-        next_button.set_image(images[3])
-        next_button.set_size_request(TOP_BAR_HEIGHT, TOP_BAR_HEIGHT)
-        next_button.set_can_focus(False)
-
-        close_button = Gtk.Button()
-        close_button.set_image(images[6])
-        close_button.set_size_request(TOP_BAR_HEIGHT, TOP_BAR_HEIGHT)
-        close_button.connect("clicked", Gtk.main_quit)
-        close_button.set_can_focus(False)
-
-        # Dynamic box
-
-        #############################################################################
-        # Move this into set_email etc (or separate file)
-        # Needed for everything but intro screens.
-
-        self.apply_changes_text = Gtk.Label()
-        self.apply_changes_text.modify_font(Pango.FontDescription("Bariol bold 13"))
-
-        self.apply_changes = Gtk.Button()
-        self.apply_changes.props.halign = Gtk.Align.CENTER
-        self.apply_changes.set_size_request(70, 30)
-        # Contains writing and icon of button
-        self.apply_changes_label = Gtk.Box()
-
-        self.apply_changes.add(self.apply_changes_label)
-        # Get rid of annoying dotted borders around click buttons
-        self.apply_changes.set_can_focus(False)
-        # Allow button to be styled in css
-        apply_button_style = self.apply_changes.get_style_context()
-        apply_button_style.add_class('apply_changes')
         # Content that changes between levels
         self.changable_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.changable_content.props.halign = Gtk.Align.CENTER
 
+        self.top_bar = top_bar.Top_bar()
+
         # Init
         if config_file.read_from_file('Completed') == "1":
-            self.apply_changes_text.set_text("Apply changes")
+            self.apply_changes = apply_changes.Apply(True)
+            # self.apply_changes.text.set_text("Apply changes")
             # Order of icon and writing changes 
-            self.apply_changes_label.pack_start(images[5], False, False, 2)
-            self.apply_changes_label.pack_start(self.apply_changes_text, False, False, 2)
-
-            self.apply_changes.connect('clicked', self.update)
+            self.apply_changes.image.set_from_pixbuf(icons.Icons(5).subpixel)
+            self.apply_changes.button.connect('clicked', self.update)
             print("Settings has been completed before")
             self.default_intro = Gtk.Table(3, 2, True)
             self.default_intro_init()
             #Need new functions here
-            next_button.connect("clicked", self.default_next)
-            prev_button.connect("clicked", self.back_to_intro)
+            self.top_bar.next_button.connect("clicked", self.default_next)
+            self.top_bar.prev_button.connect("clicked", self.back_to_intro)
+
         else:
             print("Settings has NOT been completed before")
             # Order of icon and writing changes 
-            self.apply_changes_label.pack_start(self.apply_changes_text, False, False, 2)
-            self.apply_changes_label.pack_start(images[0], False, False, 2)
-
-            self.apply_changes_text.set_text("Get started")
-            self.apply_changes.connect('clicked', self.update_and_next)
+            self.apply_changes = apply_changes.Apply(False)
+            # self.apply_changes.text.set_text("Get started")
+            self.apply_changes.button.connect('clicked', self.update_and_next)
             set_intro.activate(self, self.changable_content, self.apply_changes)
-            prev_button.connect("clicked", self.on_prev)
-            next_button.connect("clicked", self.on_next)
+            self.top_bar.prev_button.connect("clicked", self.on_prev)
+            self.top_bar.next_button.connect("clicked", self.on_next)
 
-        self.top_bar.add(prev_button)
-        self.top_bar.pack_start(next_button, False, False, 0)
-        self.top_bar.pack_start(header, True, True, 0)
-        self.top_bar.pack_end(close_button, False, False, 0)
-        self.top_bar_container.add(self.top_bar)
-        self.grid.attach(self.top_bar_container, 0, 0, 1, 1)
+        self.grid.attach(self.top_bar.background, 0, 0, 1, 1)
 
         self.grid.attach(self.changable_content, 0, 2, 1, 1)
         self.grid.set_row_spacing(0)
@@ -184,42 +109,13 @@ class MainWindow(Gtk.Window):
 
         #names at top of file
         for x in range(len(names)):
-            label_box = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing=0)
-            button_box = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing=0)
+            info = config_file.read_from_file(names[x])
+            self.menu_button = menu_button.Menu_button(names[x], info)
+            self.labels.append(self.menu_button.description)
 
-            label = Gtk.Label(names[x])
-            label.get_style_context().add_class("intro_label")
-
-            print(custom_info[x])
-            info = config_file.read_from_file(custom_info[x])
-
-            if info != None:
-                # Replace some of the info displayed with whitespace so it fits
-                if len(info) >= 12:
-                    info = info[0:12] + '...'
-
-            label2 = Gtk.Label(info)
-            label2.get_style_context().add_class("custom_label")
-            self.labels.append(label2)
-            button = Gtk.Button()
-            button.set_can_focus(False)
-            img = Gtk.Image()
-            img.set_from_file("/usr/lib/python3/dist-packages/kano_settings/media/Icons/Icon-" + names[x] + ".png")
-
-            label_box.pack_start(label, True, True, 0)
-            label_box.pack_start(label2, True, True, 0)
-            label_box.set_size_request(90,20)
-            #label.set_justify(Gtk.Justification.LEFT)
-            #label2.set_justify(Gtk.Justification.LEFT)
-
-            button_box.pack_start(img, True, True, 10)
-            button_box.pack_start(label_box, True, True, 0)
-            button_box.set_size_request(180, 80)
-            button.add(button_box)
-            buttons.append(button)
-            button.state = x
-            button.set_size_request(200, 100)
-            button.connect("clicked", self.go_to_level)
+            self.menu_button.button.state = x
+            self.menu_button.button.connect("clicked", self.go_to_level)
+            buttons.append(self.menu_button.button)
 
         # Attach to table
         self.default_intro.attach(buttons[0], 0, 1, 0, 1, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, 5, 5)
@@ -348,7 +244,8 @@ def main():
     global win
     # Create style sheet
     cssProvider = Gtk.CssProvider()
-    cssProvider.load_from_path('/usr/lib/python3/dist-packages/kano_settings/style.css')
+    #cssProvider.load_from_path('/usr/lib/python3/dist-packages/kano_settings/style.css')
+    cssProvider.load_from_path('style.css')
     screen = Gdk.Screen.get_default()
     styleContext = Gtk.StyleContext()
     styleContext.add_provider_for_screen(screen, cssProvider,

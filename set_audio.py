@@ -6,9 +6,10 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk, Pango
-import kano_settings.config_file as config_file 
-#import config_file
+from gi.repository import Gtk
+#import kano_settings.config_file as config_file 
+import config_file
+import components.heading as heading
 import os
 import re
 
@@ -38,36 +39,14 @@ def file_replace(fname, pat, s_after):
 def activate(_win, box, apply_changes_button):
     global current_img
 
-    title = Gtk.Label("TITLE")
-    title.modify_font(Pango.FontDescription("Bariol 16"))
-    description = Gtk.Label("Description of project")
-    description.modify_font(Pango.FontDescription("Bariol 14"))
-
-    title_style = title.get_style_context()
-    title_style.add_class('title')
-
-    description_style = description.get_style_context()
-    description_style.add_class('description')
-
-    title_container = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing=0)
-    title_container.add(title)
-    title_container.set_size_request(300, 100)
-    title_container.pack_start(description, True, True, 10)
-    info_style = title_container.get_style_context()
-    info_style.add_class('title_container')
+    title = heading.Heading("Audio settings", "Can you hear me?")
 
     # Settings container
     settings_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
     settings_container.set_size_request(300, 250)
     box.add(settings_container)
 
-    settings_container.pack_start(title_container, False, False, 0)
-
-    # Title
-    title.set_text("Audio settings")
-
-    # Description
-    description.set_text("Can you hear me?")
+    settings_container.pack_start(title.container, False, False, 0)
 
     # Analog radio button
     analog_button = Gtk.RadioButton.new_with_label_from_widget(None, "Analog")
@@ -80,7 +59,7 @@ def activate(_win, box, apply_changes_button):
 
     current_img = Gtk.Image()
     current_img.set_from_file("/usr/lib/python3/dist-packages/kano_settings/media/Graphics/Audio-jack.png")
-
+    #current_img.set_from_file("media/Graphics/Audio-jack")
     radio_button_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     radio_button_container.pack_start(hdmi_button, False, False, 10)
     radio_button_container.pack_start(current_img, False, False, 10)
@@ -143,7 +122,7 @@ def on_button_toggled(button):
     HDMI = button.get_active()
 
     if HDMI:
-        current_img.set_from_file("media/Graphics/Audio-HDMI.png")
+        current_img.set_from_file("/usr/lib/python3/dist-packages/kano_settings/media/Graphics/Audio-HDMI.png")
 
     else:
-        current_img.set_from_file("media/Graphics/Audio-jack.png")
+        current_img.set_from_file("/usr/lib/python3/dist-packages/kano_settings/media/Graphics/Audio-jack.png")

@@ -6,12 +6,13 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk, Pango, GdkPixbuf
+from gi.repository import Gtk, Pango
 from pwd import getpwnam
 import os
 import re
 import kano_settings.config_file as config_file
-#import config_file
+import components.icons as icons
+import components.heading as heading
 
 entry1 = None
 entry2 = None
@@ -22,8 +23,6 @@ success_icon = None
 tick = None
 cross = None
 win = None
-
-
 
 def is_email(email):
     pattern = '[\.\w]{1,}[@]\w+[.]\w+'
@@ -49,48 +48,26 @@ def activate(_win, box, apply_changes):
     except:
         pass
 
-     # Heading
-
-    title = Gtk.Label()
-    title.modify_font(Pango.FontDescription("Bariol 16"))
-    description = Gtk.Label()
-    description.modify_font(Pango.FontDescription("Bariol 14"))
-
-    title_style = title.get_style_context()
-    title_style.add_class('title')
-
-    description_style = description.get_style_context()
-    description_style.add_class('description')
-
-    title_container = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing=0)
-    title_container.add(title)
-    title_container.set_size_request(300, 100)
-    title_container.pack_start(description, True, True, 10)
-    info_style = title_container.get_style_context()
-    info_style.add_class('title_container')
-
-    # Title
-    title.set_text("Change your email")
-
-    # Description
-    description.set_text("Change the email address")
+    title = heading.Heading("Change your email", "Stay informed about your progress")
 
     # Settings container
     settings_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
     settings_container.set_size_request(400, 250)
-    settings_container.pack_start(title_container, False, False, 0)
+    settings_container.pack_start(title.container, False, False, 0)
 
     # Text entry
     text = "Email"
 
     email_entry = Gtk.Table(2, 2, False)
     success_icon = Gtk.Image()
-    pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("/usr/lib/python3/dist-packages/kano_settings/media/Icons/systemsetup-icons.png", 192, 24)
-    tick = pixbuf.new_subpixbuf(120, 0, 24, 24).add_alpha(True,255,255,255)
+    #pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("/usr/lib/python3/dist-packages/kano_settings/media/Icons/systemsetup-icons.png", 192, 24)
+
+    tick = icons.Icons(5).subpixel
     # To change image to tick:
     # success_icon.set_from_pixbuf(cross)
 
-    cross = pixbuf.new_subpixbuf(144, 0, 24, 24).add_alpha(True,255,255,255)
+    #cross = pixbuf.new_subpixbuf(144, 0, 24, 24).add_alpha(True,255,255,255)
+    cross = icons.Icons(6).subpixel
     # To change image to cross:
     # success_icon.set_from_pixbuf(cross)
 
@@ -146,7 +123,7 @@ def apply_changes(button):
             Gtk.ButtonsType.CANCEL, "Your emails don't match!")
         dialog.format_secondary_text(
             "Please re-enter")
-        response = dialog.run()
+        dialog.run()
         dialog.destroy()
         return -1
 

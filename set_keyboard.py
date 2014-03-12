@@ -11,9 +11,7 @@ from gi.repository import Gtk, Pango
 import kano_settings.keyboard_layouts as keyboard_layouts
 import kano_settings.keyboard_config as keyboard_config
 import kano_settings.config_file as config_file
-#import keyboard_layouts
-#import keyboard_config
-#import config_file
+import components.heading as heading
 
 win = None  # TODO: Is it needed?
 selected_country = None
@@ -28,36 +26,14 @@ def activate(_win, box, apply_changes_button):
 
     win = _win
 
-    title = Gtk.Label("TITLE")
-    title.modify_font(Pango.FontDescription("Bariol 16"))
-    description = Gtk.Label("Description of project")
-    description.modify_font(Pango.FontDescription("Bariol 14"))
+    title = heading.Heading("Change your keyboard settings", "Which country do you live?")
 
-    title_style = title.get_style_context()
-    title_style.add_class('title')
-
-    description_style = description.get_style_context()
-    description_style.add_class('description')
-
-    title_container = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing=0)
-    title_container.add(title)
-    title_container.set_size_request(200, 100)
-    title_container.pack_start(description, True, True, 10)
-    info_style = title_container.get_style_context()
-    info_style.add_class('title_container')
-
-    # Title
-    title.set_text("Change your keyboard settings")
-
-    # Description
-    description.set_text("Which country do you live?")
-    
     # Contains all the settings
     settings_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
     settings_box.set_size_request(200, 250)
     box.add(settings_box)
 
-    settings_box.pack_start(title_container, False, False, 0)
+    settings_box.pack_start(title.container, False, False, 0)
 
     # Create Country Combo box
     country_store = Gtk.ListStore(str)
@@ -83,6 +59,7 @@ def activate(_win, box, apply_changes_button):
     # Needs to contain dropdownlists and have a background image of a keyboard
     keyboard_image = Gtk.Image()
     keyboard_image.set_from_file("/usr/lib/python3/dist-packages/kano_settings/media/Graphics/Intro-illustration.png")
+    #keyboard_image.set_from_file("media/Graphics/Intro-illustration.png")
 
     dropdown_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     dropdown_box.pack_start(country_combo, False, False, 10)
