@@ -2,8 +2,6 @@
 
 @define-color button_color #9ed874;
 
-
-
 /* All */
 * {
     -GtkButton-inner-border: 0;

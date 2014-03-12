@@ -11,8 +11,8 @@ from pwd import getpwnam
 import os
 import re
 import kano_settings.config_file as config_file
-import kano_settings.icons as icons
-import kano_settings.heading as heading
+import kano_settings.components.icons as icons
+import kano_settings.components.heading as heading
 
 entry1 = None
 entry2 = None
@@ -57,19 +57,10 @@ def activate(_win, box, apply_changes):
 
     # Text entry
     text = "Email"
-
     email_entry = Gtk.Table(2, 2, False)
     success_icon = Gtk.Image()
-    #pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size("/usr/lib/python3/dist-packages/kano_settings/media/Icons/systemsetup-icons.png", 192, 24)
-
     tick = icons.Icons(5).subpixel
-    # To change image to tick:
-    # success_icon.set_from_pixbuf(cross)
-
-    #cross = pixbuf.new_subpixbuf(144, 0, 24, 24).add_alpha(True,255,255,255)
     cross = icons.Icons(6).subpixel
-    # To change image to cross:
-    # success_icon.set_from_pixbuf(cross)
 
     entry1 = Gtk.Entry()
     entry1.modify_font(Pango.FontDescription("Bariol 13"))

@@ -1,22 +1,23 @@
-./bin/kano-settings /usr/bin
+./kano-settings /usr/bin
 
-./__init__.py /usr/lib/python3/dist-packages/kano_settings
-./set_audio.py /usr/lib/python3/dist-packages/kano_settings
-./set_display.py /usr/lib/python3/dist-packages/kano_settings
-./set_email.py /usr/lib/python3/dist-packages/kano_settings
-./set_intro.py /usr/lib/python3/dist-packages/kano_settings
-./set_keyboard.py /usr/lib/python3/dist-packages/kano_settings
-./set_wifi.py /usr/lib/python3/dist-packages/kano_settings
-./config_file.py /usr/lib/python3/dist-packages/kano_settings
-./style.css /usr/lib/python3/dist-packages/kano_settings/
-./media/Icons/* /usr/lib/python3/dist-packages/kano_settings/media/Icons/
-./media/Graphics/* /usr/lib/python3/dist-packages/kano_settings/media/Graphics/
-./components/* /usr/lib/python3/dist-packages/kano_settings/
+./kano_settings/__init__.py /usr/lib/python3/dist-packages/kano_settings/
+./kano_settings/set_audio.py /usr/lib/python3/dist-packages/kano_settings/
+./kano_settings/set_display.py /usr/lib/python3/dist-packages/kano_settings/
+./kano_settings/set_email.py /usr/lib/python3/dist-packages/kano_settings/
+./kano_settings/set_intro.py /usr/lib/python3/dist-packages/kano_settings/
+./kano_settings/set_keyboard.py /usr/lib/python3/dist-packages/kano_settings/
+./kano_settings/set_wifi.py /usr/lib/python3/dist-packages/kano_settings/
+./kano_settings/config_file.py /usr/lib/python3/dist-packages/kano_settings/
+./kano_settings/style.css /usr/lib/python3/dist-packages/kano_settings/
+./kano_settings/constants.py /usr/lib/python3/dist-packages/kano_settings/
 
-./screen/screen_config.py /usr/lib/python3/dist-packages/kano_settings
+./kano_settings/media/Icons/* /usr/lib/python3/dist-packages/kano_settings/media/Icons/
+./kano_settings/media/Graphics/* /usr/lib/python3/dist-packages/kano_settings/media/Graphics/
+./kano_settings/components/* /usr/lib/python3/dist-packages/kano_settings/components/
 
-./keyboard/keyboard_config.py /usr/lib/python3/dist-packages/kano_settings
-./keyboard/keyboard_layouts.py /usr/lib/python3/dist-packages/kano_settings
+./kano_settings/screen/* /usr/lib/python3/dist-packages/kano_settings/screen/
+
+./kano_settings/keyboard/* /usr/lib/python3/dist-packages/kano_settings/keyboard/
 
 ./icon/Settings /usr/share/kano-desktop/extras
 ./icon/kano-settings.png /usr/share/kano-desktop/icons

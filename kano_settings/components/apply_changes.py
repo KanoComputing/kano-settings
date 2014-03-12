@@ -10,7 +10,7 @@ class Apply(Gtk.Button):
 
         self.text = Gtk.Label()
         self.text.modify_font(Pango.FontDescription("Bariol bold 13"))
-        self.set_size_request(70, 30)
+        self.button.set_size_request(70, 30)
         # Contains writing and icon of button
         self.label = Gtk.Box()
         self.image = Gtk.Image()

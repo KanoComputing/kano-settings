@@ -1,5 +1,6 @@
 
-from gi.repository import Gtk, Pango       
+from gi.repository import Gtk, Pango    
+import kano_settings.constants as constants   
 
 class Menu_button():
 
@@ -27,8 +28,7 @@ class Menu_button():
         self.button = Gtk.Button()
         self.button.set_can_focus(False)
         self.img = Gtk.Image()
-        self.img.set_from_file("/usr/lib/python3/dist-packages/kano_settings/media/Icons/Icon-" + name + ".png")
-        #self.img.set_from_file("media/Icons/Icon-" + name + ".png")
+        self.img.set_from_file(constants.files + "media/Icons/Icon-" + name + ".png")
 
         self.container.attach(self.title, 1, 2, 0, 1)
         self.container.attach(self.description, 1, 2, 1, 2)

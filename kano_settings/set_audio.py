@@ -6,10 +6,10 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk
-#import kano_settings.config_file as config_file 
+from gi.repository import Gtk 
 import kano_settings.config_file as config_file
-import kano_settings.heading as heading
+import kano_settings.components.heading as heading
+import kano_settings.constants as constants
 import os
 import re
 
@@ -58,7 +58,7 @@ def activate(_win, box, apply_changes_button):
     hdmi_button.set_can_focus(False)
 
     current_img = Gtk.Image()
-    current_img.set_from_file("/usr/lib/python3/dist-packages/kano_settings/media/Graphics/Audio-jack.png")
+    current_img.set_from_file(constants.files + "media/Graphics/Audio-jack.png")
     #current_img.set_from_file("media/Graphics/Audio-jack")
     radio_button_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     radio_button_container.pack_start(hdmi_button, False, False, 10)
@@ -122,7 +122,7 @@ def on_button_toggled(button):
     HDMI = button.get_active()
 
     if HDMI:
-        current_img.set_from_file("/usr/lib/python3/dist-packages/kano_settings/media/Graphics/Audio-HDMI.png")
+        current_img.set_from_file(constants.files + "media/Graphics/Audio-HDMI.png")
 
     else:
-        current_img.set_from_file("/usr/lib/python3/dist-packages/kano_settings/media/Graphics/Audio-jack.png")
+        current_img.set_from_file(constants.files + "media/Graphics/Audio-jack.png")
