@@ -4,20 +4,20 @@
 
 from gi.repository import Gtk, Gdk, GdkPixbuf, Pango
 import os
-#import kano_settings.set_intro as set_intro
-#import kano_settings.set_email as set_email
-#import kano_settings.set_keyboard as set_keyboard
-#import kano_settings.set_audio as set_audio
-#import kano_settings.set_display as set_display
-#import kano_settings.set_wifi as set_wifi
-#import kano_settings.config_file as config_file
-import set_intro
-import set_email
-import set_keyboard
-import set_display
-import set_audio
-import set_wifi
-import config_file
+import kano_settings.set_intro as set_intro
+import kano_settings.set_email as set_email
+import kano_settings.set_keyboard as set_keyboard
+import kano_settings.set_audio as set_audio
+import kano_settings.set_display as set_display
+import kano_settings.set_wifi as set_wifi
+import kano_settings.config_file as config_file
+#import set_intro
+#import set_email
+#import set_keyboard
+#import set_display
+#import set_audio
+#import set_wifi
+#import config_file
 
 
 win = None
