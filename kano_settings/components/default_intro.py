@@ -1,5 +1,13 @@
+ #!/usr/bin/env python3
 
-from gi.repository import Gtk, Gdk
+# default_intro.py
+#
+# Copyright (C) 2014 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+# This controls the layout of the main default intro screen
+
+from gi.repository import Gtk
 #import os
 import kano_settings.set_intro as set_intro
 import kano_settings.set_email as set_email

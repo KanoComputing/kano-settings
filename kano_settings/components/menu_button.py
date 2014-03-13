@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+
+# menu_button.py
+#
+# Copyright (C) 2014 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+# This controls the button styling in the default introduction screen which shows all the settings
 
 from gi.repository import Gtk, Pango    
 import kano_settings.constants as constants   

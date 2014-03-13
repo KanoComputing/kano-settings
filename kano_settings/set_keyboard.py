@@ -27,11 +27,11 @@ def activate(_win, box, apply_changes_button):
 
     win = _win
 
-    title = heading.Heading("Change your keyboard settings", "Which country do you live?")
+    title = heading.Heading("Change your keyboard settings", "Which country do you live in?")
 
     # Contains all the settings
     settings_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-    settings_box.set_size_request(200, 250)
+    settings_box.set_size_request(200, 50)
     box.add(settings_box)
 
     settings_box.pack_start(title.container, False, False, 0)

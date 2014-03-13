@@ -1,3 +1,13 @@
+
+/*
+
+# Copyright (C) 2014 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+# This controls the styles
+
+*/
+
 /* Define colours */
 
 @define-color button_color #9ed874;
@@ -7,16 +17,12 @@
     -GtkButton-inner-border: 0;
     -unico-focus-border-color: transparent; /* Removes the annoying red outline on active buttons*/
     engine: none; /* Turns off annoying borders */
-    background: #ffffff;
+    /*background: #ffffff;*/
     border-width: 0px;
-    /*background-origin: padding-box;
-    background-clip: padding-box;*/
 }
 
-.window {
-    
-}
-.button { /* Same as GtkButton*/
+/* Same as GtkButton*/
+.button { 
     color: #ffffff;
     background:transparent;
     border-style: none; /* Remove grey border on outside */
@@ -24,6 +30,7 @@
     border-color: transparent;
 }
 
+/* The main button that updates the changes made in each level */
 .apply_changes {
     background: @button_color;
     color:#ffffff;
@@ -32,30 +39,34 @@
     border-radius:3px;
     font-weight:bold;
 }
-
+/* The bar at the top that mimics the window bar */
 .top_bar_container {
     background: #eeeeee;
 }
+/* The title of the current level*/
 .title{
     padding-top:25px;
     font-weight:bold;
 }
+/* Description of current project */
 .description {
     padding-bottom: 18px;
     color:#aaaaaa;
 }
-
 GtkImage {
     background: transparent;
 }
 
+/* Title of menu button on default intro screen (Keyboard, Wfi etc) */
 .intro_label {
     color: #ff842A;
     font-weight:bold;
 }
+/* Info about the settings of the curet project */
 .custom_label {
     color: #888888;
 }
+/* Header in top bar (title of window) */
 .header {
     color: #222222;
     font-weight: bold;
@@ -75,6 +86,8 @@ GtkComboBox .button {
 GtkComboBox .menuitem *:hover {
     color: @button_color;
 }*/
+
+/*GtkEntry*/
 .entry {
     border-color: #bbbbbb;
     border-style: solid;
@@ -114,10 +127,12 @@ GtkComboBox .menuitem *:hover {
     -unico-outer-stroke-width: 1px;
 }*/
 
+/* Top wiriting in internet status box */
 .internet_status_top {
     padding:0px 10px;
 }
 
+/* Bottom wiriting in internet status box */
 .internet_status_bottom {
     padding:0px 10px;
 }

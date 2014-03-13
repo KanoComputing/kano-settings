@@ -16,7 +16,6 @@ def activate(win, box, apply_changes):
 
     image = Gtk.Image()
     image.set_from_file(constants.files + "media/Graphics/Intro-illustration.png")
-    #image.set_from_file("media/Graphics/Intro-illustration.png")
 
     image_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
     image_box.pack_start(image, False, False, 0)
@@ -24,7 +23,9 @@ def activate(win, box, apply_changes):
     image_box.set_size_request(450, 250)
 
     box.pack_start(image_box, False, False, 0)
-    box.pack_start(apply_changes, False, False, 0)
+    box.pack_start(apply_changes.button, False, False, 0)
+
+    apply_changes.text.set_text("Get started")
 
     # button needs to have label - get started >
 
