@@ -6,60 +6,68 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk
-import kano_settings.keyboard_layouts as keyboard_layouts
-import kano_settings.keyboard_config as keyboard_config
+from gi.repository import Gtk, Pango
+import kano_settings.keyboard.keyboard_layouts as keyboard_layouts
+import kano_settings.keyboard.keyboard_config as keyboard_config
+import kano_settings.config_file as config_file
+import kano_settings.components.heading as heading
+import kano_settings.constants as constants
 
 win = None  # TODO: Is it needed?
 selected_layout = None
 selected_country = None
 selected_variant = "Generic"
-countries_combo = None
 variants_combo = None
+countries_combo = None
 button = None
 
 continents = ['africa', 'america', 'asia', 'australia', 'europe', 'others']
 
-
-def activate(_win, table, box):
-    global win, variants_combo, countries_combo, button, continents
+def activate(_win, box, apply_changes_button):
+    global win, variants_combo, countries_combo, continents, button
 
     win = _win
 
-    # Table
-    table = Gtk.Table(5, 1, True)
-    box.add(table)
+    button = apply_changes_button
 
-    # Label
-    label = Gtk.Label()
-    label.set_text("Keyboard")
-    label.set_justify(Gtk.Justification.LEFT)
-    table.attach(label, 0, 1, 0, 1)
+    # Contains all the settings
+    settings_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+    settings_box.set_size_request(200, 50)
+    box.add(settings_box)
+
+    # Title
+    title = heading.Heading("Change your keyboard settings", "Which country do you live in?")
+    settings_box.pack_start(title.container, False, False, 0)
 
     # Create Continents Combo box
     continents_combo = Gtk.ComboBoxText.new()
     for c in continents:
         continents_combo.append_text(c)
     continents_combo.connect("changed", on_continent_changed)
-    table.attach(continents_combo, 0, 1, 1, 2)
 
     # Create Countries Combo box
     countries_combo = Gtk.ComboBoxText.new()
     countries_combo.connect("changed", on_country_changed)
-    table.attach(countries_combo, 0, 1, 2, 3)
 
     # Create Variants Combo box
     variants_combo = Gtk.ComboBoxText.new()
     variants_combo.connect("changed", on_variants_changed)
-    table.attach(variants_combo, 0, 1, 3, 4)
 
-    # Apply button
-    button = Gtk.Button("Apply changes")
-    button.connect("clicked", apply_changes)
-    table.attach(button, 0, 1, 4, 5)
-    button.hide()
+
+    dropdown_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+    dropdown_box.pack_start(continents_combo, False, False, 10)
+    dropdown_box.pack_start(countries_combo, False, False, 10)
+    dropdown_box.pack_start(variants_combo, False, False, 10)
+
+    settings_box.pack_start(dropdown_box, False, False, 30)
+    box.pack_start(apply_changes_button, False, False, 0)
+
     # Refresh window
     win.show_all()
+
+    continents_combo.get_child().modify_font(Pango.FontDescription("Bariol 13"))
+    variants_combo.get_child().modify_font(Pango.FontDescription("Bariol 13"))
+    countries_combo.get_child().modify_font(Pango.FontDescription("Bariol 13"))   
 
 
 def apply_changes(button):
@@ -68,8 +76,10 @@ def apply_changes(button):
     # print("Set the keyboard layout to %s, with variant" % selected_country, selected_variant)
     keyboard_config.set_keyboard(selected_country, selected_variant)
     button.hide()
+    
     # Refresh window
     win.show_all()
+
 
 
 def on_continent_changed(combo):
@@ -90,8 +100,8 @@ def on_country_changed(combo):
     if tree_iter is not None:
         model = combo.get_model()
         country = model[tree_iter][0]
-
-    if country is None:
+        
+    if country == None:
         return
 
     # Remove entries from variants combo box
@@ -103,6 +113,7 @@ def on_country_changed(combo):
     if variants is not None:
         for v in variants:
             variants_combo.append_text(v[0])
+
     # Refresh window
     win.show_all()
 
@@ -120,8 +131,8 @@ def on_variants_changed(combo):
             for v in variants:
                 if v[0] == variant:
                     selected_variant = v[1]
-    # Refresh window
-    button.show()
+
+    button.show()       
     # Refresh window
     win.show_all()
 
@@ -142,9 +153,12 @@ def fill_countries_combo(continent):
     elif continent == 'others':
         selected_layout = keyboard_layouts.layouts_others
 
+    #selected_layout = sorted(countries)
+
     # Remove entries from countries and variants combo box
     countries_combo.remove_all()
     variants_combo.remove_all()
     # Refresh countries combo box
     for country in selected_layout:
         countries_combo.append_text(country)
+

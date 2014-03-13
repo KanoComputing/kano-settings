@@ -1,0 +1,159 @@
+
+/*
+
+# Copyright (C) 2014 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+# This controls the styles
+
+*/
+
+/* Define colours */
+
+@define-color button_color #9ed874;
+
+/* All */
+* {
+    -GtkButton-inner-border: 0;
+    -unico-focus-border-color: transparent; /* Removes the annoying red outline on active buttons*/
+    engine: none; /* Turns off annoying borders */
+    /*background: #ffffff;*/
+    border-width: 0px;
+}
+
+/* Same as GtkButton*/
+.button { 
+    color: #ffffff;
+    background:transparent;
+    border-style: none; /* Remove grey border on outside */
+    border-width:0px;
+    border-color: transparent;
+}
+
+/* The main button that updates the changes made in each level */
+.apply_changes {
+    background: @button_color;
+    color:#ffffff;
+    padding:9px 4px 9px 17px;
+    /* For Next -> : padding:9px 4px 9px 17px;*/
+    border-radius:3px;
+    font-weight:bold;
+}
+/* The bar at the top that mimics the window bar */
+.top_bar_container {
+    background: #eeeeee;
+}
+/* The title of the current level*/
+.title{
+    padding-top:25px;
+    font-weight:bold;
+}
+/* Description of current project */
+.description {
+    padding-bottom: 18px;
+    color:#aaaaaa;
+}
+GtkImage {
+    background: transparent;
+}
+
+/* Title of menu button on default intro screen (Keyboard, Wfi etc) */
+.intro_label {
+    color: #ff842A;
+    font-weight:bold;
+}
+/* Info about the settings of the curet project */
+.custom_label {
+    color: #888888;
+}
+/* Header in top bar (title of window) */
+.header {
+    color: #222222;
+    font-weight: bold;
+}
+
+/* Workaround for lp:949368 */
+GtkComboBox .button {
+    border-color: #bbbbbb;
+    border-style: solid;
+    border-width: 2px;
+    border-radius:2px;
+    color: #000000;
+}
+/*GtkComboBox .menuitem * {
+    color: @button_color;
+}
+GtkComboBox .menuitem *:hover {
+    color: @button_color;
+}*/
+
+/*GtkEntry*/
+.entry {
+    border-color: #bbbbbb;
+    border-style: solid;
+    border-width: 2px;
+    border-radius:3px;
+    padding: 10px;
+}
+.entry:insensitive {
+    border-color: #dddddd;
+    border-style: solid;
+    border-width: 2px;
+    border-radius:2px;
+    color: #dddddd;
+}
+/*.background-image {
+    url: "media/Graphics/keyboard.png"
+}*/
+
+.check, 
+.radio {
+    border-style: solid;
+    border-color: #dddddd;
+    border-width: 2px;
+
+}
+
+.check:active,
+.radio:active {
+    color: #9ed874;
+}
+
+/*.check {
+    border-st
+    -unico-outer-stroke-gradient: -gtk-gradient (linear, left top, left bottom,
+                                                 from (alpha (shade (@bg_color, 0.85), 0.2)),
+                                                 to (alpha (shade (@bg_color, 1.25), 0.6)));
+    -unico-outer-stroke-width: 1px;
+}*/
+
+/* Top wiriting in internet status box */
+.internet_status_top {
+    padding:0px 10px;
+}
+
+/* Bottom wiriting in internet status box */
+.internet_status_bottom {
+    padding:0px 10px;
+}
+
+.connected {
+    background: @button_color;
+    font-weight:bold;
+    margin:10px;
+}
+
+.not_connected {
+    background: #F76868;
+    font-weight:bold;
+    margin:10px;
+}
+.white {
+    color: #ffffff;
+}
+.dark_green {
+    color: #0A5200;
+}
+.dark_red {
+    color: #520000;
+}
