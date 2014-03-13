@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 # config_file.py
 #
@@ -6,6 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 # Functions controlling reading and writing to config file
+#
 
 import os
 import re
@@ -13,12 +14,12 @@ import re
 USER = None
 USER_ID = None
 
-def init():
 
+def init():
     USER = os.environ['SUDO_USER']
     #USER_ID = getpwnam(USER).pw_uid
     path = "/home/%s/.kano-settings" % (USER)
-    # Update .kano-settings with new current_country and current_variant   
+    # Update .kano-settings with new current_country and current_variant
     try:
         f = open(path, 'r+')
         f.write('finished:0\n')
@@ -26,7 +27,7 @@ def init():
 
     except:
         # Fail silently
-        return 
+        return
 
 
 def replace(fname, pat, s_after):
@@ -53,13 +54,13 @@ def replace_setting(setting_name, setting):
     path = "/home/%s/.kano-settings" % (USER)
 
     setting = str(setting)
-    # Update .kano-settings with new current_country and current_variant   
+    # Update .kano-settings with new current_country and current_variant
     try:
         f = open(path, 'r')
         file_content = str(f.read())
         f.close()
         file_index = file_content.index(setting_name + ':')
-        file_index3 = file_content[file_index:].index('\n') # Get selected variant of that country
+        file_index3 = file_content[file_index:].index('\n')  # Get selected variant of that country
         old_string = file_content[file_index: file_index3 + file_index]
         new_string = setting_name + ':' + setting
         replace(path, old_string, new_string)
@@ -67,12 +68,11 @@ def replace_setting(setting_name, setting):
         return 0
 
     except:
-        # Failure is probably down to the setting not existing 
+        # Failure is probably down to the setting not existing
         print("FAIL: replace_settings")
         #f.close()
         write_to_file(setting_name, setting)
-        return 
-
+        return
 
 
 def write_to_file(setting_name, setting):
@@ -83,7 +83,7 @@ def write_to_file(setting_name, setting):
 
     setting = str(setting)
 
-    # Update .kano-settings with new current_country and current_variant   
+    # Update .kano-settings with new current_country and current_variant
     try:
         f = open(path, "a+")
         new_string = setting_name + ":" + setting + "\n"
@@ -94,7 +94,8 @@ def write_to_file(setting_name, setting):
     except:
         print("FAIL: write_to_file")
         #f.close()
-        return 
+        return
+
 
 def read_from_file(setting_name):
 
@@ -118,9 +119,10 @@ def read_from_file(setting_name):
     except:
         print("FAIL: read_from_file")
         #set_defaults(setting_name) #change to custom defaults
-        return 
+        return
 
 custom_info = ["Email", "Keyboard-country-human", "Audio", "Wifi", "Display"]
+
 
 def set_defaults(setting_name):
 

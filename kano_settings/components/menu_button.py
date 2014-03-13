@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 # menu_button.py
 #
@@ -7,16 +7,16 @@
 #
 # This controls the button styling in the default introduction screen which shows all the settings
 
-from gi.repository import Gtk, Pango    
-import kano_settings.constants as constants   
+from gi.repository import Gtk, Pango
+import kano_settings.constants as constants
+
 
 class Menu_button():
-
     def __init__(self, name, description=""):
 
         # Contains the info about the level and the image
         self.container = Gtk.Table(2, 2, False)
-        self.container.set_size_request(90,20)
+        self.container.set_size_request(90, 20)
 
         # Info about the different settings
         self.title = Gtk.Label(name)
@@ -25,14 +25,14 @@ class Menu_button():
         #info = config_file.read_from_file(custom_info[x])
 
         # Replace some of the info displayed with whitespace so it fits
-        if description != None:
+        if description:
             if len(description) >= 12:
                 description = description[0:12] + '...'
 
         self.description = Gtk.Label(description)
         self.description.modify_font(Pango.FontDescription("Bariol 13"))
         self.description.get_style_context().add_class("custom_label")
-        
+
         self.button = Gtk.Button()
         self.button.set_can_focus(False)
         self.img = Gtk.Image()

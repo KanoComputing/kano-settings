@@ -1,4 +1,4 @@
- #!/usr/bin/env python3
+#!/usr/bin/env python
 
 # first_run.py
 #
@@ -8,7 +8,6 @@
 # This controls the flow of the projects on the first run of Kano-settings
 
 from gi.repository import Gtk
-#import os
 import kano_settings.set_intro as set_intro
 import kano_settings.set_email as set_email
 import kano_settings.set_keyboard as set_keyboard
@@ -20,8 +19,8 @@ import kano_settings.config_file as config_file
 win = None
 MAX_STATE = 6
 
-class First_Run():
 
+class First_Run():
     def __init__(self, _win):
         global win
 
@@ -36,27 +35,26 @@ class First_Run():
 
         self.on_next(widget)
 
-
     # When clicking previous arrow on first run through
     def on_prev(self, widget):
         global win
-        
+
          # Update current state
         self.state = (self.state - 1)
         # Check we're in a valid state
         if self.state == -1:
             self.state = 0
-            return;
+            return
 
         # Remove element in the dynamic box
         for i in win.changable_content.get_children():
             win.changable_content.remove(i)
-       
+
         # Call next state
         self.state_to_widget(self.state).activate(win, win.changable_content, win.apply_changes.button)
 
         # Change label on Apply Changes button
-        if self.state == MAX_STATE -1:
+        if self.state == MAX_STATE - 1:
             win.apply_changes.text.set_text("Finish!")
         elif self.state > 0:
             win.apply_changes.text.set_text("Next")
@@ -65,8 +63,7 @@ class First_Run():
         # Refresh window
         win.show_all()
 
-
-    # When clicking next arrow button on first run through    
+    # When clicking next arrow button on first run through
     def on_next(self, widget):
         global grid, box, state, win
 
@@ -88,7 +85,7 @@ class First_Run():
         self.state_to_widget(self.state).activate(win, win.changable_content, win.apply_changes.button)
 
         # Change label on Apply Changes button
-        if self.state == MAX_STATE -1:
+        if self.state == MAX_STATE - 1:
             win.apply_changes.text.set_text("Finish!")
         elif self.state > 0:
             win.apply_changes.text.set_text("Next")
@@ -107,20 +104,21 @@ class First_Run():
             5: set_display,
         }[x]
 
-    # On closing window, will alert if any of the listed booleans are True
+
+# On closing window, will alert if any of the listed booleans are True
 def close_window(event="delete-event", button=win):
 
     if set_audio.reboot or set_display.reboot:
         #Bring in message dialog box
-        dialog = Gtk.MessageDialog(button, 0, Gtk.MessageType.INFO,
+        dialog = Gtk.MessageDialog(
+            button, 0, Gtk.MessageType.INFO,
             Gtk.ButtonsType.OK, "So you know...")
-        dialog.format_secondary_text(
-            "..you will need to reboot to see all your changes")
+        dialog.format_secondary_text("..you will need to reboot to see all your changes")
         response = dialog.run()
         print("INFO dialog closed")
 
         if response == Gtk.ResponseType.OK:
-            dialog.destroy() 
+            dialog.destroy()
             Gtk.main_quit()
             return
         else:

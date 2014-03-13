@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 # set_audio.py
 #
@@ -6,7 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk 
+from gi.repository import Gtk
 import kano_settings.config_file as config_file
 import kano_settings.components.heading as heading
 import kano_settings.constants as constants
@@ -19,12 +19,13 @@ file_name = "/etc/rc.local"
 #file_name = "/home/caroline/blah"
 current_img = None
 
+
 def file_replace(fname, pat, s_after):
     # first, see if the pattern is even in the file.
     with open(fname) as f:
         if not any(re.search(pat, line) for line in f):
             print("FAIL: set_audio.py, file_replace, pattern not found in file")
-            return -1 # pattern does not occur in file so we are done.
+            return -1  # pattern does not occur in file so we are done.
 
     # pattern is in the file, so perform replace operation.
     with open(fname) as f:
@@ -111,7 +112,7 @@ def current_setting(analogue_button, hdmi_button):
 
     elif file_string.find(hdmi_string) != -1:
         hdmi_button.set_active(True)
-        
+
 
     # Default, first button is active
 

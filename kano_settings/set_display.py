@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 # set_display.py
 #
@@ -14,6 +14,7 @@ mode = 'auto'
 overscan = False
 reboot = False
 
+
 def activate(_win, box, apply_changes_button):
 
     title = heading.Heading("Display - how sharp can you go?", "Make the OS look the best it can")
@@ -24,7 +25,7 @@ def activate(_win, box, apply_changes_button):
     box.add(settings_box)
     settings_box.pack_start(title.container, False, False, 0)
 
-    horizontal_container = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing=20)
+    horizontal_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=20)
     horizontal_container.set_valign(Gtk.Align.CENTER)
     settings_box.pack_start(horizontal_container, False, False, 0)
     horizontal_container.set_size_request(300, 120)
@@ -68,7 +69,6 @@ def apply_changes(button):
         screen_config.set_config_option("disable_overscan", 1)
 
     # Display message to tell user to reboot to see changes.
-    reboot = True
 
 
 def on_button_toggled(button):

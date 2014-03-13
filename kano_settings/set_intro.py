@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 # set_intro.py
 #
@@ -10,8 +10,8 @@ from gi.repository import Gtk
 import kano_settings.components.heading as heading
 import kano_settings.constants as constants
 
-def activate(win, box, apply_changes):
 
+def activate(win, box, apply_changes):
     title = heading.Heading("You just made a computer", "Now I just need to ask a few questions, so I'll work out the way")
 
     image = Gtk.Image()
@@ -29,6 +29,6 @@ def activate(win, box, apply_changes):
 
     # button needs to have label - get started >
 
-def apply_changes(button):
 
+def apply_changes(button):
     return
