@@ -16,10 +16,10 @@ keyboard_conffile = '/etc/default/keyboard'
 
 
 # Given a country name return the keyboard laout code
-def find_country_code(country_name):
-    for l in keyboard_layouts.layouts:
+def find_country_code(country_name, layout):
+    for l in layout:
         if l.upper() == country_name.upper():
-            return keyboard_layouts.layouts[l]
+            return layout[l]
     return None
 
 

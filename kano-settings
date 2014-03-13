@@ -97,7 +97,6 @@ def main():
     global win
     # Create style sheet
     cssProvider = Gtk.CssProvider()
-    #cssProvider.load_from_path('/usr/lib/python3/dist-packages/kano_settings/style.css')
     cssProvider.load_from_path(constants.files + 'style.css')
     screen = Gdk.Screen.get_default()
     styleContext = Gtk.StyleContext()
