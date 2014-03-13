@@ -74,7 +74,7 @@ def activate(_win, box, apply_changes_button):
     event_box.connect("button-press-event", apply_changes)
 
     if internet is False:
-        internet_img.set_from_file(constants.files + "media/Graphics/Internet-connection.png")
+        internet_img.set_from_file(constants.media + "/Graphics/Internet-connection.png")
         #internet_img.set_from_file("media/Graphics/Internet-connection.png")
         title.title.set_text("Weee you have internet")
         title.description.set_text("Great!")
@@ -84,7 +84,7 @@ def activate(_win, box, apply_changes_button):
         internet_action.set_text("Configure")
         event_box_style.add_class("connected")
     else:
-        internet_img.set_from_file(constants.files + "media/Graphics/Internet-noConnection.png")
+        internet_img.set_from_file(constants.media + "/Graphics/Internet-noConnection.png")
         #internet_img.set_from_file("media/Graphics/Internet-noConnection.png")
         title.title.set_text("No network found")
         title.description.set_text("Shit man")

@@ -15,7 +15,7 @@ def activate(win, box, apply_changes):
     title = heading.Heading("You just made a computer", "Now I just need to ask a few questions, so I'll work out the way")
 
     image = Gtk.Image()
-    image.set_from_file(constants.files + "media/Graphics/Intro-illustration.png")
+    image.set_from_file(constants.media + "/Graphics/Intro-illustration.png")
 
     image_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
     image_box.pack_start(image, False, False, 0)

@@ -13,7 +13,9 @@ import sys
 from gi.repository import Gtk, Gdk
 
 if __name__ == '__main__' and __package__ is None:
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    if dir_path != '/usr':
+        sys.path.append(dir_path)
 
 import kano_settings.set_intro as set_intro
 import kano_settings.set_audio as set_audio
@@ -99,7 +101,7 @@ def main():
     global win
     # Create style sheet
     cssProvider = Gtk.CssProvider()
-    cssProvider.load_from_path(constants.files + 'style.css')
+    cssProvider.load_from_path(constants.media + '/CSS/style.css')
     screen = Gdk.Screen.get_default()
     styleContext = Gtk.StyleContext()
     styleContext.add_provider_for_screen(screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)

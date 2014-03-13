@@ -59,7 +59,7 @@ def activate(_win, box, apply_changes_button):
     hdmi_button.set_can_focus(False)
 
     current_img = Gtk.Image()
-    current_img.set_from_file(constants.files + "media/Graphics/Audio-jack.png")
+    current_img.set_from_file(constants.media + "/Graphics/Audio-jack.png")
     #current_img.set_from_file("media/Graphics/Audio-jack")
     radio_button_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     radio_button_container.pack_start(hdmi_button, False, False, 10)
@@ -123,7 +123,7 @@ def on_button_toggled(button):
     HDMI = button.get_active()
 
     if HDMI:
-        current_img.set_from_file(constants.files + "media/Graphics/Audio-HDMI.png")
+        current_img.set_from_file(constants.media + "/Graphics/Audio-HDMI.png")
 
     else:
-        current_img.set_from_file(constants.files + "media/Graphics/Audio-jack.png")
+        current_img.set_from_file(constants.media + "/Graphics/Audio-jack.png")

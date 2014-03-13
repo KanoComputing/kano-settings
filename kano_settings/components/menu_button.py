@@ -12,7 +12,7 @@ import kano_settings.constants as constants
 
 
 class Menu_button():
-    def __init__(self, name, description=""):
+    def __init__(self, name, description=''):
 
         # Contains the info about the level and the image
         self.container = Gtk.Table(2, 2, False)
@@ -36,7 +36,7 @@ class Menu_button():
         self.button = Gtk.Button()
         self.button.set_can_focus(False)
         self.img = Gtk.Image()
-        self.img.set_from_file(constants.files + "media/Icons/Icon-" + name + ".png")
+        self.img.set_from_file(constants.media + "/Icons/Icon-" + name + ".png")
 
         self.container.attach(self.title, 1, 2, 0, 1)
         self.container.attach(self.description, 1, 2, 1, 2)
