@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#!/usr/bin/env python
 
 # keyboard_layouts.py
 #
@@ -8,7 +8,6 @@
 # Country code mappings to keyboard model names, and keyboard variant names collected from
 # Debian console-setup source package, version 1.88: http://packages.debian.org/source/wheezy/console-setup
 #
-
 # Mapping of country names to keyboard layout codes,
 # With additional names for natural country prompts (for example United Kingdom, England, UK, etc)
 

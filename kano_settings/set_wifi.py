@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 # set_wifi.py
 #
@@ -47,7 +47,7 @@ def activate(_win, box, update):
     internet_status = Gtk.Label()
     internet_status.modify_font(Pango.FontDescription("Bariol bold 12"))
     internet_status_style = internet_status.get_style_context()
-    
+
     internet_action = Gtk.Label()
     internet_action.modify_font(Pango.FontDescription("Bariol bold 11"))
     internet_action_style = internet_action.get_style_context()
@@ -55,7 +55,7 @@ def activate(_win, box, update):
     internet_status_style.add_class("internet_status_top")
     internet_action_style.add_class("internet_status_bottom")
 
-    status_box = Gtk.Box(orientation = Gtk.Orientation.VERTICAL, spacing = 0)
+    status_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
     status_box.set_valign(Gtk.Align.CENTER)
     status_box.pack_start(internet_status, False, False, 2)
     status_box.pack_start(internet_action, False, False, 2)
@@ -64,7 +64,7 @@ def activate(_win, box, update):
     event_box.add(status_box)
     event_box_style = event_box.get_style_context()
 
-    container = Gtk.Box(orientation = Gtk.Orientation.HORIZONTAL, spacing = 0)
+    container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     container.pack_start(event_box, False, False, 0)
     container.pack_start(internet_img, False, False, 0)
 
@@ -72,9 +72,9 @@ def activate(_win, box, update):
 
     #event_box.set_events("button-press-event", self.on_button_press_event)
     event_box.connect("button-press-event", apply_changes)
-    
+
     if internet is False:
-        internet_img.set_from_file(constants.files + "media/Graphics/Internet-connection.png")
+        internet_img.set_from_file(constants.media + "/Graphics/Internet-connection.png")
         title.title.set_text("Weee you have internet")
         title.description.set_text("Great!")
         internet_status.set_text("Weee you have internet")
@@ -83,7 +83,7 @@ def activate(_win, box, update):
         internet_action.set_text("Configure")
         event_box_style.add_class("connected")
     else:
-        internet_img.set_from_file(constants.files + "media/Graphics/Internet-noConnection.png")
+        internet_img.set_from_file(constants.media + "/Graphics/Internet-noConnection.png")
         title.title.set_text("No network found")
         title.description.set_text("Shit man")
         internet_status.set_text("No network found")
@@ -97,5 +97,4 @@ def activate(_win, box, update):
 
 def apply_changes(button):
     # Call WiFi config
-
     os.system('rxvt -title \'WiFi\' -e sudo /usr/bin/kano-wifi')

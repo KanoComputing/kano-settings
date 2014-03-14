@@ -1,4 +1,4 @@
- #!/usr/bin/env python3
+#!/usr/bin/env python
 
 # default_intro.py
 #
@@ -21,6 +21,7 @@ import kano_settings.components.menu_button as menu_button
 names = ["Email", "Keyboard", "Audio", "Wifi", "Display"]
 custom_info = ["Email", "Keyboard-country-human", "Audio", "Wifi", "Display"]
 win = None
+
 
 class Default_Intro():
 
@@ -57,14 +58,12 @@ class Default_Intro():
         #self.table.set_size_request(450, 100)
         win.changeable_content.pack_start(self.table, False, False, 0)
 
-
     # This is to update the introdction text, so that if the settings are modified and then we go back to the
     # intro screen, the latest information is shown
     def update_intro(self):
         for x in range(len(custom_info)):
             config_file.read_from_file(custom_info[x])
             self.labels[x].set_text(str(config_file.read_from_file(custom_info[x])))
-
 
     # Takes you back to the introduction screen (on pressing prev button)
     def on_prev(self, arg2):
@@ -110,7 +109,6 @@ class Default_Intro():
         if returnValue == -1:
             return
 
-
     def state_to_widget(self, x):
         return {
             0: set_intro,
@@ -121,20 +119,21 @@ class Default_Intro():
             5: set_display,
         }[x]
 
-    # On closing window, will alert if any of the listed booleans are True
+
+# On closing window, will alert if any of the listed booleans are True
 def close_window(event="delete-event", button=win):
 
     if set_audio.reboot or set_display.reboot:
         #Bring in message dialog box
-        dialog = Gtk.MessageDialog(button, 0, Gtk.MessageType.INFO,
+        dialog = Gtk.MessageDialog(
+            button, 0, Gtk.MessageType.INFO,
             Gtk.ButtonsType.OK, "So you know...")
-        dialog.format_secondary_text(
-            "..you will need to reboot to see all your changes")
+        dialog.format_secondary_text("..you will need to reboot to see all your changes")
         response = dialog.run()
         print("INFO dialog closed")
 
         if response == Gtk.ResponseType.OK:
-            dialog.destroy() 
+            dialog.destroy()
             Gtk.main_quit()
             return
         else:

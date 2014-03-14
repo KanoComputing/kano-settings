@@ -1,5 +1,4 @@
- 
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 # kano-settings
 #
@@ -7,26 +6,31 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 # Main window class
+#
 
-from gi.repository import Gtk, Gdk
 import os
+import sys
+from gi.repository import Gtk, Gdk
+
+if __name__ == '__main__' and __package__ is None:
+    dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    if dir_path != '/usr':
+        sys.path.append(dir_path)
+
 import kano_settings.set_intro as set_intro
-import kano_settings.set_email as set_email
-import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_audio as set_audio
 import kano_settings.set_display as set_display
-import kano_settings.set_wifi as set_wifi
 import kano_settings.config_file as config_file
 import kano_settings.components.top_bar as top_bar
 import kano_settings.components.apply_changes as apply_changes
 import kano_settings.components.icons as icons
-import kano_settings.components.menu_button as menu_button
 import kano_settings.constants as constants
 import kano_settings.components.first_run as first_run
 import kano_settings.components.default_intro as default_intro
 
 win = None
 MAX_STATE = 6
+
 
 # Window class
 class MainWindow(Gtk.Window):
@@ -88,11 +92,11 @@ def main():
     global win
     # Create style sheet
     cssProvider = Gtk.CssProvider()
-    cssProvider.load_from_path(constants.files + 'style.css')
+    cssProvider.load_from_path(constants.media + '/CSS/style.css')
     screen = Gdk.Screen.get_default()
     styleContext = Gtk.StyleContext()
-    styleContext.add_provider_for_screen(screen, cssProvider,
-                                     Gtk.STYLE_PROVIDER_PRIORITY_USER)
+    styleContext.add_provider_for_screen(screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+    
     # Create windown
     win = MainWindow()
     # Link delete event
@@ -103,20 +107,22 @@ def main():
     # start the GTK+ processing loop
     Gtk.main()
 
+
 # On closing window, will alert if any of the listed booleans are True
 def close_window(event="delete-event", button=win):
 
     if set_audio.reboot or set_display.reboot:
         #Bring in message dialog box
-        dialog = Gtk.MessageDialog(button, 0, Gtk.MessageType.INFO,
-            Gtk.ButtonsType.OK, "So you know...")
-        dialog.format_secondary_text(
-            "..you will need to reboot to see all your changes")
+        dialog = Gtk.MessageDialog(
+            button, 0, Gtk.MessageType.INFO,
+            Gtk.ButtonsType.OK, "So you know..."
+        )
+        dialog.format_secondary_text("..you will need to reboot to see all your changes")
         response = dialog.run()
         print("INFO dialog closed")
 
         if response == Gtk.ResponseType.OK:
-            dialog.destroy() 
+            dialog.destroy()
             Gtk.main_quit()
             return
         else:
@@ -126,10 +132,6 @@ def close_window(event="delete-event", button=win):
 
 
 if __name__ == "__main__":
-    # Print system python version for debugging purposes only
-    print(str(Gtk.get_major_version()) + "." + str(Gtk.get_minor_version()) + "." + str(Gtk.get_micro_version()))
-
     if os.environ['LOGNAME'] != 'root':
         exit("Error: kano-settings must be executed with root privileges")
-
     main()
