@@ -6,7 +6,9 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk, Pango, GObject
+GObject.threads_init()
+import threading
 import kano_settings.keyboard.keyboard_layouts as keyboard_layouts
 import kano_settings.keyboard.keyboard_config as keyboard_config
 import kano_settings.components.heading as heading
@@ -23,8 +25,21 @@ selected_variant_hr = "Generic"
 variants_combo = None
 countries_combo = None
 button = None
+spinner = None
 
 continents = ['Africa', 'America', 'Asia', 'Australia', 'Europe', 'Others']
+
+
+class WorkerThread(threading.Thread):
+    def __init__(self, callback):
+        threading.Thread.__init__(self)
+        self.callback = callback
+
+    def run(self):
+        # Apply the keyboard changes
+        keyboard_config.set_keyboard(selected_country, selected_variant)
+        # The callback runs a GUI task, so wrap it!
+        GObject.idle_add(self.callback)
 
 
 def activate(_win, box, update):
@@ -58,6 +73,9 @@ def activate(_win, box, update):
     variants_combo.connect("changed", on_variants_changed)
     variants_combo.props.valign = Gtk.Align.CENTER
 
+    # Create Spinner
+    spinner = Gtk.Spinner()
+
     # Ceate various dropdown boxes so we can resize the dropdown lists appropriately
     # We create two boxes side by side, and then stack the country dropdow lists in one, and one by itself in the other
 
@@ -80,6 +98,7 @@ def activate(_win, box, update):
     dropdown_container = Gtk.Box()
     dropdown_container.pack_start(dropdown_box_countries, False, False, 10)
     dropdown_container.pack_start(dropdown_box_keys, False, False, 10)
+    dropdown_container.pack_start(spinner, False, False, 10)
 
     on_continent_changed(continents_combo)
     on_country_changed(countries_combo)
@@ -99,11 +118,12 @@ def activate(_win, box, update):
 
 
 def apply_changes(button):
-    global win, selected_country, selected_variant
+    global win, spinner
 
-    # print("Set the keyboard layout to %s, with variant" % selected_country, selected_variant)
-    keyboard_config.set_keyboard(selected_country, selected_variant)
-    button.hide()
+    spinner.start()
+    # Apply changes
+    thread = WorkerThread(work_finished_cb)
+    thread.start()
 
     # Refresh window
     win.show_all()
@@ -180,6 +200,12 @@ def on_variants_changed(combo):
 
     # Refresh window
     win.show_all()
+
+
+def work_finished_cb():
+    global spinner
+
+    spinner.stop()
 
 
 def fill_countries_combo(continent):
