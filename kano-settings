@@ -44,51 +44,42 @@ class MainWindow(Gtk.Window):
 
         # Create main window
         Gtk.Window.__init__(self, title="Kano-Settings")
+        
         # Remove decoration
         self.set_decorated(False)
-
         self.set_size_request(WINDOW_WIDTH, WINDOW_HEIGHT)
 
         # Main container of the window
         self.grid = Gtk.Grid()
 
         # Content that changes between levels
-        self.changable_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        self.changable_content.props.halign = Gtk.Align.CENTER
+        self.changeable_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
+        self.changeable_content.props.halign = Gtk.Align.CENTER
 
         self.top_bar = top_bar.Top_bar()
 
         # Init
         if config_file.read_from_file('Completed') == "1":
-            self.apply_changes = apply_changes.Apply(True)
-            self.apply_changes.text.set_text("Get started")
-            # Order of icon and writing changes 
-            self.apply_changes.image.set_from_pixbuf(icons.Icons(5).subpixel)
-            
-            print("Settings has been completed before")
-
+            self.update = apply_changes.Apply(True)
+            self.update.text.set_text("Apply Changes")
+            self.update.image.set_from_pixbuf(icons.Icons(5).subpixel) 
             self.run_through = default_intro.Default_Intro(self)
-            #self.default_intro = Gtk.Table(3, 2, True)
-            #self.default_intro_init()
-            #Need new functions here
             self.top_bar.next_button.connect("clicked", self.run_through.on_next)
             self.top_bar.prev_button.connect("clicked", self.run_through.on_prev)
-            self.apply_changes.button.connect('clicked', self.run_through.update)
+            self.update.button.connect('clicked', self.run_through.update)
 
         else:
-            print("Settings has NOT been completed before")
-            # Order of icon and writing changes 
-            self.apply_changes = apply_changes.Apply(False)
-            # self.apply_changes.text.set_text("Get started")
+            self.update = apply_changes.Apply(False)
+            self.update.text.set_text("Get started")
+            self.update.image.set_from_pixbuf(icons.Icons(0).subpixel)
             self.run_through = first_run.First_Run(self)
-
-            self.apply_changes.button.connect('clicked', self.run_through.update_and_next)
-            set_intro.activate(self, self.changable_content, self.apply_changes)
+            self.update.button.connect('clicked', self.run_through.update_and_next)
+            set_intro.activate(self, self.changeable_content, self.update)
             self.top_bar.prev_button.connect("clicked", self.run_through.on_prev)
             self.top_bar.next_button.connect("clicked", self.run_through.on_next)
 
         self.grid.attach(self.top_bar.background, 0, 0, 1, 1)
-        self.grid.attach(self.changable_content, 0, 2, 1, 1)
+        self.grid.attach(self.changeable_content, 0, 2, 1, 1)
         self.grid.set_row_spacing(0)
         self.add(self.grid)
 
@@ -102,7 +93,6 @@ def main():
     styleContext = Gtk.StyleContext()
     styleContext.add_provider_for_screen(screen, cssProvider,
                                      Gtk.STYLE_PROVIDER_PRIORITY_USER)
-
     # Create windown
     win = MainWindow()
     # Link delete event

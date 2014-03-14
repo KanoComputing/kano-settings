@@ -33,7 +33,7 @@ def is_email(email):
 
     
 
-def activate(_win, box, apply_changes):
+def activate(_win, changeable_content, update):
     global current_email, USER, USER_ID, tick, cross, success_icon, entry1, entry2
 
     # Init user detail
@@ -52,7 +52,6 @@ def activate(_win, box, apply_changes):
 
     # Settings container
     settings_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-    settings_container.set_size_request(400, 250)
     settings_container.pack_start(title.container, False, False, 0)
 
     # Text entry
@@ -81,8 +80,8 @@ def activate(_win, box, apply_changes):
     email_entry.attach(success_icon, 1, 2, 0, 1)
 
     settings_container.pack_start(email_entry, False, False, 0)
-    box.pack_start(settings_container, False, False, 0)
-    box.pack_start(apply_changes, False, False, 0)
+    changeable_content.pack_start(settings_container, False, False, 0)
+    changeable_content.pack_start(update.box, False, False, 30)
 
     entry1.connect('key_press_event', check_email)
 

@@ -14,7 +14,7 @@ mode = 'auto'
 overscan = False
 reboot = False
 
-def activate(_win, box, apply_changes_button):
+def activate(_win, box, update):
 
     title = heading.Heading("Display - how sharp can you go?", "Make the OS look the best it can")
 
@@ -52,7 +52,7 @@ def activate(_win, box, apply_changes_button):
     horizontal_container.pack_start(button, False, False, 0)
 
     # Add apply changes button under the main settings content
-    box.pack_start(apply_changes_button, False, False, 0)
+    box.pack_start(update.box, False, False, 0)
 
 
 def apply_changes(button):

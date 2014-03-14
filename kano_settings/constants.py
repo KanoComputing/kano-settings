@@ -7,5 +7,5 @@
 #
 # Keeps constants in a central place
 
-#files = "kano_settings/"
-files = "/usr/lib/python3/dist-packages/kano_settings/"
+files = "kano_settings/"
+#files = "/usr/lib/python3/dist-packages/kano_settings/"

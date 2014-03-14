@@ -36,7 +36,7 @@ def file_replace(fname, pat, s_after):
         os.rename(out_fname, fname)
 
 
-def activate(_win, box, apply_changes_button):
+def activate(_win, box, update):
     global current_img
 
     title = heading.Heading("Audio settings", "Can you hear me?")
@@ -59,7 +59,6 @@ def activate(_win, box, apply_changes_button):
 
     current_img = Gtk.Image()
     current_img.set_from_file(constants.files + "media/Graphics/Audio-jack.png")
-    #current_img.set_from_file("media/Graphics/Audio-jack")
     radio_button_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     radio_button_container.pack_start(hdmi_button, False, False, 10)
     radio_button_container.pack_start(current_img, False, False, 10)
@@ -71,7 +70,7 @@ def activate(_win, box, apply_changes_button):
     current_setting(analog_button, hdmi_button)
 
     # Add apply changes button under the main settings content
-    box.pack_start(apply_changes_button, False, False, 0)
+    box.pack_start(update.box, False, False, 0)
 
 
 def apply_changes(button):

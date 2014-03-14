@@ -26,11 +26,10 @@ class First_Run():
         global win
 
         win = _win
-        self.state = 0
 
         # Updates the current level and goes to the next (when clicking Next -> button in first run through levels).
     def update_and_next(self, widget):
-        returnValue = self.state_to_widget(self.state).apply_changes(widget)
+        returnValue = self.state_to_widget(win.state).apply_changes(widget)
         if returnValue == -1:
             return
 
@@ -42,26 +41,26 @@ class First_Run():
         global win
         
          # Update current state
-        self.state = (self.state - 1)
+        win.state = (win.state - 1)
         # Check we're in a valid state
-        if self.state == -1:
-            self.state = 0
+        if win.state == -1:
+            win.state = 0
             return;
 
         # Remove element in the dynamic box
-        for i in win.changable_content.get_children():
-            win.changable_content.remove(i)
+        for i in win.changeable_content.get_children():
+            win.changeable_content.remove(i)
        
         # Call next state
-        self.state_to_widget(self.state).activate(win, win.changable_content, win.apply_changes.button)
+        self.state_to_widget(win.state).activate(win, win.changeable_content, win.update)
 
         # Change label on Apply Changes button
-        if self.state == MAX_STATE -1:
-            win.apply_changes.text.set_text("Finish!")
-        elif self.state > 0:
-            win.apply_changes.text.set_text("Next")
+        if win.state == MAX_STATE -1:
+            win.update.text.set_text("Finish!")
+        elif win.state > 0:
+            win.update.text.set_text("Next")
         else:
-            win.apply_changes.text.set_text("Get started")
+            win.update.text.set_text("Get started")
         # Refresh window
         win.show_all()
 
@@ -71,9 +70,9 @@ class First_Run():
         global grid, box, state, win
 
         # Update current state
-        self.state = (self.state + 1)
+        win.state = (win.state + 1)
         # If we've clicked on the finished
-        if self.state == MAX_STATE:
+        if win.state == MAX_STATE:
             # Write to config file to say we've completed the level.
             config_file.replace_setting("Completed", "1")
             # Finished, so close window
@@ -81,19 +80,19 @@ class First_Run():
             return
 
         # Remove element in the dynamic box
-        for i in win.changable_content.get_children():
-            win.changable_content.remove(i)
+        for i in win.changeable_content.get_children():
+            win.changeable_content.remove(i)
 
         # Call next state
-        self.state_to_widget(self.state).activate(win, win.changable_content, win.apply_changes.button)
+        self.state_to_widget(win.state).activate(win, win.changeable_content, win.update)
 
         # Change label on Apply Changes button
-        if self.state == MAX_STATE -1:
-            win.apply_changes.text.set_text("Finish!")
-        elif self.state > 0:
-            win.apply_changes.text.set_text("Next")
+        if win.state == MAX_STATE -1:
+            win.update.text.set_text("Finish!")
+        elif win.state > 0:
+            win.update.text.set_text("Next")
         else:
-            win.apply_changes.text.set_text("Get started")
+            win.update.text.set_text("Get started")
         # Refresh window
         win.show_all()
 

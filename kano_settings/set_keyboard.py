@@ -23,12 +23,12 @@ button = None
 
 continents = ['africa', 'america', 'asia', 'australia', 'europe', 'others']
 
-def activate(_win, box, apply_changes_button):
+def activate(_win, box, update):
     global win, variants_combo, countries_combo, continents, button
 
     win = _win
 
-    button = apply_changes_button
+    button = update.button
 
     # Contains all the settings
     settings_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
@@ -60,7 +60,7 @@ def activate(_win, box, apply_changes_button):
     dropdown_box.pack_start(variants_combo, False, False, 10)
 
     settings_box.pack_start(dropdown_box, False, False, 30)
-    box.pack_start(apply_changes_button, False, False, 0)
+    box.pack_start(update.box, False, False, 0)
 
     # Refresh window
     win.show_all()

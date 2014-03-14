@@ -15,15 +15,12 @@ class Apply(Gtk.Button):
 
         # Create button
         self.button = Gtk.Button()
+        self.button.set_size_request(70, 30)
 
         self.text = Gtk.Label()
         self.text.modify_font(Pango.FontDescription("Bariol bold 13"))
-        # This doesn't seem to work?
-        self.button.set_size_request(70, 30)
         # Contains writing and icon of button
         self.label = Gtk.Box()
-        self.label.set_size_request(50, 20)
-        #self.label.get_style_context().add_class("")
 
         self.image = Gtk.Image()
         self.button.add(self.label)
@@ -32,12 +29,22 @@ class Apply(Gtk.Button):
         # Allow button to be styled in css
         self.style = self.button.get_style_context()
         self.style.add_class("apply_changes")
+        self.box = Gtk.Box()
+        self.box.pack_start(self.button, False, False, 0)
+        self.box.props.halign = Gtk.Align.CENTER
 
         if icon_first:
             self.label.pack_start(self.image, False, False, 5)
-            self.label.pack_start(self.text, False, False, 5)
+            self.label.pack_start(self.text, True, False, 5)
         else:
-            self.label.pack_start(self.text, False, False, 5)
+            self.label.pack_start(self.text, True, False, 5)
             self.label.pack_start(self.image, False, False, 5)
+
+        self.button.connect("clicked", self.print_size)
+
+
+    def print_size(self, button):
+        print("button.get_preferred_size() = " + str(button.get_preferred_size()))
+        print("button.get_size_request() = " + str(button.get_size_request()))
 
 

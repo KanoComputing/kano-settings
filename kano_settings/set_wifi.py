@@ -26,7 +26,7 @@ def is_internet():
         return False
 
 
-def activate(_win, box, apply_changes_button):
+def activate(_win, box, update):
     global internet
 
     # Table
@@ -75,7 +75,6 @@ def activate(_win, box, apply_changes_button):
     
     if internet is False:
         internet_img.set_from_file(constants.files + "media/Graphics/Internet-connection.png")
-        #internet_img.set_from_file("media/Graphics/Internet-connection.png")
         title.title.set_text("Weee you have internet")
         title.description.set_text("Great!")
         internet_status.set_text("Weee you have internet")
@@ -85,16 +84,15 @@ def activate(_win, box, apply_changes_button):
         event_box_style.add_class("connected")
     else:
         internet_img.set_from_file(constants.files + "media/Graphics/Internet-noConnection.png")
-        #internet_img.set_from_file("media/Graphics/Internet-noConnection.png")
         title.title.set_text("No network found")
         title.description.set_text("Shit man")
         internet_status.set_text("No network found")
         internet_status_style.remove_class("dark_green")
         internet_status_style.add_class("dark_red")
         internet_action.set_text("+ Click to add")
-        event_box_style.add_class("not_connected")    
+        event_box_style.add_class("not_connected")   
 
-    box.pack_start(apply_changes_button, False, False, 0)
+    box.pack_start(update.box, False, False, 0)
 
 
 def apply_changes(button):
