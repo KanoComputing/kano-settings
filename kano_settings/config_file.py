@@ -13,12 +13,13 @@ import re
 USER = None
 USER_ID = None
 
+
 def init():
 
     USER = os.environ['SUDO_USER']
     #USER_ID = getpwnam(USER).pw_uid
     path = "/home/%s/.kano-settings" % (USER)
-    # Update .kano-settings with new current_country and current_variant   
+    # Update .kano-settings with new current_country and current_variant
     try:
         f = open(path, 'r+')
         f.write('finished:0\n')
@@ -26,7 +27,7 @@ def init():
 
     except:
         # Fail silently
-        return 
+        return
 
 
 def replace(fname, pat, s_after):
@@ -53,79 +54,85 @@ def replace_setting(setting_name, setting):
     path = "/home/%s/.kano-settings" % (USER)
 
     setting = str(setting)
-    # Update .kano-settings with new current_country and current_variant   
+    # Update .kano-settings with new current_country and current_variant
     try:
         f = open(path, 'r')
         file_content = str(f.read())
         f.close()
         file_index = file_content.index(setting_name + ':')
-        file_index3 = file_content[file_index:].index('\n') # Get selected variant of that country
+        # Get selected variant of that country
+        file_index3 = file_content[file_index:].index('\n')
         old_string = file_content[file_index: file_index3 + file_index]
         new_string = setting_name + ':' + setting
         replace(path, old_string, new_string)
         print("Successfully completed replace_setting")
         return 0
 
-    except:
-        # Failure is probably down to the setting not existing 
-        print("FAIL: replace_settings")
+    except Exception as e:
+        # Failure is probably down to the setting not existing
+        print("FAIL: replace_setting")
+        print(e)
         #f.close()
         write_to_file(setting_name, setting)
-        return 
-
+        return
 
 
 def write_to_file(setting_name, setting):
 
     USER = os.environ.get('SUDO_USER')
-    #USER_ID = getpwnam(USER).pw_uid
     path = "/home/%s/.kano-settings" % (USER)
 
     setting = str(setting)
 
-    # Update .kano-settings with new current_country and current_variant   
+    # Update .kano-settings with new current_country and current_variant
     try:
         f = open(path, "a+")
         new_string = setting_name + ":" + setting + "\n"
         f.write(new_string)
         f.close()
+        print("SUCCESS: write_to_file completed")
         return
 
-    except:
+    except Exception as e:
         print("FAIL: write_to_file")
-        #f.close()
-        return 
+        print(e)
+        return
+
 
 def read_from_file(setting_name):
 
     USER = os.environ.get('SUDO_USER')
-    #USER_ID = getpwnam(USER).pw_uid
     path = "/home/%s/.kano-settings" % (USER)
 
     try:
         f = open(path, 'r')
         file_content = str(f.read())
         f.close()
-        file_index = file_content.index(setting_name + ':')
+        index1 = file_content.index(setting_name + ':')
 
-        file_index2 = file_content[file_index:].index('\n')
-        # file_index2 is the distance from file_index, so you have to add them to find total distance
+        index2 = file_content[index1:].index('\n')
+        # file_index2 is the distance from file_index
+        # You have to add them to find total distance
         # file_index does not take into account the length of the setting name
-        setting = file_content[file_index + len(setting_name) + 1: file_index2 + file_index]
+        setting = file_content[index1 + len(setting_name) + 1: index2 + index1]
         f.close()
         return setting
 
-    except:
+    except Exception as e:
         print("FAIL: read_from_file")
-        #set_defaults(setting_name) #change to custom defaults
-        return 
+        print(e)
+        # change to custom defaults
+        setting_prop = set_defaults(setting_name)
+        return setting_prop
 
-custom_info = ["Email", "Keyboard-country-human", "Audio", "Wifi", "Display"]
 
+# Do we want this in each of the separate files?
 def set_defaults(setting_name):
 
+    setting_prop = ""
+
     if setting_name == "Email":
-        setting_prop = ""
+        setting_prop = "?"
     elif setting_name == "Keyboard-country":
         setting_prop = str(108)
     elif setting_name == "Keyboard-variant":
@@ -137,10 +144,12 @@ def set_defaults(setting_name):
     elif setting_name == "Audio":
         setting_prop = "Analogue"
     elif setting_name == "Wifi":
-        setting_prop = ""
+        setting_prop = "?"
     elif setting_name == "Display":
         setting_prop = "Auto"
     elif setting_name == "Completed":
         setting_prop = "0"
+
+    return setting_prop
 
     write_to_file(setting_name, setting_prop)

@@ -56,6 +56,7 @@ def activate(_win, box, update):
 
 
 def apply_changes(button):
+    global reboot
 
     # Set HDMI mode
     # Get mode:group string

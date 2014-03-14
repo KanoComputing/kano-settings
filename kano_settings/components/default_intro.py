@@ -22,6 +22,7 @@ names = ["Email", "Keyboard", "Audio", "Wifi", "Display"]
 custom_info = ["Email", "Keyboard-country-human", "Audio", "Wifi", "Display"]
 win = None
 
+
 class Default_Intro():
 
     # Initialises the default into screen
@@ -35,12 +36,12 @@ class Default_Intro():
 
         self.table = Gtk.Table(3, 2, True)
 
-        buttons = []    
+        buttons = []
         self.labels = []
 
         # names at top of file
         for x in range(len(names)):
-            self.info = config_file.read_from_file(names[x])
+            self.info = config_file.read_from_file(custom_info[x])
             self.item = menu_button.Menu_button(names[x], self.info)
             self.labels.append(self.item.description)
             # Update the state of the button, so we know which button has been clicked on.
@@ -57,14 +58,12 @@ class Default_Intro():
         #self.table.set_size_request(450, 100)
         win.changeable_content.pack_start(self.table, False, False, 0)
 
-
     # This is to update the introdction text, so that if the settings are modified and then we go back to the
     # intro screen, the latest information is shown
     def update_intro(self):
         for x in range(len(custom_info)):
             config_file.read_from_file(custom_info[x])
             self.labels[x].set_text(str(config_file.read_from_file(custom_info[x])))
-
 
     # Takes you back to the introduction screen (on pressing prev button)
     def on_prev(self, arg2):
@@ -84,9 +83,9 @@ class Default_Intro():
 
         for i in win.changeable_content.get_children():
             win.changeable_content.remove(i)
-        
-        self.state_to_widget(win.last_level_visited).activate(win, win.changeable_content, win.update) 
-        win.last_level_visited = win.state   
+
+        self.state_to_widget(win.last_level_visited).activate(win, win.changeable_content, win.update)
+        win.last_level_visited = win.state
         win.show_all()
 
     # On clicing a level button on default intro screen
@@ -110,7 +109,6 @@ class Default_Intro():
         if returnValue == -1:
             return
 
-
     def state_to_widget(self, x):
         return {
             0: set_intro,
@@ -121,20 +119,21 @@ class Default_Intro():
             5: set_display,
         }[x]
 
-    # On closing window, will alert if any of the listed booleans are True
+
+# On closing window, will alert if any of the listed booleans are True
 def close_window(event="delete-event", button=win):
 
     if set_audio.reboot or set_display.reboot:
         #Bring in message dialog box
         dialog = Gtk.MessageDialog(button, 0, Gtk.MessageType.INFO,
-            Gtk.ButtonsType.OK, "So you know...")
+                                   Gtk.ButtonsType.OK, "So you know...")
         dialog.format_secondary_text(
             "..you will need to reboot to see all your changes")
         response = dialog.run()
         print("INFO dialog closed")
 
         if response == Gtk.ResponseType.OK:
-            dialog.destroy() 
+            dialog.destroy()
             Gtk.main_quit()
             return
         else:

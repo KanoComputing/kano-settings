@@ -31,7 +31,7 @@ def is_email(email):
     else:
         return False
 
-    
+
 
 def activate(_win, changeable_content, update):
     global current_email, USER, USER_ID, tick, cross, success_icon, entry1, entry2
@@ -127,4 +127,4 @@ def apply_changes(button):
     elif current_email != email1:
         os.system("echo %s > /home/%s/.useremail" % (email1, USER))
 
-    config_file.replace_setting("Email", email1) 
+    config_file.replace_setting("Email", email1)
