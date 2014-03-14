@@ -1,4 +1,4 @@
- #!/usr/bin/env python3
+#!/usr/bin/env python
 
 # top_bar.py
 #
@@ -14,12 +14,12 @@ TOP_BAR_HEIGHT = 50
 WINDOW_WIDTH = 600
 WINDOW_HEIGHT = 380
 
-class Top_bar():
 
+class Top_bar():
     def __init__(self):
 
         # This is to give the correct colour of the top bar as Event Boxes are the only containers that we can colour
-        # This contains everything, but can't pack directly into as is only a simple container 
+        # This contains everything, but can't pack directly into as is only a simple container
         self.background = Gtk.EventBox()
         self.background.set_size_request(WINDOW_WIDTH, TOP_BAR_HEIGHT)
         self.background.style = self.background.get_style_context()

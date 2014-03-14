@@ -1,23 +1,7 @@
-./kano-settings /usr/bin
+bin/kano-settings /usr/bin
 
-./kano_settings/__init__.py /usr/lib/python3/dist-packages/kano_settings/
-./kano_settings/set_audio.py /usr/lib/python3/dist-packages/kano_settings/
-./kano_settings/set_display.py /usr/lib/python3/dist-packages/kano_settings/
-./kano_settings/set_email.py /usr/lib/python3/dist-packages/kano_settings/
-./kano_settings/set_intro.py /usr/lib/python3/dist-packages/kano_settings/
-./kano_settings/set_keyboard.py /usr/lib/python3/dist-packages/kano_settings/
-./kano_settings/set_wifi.py /usr/lib/python3/dist-packages/kano_settings/
-./kano_settings/config_file.py /usr/lib/python3/dist-packages/kano_settings/
-./kano_settings/style.css /usr/lib/python3/dist-packages/kano_settings/
-./kano_settings/constants.py /usr/lib/python3/dist-packages/kano_settings/
+kano_settings/* /usr/lib/python2.7/dist-packages/kano_settings
+media/* /usr/share/kano-settings/media
 
-./kano_settings/media/Icons/* /usr/lib/python3/dist-packages/kano_settings/media/Icons/
-./kano_settings/media/Graphics/* /usr/lib/python3/dist-packages/kano_settings/media/Graphics/
-./kano_settings/components/* /usr/lib/python3/dist-packages/kano_settings/components/
-
-./kano_settings/screen/* /usr/lib/python3/dist-packages/kano_settings/screen/
-
-./kano_settings/keyboard/* /usr/lib/python3/dist-packages/kano_settings/keyboard/
-
-./icon/Settings /usr/share/kano-desktop/extras
-./icon/kano-settings.png /usr/share/kano-desktop/icons
+icon/Settings /usr/share/kano-desktop/extras
+icon/kano-settings.png /usr/share/kano-desktop/icons

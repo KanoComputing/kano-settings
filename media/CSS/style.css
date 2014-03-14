@@ -1,4 +1,3 @@
-
 /*
 
 # Copyright (C) 2014 Kano Computing Ltd.
@@ -22,7 +21,7 @@
 }
 
 /* Same as GtkButton*/
-.button { 
+.button {
     color: #ffffff;
     background:transparent;
     border-style: none; /* Remove grey border on outside */
@@ -106,7 +105,7 @@ GtkComboBox .menuitem *:hover {
     url: "media/Graphics/keyboard.png"
 }*/
 
-.check, 
+.check,
 .radio {
     border-style: solid;
     border-color: #dddddd;

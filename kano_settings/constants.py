@@ -1,4 +1,4 @@
- #!/usr/bin/env python3
+#!/usr/bin/env python
 
 # constants.py
 #
@@ -7,5 +7,15 @@
 #
 # Keeps constants in a central place
 
-files = "kano_settings/"
-#files = "/usr/lib/python3/dist-packages/kano_settings/"
+import os
+import sys
+
+rel_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../media'))
+abs_path = '/usr/share/kano-settings/media'
+
+if os.path.exists(rel_path):
+    media = rel_path
+elif os.path.exists(abs_path):
+    media = abs_path
+else:
+    sys.exit('Media folder missing!')

@@ -1,4 +1,4 @@
- #!/usr/bin/env python3
+#!/usr/bin/env python
 
 # heading.py
 #
@@ -8,6 +8,7 @@
 # This is the container and text (title and description) of each of the projects
 
 from gi.repository import Gtk, Pango
+
 
 class Heading():
     def __init__(self, title, description):

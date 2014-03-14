@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 # set_keyboard.py
 #
@@ -9,9 +9,7 @@
 from gi.repository import Gtk, Pango
 import kano_settings.keyboard.keyboard_layouts as keyboard_layouts
 import kano_settings.keyboard.keyboard_config as keyboard_config
-import kano_settings.config_file as config_file
 import kano_settings.components.heading as heading
-import kano_settings.constants as constants
 
 win = None  # TODO: Is it needed?
 selected_layout = None
@@ -23,7 +21,9 @@ button = None
 
 continents = ['africa', 'america', 'asia', 'australia', 'europe', 'others']
 
+
 def activate(_win, box, update):
+
     global win, variants_combo, countries_combo, continents, button
 
     win = _win
@@ -53,7 +53,6 @@ def activate(_win, box, update):
     variants_combo = Gtk.ComboBoxText.new()
     variants_combo.connect("changed", on_variants_changed)
 
-
     dropdown_box = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     dropdown_box.pack_start(continents_combo, False, False, 10)
     dropdown_box.pack_start(countries_combo, False, False, 10)
@@ -67,7 +66,7 @@ def activate(_win, box, update):
 
     continents_combo.get_child().modify_font(Pango.FontDescription("Bariol 13"))
     variants_combo.get_child().modify_font(Pango.FontDescription("Bariol 13"))
-    countries_combo.get_child().modify_font(Pango.FontDescription("Bariol 13"))   
+    countries_combo.get_child().modify_font(Pango.FontDescription("Bariol 13"))
 
 
 def apply_changes(button):
@@ -76,10 +75,9 @@ def apply_changes(button):
     # print("Set the keyboard layout to %s, with variant" % selected_country, selected_variant)
     keyboard_config.set_keyboard(selected_country, selected_variant)
     button.hide()
-    
+
     # Refresh window
     win.show_all()
-
 
 
 def on_continent_changed(combo):
@@ -100,8 +98,8 @@ def on_country_changed(combo):
     if tree_iter is not None:
         model = combo.get_model()
         country = model[tree_iter][0]
-        
-    if country == None:
+
+    if not country:
         return
 
     # Remove entries from variants combo box
@@ -132,7 +130,7 @@ def on_variants_changed(combo):
                 if v[0] == variant:
                     selected_variant = v[1]
 
-    button.show()       
+    button.show()
     # Refresh window
     win.show_all()
 

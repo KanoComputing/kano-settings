@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 
 # screen-config.py
 #
@@ -11,7 +11,6 @@
 import sys
 import re
 import subprocess
-
 
 CONFIG_FILE = "/boot/config.txt"
 
