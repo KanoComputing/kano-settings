@@ -14,7 +14,7 @@ import kano_settings.config_file as config_file
 
 win = None  # TODO: Is it needed?
 selected_layout = None
-selected_continent = "america"
+selected_continent = "America"
 selected_country = 108
 selected_variant = 0
 selected_continent_hr = "America"
@@ -24,7 +24,7 @@ variants_combo = None
 countries_combo = None
 button = None
 
-continents = ['africa', 'america', 'asia', 'australia', 'europe', 'others']
+continents = ['Africa', 'America', 'Asia', 'Australia', 'Europe', 'Others']
 
 
 def activate(_win, box, update):
@@ -184,6 +184,8 @@ def on_variants_changed(combo):
 
 def fill_countries_combo(continent):
     global countries_combo, variants_combo, selected_layout, selected_continent_hr
+
+    continent = continent.lower()
 
     if continent == 'africa':
         selected_layout = keyboard_layouts.layouts_africa

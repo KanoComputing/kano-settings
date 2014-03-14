@@ -19,6 +19,11 @@
     /*background: #ffffff;*/
     border-width: 0px;
 }
+GtkWindow {
+    color: #ffffff;
+    background: #ffffff;
+    background-color: #ffffff;
+}
 
 /* Same as GtkButton*/
 .button {
@@ -44,6 +49,7 @@
 }
 /* The title of the current level*/
 .title{
+    color:#000000;
     padding-top:25px;
     font-weight:bold;
 }
