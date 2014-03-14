@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 # config_file.py
 #
@@ -6,6 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 # Functions controlling reading and writing to config file
+#
 
 import os
 import re
@@ -15,7 +16,6 @@ USER_ID = None
 
 
 def init():
-
     USER = os.environ['SUDO_USER']
     #USER_ID = getpwnam(USER).pw_uid
     path = "/home/%s/.kano-settings" % (USER)
@@ -126,7 +126,6 @@ def read_from_file(setting_name):
         return setting_prop
 
 
-# Do we want this in each of the separate files?
 def set_defaults(setting_name):
 
     setting_prop = ""

@@ -1,5 +1,5 @@
-#!/usr/bin/env python3
-
+#!/usr/bin/env python
+#
 # set_email.py
 #
 # Copyright (C) 2014 Kano Computing Ltd.
@@ -24,13 +24,13 @@ tick = None
 cross = None
 win = None
 
+
 def is_email(email):
     pattern = '[\.\w]{1,}[@]\w+[.]\w+'
     if re.match(pattern, email):
         return True
     else:
         return False
-
 
 
 def activate(_win, changeable_content, update):
@@ -76,7 +76,7 @@ def activate(_win, changeable_content, update):
     check_email(entry1, 1)
 
     email_entry.attach(entry1, 0, 1, 0, 1, Gtk.AttachOptions.FILL, Gtk.AttachOptions.EXPAND, 10)
-    email_entry.attach(entry2, 0, 1, 1, 2,Gtk.AttachOptions.FILL, Gtk.AttachOptions.EXPAND, 10)
+    email_entry.attach(entry2, 0, 1, 1, 2, Gtk.AttachOptions.FILL, Gtk.AttachOptions.EXPAND, 10)
     email_entry.attach(success_icon, 1, 2, 0, 1)
 
     settings_container.pack_start(email_entry, False, False, 0)
@@ -109,8 +109,10 @@ def apply_changes(button):
 
     if email1 != email2:
         # Bring in message dialog box
-        dialog = Gtk.MessageDialog(win, 0, Gtk.MessageType.ERROR,
-            Gtk.ButtonsType.CANCEL, "Your emails don't match!")
+        dialog = Gtk.MessageDialog(
+            win, 0, Gtk.MessageType.ERROR,
+            Gtk.ButtonsType.CANCEL, "Your emails don't match!"
+        )
         dialog.format_secondary_text(
             "Please re-enter")
         dialog.run()
