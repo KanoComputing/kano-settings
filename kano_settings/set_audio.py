@@ -10,6 +10,7 @@ from gi.repository import Gtk
 import kano_settings.config_file as config_file
 import kano_settings.components.heading as heading
 import kano_settings.constants as constants
+import kano_settings.components.fixed_size_box as fixed_size_box
 import os
 import re
 
@@ -43,11 +44,11 @@ def activate(_win, box, update):
     title = heading.Heading("Audio settings", "Can you hear me?")
 
     # Settings container
-    settings_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-    settings_container.set_size_request(300, 250)
-    box.add(settings_container)
+    settings = fixed_size_box.Fixed()
+    box.add(settings.box)
 
-    settings_container.pack_start(title.container, False, False, 0)
+    settings.box.pack_start(title.container, False, False, 0)
+    settings.box.props.halign = Gtk.Align.CENTER
 
     # Analog radio button
     analog_button = Gtk.RadioButton.new_with_label_from_widget(None, "Analog")
@@ -65,7 +66,7 @@ def activate(_win, box, update):
     radio_button_container.pack_start(current_img, False, False, 10)
     radio_button_container.pack_start(analog_button, False, False, 10)
 
-    settings_container.pack_start(radio_button_container, False, False, 0)
+    settings.box.pack_start(radio_button_container, False, False, 0)
 
     # Show the current setting by electing the appropriate radio button
     current_setting(analog_button, hdmi_button)

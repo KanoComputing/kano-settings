@@ -26,6 +26,6 @@ class Heading():
 
         # Table
         self.container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        self.container.set_size_request(300, 150)
+        #self.container.set_size_request(300, 50)
         self.container.pack_start(self.title, False, False, 0)
         self.container.pack_start(self.description, False, False, 10)

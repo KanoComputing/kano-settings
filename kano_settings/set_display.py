@@ -9,6 +9,7 @@
 from gi.repository import Gtk, Pango
 import kano_settings.screen.screen_config as screen_config
 import kano_settings.components.heading as heading
+import kano_settings.components.fixed_size_box as fixed_size_box
 
 mode = 'auto'
 overscan = False
@@ -20,14 +21,14 @@ def activate(_win, box, update):
     title = heading.Heading("Display - how sharp can you go?", "Make the OS look the best it can")
 
     # Contains main buttons
-    settings_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-    settings_box.set_size_request(300, 250)
-    box.add(settings_box)
-    settings_box.pack_start(title.container, False, False, 0)
+    settings = fixed_size_box.Fixed()
+    box.add(settings.box)
+    settings.box.pack_start(title.container, False, False, 0)
 
     horizontal_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=20)
     horizontal_container.set_valign(Gtk.Align.CENTER)
-    settings_box.pack_start(horizontal_container, False, False, 0)
+
+    settings.box.pack_start(horizontal_container, False, False, 0)
     horizontal_container.set_size_request(300, 120)
 
     # HDMI mode combo box

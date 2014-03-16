@@ -13,6 +13,7 @@ import re
 import kano_settings.config_file as config_file
 import kano_settings.components.icons as icons
 import kano_settings.components.heading as heading
+import kano_settings.components.fixed_size_box as fixed_size_box
 
 entry1 = None
 entry2 = None
@@ -51,7 +52,8 @@ def activate(_win, changeable_content, update):
     title = heading.Heading("Change your email", "Stay informed about your progress")
 
     # Settings container
-    settings_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+    settings = fixed_size_box.Fixed()
+    settings_container = settings.box
     settings_container.pack_start(title.container, False, False, 0)
 
     # Text entry
@@ -78,6 +80,7 @@ def activate(_win, changeable_content, update):
     email_entry.attach(entry1, 0, 1, 0, 1, Gtk.AttachOptions.FILL, Gtk.AttachOptions.EXPAND, 10)
     email_entry.attach(entry2, 0, 1, 1, 2, Gtk.AttachOptions.FILL, Gtk.AttachOptions.EXPAND, 10)
     email_entry.attach(success_icon, 1, 2, 0, 1)
+    email_entry.props.valign = Gtk.Align.CENTER
 
     settings_container.pack_start(email_entry, False, False, 0)
     changeable_content.pack_start(settings_container, False, False, 0)

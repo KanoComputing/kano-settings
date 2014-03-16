@@ -9,6 +9,7 @@
 from gi.repository import Gtk, Pango
 import os
 import kano_settings.components.heading as heading
+import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
 
 internet = False
@@ -30,13 +31,12 @@ def activate(_win, box, update):
     global internet
 
     # Table
-    settings_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-    settings_box.set_size_request(300, 250)
-    box.add(settings_box)
+    settings = fixed_size_box.Fixed()
+    box.add(settings.box)
 
     title = heading.Heading("", "")
 
-    settings_box.pack_start(title.container, False, False, 0)
+    settings.box.pack_start(title.container, False, False, 0)
 
     # TODO: this should be done when starting the tool and only once
     # Check for internet
@@ -68,7 +68,7 @@ def activate(_win, box, update):
     container.pack_start(event_box, False, False, 0)
     container.pack_start(internet_img, False, False, 0)
 
-    settings_box.pack_start(container, False, False, 0)
+    settings.box.pack_start(container, False, False, 0)
 
     #event_box.set_events("button-press-event", self.on_button_press_event)
     event_box.connect("button-press-event", apply_changes)
@@ -90,7 +90,7 @@ def activate(_win, box, update):
         internet_status_style.remove_class("dark_green")
         internet_status_style.add_class("dark_red")
         internet_action.set_text("+ Click to add")
-        event_box_style.add_class("not_connected")   
+        event_box_style.add_class("not_connected")
 
     box.pack_start(update.box, False, False, 0)
 
