@@ -11,12 +11,10 @@ from gi.repository import Gtk, Pango
 import kano_settings.components.icons as icons
 
 TOP_BAR_HEIGHT = 50
-WINDOW_WIDTH = 600
-WINDOW_HEIGHT = 380
 
 
 class Top_bar():
-    def __init__(self):
+    def __init__(self, WINDOW_WIDTH):
 
         # This is to give the correct colour of the top bar as Event Boxes are the only containers that we can colour
         # This contains everything, but can't pack directly into as is only a simple container

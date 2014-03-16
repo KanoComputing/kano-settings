@@ -27,7 +27,6 @@ import kano_settings.components.icons as icons
 import kano_settings.constants as constants
 import kano_settings.components.first_run as first_run
 import kano_settings.components.default_intro as default_intro
-import kano_settings.components.fixed_size_box as fixed_size_box
 
 win = None
 MAX_STATE = 6
@@ -44,7 +43,7 @@ class MainWindow(Gtk.Window):
 
         self.last_level_visited = 0
 
-        WINDOW_WIDTH = 600
+        WINDOW_WIDTH = 650
         WINDOW_HEIGHT = 380
 
         # Create main window
@@ -61,7 +60,7 @@ class MainWindow(Gtk.Window):
         self.changeable_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.changeable_content.props.halign = Gtk.Align.CENTER
 
-        self.top_bar = top_bar.Top_bar()
+        self.top_bar = top_bar.Top_bar(WINDOW_WIDTH)
 
         # Init
         if config_file.read_from_file('Completed') == "1":
