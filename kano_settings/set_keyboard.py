@@ -13,18 +13,23 @@ import kano_settings.keyboard.keyboard_layouts as keyboard_layouts
 import kano_settings.keyboard.keyboard_config as keyboard_config
 import kano_settings.components.heading as heading
 import kano_settings.config_file as config_file
+import kano_settings.components.fixed_size_box as fixed_size_box
 
 win = None  # TODO: Is it needed?
 selected_layout = None
-selected_continent = "America"
-selected_country = 108
-selected_variant = 0
+selected_country = None
+selected_variant = None
+
+selected_continent_index = 1
+selected_country_index = 21
+selected_variant_index = 0
 selected_continent_hr = "America"
 selected_country_hr = "USA"
 selected_variant_hr = "Generic"
+
 variants_combo = None
 countries_combo = None
-button = None
+continents_combo = None
 spinner = None
 
 continents = ['Africa', 'America', 'Asia', 'Australia', 'Europe', 'Others']
@@ -43,19 +48,19 @@ class WorkerThread(threading.Thread):
 
 
 def activate(_win, box, update):
+    global win, continents_combo, variants_combo, countries_combo, continents
 
-    global win, variants_combo, countries_combo, continents, button
+    read_config()
 
     win = _win
-    button = update.button
 
     # Contains all the settings
-    settings_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-    box.add(settings_box)
+    settings = fixed_size_box.Fixed()
+    box.add(settings.box)
 
     # Title
     title = heading.Heading("Change your keyboard settings", "Which country do you live in?")
-    settings_box.pack_start(title.container, False, False, 0)
+    settings.box.pack_start(title.container, False, False, 0)
 
     # Create Continents Combo box
     continents_combo = Gtk.ComboBoxText.new()
@@ -76,6 +81,11 @@ def activate(_win, box, update):
     # Create Spinner
     spinner = Gtk.Spinner()
 
+    # Set up default values in dropdown lists
+    set_defaults("continent")
+    set_defaults("country")
+    set_defaults("variant")
+
     # Ceate various dropdown boxes so we can resize the dropdown lists appropriately
     # We create two boxes side by side, and then stack the country dropdow lists in one, and one by itself in the other
 
@@ -90,8 +100,10 @@ def activate(_win, box, update):
 
     dropdown_box_countries = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
     dropdown_box_countries.set_size_request(230, 30)
+    dropdown_box_countries.props.valign = Gtk.Align.CENTER
     dropdown_box_keys = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
     dropdown_box_keys.set_size_request(230, 30)
+    dropdown_box_keys.props.valign = Gtk.Align.CENTER
     dropdown_box_countries.pack_start(continents_combo, False, False, 10)
     dropdown_box_countries.pack_start(countries_combo, False, False, 10)
     dropdown_box_keys.pack_start(variants_combo, False, False, 10)
@@ -100,13 +112,11 @@ def activate(_win, box, update):
     dropdown_container.pack_start(dropdown_box_keys, False, False, 10)
     dropdown_container.pack_start(spinner, False, False, 10)
 
-    on_continent_changed(continents_combo)
-    on_country_changed(countries_combo)
-    on_variants_changed(variants_combo)
+    #on_continent_changed(continents_combo)
+    #on_country_changed(countries_combo)
+    #on_variants_changed(variants_combo)
 
-    update_config()
-
-    settings_box.pack_start(dropdown_container, False, False, 30)
+    settings.box.pack_start(dropdown_container, False, False, 30)
     box.pack_start(update.box, False, False, 0)
 
     # Refresh window
@@ -125,41 +135,85 @@ def apply_changes(button):
     thread = WorkerThread(work_finished_cb)
     thread.start()
 
+    # Save the changes in the config
+    update_config()
+
     # Refresh window
     win.show_all()
 
 
+def read_config():
+    global selected_continent_index, selected_country_index, selected_variant_index, selected_continent_hr, selected_country_hr, selected_variant_hr
+
+    selected_continent_index = config_file.read_from_file("Keyboard-continent-index")
+    selected_country_index = config_file.read_from_file("Keyboard-country-index")
+    selected_variant_index = config_file.read_from_file("Keyboard-variant-index")
+    selected_continent_hr = config_file.read_from_file("Keyboard-continent-human")
+    selected_country_hr = config_file.read_from_file("Keyboard-country-human")
+    selected_variant_hr = config_file.read_from_file("Keyboard-variant-human")
+
+
 def update_config():
     # Add new configurations to config file.
-    config_file.replace_setting("Keyboard-continent", str(selected_continent))
-    config_file.replace_setting("Keyboard-country", str(selected_country))
-    config_file.replace_setting("Keyboard-variant", str(selected_variant))
+    config_file.replace_setting("Keyboard-continent-index", str(selected_continent_index))
+    config_file.replace_setting("Keyboard-country-index", str(selected_country_index))
+    config_file.replace_setting("Keyboard-variant-index", str(selected_variant_index))
     config_file.replace_setting("Keyboard-continent-human", str(selected_continent_hr))
     config_file.replace_setting("Keyboard-country-human", str(selected_country_hr))
     config_file.replace_setting("Keyboard-variant-human", str(selected_variant_hr))
 
 
+#setting = "variant", "continent" or "country"
+def set_defaults(setting):
+    global continents_combo, countries_combo, variants_combo
+
+    # Set the default info on the dropdown lists
+    # "Keyboard-continent":continents_combo, "Keyboard-country", "Keyboard-variant"]:
+
+    active_item = int(config_file.read_from_file("Keyboard-" + setting + "-index"))
+
+    if setting == "continent":
+        continents_combo.set_active(int(active_item))
+    elif setting == "country":
+        countries_combo.set_active(int(active_item))
+    elif setting == "variant":
+        variants_combo.set_active(int(active_item))
+    else:
+        print("Bad argument in set_defaults - should be 'continent', 'country' or 'variant'")
+        return
+
+
 def on_continent_changed(combo):
-    global selected_continent_hr, selected_continent
+    global selected_continent_hr, selected_continent_index
 
-    continent = selected_continent
-
+    continent = selected_continent_hr
     tree_iter = combo.get_active_iter()
+
+    #############################################
+    """    if tree_iter is None:
+        combo.set_active(selected_continent)
+        tree_iter = combo.get_active_iter()
+
+    model = combo.get_model()
+    continent = model[tree_iter][0]"""
+    ################################################
     if tree_iter is not None:
         model = combo.get_model()
         continent = model[tree_iter][0]
 
     selected_continent_hr = str(continent)
-    selected_continent = str(continent)
+    selected_continent_index = str(combo.get_active())
 
-    fill_countries_combo(selected_continent)
+    fill_countries_combo(selected_continent_hr)
+    win.show_all()
 
 
 def on_country_changed(combo):
-    global win, selected_country, selected_country_hr, selected_layout, variants_combo, button
+    global win, selected_country, selected_country_index, selected_country_hr, selected_layout, variants_combo
 
-    country = ""
+    country = None
     tree_iter = combo.get_active_iter()
+
     if tree_iter is not None:
         model = combo.get_model()
         country = model[tree_iter][0]
@@ -184,7 +238,7 @@ def on_country_changed(combo):
 
 
 def on_variants_changed(combo):
-    global win, selected_variant, button, selected_variants_hr
+    global win, selected_variant, selected_variants_hr
 
     tree_iter = combo.get_active_iter()
     if tree_iter is not None:
@@ -209,7 +263,7 @@ def work_finished_cb():
 
 
 def fill_countries_combo(continent):
-    global countries_combo, variants_combo, selected_layout, selected_continent_hr
+    global win, countries_combo, variants_combo, selected_layout, selected_continent_hr
 
     continent = continent.lower()
 
@@ -232,6 +286,10 @@ def fill_countries_combo(continent):
     countries_combo.remove_all()
     variants_combo.remove_all()
 
+    sorted_countries = sorted(selected_layout)
+
     # Refresh countries combo box
-    for country in selected_layout:
+    for country in sorted_countries:
         countries_combo.append_text(country)
+
+    win.show_all()

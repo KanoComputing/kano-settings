@@ -65,7 +65,7 @@ def replace_setting(setting_name, setting):
         old_string = file_content[file_index: file_index3 + file_index]
         new_string = setting_name + ':' + setting
         replace(path, old_string, new_string)
-        print("Successfully completed replace_setting")
+        print("SUCCESS: completed replace_setting")
         return 0
 
     except Exception as e:
@@ -116,6 +116,7 @@ def read_from_file(setting_name):
         # file_index does not take into account the length of the setting name
         setting = file_content[index1 + len(setting_name) + 1: index2 + index1]
         f.close()
+        print("SUCCESS: completed read_from_file")
         return setting
 
     except Exception as e:
@@ -132,10 +133,14 @@ def set_defaults(setting_name):
 
     if setting_name == "Email":
         setting_prop = "?"
-    elif setting_name == "Keyboard-country":
-        setting_prop = str(108)
-    elif setting_name == "Keyboard-variant":
+    elif setting_name == "Keyboard-continent-index":
+        setting_prop = str(1)
+    elif setting_name == "Keyboard-country-index":
+        setting_prop = str(21)
+    elif setting_name == "Keyboard-variant-index":
         setting_prop = str(0)
+    elif setting_name == "Keyboard-continent-human":
+        setting_prop = "America"
     elif setting_name == "Keyboard-country-human":
         setting_prop = "USA"
     elif setting_name == "Keyboard-variant-human":
@@ -149,6 +154,6 @@ def set_defaults(setting_name):
     elif setting_name == "Completed":
         setting_prop = "0"
 
-    return setting_prop
-
     write_to_file(setting_name, setting_prop)
+
+    return setting_prop
