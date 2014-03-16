@@ -10,7 +10,7 @@
 from gi.repository import Gtk, Pango
 
 
-class Apply(Gtk.Button):
+class Apply():
 
     def __init__(self, icon_first=True):
 

@@ -27,6 +27,7 @@ import kano_settings.components.icons as icons
 import kano_settings.constants as constants
 import kano_settings.components.first_run as first_run
 import kano_settings.components.default_intro as default_intro
+import kano_settings.components.fixed_size_box as fixed_size_box
 
 win = None
 MAX_STATE = 6
