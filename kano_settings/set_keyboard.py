@@ -122,9 +122,9 @@ def activate(_win, box, update):
     # Refresh window
     win.show_all()
 
-    continents_combo.get_child().modify_font(Pango.FontDescription("Bariol 13"))
-    variants_combo.get_child().modify_font(Pango.FontDescription("Bariol 13"))
-    countries_combo.get_child().modify_font(Pango.FontDescription("Bariol 13"))
+    continents_combo.get_child().modify_font(Pango.FontDescription("Bariol 12"))
+    variants_combo.get_child().modify_font(Pango.FontDescription("Bariol 12"))
+    countries_combo.get_child().modify_font(Pango.FontDescription("Bariol 12"))
 
 
 def apply_changes(button):
