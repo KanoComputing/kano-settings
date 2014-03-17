@@ -53,8 +53,7 @@ def activate(_win, changeable_content, update):
 
     # Settings container
     settings = fixed_size_box.Fixed()
-    settings_container = settings.box
-    settings_container.pack_start(title.container, False, False, 0)
+    #settings.box.pack_start(title.container, False, False, 0)
 
     # Text entry
     text = "Email"
@@ -82,9 +81,11 @@ def activate(_win, changeable_content, update):
     email_entry.attach(success_icon, 1, 2, 0, 1)
     email_entry.props.valign = Gtk.Align.CENTER
 
-    settings_container.pack_start(email_entry, False, False, 0)
-    changeable_content.pack_start(settings_container, False, False, 0)
-    changeable_content.pack_start(update.box, False, False, 30)
+    settings.box.pack_start(email_entry, False, False, 0)
+
+    changeable_content.pack_start(title.container, False, False, 0)
+    changeable_content.pack_start(settings.box, False, False, 0)
+    changeable_content.pack_start(update.box, False, False, 0)
 
     entry1.connect('key_press_event', check_email)
 
@@ -133,3 +134,5 @@ def apply_changes(button):
         os.system("echo %s > /home/%s/.useremail" % (email1, USER))
 
     config_file.replace_setting("Email", email1)
+
+    return 1

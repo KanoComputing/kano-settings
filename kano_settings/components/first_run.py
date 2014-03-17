@@ -26,16 +26,19 @@ class First_Run():
 
         win = _win
 
-        # Updates the current level and goes to the next (when clicking Next -> button in first run through levels).
-    def update_and_next(self, widget):
-        returnValue = self.state_to_widget(win.state).apply_changes(widget)
+    def update_and_next(self, widget=None):
+        global win
+
+        returnValue = self.state_to_widget(win.state).apply_changes(win.update.button)
+
         if returnValue == -1:
             return
 
-        self.on_next(widget)
+        self.on_next()
+        return
 
     # When clicking previous arrow on first run through
-    def on_prev(self, widget):
+    def on_prev(self, widget=None):
         global win
 
          # Update current state
@@ -43,17 +46,17 @@ class First_Run():
         # Check we're in a valid state
         if win.state == -1:
             win.state = 0
-            return;
+            return
 
         # Remove element in the dynamic box
         for i in win.changeable_content.get_children():
             win.changeable_content.remove(i)
-       
+
         # Call next state
         self.state_to_widget(win.state).activate(win, win.changeable_content, win.update)
 
         # Change label on Apply Changes button
-        if win.state == MAX_STATE -1:
+        if win.state == MAX_STATE - 1:
             win.update.text.set_text("Finish!")
         elif win.state > 0:
             win.update.text.set_text("Next")
@@ -63,7 +66,7 @@ class First_Run():
         win.show_all()
 
     # When clicking next arrow button on first run through
-    def on_next(self, widget):
+    def on_next(self, widget=None):
         global grid, box, state, win
 
         # Update current state
@@ -84,7 +87,7 @@ class First_Run():
         self.state_to_widget(win.state).activate(win, win.changeable_content, win.update)
 
         # Change label on Apply Changes button
-        if win.state == MAX_STATE -1:
+        if win.state == MAX_STATE - 1:
             win.update.text.set_text("Finish!")
         elif win.state > 0:
             win.update.text.set_text("Next")
