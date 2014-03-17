@@ -61,10 +61,12 @@ def activate(_win, box, update):
 
     current_img = Gtk.Image()
     current_img.set_from_file(constants.media + "/Graphics/Audio-jack.png")
+
     radio_button_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     radio_button_container.pack_start(hdmi_button, False, False, 10)
     radio_button_container.pack_start(current_img, False, False, 10)
     radio_button_container.pack_start(analog_button, False, False, 10)
+    radio_button_container.props.halign = Gtk.Align.CENTER
 
     settings.box.pack_start(radio_button_container, False, False, 0)
 
