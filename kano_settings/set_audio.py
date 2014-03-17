@@ -68,7 +68,7 @@ def activate(_win, box, update):
     radio_button_container.pack_start(analog_button, False, False, 10)
     radio_button_container.props.halign = Gtk.Align.CENTER
 
-    settings.box.pack_start(radio_button_container, False, False, 0)
+    settings.box.pack_start(radio_button_container, False, False, 10)
 
     # Show the current setting by electing the appropriate radio button
     current_setting(analog_button, hdmi_button)

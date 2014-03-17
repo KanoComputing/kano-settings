@@ -17,7 +17,6 @@ class Apply():
 
         # Create button
         self.button = Gtk.Button()
-        self.button.set_size_request(70, 30)
 
         self.text = Gtk.Label()
         self.text.modify_font(Pango.FontDescription("Bariol bold 13"))
@@ -28,7 +27,6 @@ class Apply():
         self.button.add(self.label)
 
         self.image = Gtk.Image()
-        self.image.set_from_pixbuf(icons.Icons(0).subpixel)
         self.image.hide()
 
         # Get rid of annoying dotted borders around click buttons

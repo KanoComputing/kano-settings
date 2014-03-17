@@ -37,7 +37,7 @@ GtkButton {
 /* The main button that updates the changes made in each level */
 .apply_changes_button {
     background: @button_color;
-    padding:9px 4px 9px 17px;
+    padding:9px 14px 9px 17px;
     /* For Next -> : padding:9px 4px 9px 17px;*/
     border-radius:3px;
     font-weight:bold;

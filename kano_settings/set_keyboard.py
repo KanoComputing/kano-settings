@@ -113,7 +113,7 @@ def activate(_win, box, _update):
     update.text.set_text("Apply changes")
 
     box.pack_start(title.container, False, False, 0)
-    box.add(settings.box)
+    box.pack_start(settings.box, False, False, 0)
     settings.box.pack_start(dropdown_container, False, False, 0)
     box.pack_start(update.box, False, False, 0)
 
