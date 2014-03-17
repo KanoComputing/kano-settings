@@ -12,6 +12,7 @@ import os
 import sys
 import subprocess
 from gi.repository import Gtk, Gdk
+from kanowifilib import is_internet
 
 if __name__ == '__main__' and __package__ is None:
     dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -100,6 +101,8 @@ def main():
     styleContext = Gtk.StyleContext()
     styleContext.add_provider_for_screen(screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
     zenity.write("50\n")
+    # Check for internet
+    constants.has_internet = is_internet()
     # Create windown
     win = MainWindow()
     zenity.write("75\n")

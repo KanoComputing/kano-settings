@@ -19,3 +19,5 @@ elif os.path.exists(abs_path):
     media = abs_path
 else:
     sys.exit('Media folder missing!')
+
+has_internet = False
