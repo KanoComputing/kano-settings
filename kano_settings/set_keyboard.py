@@ -48,7 +48,7 @@ class WorkerThread(threading.Thread):
 
 
 def activate(_win, box, update):
-    global win, continents_combo, variants_combo, countries_combo, continents
+    global win, continents_combo, variants_combo, countries_combo, continents, spinner
 
     read_config()
 
@@ -163,7 +163,7 @@ def update_config():
     config_file.replace_setting("Keyboard-variant-human", str(selected_variant_hr))
 
 
-#setting = "variant", "continent" or "country"
+# setting = "variant", "continent" or "country"
 def set_defaults(setting):
     global continents_combo, countries_combo, variants_combo
 
@@ -189,14 +189,6 @@ def on_continent_changed(combo):
     continent = selected_continent_hr
     tree_iter = combo.get_active_iter()
 
-    #############################################
-    """    if tree_iter is None:
-        combo.set_active(selected_continent)
-        tree_iter = combo.get_active_iter()
-
-    model = combo.get_model()
-    continent = model[tree_iter][0]"""
-    ################################################
     if tree_iter is not None:
         model = combo.get_model()
         continent = model[tree_iter][0]
@@ -224,6 +216,7 @@ def on_country_changed(combo):
     # Remove entries from variants combo box
     variants_combo.remove_all()
     selected_country_hr = str(country)
+    selected_country_index = combo.get_active()
 
     # Refresh variants combo box
     selected_country = keyboard_config.find_country_code(country, selected_layout)
@@ -238,7 +231,7 @@ def on_country_changed(combo):
 
 
 def on_variants_changed(combo):
-    global win, selected_variant, selected_variants_hr
+    global win, selected_variant, selected_variant_hr, selected_variant_index
 
     tree_iter = combo.get_active_iter()
     if tree_iter is not None:
@@ -250,7 +243,8 @@ def on_variants_changed(combo):
             for v in variants:
                 if v[0] == variant:
                     selected_variant = v[1]
-                    selected_variants_hr = str(variant)
+                    selected_variant_index = combo.get_active()
+                    selected_variant_hr = str(variant)
 
     # Refresh window
     win.show_all()
