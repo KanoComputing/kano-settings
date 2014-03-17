@@ -11,8 +11,10 @@ import os
 import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
+import kano_settings.config_file as config_file
 
 internet = False
+network_message = ""
 
 
 # TODO: Use the function in kanowifilib.py
@@ -28,15 +30,14 @@ def is_internet():
 
 
 def activate(_win, box, update):
-    global internet
+    global internet, network_message
+
+    title = heading.Heading("", "")
+    box.pack_start(title.container, False, False, 0)
 
     # Table
     settings = fixed_size_box.Fixed()
-    box.add(settings.box)
-
-    title = heading.Heading("", "")
-
-    settings.box.pack_start(title.container, False, False, 0)
+    box.pack_start(settings.box, False, False, 0)
 
     # TODO: this should be done when starting the tool and only once
     # Check for internet
@@ -67,6 +68,8 @@ def activate(_win, box, update):
     container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     container.pack_start(event_box, False, False, 0)
     container.pack_start(internet_img, False, False, 0)
+    container.props.halign = Gtk.Align.CENTER
+    container.props.valign = Gtk.Align.CENTER
 
     settings.box.pack_start(container, False, False, 0)
 
@@ -77,7 +80,8 @@ def activate(_win, box, update):
         internet_img.set_from_file(constants.media + "/Graphics/Internet-connection.png")
         title.title.set_text("Weee you have internet")
         title.description.set_text("Great!")
-        internet_status.set_text("Weee you have internet")
+        network_message = "Weee you have internet"
+        internet_status.set_text(network_message)
         internet_status_style.remove_class("dark_red")
         internet_status_style.add_class("dark_green")
         internet_action.set_text("Configure")
@@ -95,6 +99,7 @@ def activate(_win, box, update):
     box.pack_start(update.box, False, False, 0)
 
 
-def apply_changes(button):
+def apply_changes(event, button):
     # Call WiFi config
     os.system('rxvt -title \'WiFi\' -e sudo /usr/bin/kano-wifi')
+    config_file.replace_setting("Wifi", network_message)
