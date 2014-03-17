@@ -8,6 +8,7 @@
 # This controls the style of the main button in the projects that applies the changes
 
 from gi.repository import Gtk, Pango
+import kano_settings.components.icons as icons
 
 
 class Apply():
@@ -24,9 +25,12 @@ class Apply():
         self.label = Gtk.Box()
         self.label_style = self.button.get_style_context()
         self.label_style.add_class("apply_changes_label")
+        self.button.add(self.label)
 
         self.image = Gtk.Image()
-        self.button.add(self.label)
+        self.image.set_from_pixbuf(icons.Icons(0).subpixel)
+        self.image.hide()
+
         # Get rid of annoying dotted borders around click buttons
         self.button.set_can_focus(False)
         # Allow button to be styled in css
@@ -36,17 +40,16 @@ class Apply():
         self.box.pack_start(self.button, False, False, 0)
         self.box.props.halign = Gtk.Align.CENTER
 
+    def remove_label(self):
+
+        for i in self.label.get_children():
+            self.label.remove(i)
+
+    def add_elements(self, icon_first):
+
         if icon_first:
-            self.label.pack_start(self.image, False, False, 5)
-            self.label.pack_start(self.text, True, False, 5)
+            self.label.pack_start(self.image, False, False, 0)
+            self.label.pack_start(self.text, False, False, 0)
         else:
-            self.label.pack_start(self.text, True, False, 5)
-            self.label.pack_start(self.image, False, False, 5)
-
-        self.button.connect("clicked", self.print_size)
-
-    def print_size(self, button):
-        print("button.get_preferred_size() = " + str(button.get_preferred_size()))
-        print("button.get_size_request() = " + str(button.get_size_request()))
-
-
+            self.label.pack_start(self.text, False, False, 0)
+            self.label.pack_start(self.image, False, False, 0)
