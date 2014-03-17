@@ -42,12 +42,12 @@ def activate(_win, box, update):
     global current_img
 
     title = heading.Heading("Audio settings", "Can you hear me?")
+    box.pack_start(title.container, False, False, 0)
 
     # Settings container
     settings = fixed_size_box.Fixed()
-    box.add(settings.box)
+    box.pack_start(settings.box, False, False, 0)
 
-    settings.box.pack_start(title.container, False, False, 0)
     settings.box.props.halign = Gtk.Align.CENTER
 
     # Analog radio button
