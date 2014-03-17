@@ -9,17 +9,14 @@
 from gi.repository import Gtk, Pango, GObject
 GObject.threads_init()
 import threading
-#import time
 import kano_settings.keyboard.keyboard_layouts as keyboard_layouts
 import kano_settings.keyboard.keyboard_config as keyboard_config
 import kano_settings.components.heading as heading
 import kano_settings.config_file as config_file
 import kano_settings.components.fixed_size_box as fixed_size_box
-import kano_settings.components.icons as icons
 
 win = None  # TODO: Is it needed?
 update = None
-update_image = None
 
 selected_layout = None
 selected_country = None
@@ -35,7 +32,6 @@ selected_variant_hr = "Generic"
 variants_combo = None
 countries_combo = None
 continents_combo = None
-spinner = None
 
 continents = ['Africa', 'America', 'Asia', 'Australia', 'Europe', 'Others']
 
@@ -46,16 +42,15 @@ class WorkerThread(threading.Thread):
         self.callback = callback
 
     def run(self):
-        # Delay so can see on my (Caroline's) computer!
-        #time.sleep(7)
         # Apply the keyboard changes
         keyboard_config.set_keyboard(selected_country, selected_variant)
+
         # The callback runs a GUI task, so wrap it!
         GObject.idle_add(self.callback)
 
 
 def activate(_win, box, _update):
-    global win, continents_combo, variants_combo, countries_combo, continents, spinner, update, update_image
+    global win, continents_combo, variants_combo, countries_combo, continents, update
 
     update = _update
 
@@ -65,11 +60,9 @@ def activate(_win, box, _update):
 
     # Contains all the settings
     settings = fixed_size_box.Fixed()
-    box.add(settings.box)
 
     # Title
     title = heading.Heading("Change your keyboard settings", "Which country do you live in?")
-    settings.box.pack_start(title.container, False, False, 0)
 
     # Create Continents Combo box
     continents_combo = Gtk.ComboBoxText.new()
@@ -86,9 +79,6 @@ def activate(_win, box, _update):
     variants_combo = Gtk.ComboBoxText.new()
     variants_combo.connect("changed", on_variants_changed)
     variants_combo.props.valign = Gtk.Align.CENTER
-
-    # Create Spinner
-    spinner = Gtk.Spinner()
 
     # Set up default values in dropdown lists
     set_defaults("continent")
@@ -107,32 +97,24 @@ def activate(_win, box, _update):
     # |-------countries -------|                        |
     # |                        |                        |
 
-    dropdown_box_countries = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+    dropdown_box_countries = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
     dropdown_box_countries.set_size_request(230, 30)
     dropdown_box_countries.props.valign = Gtk.Align.CENTER
-    dropdown_box_keys = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+    dropdown_box_keys = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
     dropdown_box_keys.set_size_request(230, 30)
     dropdown_box_keys.props.valign = Gtk.Align.CENTER
-    dropdown_box_countries.pack_start(continents_combo, False, False, 10)
-    dropdown_box_countries.pack_start(countries_combo, False, False, 10)
-    dropdown_box_keys.pack_start(variants_combo, False, False, 10)
-    dropdown_container = Gtk.Box()
-    dropdown_container.pack_start(dropdown_box_countries, False, False, 10)
-    dropdown_container.pack_start(dropdown_box_keys, False, False, 10)
-
-    update_image = update.image
+    dropdown_box_countries.pack_start(continents_combo, False, False, 0)
+    dropdown_box_countries.pack_start(countries_combo, False, False, 0)
+    dropdown_box_keys.pack_start(variants_combo, False, False, 0)
+    dropdown_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=20)
+    dropdown_container.pack_start(dropdown_box_countries, False, False, 0)
+    dropdown_container.pack_start(dropdown_box_keys, False, False, 0)
 
     update.text.set_text("Apply changes")
-    update.label.pack_start(update.text, False, False, 0)
-    update.label.pack_start(update_image, False, False, 0)
-    update.label.pack_start(spinner, False, False, 0)
 
-    update_image.set_from_pixbuf(icons.Icons(5).subpixel)
-    #update_image.set_visible(False)
-    #print("132 update_image.get_visible() = " + str(update_image.get_visible()))
-    spinner.hide()
-
-    settings.box.pack_start(dropdown_container, False, False, 30)
+    box.pack_start(title.container, False, False, 0)
+    box.add(settings.box)
+    settings.box.pack_start(dropdown_container, False, False, 0)
     box.pack_start(update.box, False, False, 0)
 
     # Refresh window
@@ -144,13 +126,8 @@ def activate(_win, box, _update):
 
 
 def apply_changes(button):
-    global win, spinner, update, update_image
+    global win, update
 
-    print("149 update_image.get_visible() = " + str(update_image.get_visible()))
-    spinner.set_visible(True)
-    #update_image.set_visible(False)
-    print("152 update_image.get_visible() = " + str(update_image.get_visible()))
-    spinner.start()
     # Apply changes
     thread = WorkerThread(work_finished_cb)
     thread.start()
@@ -271,11 +248,7 @@ def on_variants_changed(combo):
 
 
 def work_finished_cb():
-    global spinner, update, update_image
-
-    spinner.stop()
-    spinner.set_visible(False)
-    #update_image.set_visible(True)
+    print("Finshed updating keyboard")
 
 
 def fill_countries_combo(continent):

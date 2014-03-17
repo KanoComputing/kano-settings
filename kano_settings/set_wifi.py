@@ -13,24 +13,11 @@ import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
 import kano_settings.config_file as config_file
 
-internet = False
 network_message = ""
 
 
-# TODO: Use the function in kanowifilib.py
-def is_internet():
-    '''
-    Ping Google DNS servers avoiding name resolution delays for faster response time
-    '''
-    try:
-        rc = os.system('ping -c 1 8.8.8.8 > /dev/null 2>&1')
-        return rc == 0
-    except:
-        return False
-
-
 def activate(_win, box, update):
-    global internet, network_message
+    global network_message
 
     title = heading.Heading("", "")
     box.pack_start(title.container, False, False, 0)
@@ -38,10 +25,6 @@ def activate(_win, box, update):
     # Table
     settings = fixed_size_box.Fixed()
     box.pack_start(settings.box, False, False, 0)
-
-    # TODO: this should be done when starting the tool and only once
-    # Check for internet
-    internet = is_internet()
 
     internet_img = Gtk.Image()
 
@@ -76,7 +59,7 @@ def activate(_win, box, update):
     #event_box.set_events("button-press-event", self.on_button_press_event)
     event_box.connect("button-press-event", apply_changes)
 
-    if internet is False:
+    if constants.has_internet:
         internet_img.set_from_file(constants.media + "/Graphics/Internet-connection.png")
         title.title.set_text("Weee you have internet")
         title.description.set_text("Great!")
