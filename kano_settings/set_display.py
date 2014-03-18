@@ -55,6 +55,7 @@ def activate(_win, box, update):
     check_button.set_can_focus(False)
     check_button.modify_font(Pango.FontDescription("Bariol 14"))
     check_button.props.valign = Gtk.Align.CENTER
+    check_button.connect("clicked", on_button_toggled)
     #button.set_active(True)
 
     # Select the current setting in the dropdown list
@@ -121,7 +122,7 @@ def set_defaults(setting, combo=None, button=None):
 def on_button_toggled(button):
     global overscan
 
-    overscan = button.get_active()
+    overscan = int(button.get_active())
 
 
 def on_mode_changed(combo):
