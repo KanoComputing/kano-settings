@@ -136,27 +136,3 @@ class Default_Intro():
             4: set_display,
             5: set_wifi,
         }[x]
-
-
-# On closing window, will alert if any of the listed booleans are True
-def close_window(event="delete-event", button=win):
-
-    if set_audio.reboot or set_display.reboot:
-        #Bring in message dialog box
-
-        dialog = Gtk.MessageDialog(button, 0, Gtk.MessageType.INFO,
-                                   Gtk.ButtonsType.OK, "So you know...")
-        dialog.format_secondary_text(
-            "..you will need to reboot to see all your changes")
-
-        response = dialog.run()
-        print("INFO dialog closed")
-
-        if response == Gtk.ResponseType.OK:
-            dialog.destroy()
-            Gtk.main_quit()
-            return
-        else:
-            dialog.destroy()
-    else:
-        Gtk.main_quit()

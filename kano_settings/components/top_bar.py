@@ -57,7 +57,6 @@ class Top_bar():
         self.close_button = Gtk.Button()
         self.close_button.set_image(self.cross)
         self.close_button.set_size_request(TOP_BAR_HEIGHT, TOP_BAR_HEIGHT)
-        self.close_button.connect("clicked", Gtk.main_quit)
         self.close_button.set_can_focus(False)
 
         self.container.add(self.prev_button)

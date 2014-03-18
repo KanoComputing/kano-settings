@@ -89,7 +89,7 @@ def apply_changes(button):
         screen_config.set_config_option("disable_overscan", 1)
 
     update_config()
-    # Display message to tell user to reboot to see changes.
+    reboot = True
 
 
 def read_config():

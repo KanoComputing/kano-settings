@@ -61,6 +61,7 @@ class MainWindow(Gtk.Window):
         self.changeable_content.props.halign = Gtk.Align.CENTER
 
         self.top_bar = top_bar.Top_bar(WINDOW_WIDTH)
+        self.top_bar.close_button.connect("clicked", close_window)
 
         # Init
         if config_file.read_from_file('Completed') == "1":
@@ -111,6 +112,8 @@ def main():
 
 # On closing window, will alert if any of the listed booleans are True
 def close_window(event="delete-event", button=win):
+
+    print("booooooo")
 
     if set_audio.reboot or set_display.reboot:
         #Bring in message dialog box
