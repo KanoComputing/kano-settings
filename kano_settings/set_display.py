@@ -19,11 +19,12 @@ reboot = False
 def activate(_win, box, update):
 
     title = heading.Heading("Display - how sharp can you go?", "Make the OS look the best it can")
+    box.pack_start(title.container, False, False, 0)
 
     # Contains main buttons
     settings = fixed_size_box.Fixed()
-    box.add(settings.box)
-    settings.box.pack_start(title.container, False, False, 0)
+
+    box.pack_start(settings.box, False, False, 0)
 
     horizontal_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=20)
     horizontal_container.set_valign(Gtk.Align.CENTER)
