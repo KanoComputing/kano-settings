@@ -32,6 +32,7 @@ class Menu_button():
         self.description = Gtk.Label(description)
         self.description.modify_font(Pango.FontDescription("Bariol 13"))
         self.description.get_style_context().add_class("custom_label")
+        self.description.set_size_request(120, 10)
 
         self.button = Gtk.Button()
         self.button.set_can_focus(False)

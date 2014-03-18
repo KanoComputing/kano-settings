@@ -66,7 +66,11 @@ class Default_Intro():
     def update_intro(self):
         for x in range(len(custom_info) - 1):
             config_file.read_from_file(custom_info[x])
-            self.labels[x].set_text(str(config_file.read_from_file(custom_info[x])))
+            label_info = str(config_file.read_from_file(custom_info[x]))
+            if len(label_info) > 13:
+                label_info = label_info[:13] + "..."
+            self.labels[x].set_text(label_info)
+
         # Check for internet
         constants.has_internet = is_internet()
         text = ''
