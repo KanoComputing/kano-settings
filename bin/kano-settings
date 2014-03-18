@@ -10,7 +10,6 @@
 
 import os
 import sys
-import subprocess
 from gi.repository import Gtk, Gdk
 from kanowifilib import is_internet
 
@@ -31,7 +30,6 @@ import kano_settings.components.first_run as first_run
 import kano_settings.components.default_intro as default_intro
 
 win = None
-zenity = None
 MAX_STATE = 6
 
 
@@ -94,7 +92,7 @@ class MainWindow(Gtk.Window):
 
 
 def main():
-    global win, zenity
+    global win
 
     # Create style sheet
     cssProvider = Gtk.CssProvider()
@@ -102,17 +100,14 @@ def main():
     screen = Gdk.Screen.get_default()
     styleContext = Gtk.StyleContext()
     styleContext.add_provider_for_screen(screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
-    zenity.write("50\n")
     # Check for internet
     constants.has_internet = is_internet()
     # Create windown
     win = MainWindow()
-    zenity.write("75\n")
     # Link delete event
     win.connect("delete-event", close_window)
     # Display window
     win.show_all()
-    zenity.write("100\n")
     # start the GTK+ processing loop
     Gtk.main()
 
@@ -143,15 +138,6 @@ def close_window(event="delete-event", button=win):
 if __name__ == "__main__":
     if os.environ['LOGNAME'] != 'root':
         exit("Error: kano-settings must be executed with root privileges")
-
-    zenity_cmd = ["zenity", "--progress", "--no-cancel",
-                  "--title=Loading settings",
-                  "--text=Loading settings...",
-                  "--width=300", "--height=90", "--auto-close",
-                  "--timeout=10", "--auto-kill"]
-    z = subprocess.Popen(zenity_cmd, stdin=subprocess.PIPE)
-    zenity = z.stdin
-    zenity.write("20\n")
 
     main()
 
