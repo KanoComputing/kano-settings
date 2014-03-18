@@ -51,3 +51,10 @@ class Apply():
         else:
             self.label.pack_start(self.text, False, False, 0)
             self.label.pack_start(self.image, False, False, 0)
+
+    def set_icon(self, icon_name):
+
+        if icon_name == "arrow":
+            self.image.set_from_pixbuf(icons.Icons(0).subpixel)
+        elif icon_name == "tick":
+            self.image.set_from_pixbuf(icons.Icons(5).subpixel)

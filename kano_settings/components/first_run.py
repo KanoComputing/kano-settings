@@ -57,10 +57,19 @@ class First_Run():
 
         # Change label on Apply Changes button
         if win.state == MAX_STATE - 1:
-            win.update.text.set_text("Finish!")
+            win.update.remove_label()
+            win.update.set_icon("tick")
+            win.update.add_elements(icon_first=True)
+            win.update.text.set_text("Finish")
         elif win.state > 0:
+            win.update.remove_label()
+            win.update.set_icon("arrow")
+            win.update.add_elements(icon_first=False)
             win.update.text.set_text("Next")
         else:
+            win.update.remove_label()
+            win.update.set_icon("arrow")
+            win.update.add_elements(icon_first=False)
             win.update.text.set_text("Get started")
         # Refresh window
         win.show_all()
@@ -88,11 +97,21 @@ class First_Run():
 
         # Change label on Apply Changes button
         if win.state == MAX_STATE - 1:
-            win.update.text.set_text("Finish!")
+            win.update.remove_label()
+            win.update.set_icon("tick")
+            win.update.add_elements(icon_first=True)
+            win.update.text.set_text("Finish")
         elif win.state > 0:
+            win.update.remove_label()
+            win.update.set_icon("arrow")
+            win.update.add_elements(icon_first=False)
             win.update.text.set_text("Next")
         else:
+            win.update.remove_label()
+            win.update.set_icon("arrow")
+            win.update.add_elements(icon_first=False)
             win.update.text.set_text("Get started")
+
         # Refresh window
         win.show_all()
 
