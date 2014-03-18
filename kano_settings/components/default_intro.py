@@ -66,7 +66,7 @@ class Default_Intro():
             self.labels[x].set_text(str(config_file.read_from_file(custom_info[x])))
 
     # Takes you back to the introduction screen (on pressing prev button)
-    def on_prev(self, arg2):
+    def on_prev(self, arg2=None):
         global win
         # save last level?
         for i in win.changeable_content.get_children():
@@ -77,7 +77,7 @@ class Default_Intro():
         win.changeable_content.pack_start(self.table, False, False, 0)
 
     # When clicking next in the default intro screen - takes you to the last level you visited
-    def on_next(self, widget):
+    def on_next(self, widget=None):
         if win.last_level_visited == 0:
             return
 
@@ -108,6 +108,9 @@ class Default_Intro():
         returnValue = self.state_to_widget(win.state).apply_changes(widget)
         if returnValue == -1:
             return
+
+        # Go back to intro screen
+        self.on_prev()
 
     def state_to_widget(self, x):
         return {
