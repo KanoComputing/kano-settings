@@ -11,7 +11,6 @@
 import os
 import sys
 from gi.repository import Gtk, Gdk
-from kanowifilib import is_internet
 
 if __name__ == '__main__' and __package__ is None:
     dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -100,8 +99,6 @@ def main():
     screen = Gdk.Screen.get_default()
     styleContext = Gtk.StyleContext()
     styleContext.add_provider_for_screen(screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
-    # Check for internet
-    constants.has_internet = is_internet()
     # Create windown
     win = MainWindow()
     # Link delete event

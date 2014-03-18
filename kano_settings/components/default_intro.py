@@ -8,7 +8,7 @@
 # This controls the layout of the main default intro screen
 
 from gi.repository import Gtk
-#
+
 import kano_settings.set_intro as set_intro
 import kano_settings.set_email as set_email
 import kano_settings.set_keyboard as set_keyboard
@@ -17,9 +17,11 @@ import kano_settings.set_display as set_display
 import kano_settings.set_wifi as set_wifi
 import kano_settings.config_file as config_file
 import kano_settings.components.menu_button as menu_button
+import kano_settings.constants as constants
+from kanowifilib import is_internet
 
-names = ["Email", "Keyboard", "Audio", "Wifi", "Display"]
-custom_info = ["Email", "Keyboard-country-human", "Audio", "Wifi", "Display"]
+names = ["Email", "Keyboard", "Audio", "Display", "Wifi"]
+custom_info = ["Email", "Keyboard-country-human", "Audio", "Display", "Wifi"]
 win = None
 
 
@@ -41,13 +43,14 @@ class Default_Intro():
 
         # names at top of file
         for x in range(len(names)):
-            self.info = config_file.read_from_file(custom_info[x])
-            self.item = menu_button.Menu_button(names[x], self.info)
+            self.item = menu_button.Menu_button(names[x], '')
             self.labels.append(self.item.description)
             # Update the state of the button, so we know which button has been clicked on.
             self.item.button.state = x
             self.item.button.connect("clicked", self.go_to_level)
             buttons.append(self.item.button)
+        # Fill the tabs with the current information
+        self.update_intro()
 
         # Attach to table
         self.table.attach(buttons[0], 0, 1, 0, 1, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, 5, 5)
@@ -61,9 +64,17 @@ class Default_Intro():
     # This is to update the introdction text, so that if the settings are modified and then we go back to the
     # intro screen, the latest information is shown
     def update_intro(self):
-        for x in range(len(custom_info)):
+        for x in range(len(custom_info) - 1):
             config_file.read_from_file(custom_info[x])
             self.labels[x].set_text(str(config_file.read_from_file(custom_info[x])))
+        # Check for internet
+        constants.has_internet = is_internet()
+        text = ''
+        if constants.has_internet:
+            text = 'Connected'
+        else:
+            text = 'Not connected'
+        self.labels[len(custom_info) - 1].set_text(text)
 
     # Takes you back to the introduction screen (on pressing prev button)
     def on_prev(self, arg2=None):
