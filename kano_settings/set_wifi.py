@@ -84,7 +84,7 @@ def activate(_win, box, update):
     box.pack_start(update.box, False, False, 0)
 
 
-def apply_changes(event, button):
+def apply_changes(button=None):
     # Call WiFi config
     os.system('rxvt -title \'WiFi\' -e sudo /usr/bin/kano-wifi')
     config_file.replace_setting("Wifi", network_message)
