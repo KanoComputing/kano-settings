@@ -58,3 +58,5 @@ class Apply():
             self.image.set_from_pixbuf(icons.Icons(0).subpixel)
         elif icon_name == "tick":
             self.image.set_from_pixbuf(icons.Icons(5).subpixel)
+        elif icon_name == "cross":
+            self.image.set_from_pixbuf(icons.Icons(6).subpixel)
