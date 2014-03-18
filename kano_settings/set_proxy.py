@@ -15,12 +15,21 @@ pxysettings = proxy.ProxySettings()
 def is_enabled():
     return libpreload.is_enabled()
 
-def enable(dict_settings):
+def enable():
     libpreload.proxify(True)
-    pxysettings.set_settings(dict_settings)
 
 def disable():
-    libpreload.proxify(True)
+    libpreload.proxify(False)
 
 def get_settings():
-    pxysettings.get_settings()
+    return pxysettings.get_settings()
+
+def set_settings(proxyip, proxyport, proxytype, username='', password=''):
+    settings = {
+        'proxy-ip'    : proxyip,
+        'proxy-port'  : proxyport,
+        'proxy-type'  : proxytype,   # on of : "socks_v4 socks_v5" or "http_v1.0"
+        'username'    : None,
+        'password'    : None
+        }
+    pxysettings.set_settings(settings)

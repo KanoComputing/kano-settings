@@ -5,8 +5,11 @@
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
-# A simple script to set Kanux behind a proxy
-# this module is part of kano-settings.
+# A simple script to set Kanux behind a proxy.
+# Files which are managed by this module are:
+#
+#  /etc/ld.so.preload
+#  /etc/dante.conf
 #
 
 import os, sys
@@ -72,7 +75,6 @@ class ProxySettings:
 
     def parse_out (self, route_section):
         rs = route_section
-        print rs
         settings = {
             'proxy-ip'    : rs[1].split()[5],
             'proxy-port'  : rs[1].split()[8],
