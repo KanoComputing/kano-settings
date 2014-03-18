@@ -17,6 +17,7 @@ import kano_settings.components.fixed_size_box as fixed_size_box
 
 entry1 = None
 entry2 = None
+update = None
 USER = None
 USER_ID = None
 current_email = None
@@ -34,8 +35,8 @@ def is_email(email):
         return False
 
 
-def activate(_win, changeable_content, update):
-    global current_email, USER, USER_ID, tick, cross, success_icon, entry1, entry2
+def activate(_win, changeable_content, _update):
+    global current_email, USER, USER_ID, tick, cross, success_icon, entry1, entry2, update
 
     # Init user detail
     USER = os.environ['SUDO_USER']
@@ -54,6 +55,7 @@ def activate(_win, changeable_content, update):
     # Settings container
     settings = fixed_size_box.Fixed()
     #settings.box.pack_start(title.container, False, False, 0)
+    update = _update
 
     # Text entry
     text = "Email"
@@ -87,7 +89,25 @@ def activate(_win, changeable_content, update):
     changeable_content.pack_start(settings.box, False, False, 0)
     changeable_content.pack_start(update.box, False, False, 0)
 
-    entry1.connect('key_press_event', check_email)
+    update.button.set_sensitive(False)
+    update.set_icon("cross")
+
+    entry1.connect('key_release_event', check_email)
+    entry2.connect('key_release_event', check_match)
+
+
+def check_match(entry, event):
+    global entry1, entry2, update
+
+    email1 = entry1.get_text()
+    email2 = entry2.get_text()
+
+    if email1 == email2:
+        update.button.set_sensitive(True)
+        update.set_icon("tick")
+    else:
+        update.button.set_sensitive(False)
+        update.set_icon("cross")
 
 
 def check_email(entry, event):
@@ -109,19 +129,6 @@ def apply_changes(button):
     global entry1, entry2, current_email
 
     email1 = entry1.get_text()
-    email2 = entry2.get_text()
-
-    if email1 != email2:
-        # Bring in message dialog box
-        dialog = Gtk.MessageDialog(
-            win, 0, Gtk.MessageType.ERROR,
-            Gtk.ButtonsType.OK, "Your emails don't match!"
-        )
-        dialog.format_secondary_text(
-            "Please re-enter")
-        dialog.run()
-        dialog.destroy()
-        return -1
 
     # First time user introduces the email
     if current_email is None:
