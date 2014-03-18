@@ -34,6 +34,7 @@ def replace(fname, pat, s_after):
 
     # See if the pattern is even in the file.
     with open(fname) as f:
+        pat = re.escape(pat)
         if not any(re.search(pat, line) for line in f):
             return  # pattern does not occur in file so we are done.
 
