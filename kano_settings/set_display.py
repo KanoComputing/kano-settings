@@ -16,9 +16,14 @@ mode = 'auto'
 mode_index = 0
 overscan = False
 reboot = False
+update = None
 
 
-def activate(_win, box, update):
+def activate(_win, box, _update):
+    global update
+
+    update = _update
+    update.button.set_sensitive(False)
 
     read_config()
 
@@ -56,7 +61,6 @@ def activate(_win, box, update):
     check_button.modify_font(Pango.FontDescription("Bariol 14"))
     check_button.props.valign = Gtk.Align.CENTER
     check_button.connect("clicked", on_button_toggled)
-    #button.set_active(True)
 
     # Select the current setting in the dropdown list
     set_defaults("resolution", mode_combo)
@@ -126,7 +130,7 @@ def on_button_toggled(button):
 
 
 def on_mode_changed(combo):
-    global mode, mode_index
+    global mode, mode_index, update
 
     #  Get the selected mode
     tree_iter = combo.get_active_iter()
@@ -135,3 +139,5 @@ def on_mode_changed(combo):
         mode = model[tree_iter][0]
 
     mode_index = combo.get_active()
+
+    update.button.set_sensitive(True)
