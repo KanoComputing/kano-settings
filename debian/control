@@ -7,5 +7,5 @@ Build-Depends: debhelper (>= 9)
 
 Package: kano-settings
 Architecture: all
-Depends: ${shlibs:Depends}, ${misc:Depends}, python, python-gi
+Depends: ${shlibs:Depends}, ${misc:Depends}, python, python-gi, dante-client
 Description: Graphical tool to set different system settings

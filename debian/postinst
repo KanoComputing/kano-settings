@@ -24,6 +24,10 @@ case "$1" in
 
         # Move the file to the sudoers directory
         mv $TMP_FILE /etc/sudoers.d/
+
+        # Provide a libc symbolic link for dante, as it uses a hardcoded libname
+        ln -sfv /lib/arm-linux-gnueabihf/libc.so.6 /lib/arm-linux-gnueabihf/libc.so
+
         ;;
 esac
 

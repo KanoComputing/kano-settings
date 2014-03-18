@@ -1,14 +1,12 @@
 #!/usr/bin/env python
 #
-# kano-launcher
+# socks-settings
 #
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 # A simple script to set Kanux behind a proxy
 # this module is part of kano-settings.
-#
-# It has a command-line mode for testing type python socks-settings.py for help
 #
 
 import os, sys
@@ -58,20 +56,27 @@ class ProxySettings:
         self.filename = filename
         self.marker = '# kano-settings - DO NOT TOUCH MANUALLY BELOW THIS LINE'
 
-        self.dante_format = \
+        self.dante_format_socks = \
         'route {\n' \
-        '   from: 0.0.0.0/0 to: 0.0.0.0 via: %(proxy-ip)s port = %(proxy-port)s\n' \
-        '   protocol tcp,udp\n' \
+        '   from: 0.0.0.0/0   to: 0.0.0.0/0   via: %(proxy-ip)s port = %(proxy-port)s\n' \
+        '   protocol: tcp udp\n' \
+        '   proxyprotocol: socks_v4 socks_v5\n' \
+        '}\n\n'
+
+        self.dante_format_http = \
+        'route {\n' \
+        '   from: 0.0.0.0/0   to: 0.0.0.0/0   via: %(proxy-ip)s port = %(proxy-port)s\n' \
         '   command: connect\n' \
-        '   proxyprotocol: %(proxy-type)s\n' \
+        '   proxyprotocol: http_v1.0\n' \
         '}\n\n'
 
     def parse_out (self, route_section):
         rs = route_section
+        print rs
         settings = {
             'proxy-ip'    : rs[1].split()[5],
             'proxy-port'  : rs[1].split()[8],
-            'proxy-type'  : rs[4].split()[1:],
+            'proxy-type'  : rs[3].split()[1:],
             'username'    : '',
             'password'    : ''
             }
@@ -91,8 +96,10 @@ class ProxySettings:
 
     def set_settings(self, dict_settings):
         bmarker = False
-        new_settings = self.dante_format % (dict_settings)
-        #print 'applying', new_settings
+        if dict_settings['proxy-type'] == 'http_v1.0':
+            new_settings = self.dante_format_http % (dict_settings)
+        else:
+            new_settings = self.dante_format_socks % (dict_settings)
 
         # Read Dante's current settings
         f = open (self.filename, 'r')
@@ -114,55 +121,3 @@ class ProxySettings:
         f.write (new_settings)
         f.close()
         return True
-
-
-def display_syntax():
-    print 'Syntax: socks-settings [help] | [status] | [off] | [on] | [ <proxy-ip> <proxy-port> <proxy-type> [username] [password] ]'
-    print 'proxytype can be: socks_v4, socks_v5 (or both), or http_v1.0'
-    print 'TODO: Username and password are not implemented yet'
-    sys.exit(1)
-
-if __name__ == '__main__':
-
-    preload = LibPreload()
-    proxy_settings = ProxySettings()
-
-    if os.getuid() != 0:
-        print 'You need root permissions'
-        sys.exit(1)
-        
-
-    if len(sys.argv) == 3:
-
-        settings = {
-            'proxy-ip'    : sys.argv[1],
-            'proxy-port'  : sys.argv[2],
-            'proxy-type'  : sys.argv[3],
-            'username'    : None,
-            'password'    : None
-            }
-
-        # enabling proxy and new settings
-        preload.proxify(True)
-        proxy_settings.set_settings (settings)        
-    else:
-        if len (sys.argv) > 1:
-            if sys.argv[1] == 'off':
-                print 'Disabling Proxy'
-                preload.proxify(False)
-            elif sys.argv[1] == 'on':
-                print 'Enabling Proxy'
-                preload.proxify(True)
-            elif sys.argv[1] == 'status':
-                pass
-            else:
-                display_syntax()
-                sys.exit(1)
-        else:
-            display_syntax()
-            sys.exit(1)
-
-    print 'Proxy status:'
-    print 'Preload:', preload.is_enabled()
-    print 'Proxy Settings:', proxy_settings.get_settings()
-    sys.exit(0)
