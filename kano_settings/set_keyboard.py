@@ -234,6 +234,10 @@ def on_variants_changed(combo):
     if tree_iter is not None:
         model = combo.get_model()
         variant = model[tree_iter][0]
+        if variant == "Generic":
+            selected_variant = selected_variant_hr = str(variant)
+            selected_variant_index = 0
+            return
         # Select the variant code
         variants = keyboard_config.find_keyboard_variants(selected_country)
         if variants is not None:
