@@ -115,7 +115,7 @@ def apply_changes(button):
         # Bring in message dialog box
         dialog = Gtk.MessageDialog(
             win, 0, Gtk.MessageType.ERROR,
-            Gtk.ButtonsType.CANCEL, "Your emails don't match!"
+            Gtk.ButtonsType.OK, "Your emails don't match!"
         )
         dialog.format_secondary_text(
             "Please re-enter")
