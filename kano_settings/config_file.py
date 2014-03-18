@@ -149,8 +149,12 @@ def set_defaults(setting_name):
         setting_prop = "Analogue"
     elif setting_name == "Wifi":
         setting_prop = "?"
-    elif setting_name == "Display":
+    elif setting_name == "Display-mode":
         setting_prop = "Auto"
+    elif setting_name == "Display-mode-index":
+        setting_prop = "0"
+    elif setting_name == "Display-overscan":
+        setting_prop = "0"
     elif setting_name == "Completed":
         setting_prop = "0"
 

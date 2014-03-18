@@ -7,16 +7,20 @@
 #
 
 from gi.repository import Gtk, Pango
+import kano_settings.config_file as config_file
 import kano_settings.screen.screen_config as screen_config
 import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 
 mode = 'auto'
+mode_index = 0
 overscan = False
 reboot = False
 
 
 def activate(_win, box, update):
+
+    read_config()
 
     title = heading.Heading("Display - how sharp can you go?", "Make the OS look the best it can")
     box.pack_start(title.container, False, False, 0)
@@ -47,12 +51,18 @@ def activate(_win, box, update):
     mode_combo.props.valign = Gtk.Align.CENTER
 
     # Overscan check button
-    button = Gtk.CheckButton("Overscan?")
-    button.set_can_focus(False)
-    button.modify_font(Pango.FontDescription("Bariol 14"))
-    button.props.valign = Gtk.Align.CENTER
+    check_button = Gtk.CheckButton("Overscan?")
+    check_button.set_can_focus(False)
+    check_button.modify_font(Pango.FontDescription("Bariol 14"))
+    check_button.props.valign = Gtk.Align.CENTER
+    #button.set_active(True)
 
-    horizontal_container.pack_start(button, False, False, 0)
+    # Select the current setting in the dropdown list
+    set_defaults("resolution", mode_combo)
+    # Check overscan option appropriately
+    set_defaults("overscan", combo=None, button=check_button)
+
+    horizontal_container.pack_start(check_button, False, False, 0)
 
     # Add apply changes button under the main settings content
     box.pack_start(update.box, False, False, 0)
@@ -63,7 +73,9 @@ def apply_changes(button):
 
     # Set HDMI mode
     # Get mode:group string
+    # Of the form "auto" or "cea:1" or "dmt:1" etc.
     parse_mode = mode.split(" ")[0]
+
     screen_config.set_hdmi_mode(parse_mode)
     # Set overscan
     if overscan is True:
@@ -71,7 +83,39 @@ def apply_changes(button):
     else:
         screen_config.set_config_option("disable_overscan", 1)
 
+    update_config()
     # Display message to tell user to reboot to see changes.
+
+
+def read_config():
+    global mode, mode_index, overscan
+
+    mode = config_file.read_from_file("Display-mode")
+    mode_index = config_file.read_from_file("Display-mode-index")
+    overscan = config_file.read_from_file("Display-overscan")
+
+
+def update_config():
+
+    # Add new configurations to config file.
+    config_file.replace_setting("Display-mode", str(mode))
+    config_file.replace_setting("Display-mode-index", str(mode_index))
+    config_file.replace_setting("Display-overscan", str(overscan))
+
+
+# setting = "resolution" or "overscan"
+def set_defaults(setting, combo=None, button=None):
+
+    # Set the default info on the dropdown lists
+    if setting == "overscan":
+        # set current state of button to be active or not.
+        active_item = int(config_file.read_from_file("Display-overscan"))
+        button.set_active(active_item)
+
+    elif setting == "resolution":
+        # set the active dropdown item to the config.
+        active_item = int(config_file.read_from_file("Display-mode-index"))
+        combo.set_active(active_item)
 
 
 def on_button_toggled(button):
@@ -81,10 +125,12 @@ def on_button_toggled(button):
 
 
 def on_mode_changed(combo):
-    global mode
+    global mode, mode_index
 
     #  Get the selected mode
     tree_iter = combo.get_active_iter()
     if tree_iter is not None:
         model = combo.get_model()
         mode = model[tree_iter][0]
+
+    mode_index = combo.get_active()
