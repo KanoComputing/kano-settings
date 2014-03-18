@@ -181,7 +181,9 @@ def set_defaults(setting):
 
 
 def on_continent_changed(combo):
-    global selected_continent_hr, selected_continent_index
+    global selected_continent_hr, selected_continent_index, update
+
+    print "Hit on_continent_changed"
 
     continent = selected_continent_hr
     tree_iter = combo.get_active_iter()
@@ -193,12 +195,17 @@ def on_continent_changed(combo):
     selected_continent_hr = str(continent)
     selected_continent_index = str(combo.get_active())
 
+    update.button.set_sensitive(False)
+    update.set_icon("cross")
+
     fill_countries_combo(selected_continent_hr)
     win.show_all()
 
 
 def on_country_changed(combo):
-    global win, selected_country, selected_country_index, selected_country_hr, selected_layout, variants_combo
+    global win, selected_country, selected_country_index, selected_country_hr, selected_layout, variants_combo, update
+
+    print "Hit on_country_changed"
 
     country = None
     tree_iter = combo.get_active_iter()
@@ -223,20 +230,28 @@ def on_country_changed(combo):
         for v in variants:
             variants_combo.append_text(v[0])
 
+    update.button.set_sensitive(False)
+    update.set_icon("cross")
+
     # Refresh window
     win.show_all()
 
 
 def on_variants_changed(combo):
-    global win, selected_variant, selected_variant_hr, selected_variant_index
+    global win, selected_variant, selected_variant_hr, selected_variant_index, update
+
+    print "Hit on_variants_changed"
 
     tree_iter = combo.get_active_iter()
     if tree_iter is not None:
         model = combo.get_model()
         variant = model[tree_iter][0]
+        update.button.set_sensitive(True)
         if variant == "Generic":
             selected_variant = selected_variant_hr = str(variant)
             selected_variant_index = 0
+            update.button.set_sensitive(True)
+            update.set_icon("tick")
             return
         # Select the variant code
         variants = keyboard_config.find_keyboard_variants(selected_country)
