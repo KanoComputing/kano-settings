@@ -43,6 +43,10 @@ GtkButton {
     font-weight:bold;
 }
 
+.apply_changes_button:insensitive {
+    background: #eeeeee;
+}
+
 .apply_changes_label {
     color: #ffffff;
 }
