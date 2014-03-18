@@ -82,9 +82,10 @@ def activate(_win, box, update):
         event_box_style.add_class("not_connected")
 
     box.pack_start(update.box, False, False, 0)
+    update.button.set_sensitive(True)
 
 
-def apply_changes(button=None):
+def apply_changes(event=None, button=None):
     # Call WiFi config
     os.system('rxvt -title \'WiFi\' -e sudo /usr/bin/kano-wifi')
     config_file.replace_setting("Wifi", network_message)
