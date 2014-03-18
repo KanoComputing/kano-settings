@@ -11,6 +11,11 @@ case "$1" in
         # Remove config file
         rm /etc/sudoers.d/kano-settings_conf
 
+        # TODO: Disable the proxy if enabled
+
+        # Remove dante libc simbolic link
+        rm -fv /lib/arm-linux-gnueabihf/libc.so
+
         ;;
 esac
 
