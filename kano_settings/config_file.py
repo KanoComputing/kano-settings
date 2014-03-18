@@ -64,6 +64,9 @@ def replace_setting(setting_name, setting):
         file_index3 = file_content[file_index:].index('\n')
         old_string = file_content[file_index: file_index3 + file_index]
         new_string = setting_name + ':' + setting
+        print("old_string = " + old_string)
+        print("new_string = " + new_string)
+
         replace(path, old_string, new_string)
         print("SUCCESS: completed replace_setting")
         return 0
@@ -132,7 +135,7 @@ def set_defaults(setting_name):
     setting_prop = ""
 
     if setting_name == "Email":
-        setting_prop = "?"
+        setting_prop = ""
     elif setting_name == "Keyboard-continent-index":
         setting_prop = str(1)
     elif setting_name == "Keyboard-country-index":
@@ -148,7 +151,7 @@ def set_defaults(setting_name):
     elif setting_name == "Audio":
         setting_prop = "Analogue"
     elif setting_name == "Wifi":
-        setting_prop = "?"
+        setting_prop = ""
     elif setting_name == "Display-mode":
         setting_prop = "Auto"
     elif setting_name == "Display-mode-index":
