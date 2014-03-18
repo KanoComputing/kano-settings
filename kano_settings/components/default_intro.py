@@ -20,8 +20,8 @@ import kano_settings.components.menu_button as menu_button
 import kano_settings.constants as constants
 from kanowifilib import is_internet
 
-names = ["Email", "Keyboard", "Audio", "Display", "Wifi"]
-custom_info = ["Email", "Keyboard-country-human", "Audio", "Display", "Wifi"]
+names = ["Keyboard", "Email", "Audio", "Display", "Wifi"]
+custom_info = ["Keyboard-country-human", "Email", "Audio", "Display-mode", "Wifi"]
 win = None
 
 
