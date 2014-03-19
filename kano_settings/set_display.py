@@ -18,10 +18,11 @@ mode_index = 0
 overscan = False
 reboot = False
 update = None
+display_name = None
 
 
 def activate(_win, box, _update):
-    global update
+    global update, display_name
 
     update = _update
     update.disable()
@@ -30,11 +31,10 @@ def activate(_win, box, _update):
 
     # Get display name
     cmd = '/opt/vc/bin/tvservice -n'
-    name, _, _ = utils.run_cmd(cmd)
-    name = name[12:]
-    print "Name: %s" % name
+    display_name, _, _ = utils.run_cmd(cmd)
+    display_name = display_name[12:]
 
-    title = heading.Heading("Display - " + name, "How sharp can you go?")
+    title = heading.Heading("Display - " + display_name, "How sharp can you go?")
     box.pack_start(title.container, False, False, 0)
 
     # Contains main buttons
@@ -110,6 +110,7 @@ def read_config():
 def update_config():
 
     # Add new configurations to config file.
+    config_file.replace_setting("Display-name", display_name)
     config_file.replace_setting("Display-mode", str(mode))
     config_file.replace_setting("Display-mode-index", str(mode_index))
     config_file.replace_setting("Display-overscan", str(overscan))
