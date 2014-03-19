@@ -12,6 +12,7 @@ import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
 import kano_settings.config_file as config_file
+import kano.utils as utils
 
 network_message = ""
 
@@ -71,6 +72,19 @@ def activate(_win, box, update):
         internet_status_style.add_class("dark_green")
         internet_action.set_text("Configure")
         event_box_style.add_class("connected")
+        # Get information
+        network = ''
+        command_ip = ''
+        command_network = '/sbin/iwconfig wlan0 | grep \'ESSID:\' | awk \'{print $4}\' | sed \'s/ESSID://g\' | sed \'s/\"//g\''
+        out, e, _ = utils.run_cmd(command_network)
+        if e:
+            network = "Connected to ethernet"
+            command_ip = '/sbin/ifconfig eth0 | grep inet | awk \'{print $2}\' | cut -d\':\' -f2'
+        else:
+            network = out
+            command_ip = '/sbin/ifconfig wlan0 | grep inet | awk \'{print $2}\' | cut -d\':\' -f2'
+        ip, _, _ = utils.run_cmd(command_ip)
+        print "Network: %s IP: %s" % (network, ip)
     else:
         internet_img.set_from_file(constants.media + "/Graphics/Internet-noConnection.png")
         title.title.set_text("No network found")
