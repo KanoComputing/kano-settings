@@ -71,9 +71,9 @@ class Default_Intro():
                 label_info = label_info[:13] + "..."
             self.labels[x].set_text(label_info)
 
+        text = ''
         # Check for internet
         constants.has_internet = is_internet()
-        text = ''
         if constants.has_internet:
             text = 'Connected'
         else:

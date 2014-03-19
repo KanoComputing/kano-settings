@@ -26,6 +26,7 @@ import kano_settings.components.apply_changes as apply_changes
 import kano_settings.constants as constants
 import kano_settings.components.first_run as first_run
 import kano_settings.components.default_intro as default_intro
+from kanowifilib import is_internet
 
 win = None
 MAX_STATE = 6
@@ -61,6 +62,9 @@ class MainWindow(Gtk.Window):
 
         self.top_bar = top_bar.Top_bar(WINDOW_WIDTH)
         self.top_bar.close_button.connect("clicked", close_window)
+
+        # Check for internet
+        constants.has_internet = is_internet()
 
         # Init
         if config_file.read_from_file('Completed') == "1":
