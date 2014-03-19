@@ -8,7 +8,6 @@
 # This controls the style of the main button in the projects that applies the changes
 
 from gi.repository import Gtk, Pango
-import kano_settings.components.icons as icons
 
 
 class Apply():
@@ -24,10 +23,10 @@ class Apply():
         self.label = Gtk.Box()
         self.label_style = self.button.get_style_context()
         self.label_style.add_class("apply_changes_label")
+        self.label.add(self.text)
         self.button.add(self.label)
-
-        self.image = Gtk.Image()
-        self.image.hide()
+        self.label.props.halign = Gtk.Align.CENTER
+        self.button.set_size_request(100, 44)
 
         # Get rid of annoying dotted borders around click buttons
         self.button.set_can_focus(False)
@@ -38,25 +37,10 @@ class Apply():
         self.box.pack_start(self.button, False, False, 0)
         self.box.props.halign = Gtk.Align.CENTER
 
-    def remove_label(self):
+    def enable(self):
 
-        for i in self.label.get_children():
-            self.label.remove(i)
+        self.button.set_sensitive(True)
 
-    def add_elements(self, icon_first):
+    def disable(self):
 
-        if icon_first:
-            self.label.pack_start(self.image, False, False, 0)
-            self.label.pack_start(self.text, False, False, 0)
-        else:
-            self.label.pack_start(self.text, False, False, 0)
-            self.label.pack_start(self.image, False, False, 0)
-
-    def set_icon(self, icon_name):
-
-        if icon_name == "arrow":
-            self.image.set_from_pixbuf(icons.Icons(0).subpixel)
-        elif icon_name == "tick":
-            self.image.set_from_pixbuf(icons.Icons(5).subpixel)
-        elif icon_name == "cross":
-            self.image.set_from_pixbuf(icons.Icons(6).subpixel)
+        self.button.set_sensitive(False)

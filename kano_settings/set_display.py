@@ -23,7 +23,7 @@ def activate(_win, box, _update):
     global update
 
     update = _update
-    update.button.set_sensitive(False)
+    update.disable()
 
     read_config()
 
@@ -140,4 +140,4 @@ def on_mode_changed(combo):
 
     mode_index = combo.get_active()
 
-    update.button.set_sensitive(True)
+    update.enable()

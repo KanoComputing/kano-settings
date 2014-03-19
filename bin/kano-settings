@@ -23,7 +23,6 @@ import kano_settings.set_display as set_display
 import kano_settings.config_file as config_file
 import kano_settings.components.top_bar as top_bar
 import kano_settings.components.apply_changes as apply_changes
-import kano_settings.components.icons as icons
 import kano_settings.constants as constants
 import kano_settings.components.first_run as first_run
 import kano_settings.components.default_intro as default_intro
@@ -66,9 +65,7 @@ class MainWindow(Gtk.Window):
         # Init
         if config_file.read_from_file('Completed') == "1":
             self.update = apply_changes.Apply()
-            self.update.add_elements(True)
-            self.update.text.set_text("Apply Changes")
-            self.update.image.set_from_pixbuf(icons.Icons(5).subpixel)
+            self.update.text.set_text("APPLY CHANGES")
             self.run_through = default_intro.Default_Intro(self)
             self.top_bar.next_button.connect("clicked", self.run_through.on_next)
             self.top_bar.prev_button.connect("clicked", self.run_through.on_prev)
@@ -76,9 +73,7 @@ class MainWindow(Gtk.Window):
 
         else:
             self.update = apply_changes.Apply()
-            self.update.add_elements(False)
-            self.update.text.set_text("Get started")
-            self.update.image.set_from_pixbuf(icons.Icons(0).subpixel)
+            self.update.text.set_text("GET STARTED")
             self.run_through = first_run.First_Run(self)
             self.update.button.connect('clicked', self.run_through.update_and_next)
             set_intro.activate(self, self.changeable_content, self.update)
@@ -112,8 +107,6 @@ def main():
 
 # On closing window, will alert if any of the listed booleans are True
 def close_window(event="delete-event", button=win):
-
-    print("booooooo")
 
     if set_audio.reboot or set_display.reboot:
         #Bring in message dialog box

@@ -82,7 +82,7 @@ def activate(_win, box, update):
         event_box_style.add_class("not_connected")
 
     box.pack_start(update.box, False, False, 0)
-    update.button.set_sensitive(True)
+    update.enable()
 
 
 def apply_changes(event=None, button=None):

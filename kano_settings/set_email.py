@@ -89,8 +89,7 @@ def activate(_win, changeable_content, _update):
     changeable_content.pack_start(settings.box, False, False, 0)
     changeable_content.pack_start(update.box, False, False, 0)
 
-    update.button.set_sensitive(False)
-    update.set_icon("cross")
+    update.disable()
 
     entry1.connect('key_release_event', check_email)
     entry2.connect('key_release_event', check_match)
@@ -103,11 +102,9 @@ def check_match(entry, event):
     email2 = entry2.get_text()
 
     if email1 == email2:
-        update.button.set_sensitive(True)
-        update.set_icon("tick")
+        update.enable()
     else:
-        update.button.set_sensitive(False)
-        update.set_icon("cross")
+        update.disable()
 
 
 def check_email(entry, event):

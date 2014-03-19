@@ -26,8 +26,7 @@ def activate(win, box, update):
     box.pack_start(image_box, False, False, 10)
     box.pack_start(update.box, False, False, 0)
 
-    update.text.set_text("Get started")
-    update.button.set_sensitive(True)
+    update.enable()
 
 
 def apply_changes(button):

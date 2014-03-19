@@ -53,6 +53,7 @@ def activate(_win, box, _update):
     global win, continents_combo, variants_combo, countries_combo, continents, update
 
     update = _update
+    update.disable()
 
     read_config()
 
@@ -109,8 +110,6 @@ def activate(_win, box, _update):
     dropdown_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=20)
     dropdown_container.pack_start(dropdown_box_countries, False, False, 0)
     dropdown_container.pack_start(dropdown_box_keys, False, False, 0)
-
-    update.text.set_text("Apply changes")
 
     box.pack_start(title.container, False, False, 0)
     box.pack_start(settings.box, False, False, 0)
@@ -195,8 +194,7 @@ def on_continent_changed(combo):
     selected_continent_hr = str(continent)
     selected_continent_index = str(combo.get_active())
 
-    update.button.set_sensitive(False)
-    update.set_icon("cross")
+    update.disable()
 
     fill_countries_combo(selected_continent_hr)
     win.show_all()
@@ -230,8 +228,7 @@ def on_country_changed(combo):
         for v in variants:
             variants_combo.append_text(v[0])
 
-    update.button.set_sensitive(False)
-    update.set_icon("cross")
+    update.disable()
 
     # Refresh window
     win.show_all()
@@ -246,12 +243,10 @@ def on_variants_changed(combo):
     if tree_iter is not None:
         model = combo.get_model()
         variant = model[tree_iter][0]
-        update.button.set_sensitive(True)
+        update.enable()
         if variant == "Generic":
             selected_variant = selected_variant_hr = str(variant)
             selected_variant_index = 0
-            update.button.set_sensitive(True)
-            update.set_icon("tick")
             return
         # Select the variant code
         variants = keyboard_config.find_keyboard_variants(selected_country)

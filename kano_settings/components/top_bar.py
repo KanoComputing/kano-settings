@@ -10,7 +10,7 @@
 from gi.repository import Gtk, Pango
 import kano_settings.components.icons as icons
 
-TOP_BAR_HEIGHT = 50
+TOP_BAR_HEIGHT = 44
 
 
 class Top_bar():

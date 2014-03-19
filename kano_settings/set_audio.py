@@ -75,7 +75,7 @@ def activate(_win, box, update):
 
     # Add apply changes button under the main settings content
     box.pack_start(update.box, False, False, 0)
-    update.button.set_sensitive(True)
+    update.enable()
 
 
 def apply_changes(button):
