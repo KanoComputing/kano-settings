@@ -89,6 +89,9 @@ class Default_Intro():
 
         self.update_intro()
 
+        win.top_bar.prev_button.set_image(win.top_bar.pale_prev_arrow)
+        win.top_bar.next_button.set_image(win.top_bar.dark_next_arrow)
+
         win.changeable_content.pack_start(self.table, False, False, 0)
 
     # When clicking next in the default intro screen - takes you to the last level you visited
@@ -98,6 +101,9 @@ class Default_Intro():
 
         for i in win.changeable_content.get_children():
             win.changeable_content.remove(i)
+
+        win.top_bar.prev_button.set_image(win.top_bar.dark_prev_arrow)
+        win.top_bar.next_button.set_image(win.top_bar.prev_next_arrow)
 
         self.state_to_widget(win.last_level_visited).activate(win, win.changeable_content, win.update)
         win.last_level_visited = win.state
@@ -113,6 +119,11 @@ class Default_Intro():
         win.state = widget.state + 1
         # Record this level so we can go back to it
         win.last_level_visited = win.state
+
+        # Grey out next arrow and darken prev arrow
+        win.top_bar.prev_button.set_image(win.top_bar.dark_prev_arrow)
+        win.top_bar.next_button.set_image(win.top_bar.pale_next_arrow)
+
         # Call next state
         self.state_to_widget(win.state).activate(win, win.changeable_content, win.update)
         # Refresh window

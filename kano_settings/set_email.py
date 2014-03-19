@@ -61,8 +61,8 @@ def activate(_win, changeable_content, _update):
     text = "Email"
     email_entry = Gtk.Table(2, 2, False)
     success_icon = Gtk.Image()
-    tick = icons.Icons(5).subpixel
-    cross = icons.Icons(6).subpixel
+    tick = icons.Icons("tick").subpixbuf
+    cross = icons.Icons("cross").subpixbuf
 
     entry1 = Gtk.Entry()
     entry1.modify_font(Pango.FontDescription("Bariol 13"))

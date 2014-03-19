@@ -69,6 +69,8 @@ class MainWindow(Gtk.Window):
             self.run_through = default_intro.Default_Intro(self)
             self.top_bar.next_button.connect("clicked", self.run_through.on_next)
             self.top_bar.prev_button.connect("clicked", self.run_through.on_prev)
+            self.top_bar.prev_button.set_image(self.top_bar.pale_prev_arrow)
+            self.top_bar.next_button.set_image(self.top_bar.pale_next_arrow)
             self.update.button.connect('clicked', self.run_through.update)
 
         else:
@@ -79,6 +81,8 @@ class MainWindow(Gtk.Window):
             set_intro.activate(self, self.changeable_content, self.update)
             self.top_bar.prev_button.connect("clicked", self.run_through.on_prev)
             self.top_bar.next_button.connect("clicked", self.run_through.on_next)
+            self.top_bar.prev_button.set_image(self.top_bar.pale_prev_arrow)
+            self.top_bar.next_button.set_image(self.top_bar.dark_next_arrow)
 
         self.grid.attach(self.top_bar.background, 0, 0, 1, 1)
         self.grid.attach(self.changeable_content, 0, 2, 1, 1)

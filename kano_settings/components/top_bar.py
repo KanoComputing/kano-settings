@@ -34,22 +34,26 @@ class Top_bar():
         self.header.get_style_context().add_class("header")
 
         # Icons of the buttons
-        self.prev_arrow = Gtk.Image()
-        self.prev_arrow.set_from_pixbuf(icons.Icons(2).subpixel)
-        self.next_arrow = Gtk.Image()
-        self.next_arrow.set_from_pixbuf(icons.Icons(3).subpixel)
+        self.pale_prev_arrow = Gtk.Image()
+        self.pale_prev_arrow.set_from_pixbuf(icons.Icons("pale_left_arrow").subpixbuf)
+        self.pale_next_arrow = Gtk.Image()
+        self.pale_next_arrow.set_from_pixbuf(icons.Icons("pale_right_arrow").subpixbuf)
+        self.dark_prev_arrow = Gtk.Image()
+        self.dark_prev_arrow.set_from_pixbuf(icons.Icons("dark_left_arrow").subpixbuf)
+        self.dark_next_arrow = Gtk.Image()
+        self.dark_next_arrow.set_from_pixbuf(icons.Icons("dark_right_arrow").subpixbuf)
         self.cross = Gtk.Image()
-        self.cross.set_from_pixbuf(icons.Icons(6).subpixel)
+        self.cross.set_from_pixbuf(icons.Icons("cross").subpixbuf)
 
         # Prev Button
         self.prev_button = Gtk.Button()
-        self.prev_button.set_image(self.prev_arrow)
+        #self.prev_button.set_image(self.prev_arrow)
         self.prev_button.set_size_request(TOP_BAR_HEIGHT, TOP_BAR_HEIGHT)
         self.prev_button.set_can_focus(False)
 
         # Next button
         self.next_button = Gtk.Button()
-        self.next_button.set_image(self.next_arrow)
+        #self.next_button.set_image(self.next_arrow)
         self.next_button.set_size_request(TOP_BAR_HEIGHT, TOP_BAR_HEIGHT)
         self.next_button.set_can_focus(False)
 

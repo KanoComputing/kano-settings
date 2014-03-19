@@ -28,7 +28,13 @@ def activate(_win, box, _update):
 
     read_config()
 
-    title = heading.Heading("Display - how sharp can you go?", "Make the OS look the best it can")
+    # Get display name
+    cmd = '/opt/vc/bin/tvservice -n'
+    name, _, _ = utils.run_cmd(cmd)
+    name = name[12:]
+    print "Name: %s" % name
+
+    title = heading.Heading("Display - " + name, "How sharp can you go?")
     box.pack_start(title.container, False, False, 0)
 
     # Contains main buttons
@@ -41,12 +47,6 @@ def activate(_win, box, _update):
 
     settings.box.pack_start(horizontal_container, False, False, 0)
     horizontal_container.set_size_request(300, 120)
-
-    # Get display name
-    cmd = '/opt/vc/bin/tvservice -n'
-    name, _, _ = utils.run_cmd(cmd)
-    name = name[12:]
-    print "Name: %s" % name
 
     # HDMI mode combo box
     mode_combo = Gtk.ComboBoxText.new()

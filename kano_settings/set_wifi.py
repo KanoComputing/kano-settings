@@ -63,28 +63,29 @@ def activate(_win, box, update):
     event_box.connect("button-press-event", apply_changes)
 
     if constants.has_internet:
-        internet_img.set_from_file(constants.media + "/Graphics/Internet-Connection.png")
-        title.title.set_text("Weee you have internet")
-        title.description.set_text("Great!")
-        network_message = "Weee you have internet"
-        internet_status.set_text(network_message)
-        internet_status_style.remove_class("dark_red")
-        internet_status_style.add_class("dark_green")
-        internet_action.set_text("Configure")
-        event_box_style.add_class("connected")
         # Get information
         network = ''
         command_ip = ''
         command_network = '/sbin/iwconfig wlan0 | grep \'ESSID:\' | awk \'{print $4}\' | sed \'s/ESSID://g\' | sed \'s/\"//g\''
         out, e, _ = utils.run_cmd(command_network)
         if e:
-            network = "Connected to ethernet"
+            network = "Ethernet"
             command_ip = '/sbin/ifconfig eth0 | grep inet | awk \'{print $2}\' | cut -d\':\' -f2'
         else:
             network = out
             command_ip = '/sbin/ifconfig wlan0 | grep inet | awk \'{print $2}\' | cut -d\':\' -f2'
         ip, _, _ = utils.run_cmd(command_ip)
         print "Network: %s IP: %s" % (network, ip)
+
+        internet_img.set_from_file(constants.media + "/Graphics/Internet-Connection.png")
+        title.title.set_text("Connected")
+        title.description.set_text(network)
+        internet_status.set_text(network)
+        internet_status_style.remove_class("dark_red")
+        internet_status_style.add_class("dark_green")
+        internet_action.set_text("Configure")
+        event_box_style.add_class("connected")
+
     else:
         internet_img.set_from_file(constants.media + "/Graphics/Internet-noConnection.png")
         title.title.set_text("No network found")
