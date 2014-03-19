@@ -11,6 +11,7 @@ import kano_settings.config_file as config_file
 import kano_settings.screen.screen_config as screen_config
 import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
+import kano.utils as utils
 
 mode = 'auto'
 mode_index = 0
@@ -40,6 +41,12 @@ def activate(_win, box, _update):
 
     settings.box.pack_start(horizontal_container, False, False, 0)
     horizontal_container.set_size_request(300, 120)
+
+    # Get display name
+    cmd = '/opt/vc/bin/tvservice -n'
+    name, _, _ = utils.run_cmd(cmd)
+    name = name[12:]
+    print "Name: %s" % name
 
     # HDMI mode combo box
     mode_combo = Gtk.ComboBoxText.new()
