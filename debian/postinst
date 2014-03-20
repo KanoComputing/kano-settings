@@ -12,16 +12,11 @@ case "$1" in
     configure)
 
         # Create custom sudoers file
-        echo -n "%sudo   ALL=(root) NOPASSWD: /usr/bin/kano-settings" > $TMP_FILE
-        # It needs a breakline at the end of line
-        printf "\n" >> $TMP_FILE
-
+        echo "%sudo   ALL=(root) NOPASSWD: /usr/bin/kano-settings" > $TMP_FILE
         # The owner and group for the sudoers file must both be 0
         chown root:root $TMP_FILE
-
         # The file permissions must be set to 0440
         chmod 0440 $TMP_FILE
-
         # Move the file to the sudoers directory
         mv $TMP_FILE /etc/sudoers.d/
 
