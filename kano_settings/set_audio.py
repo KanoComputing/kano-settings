@@ -11,6 +11,7 @@ import kano_settings.config_file as config_file
 import kano_settings.components.heading as heading
 import kano_settings.constants as constants
 import kano_settings.components.fixed_size_box as fixed_size_box
+#import kano_settings.components.vertical_align as vertical_align
 import os
 import re
 
@@ -19,6 +20,7 @@ reboot = False
 file_name = "/etc/rc.local"
 #file_name = "/home/caroline/blah"
 current_img = None
+IMG_HEIGHT = 106
 
 
 def file_replace(fname, pat, s_after):
@@ -46,19 +48,24 @@ def activate(_win, box, update):
 
     # Settings container
     settings = fixed_size_box.Fixed()
-    box.pack_start(settings.box, False, False, 0)
 
-    settings.box.props.halign = Gtk.Align.CENTER
+    event_box = Gtk.EventBox()
+    event_box.get_style_context().add_class('dark_red')
+    box.pack_start(event_box, False, False, 0)
+    event_box.add(settings.box)
+    box.pack_start(settings.box, False, False, 0)
 
     # Analog radio button
     analog_button = Gtk.RadioButton.new_with_label_from_widget(None, "Analog")
     analog_button.set_can_focus(False)
+
     # HDMI radio button
     hdmi_button = Gtk.RadioButton.new_from_widget(analog_button)
     hdmi_button.set_label("HDMI")
     hdmi_button.connect("toggled", on_button_toggled)
     hdmi_button.set_can_focus(False)
 
+    # height is 106px
     current_img = Gtk.Image()
     current_img.set_from_file(constants.media + "/Graphics/Audio-jack.png")
 
@@ -66,9 +73,14 @@ def activate(_win, box, update):
     radio_button_container.pack_start(hdmi_button, False, False, 10)
     radio_button_container.pack_start(current_img, False, False, 10)
     radio_button_container.pack_start(analog_button, False, False, 10)
-    radio_button_container.props.halign = Gtk.Align.CENTER
 
-    settings.box.pack_start(radio_button_container, False, False, 10)
+    valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
+    padding_above = (settings.height - IMG_HEIGHT) / 2
+    valign.set_padding(padding_above, 0, 0, 0)
+    valign.add(radio_button_container)
+    settings.box.pack_start(valign, False, False, 0)
+
+    #settings.box.pack_start(radio_button_container, False, False, 10)
 
     # Show the current setting by electing the appropriate radio button
     current_setting(analog_button, hdmi_button)

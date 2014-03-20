@@ -25,6 +25,7 @@ success_icon = None
 tick = None
 cross = None
 win = None
+EMAIL_ENTRY_HEIGHT = 118
 
 
 def is_email(email):
@@ -54,23 +55,26 @@ def activate(_win, changeable_content, _update):
 
     # Settings container
     settings = fixed_size_box.Fixed()
-    #settings.box.pack_start(title.container, False, False, 0)
+
     update = _update
 
     # Text entry
     text = "Email"
-    email_entry = Gtk.Table(2, 2, False)
+    email_entry = Gtk.Grid(column_homogeneous=False,
+                           column_spacing=10,
+                           row_spacing=10)
+
     success_icon = Gtk.Image()
     tick = icons.Icons("tick").subpixbuf
     cross = icons.Icons("cross").subpixbuf
 
     entry1 = Gtk.Entry()
     entry1.modify_font(Pango.FontDescription("Bariol 13"))
-    entry1.set_size_request(300, 50)
+    entry1.set_size_request(250, 44)
     entry2 = Gtk.Entry()
     entry2.modify_font(Pango.FontDescription("Bariol 13"))
     entry2.set_sensitive(False)
-    entry2.set_size_request(300, 50)
+    entry2.set_size_request(250, 44)
 
     if current_email is not None:
         text = current_email.replace('\n', '')
@@ -78,12 +82,17 @@ def activate(_win, changeable_content, _update):
     entry1.set_text(text)
     check_email(entry1, 1)
 
-    email_entry.attach(entry1, 0, 1, 0, 1, Gtk.AttachOptions.FILL, Gtk.AttachOptions.EXPAND, 10)
-    email_entry.attach(entry2, 0, 1, 1, 2, Gtk.AttachOptions.FILL, Gtk.AttachOptions.EXPAND, 10)
-    email_entry.attach(success_icon, 1, 2, 0, 1)
-    email_entry.props.valign = Gtk.Align.CENTER
+    email_entry.attach(entry1, 0, 0, 1, 1)
+    email_entry.attach(entry2, 0, 1, 1, 1)
+    email_entry.attach(success_icon, 1, 0, 1, 1)
+    #email_entry.pack_start(entry1, False, False, 0)
+    #email_entry.pack_start(entry2, False, False, 0)
 
-    settings.box.pack_start(email_entry, False, False, 0)
+    valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
+    padding_above = (settings.height - EMAIL_ENTRY_HEIGHT) / 2
+    valign.set_padding(padding_above, 0, 35, 0)
+    valign.add(email_entry)
+    settings.box.pack_start(valign, False, False, 0)
 
     changeable_content.pack_start(title.container, False, False, 0)
     changeable_content.pack_start(settings.box, False, False, 0)

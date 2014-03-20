@@ -23,6 +23,9 @@ def activate(win, box, update):
     image_box.pack_start(title.container, False, False, 0)
     #image_box.set_size_request(450, 250)
 
+    win.top_bar.prev_button.set_image(win.top_bar.pale_prev_arrow)
+    win.top_bar.next_button.set_image(win.top_bar.dark_next_arrow)
+
     box.pack_start(image_box, False, False, 10)
     box.pack_start(update.box, False, False, 0)
 

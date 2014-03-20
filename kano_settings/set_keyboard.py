@@ -35,6 +35,8 @@ continents_combo = None
 
 continents = ['Africa', 'America', 'Asia', 'Australia', 'Europe', 'Others']
 
+DROPDOWN_CONTAINER_HEIGHT = 118
+
 
 class WorkerThread(threading.Thread):
     def __init__(self, callback):
@@ -111,9 +113,14 @@ def activate(_win, box, _update):
     dropdown_container.pack_start(dropdown_box_countries, False, False, 0)
     dropdown_container.pack_start(dropdown_box_keys, False, False, 0)
 
+    valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
+    padding_above = (settings.height - DROPDOWN_CONTAINER_HEIGHT) / 2
+    valign.set_padding(padding_above, 0, 0, 0)
+    valign.add(dropdown_container)
+    settings.box.pack_start(valign, False, False, 0)
+
     box.pack_start(title.container, False, False, 0)
     box.pack_start(settings.box, False, False, 0)
-    settings.box.pack_start(dropdown_container, False, False, 0)
     box.pack_start(update.box, False, False, 0)
 
     # Refresh window

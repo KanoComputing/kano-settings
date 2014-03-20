@@ -13,15 +13,28 @@ import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
 import kano_settings.config_file as config_file
 import kano.utils as utils
+import set_proxy_grid
 
 network_message = ""
+win = None
+box = None
+update = None
+WIFI_IMG_HEIGHT = 110
 
 
-def activate(_win, box, update):
-    global network_message
+def activate(_win, _box, _update):
+    global network_message, box, win, update
+
+    win = _win
+    box = _box
+    update = _update
 
     title = heading.Heading("", "")
     box.pack_start(title.container, False, False, 0)
+
+    proxy_button = Gtk.Button("Proxy Button")
+    proxy_button.connect("button-press-event", proxy_button_press)
+    #box.pack_start(proxy_button, False, False, 0)
 
     # Table
     settings = fixed_size_box.Fixed()
@@ -49,15 +62,13 @@ def activate(_win, box, update):
     event_box.add(status_box)
     event_box_style = event_box.get_style_context()
     event_box.props.valign = Gtk.Align.CENTER
-    event_box.set_size_request(200, 100)
+    # The size of the event box depends on WIFI_IMG_HEIGHT so that it is always centred.
+    message_box_size = WIFI_IMG_HEIGHT - 25
+    event_box.set_size_request(200, message_box_size)
 
     container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     container.pack_start(event_box, False, False, 0)
     container.pack_start(internet_img, False, False, 0)
-    container.props.halign = Gtk.Align.CENTER
-    container.props.valign = Gtk.Align.CENTER
-
-    settings.box.pack_start(container, False, False, 10)
 
     #event_box.set_events("button-press-event", self.on_button_press_event)
     event_box.connect("button-press-event", apply_changes)
@@ -96,8 +107,26 @@ def activate(_win, box, update):
         internet_action.set_text("+ Click to add")
         event_box_style.add_class("not_connected")
 
+    # So everything is centred even if we change the window height
+    valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
+    padding_above = (settings.height - WIFI_IMG_HEIGHT) / 2
+    valign.set_padding(padding_above, 0, 0, 0)
+    valign.add(container)
+    settings.box.pack_start(valign, False, False, 0)
+
     box.pack_start(update.box, False, False, 0)
     update.enable()
+
+
+def proxy_button_press(event=None, button=None):
+    global win, update, box
+
+    # Remove element in the dynamic box
+    for i in box.get_children():
+        box.remove(i)
+
+    set_proxy_grid.activate(win, box, update)
+    win.show_all()
 
 
 def apply_changes(event=None, button=None):
