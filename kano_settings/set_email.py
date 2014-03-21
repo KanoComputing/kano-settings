@@ -25,7 +25,7 @@ success_icon = None
 tick = None
 cross = None
 win = None
-EMAIL_ENTRY_HEIGHT = 118
+EMAIL_ENTRY_HEIGHT = 135
 
 
 def is_email(email):
@@ -61,8 +61,8 @@ def activate(_win, changeable_content, _update):
     # Text entry
     text = "Email"
     email_entry = Gtk.Grid(column_homogeneous=False,
-                           column_spacing=10,
-                           row_spacing=10)
+                           column_spacing=22,
+                           row_spacing=22)
 
     success_icon = Gtk.Image()
     tick = icons.Icons("tick").subpixbuf
@@ -90,7 +90,7 @@ def activate(_win, changeable_content, _update):
 
     valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
     padding_above = (settings.height - EMAIL_ENTRY_HEIGHT) / 2
-    valign.set_padding(padding_above, 0, 35, 0)
+    valign.set_padding(padding_above, 0, 47, 0)
     valign.add(email_entry)
     settings.box.pack_start(valign, False, False, 0)
 

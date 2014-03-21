@@ -18,6 +18,9 @@ HEADER_SPACE = 25
 class Top_bar():
     def __init__(self, WINDOW_WIDTH):
 
+        # Makes it easier to centre other widgets even if we change this
+        self.height = TOP_BAR_HEIGHT
+
         # This is to give the correct colour of the top bar as Event Boxes are the only containers that we can colour
         # This contains everything, but can't pack directly into as is only a simple container
         self.background = Gtk.EventBox()

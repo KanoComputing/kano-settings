@@ -44,7 +44,7 @@ class MainWindow(Gtk.Window):
         self.last_level_visited = 0
 
         WINDOW_WIDTH = 650
-        WINDOW_HEIGHT = 350
+        WINDOW_HEIGHT = 414
 
         # Create main window
         Gtk.Window.__init__(self, title="Kano-Settings")
@@ -70,7 +70,7 @@ class MainWindow(Gtk.Window):
         if config_file.read_from_file('Completed') == "1":
             self.update = apply_changes.Apply()
             self.update.text.set_text("APPLY CHANGES")
-            self.run_through = default_intro.Default_Intro(self)
+            self.run_through = default_intro.Default_Intro(self, WINDOW_HEIGHT, self.top_bar.height)
             self.top_bar.next_button.connect("clicked", self.run_through.on_next)
             self.top_bar.prev_button.connect("clicked", self.run_through.on_prev)
             self.top_bar.prev_button.set_image(self.top_bar.pale_prev_arrow)

@@ -16,7 +16,6 @@ class Menu_button():
 
         # Contains the info about the level and the image
         self.container = Gtk.Grid()
-        self.container.set_size_request(90, 20)
 
         # Info about the different settings
         self.title = Gtk.Label(name)
@@ -50,3 +49,6 @@ class Menu_button():
 
         self.button.add(self.container)
         self.button.set_size_request(200, 100)
+
+        self.button.height = 100
+        self.button.width = 200
