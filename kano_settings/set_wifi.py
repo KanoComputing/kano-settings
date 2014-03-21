@@ -43,15 +43,18 @@ def activate(_win, _box, _update):
     internet_img = Gtk.Image()
 
     internet_status = Gtk.Label()
-    internet_status.modify_font(Pango.FontDescription("Bariol bold 13"))
+    internet_status.modify_font(Pango.FontDescription("Bariol bold 14"))
     internet_status_style = internet_status.get_style_context()
 
     internet_action = Gtk.Label()
-    internet_action.modify_font(Pango.FontDescription("Bariol bold 12"))
+    internet_action.modify_font(Pango.FontDescription("Bariol bold 13"))
     internet_action_style = internet_action.get_style_context()
     internet_action_style.add_class("white")
     internet_status_style.add_class("internet_status_top")
     internet_action_style.add_class("internet_status_bottom")
+
+    internet_status.set_alignment(xalign=0, yalign=0.2)
+    internet_action.set_alignment(xalign=0, yalign=0.2)
 
     status_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
     status_box.pack_start(internet_status, False, False, 2)
@@ -61,10 +64,11 @@ def activate(_win, _box, _update):
     event_box = Gtk.EventBox()
     event_box.add(status_box)
     event_box_style = event_box.get_style_context()
+    event_box_style.add_class("internet_status_box")
     event_box.props.valign = Gtk.Align.CENTER
     # The size of the event box depends on WIFI_IMG_HEIGHT so that it is always centred.
     message_box_size = WIFI_IMG_HEIGHT - 25
-    event_box.set_size_request(200, message_box_size)
+    event_box.set_size_request(150, message_box_size)
 
     container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     container.pack_start(event_box, False, False, 0)

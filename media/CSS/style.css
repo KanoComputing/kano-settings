@@ -137,6 +137,10 @@ GtkRadioButton GtkLabel{
     color:#000000;
 }
 
+GtkEventBox {
+    /*border-radius: 3px;*/
+}
+
 /*.check {
     border-st
     -unico-outer-stroke-gradient: -gtk-gradient (linear, left top, left bottom,
