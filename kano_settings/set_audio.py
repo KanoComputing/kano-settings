@@ -20,7 +20,8 @@ reboot = False
 file_name = "/etc/rc.local"
 #file_name = "/home/caroline/blah"
 current_img = None
-IMG_HEIGHT = 106
+# Change this value (IMG_HEIGHT) to move the image up or down.
+IMG_HEIGHT = 130
 
 
 def file_replace(fname, pat, s_after):
@@ -49,10 +50,6 @@ def activate(_win, box, update):
     # Settings container
     settings = fixed_size_box.Fixed()
 
-    event_box = Gtk.EventBox()
-    event_box.get_style_context().add_class('dark_red')
-    box.pack_start(event_box, False, False, 0)
-    event_box.add(settings.box)
     box.pack_start(settings.box, False, False, 0)
 
     # Analog radio button

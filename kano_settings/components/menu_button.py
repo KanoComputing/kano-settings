@@ -15,12 +15,13 @@ class Menu_button():
     def __init__(self, name, description=''):
 
         # Contains the info about the level and the image
-        self.container = Gtk.Table(2, 2, False)
+        self.container = Gtk.Grid()
         self.container.set_size_request(90, 20)
 
         # Info about the different settings
         self.title = Gtk.Label(name)
         self.title.get_style_context().add_class("intro_label")
+        self.title.set_alignment(xalign=0, yalign=0.8)
 
         #info = config_file.read_from_file(custom_info[x])
 
@@ -33,15 +34,19 @@ class Menu_button():
         self.description.modify_font(Pango.FontDescription("Bariol 13"))
         self.description.get_style_context().add_class("custom_label")
         self.description.set_size_request(120, 10)
+        self.description.set_alignment(xalign=0, yalign=0.2)
 
         self.button = Gtk.Button()
         self.button.set_can_focus(False)
         self.img = Gtk.Image()
         self.img.set_from_file(constants.media + "/Icons/Icon-" + name + ".png")
 
-        self.container.attach(self.title, 1, 2, 0, 1)
-        self.container.attach(self.description, 1, 2, 1, 2)
-        self.container.attach(self.img, 0, 1, 0, 2)
+        self.container.attach(self.title, 2, 0, 1, 1)
+        self.container.attach(self.description, 2, 1, 1, 1)
+        self.container.attach(self.img, 0, 0, 2, 2)
+        self.container.set_row_spacing(5)
+        self.container.set_column_spacing(10)
+        self.container.props.valign = Gtk.Align.CENTER
 
         self.button.add(self.container)
         self.button.set_size_request(200, 100)
