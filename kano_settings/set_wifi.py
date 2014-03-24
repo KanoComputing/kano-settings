@@ -12,7 +12,7 @@ import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
 import kano_settings.config_file as config_file
-import kano.utils as utils
+#import kano.utils as utils
 import set_proxy_grid
 
 network_message = ""
@@ -42,6 +42,8 @@ def activate(_win, _box, _update):
 
     internet_img = Gtk.Image()
 
+    #internet_img.
+
     internet_status = Gtk.Label()
     internet_status.modify_font(Pango.FontDescription("Bariol bold 14"))
     internet_status_style = internet_status.get_style_context()
@@ -57,59 +59,70 @@ def activate(_win, _box, _update):
     internet_action.set_alignment(xalign=0, yalign=0.2)
 
     status_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-    status_box.pack_start(internet_status, False, False, 2)
-    status_box.pack_start(internet_action, False, False, 2)
     status_box.props.valign = Gtk.Align.CENTER
 
-    event_box = Gtk.EventBox()
-    event_box.add(status_box)
-    event_box_style = event_box.get_style_context()
-    event_box_style.add_class("internet_status_box")
-    event_box.props.valign = Gtk.Align.CENTER
+    configure_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+    status_box.add(configure_container)
     # The size of the event box depends on WIFI_IMG_HEIGHT so that it is always centred.
-    message_box_size = WIFI_IMG_HEIGHT - 25
-    event_box.set_size_request(150, message_box_size)
+    # message_box_size = WIFI_IMG_HEIGHT - 25
+    # status_box.set_size_request(150, message_box_size)
 
     container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-    container.pack_start(event_box, False, False, 0)
+    container.pack_start(status_box, False, False, 0)
     container.pack_start(internet_img, False, False, 0)
-
-    #event_box.set_events("button-press-event", self.on_button_press_event)
-    event_box.connect("button-press-event", apply_changes)
 
     if constants.has_internet:
         # Get information
-        network = ''
-        command_ip = ''
-        command_network = '/sbin/iwconfig wlan0 | grep \'ESSID:\' | awk \'{print $4}\' | sed \'s/ESSID://g\' | sed \'s/\"//g\''
-        out, e, _ = utils.run_cmd(command_network)
-        if e:
-            network = "Ethernet"
-            command_ip = '/sbin/ifconfig eth0 | grep inet | awk \'{print $2}\' | cut -d\':\' -f2'
-        else:
-            network = out
-            command_ip = '/sbin/ifconfig wlan0 | grep inet | awk \'{print $2}\' | cut -d\':\' -f2'
-        ip, _, _ = utils.run_cmd(command_ip)
-        print "Network: %s IP: %s" % (network, ip)
+        """network = ''
+                                command_ip = ''
+                                command_network = '/sbin/iwconfig wlan0 | grep \'ESSID:\' | awk \'{print $4}\' | sed \'s/ESSID://g\' | sed \'s/\"//g\''
+                                out, e, _ = utils.run_cmd(command_network)
+                                if e:
+                                    network = "Ethernet"
+                                    command_ip = '/sbin/ifconfig eth0 | grep inet | awk \'{print $2}\' | cut -d\':\' -f2'
+                                else:
+                                    network = out
+                                    command_ip = '/sbin/ifconfig wlan0 | grep inet | awk \'{print $2}\' | cut -d\':\' -f2'
+                                ip, _, _ = utils.run_cmd(command_ip)
+                                print "Network: %s IP: %s" % (network, ip)"""
+
+        network_info = set_proxy_grid.network_info()
+        network = network_info()[0]
+        ip = network_info()[1]
+
+        #configure_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
 
         internet_img.set_from_file(constants.media + "/Graphics/Internet-Connection.png")
-        title.title.set_text("Connected")
-        title.description.set_text(network)
-        internet_status.set_text(network)
-        internet_status_style.remove_class("dark_red")
-        internet_status_style.add_class("dark_green")
-        internet_action.set_text("Configure")
-        event_box_style.add_class("connected")
+        title.title.set_text("Connection found!")
+        title.description.set_text("Great!")
+        proxy_button = Gtk.EventBox("Proxy")
+
+        if network == "Ethernet":
+            internet_status.set_text(network)
+            internet_action.set_text(ip)
+            configure_button = Gtk.EventBox()
+            configure_label = Gtk.Label("Configure")
+            configure_label.modify_font(Pango.FontDescription("Bariol 13"))
+            configure_button.add(configure_label)
+            configure_container.pack_start(configure_button, False, False, 0)
+
+        configure_container.pack_start(proxy_button, False, False, 0)
+        status_box.pack_start(internet_status, False, False, 2)
+        status_box.pack_start(internet_action, False, False, 2)
 
     else:
         internet_img.set_from_file(constants.media + "/Graphics/Internet-noConnection.png")
         title.title.set_text("No network found")
-        title.description.set_text("Shit man")
+        title.description.set_text("Aw, man.")
         internet_status.set_text("No network found")
-        internet_status_style.remove_class("dark_green")
-        internet_status_style.add_class("dark_red")
-        internet_action.set_text("+ Click to add")
-        event_box_style.add_class("not_connected")
+        add_connection_button = Gtk.EventBox()
+        add_connection_button.get_style_context().add_class("apply_changes_button")
+        add_connection_label = Gtk.Label("ADD CONNECTION")
+        add_connection_label.modify_font(Pango.FontDescription("Bariol bold 14"))
+        add_connection_button.add(add_connection_label)
+        add_connection_button.set_size_request(200, 44)
+        add_connection_button.connect("button_press_event", apply_changes)
+        configure_container.pack_start(add_connection_button, False, False, 0)
 
     # So everything is centred even if we change the window height
     valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)

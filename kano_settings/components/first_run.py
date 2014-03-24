@@ -38,7 +38,7 @@ class First_Run():
         return
 
     # When clicking previous arrow on first run through
-    def on_prev(self, widget=None):
+    def on_prev(self, widget=None, arg2=None):
         global win
 
          # Update current state
@@ -66,7 +66,7 @@ class First_Run():
         win.show_all()
 
     # When clicking next arrow button on first run through
-    def on_next(self, widget=None):
+    def on_next(self, widget=None, arg2=None):
         global grid, box, state, win
 
         # Update current state
@@ -99,7 +99,7 @@ class First_Run():
     def state_to_widget(self, x):
         return {
             0: set_intro,
-            1: set_keyboard,
+            1: set_wifi,
             2: set_email,
             3: set_audio,
             4: set_display,

@@ -9,24 +9,30 @@
 from gi.repository import Gtk
 import kano_settings.components.heading as heading
 import kano_settings.constants as constants
+import kano_settings.components.fixed_size_box as fixed_size_box
+IMG_HEIGHT = 96
 
 
 def activate(win, box, update):
 
     title = heading.Heading("You just made a computer", "Now I just need to ask a few questions, so I'll work out the way")
 
+    settings = fixed_size_box.Fixed()
+
     image = Gtk.Image()
     image.set_from_file(constants.media + "/Graphics/Intro-illustration.png")
 
-    image_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-    image_box.pack_start(image, False, False, 0)
-    image_box.pack_start(title.container, False, False, 0)
-    #image_box.set_size_request(450, 250)
+    valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
+    padding_above = (settings.height - IMG_HEIGHT) / 2
+    valign.set_padding(padding_above, 0, 0, 0)
+    valign.add(image)
+    settings.box.pack_start(valign, False, False, 0)
 
     win.top_bar.prev_button.set_image(win.top_bar.pale_prev_arrow)
     win.top_bar.next_button.set_image(win.top_bar.dark_next_arrow)
 
-    box.pack_start(image_box, False, False, 10)
+    box.pack_start(settings.box, False, False, 0)
+    box.pack_start(title.container, False, False, 0)
     box.pack_start(update.box, False, False, 0)
 
     update.enable()
