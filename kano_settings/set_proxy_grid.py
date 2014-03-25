@@ -18,7 +18,7 @@ next_button = None
 ip_entry = None
 port_entry = None
 username_entry = None
-type_entry = None
+password_entry = None
 
 GRID_HEIGHT = 150
 
@@ -60,12 +60,12 @@ def set_settings(proxyip, proxyport, proxytype, username='', password=''):
 # Validation functions
 
 def proxy_status(widget):
-    global win, next_button, ip_entry, port_entry, type_entry, username_entry
+    global win, next_button, ip_entry, port_entry, password_entry, username_entry
 
     if widget.get_active():
         ip_entry.set_sensitive(True)
         port_entry.set_sensitive(True)
-        type_entry.set_sensitive(True)
+        password_entry.set_sensitive(True)
         username_entry.set_sensitive(True)
         win.connect("key-release-event", proxy_enabled)
         # Run to see if it need enabling
@@ -74,14 +74,14 @@ def proxy_status(widget):
     else:
         ip_entry.set_sensitive(False)
         port_entry.set_sensitive(False)
-        type_entry.set_sensitive(False)
+        password_entry.set_sensitive(False)
         username_entry.set_sensitive(False)
         next_button.set_sensitive(True)
 
 
 # if proxy enabled: ip address, port, and type are mandatory
 def proxy_enabled(widget=None, event=None):
-    global win, ip_entry, type_entry, port_entry, next_button
+    global win, ip_entry, password_entry, port_entry, next_button
 
     # Get IP address
     # Get port
@@ -89,13 +89,8 @@ def proxy_enabled(widget=None, event=None):
     # If these entries are non empty, good - else, bring up alert
     ip_text = ip_entry.get_text()
     port_text = port_entry.get_text()
-    type_text = type_entry.get_text()
-    if ip_text == "" or port_text == "" or type_text == "":
-        dialog = Gtk.MessageDialog(win, 0, Gtk.MessageType.ERROR,
-                                   Gtk.ButtonsType.OK, "You haven't filled in everything!"
-                                   )
-        dialog.format_secondary_text("You enabled the proxy, and need to fill in the ip, port and type text fields")
-        dialog.run()
+    password_text = password_entry.get_text()
+    if ip_text == "" or port_text == "" or password_text == "":
         next_button.set_sensitive(False)
         return False
 
@@ -117,17 +112,10 @@ def valid_ip_address(ip_widget, event=None):
     ip_array = ip_widget.split(".")
     slash_array = ip_widget.split("/")
     if len(slash_array) == 1 and len(ip_array) == 4:
-        #dialog = Gtk.MessageDialog(win, 0, Gtk.MessageType.ERROR,
-        #                           Gtk.ButtonsType.OK, "Your IP address is incorrect"
-        #                           )
-        #dialog.format_secondary_text("Format like x.y.z.q")
-        #dialog.run()
-        print "Well done"
         next_button.set_sensitive(True)
         return True
 
     else:
-        print "Hm, incorrect"
         next_button.set_sensitive(False)
         return False
 
@@ -142,7 +130,7 @@ def is_not_empty(widget, event=None):
 
 
 def activate(_win, box, _update):
-    global win, next_button, ip_entry, port_entry, username_entry, type_entry
+    global win, next_button, ip_entry, port_entry, username_entry, password_entry
 
     win = _win
     title = heading.Heading("Proxy", "Blah blah blah")
@@ -217,6 +205,8 @@ def activate(_win, box, _update):
     box.pack_start(title.container, False, False, 0)
     box.pack_start(settings.box, False, False, 0)
     box.pack_end(bottom_row, False, False, 0)
+
+    proxy_status(enable_proxy)
 
 
 def apply_changes(button):
