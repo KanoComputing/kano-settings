@@ -12,7 +12,6 @@ from gi.repository import Gtk, Pango
 import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.proxy as proxy
-import kano.utils as utils
 
 win = None
 next_button = None
@@ -154,18 +153,31 @@ def activate(_win, box, _update):
     win.top_bar.next_button.set_sensitive(False)
     win.top_bar.next_button.set_image(win.top_bar.pale_next_arrow)
 
+    # Set default/intro text to grey?
     ip_entry = Gtk.Entry()
-    ip_entry.set_text("ip")
+    ip_entry.props.placeholder_text = "IP address"
+    ip_entry.get_style_context().add_class("grey")
     ip_entry.modify_font(Pango.FontDescription("Bariol 13"))
+    ip_entry.connect('button_press_event', on_entry_clicked)
+
     username_entry = Gtk.Entry()
-    username_entry.set_text("username")
+    username_entry.get_style_context().add_class("grey")
+    username_entry.props.placeholder_text = "Username"
     username_entry.modify_font(Pango.FontDescription("Bariol 13"))
+    username_entry.connect('button_press_event', on_entry_clicked)
+
     port_entry = Gtk.Entry()
-    port_entry.set_text("port")
+    port_entry.props.placeholder_text = "Port"
+    port_entry.get_style_context().add_class("grey")
     port_entry.modify_font(Pango.FontDescription("Bariol 13"))
-    type_entry = Gtk.Entry()
-    type_entry.set_text("type")
-    type_entry.modify_font(Pango.FontDescription("Bariol 13"))
+    port_entry.connect('button_press_event', on_entry_clicked)
+
+    password_entry = Gtk.Entry()
+    password_entry.get_style_context().add_class("grey")
+    password_entry.props.placeholder_text = "Password"
+    password_entry.set_visibility(False)
+    password_entry.modify_font(Pango.FontDescription("Bariol 13"))
+    password_entry.connect('button_press_event', on_entry_clicked)
 
     enable_proxy = Gtk.CheckButton("enable proxy")
     enable_proxy.modify_font(Pango.FontDescription("Bariol 13"))
@@ -198,7 +210,7 @@ def activate(_win, box, _update):
     grid.attach(ip_entry, 0, 0, 2, 2)
     grid.attach(username_entry, 0, 2, 2, 2)
     grid.attach(port_entry, 2, 0, 2, 2)
-    grid.attach(type_entry, 2, 2, 3, 2)
+    grid.attach(password_entry, 2, 2, 3, 2)
     grid.attach(radio1, 4, 0, 1, 1)
     grid.attach(radio2, 4, 1, 1, 1)
     #grid.attach(label_box, 0, 4, 1, 1)
@@ -214,35 +226,17 @@ def activate(_win, box, _update):
     box.pack_start(settings.box, False, False, 0)
     box.pack_end(bottom_row, False, False, 0)
 
-    # Set settings here.
-    # Read config settings and set the entries, radio buttons and checkbox accordingly
-    # ip address gets read dynamically
-    # network = netwrk_info()[0]
-    ip_address = network_info()[1]
-    ip_entry.set_text(ip_address)
 
-
-def network_info():
-    network = ''
-    command_ip = ''
-    command_network = '/sbin/iwconfig wlan0 | grep \'ESSID:\' | awk \'{print $4}\' | sed \'s/ESSID://g\' | sed \'s/\"//g\''
-    out, e, _ = utils.run_cmd(command_network)
-    if e:
-        network = "Ethernet"
-        command_ip = '/sbin/ifconfig eth0 | grep inet | awk \'{print $2}\' | cut -d\':\' -f2'
-    else:
-        network = out
-        command_ip = '/sbin/ifconfig wlan0 | grep inet | awk \'{print $2}\' | cut -d\':\' -f2'
-    ip, _, _ = utils.run_cmd(command_ip)
-    print "Network: %s IP: %s" % (network.rstrip(), ip.rstrip())
-
-    return [network.rstrip(), ip.rstrip()]
+def on_entry_clicked(widget, event, data=None):
+    widget.get_style_context().remove_class("grey")
+    widget.get_style_context().add_class("black")
+    widget.select_region(0, -1)
 
 
 def apply_changes(button):
     #ip_text = ip_entry.get_text()
     #proxy_text = proxy_entry.get_text()
-    #type_text = type_entry.get_text()
+    #password_text = password_entry.get_text()
     #set_settings(proxyip, proxyport, proxytype)
     back_to_wifi(button)
     return
