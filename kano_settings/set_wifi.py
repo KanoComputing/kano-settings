@@ -42,8 +42,6 @@ def activate(_win, _box, _update):
 
     internet_img = Gtk.Image()
 
-    #internet_img.
-
     internet_status = Gtk.Label()
     internet_status.modify_font(Pango.FontDescription("Bariol bold 16"))
     internet_status_style = internet_status.get_style_context()
@@ -101,22 +99,24 @@ def activate(_win, _box, _update):
         proxy_button = Gtk.EventBox()
         proxy_label = Gtk.Label("Proxy")
         proxy_label.get_style_context().add_class("orange")
+        proxy_label.modify_font(Pango.FontDescription("Bariol 13"))
         proxy_button.add(proxy_label)
         proxy_button.connect("button_press_event", proxy_button_press)
 
         internet_status.set_text(network)
         internet_action.set_text(ip)
 
-        if network != "Ethernet":
+        if network == "Ethernet":
             # Change to ethernet image here
-            internet_img.set_from_file(constants.media + "/Graphics/Internet-Connection.png")
+            internet_img.set_from_file(constants.media + "/Graphics/Internet-ethernetConnection.png")
 
+        else:
             configure_button = Gtk.EventBox()
             configure_label = Gtk.Label("Configure")
             configure_label.get_style_context().add_class("orange")
             configure_label.modify_font(Pango.FontDescription("Bariol 13"))
             configure_button.add(configure_label)
-            configure_button.connect("button_press_event", apply_changes)
+            configure_button.connect("button_press_event", configure_wifi)
             configure_container.pack_start(configure_button, False, False, 0)
             divider_label = Gtk.Label("|")
             configure_container.pack_start(divider_label, False, False, 3)
@@ -124,6 +124,7 @@ def activate(_win, _box, _update):
         configure_container.pack_start(proxy_button, False, False, 0)
 
     else:
+        status_box.pack_start(configure_container, False, False, 0)
         internet_img.set_from_file(constants.media + "/Graphics/Internet-noConnection.png")
         title.title.set_text("No network found")
         title.description.set_text("Aw, man.")
@@ -135,7 +136,9 @@ def activate(_win, _box, _update):
         add_connection_button.add(add_connection_label)
         add_connection_button.set_size_request(200, 44)
         add_connection_button.connect("button_press_event", apply_changes)
+        #add_connection_button.props.valign = Gtk.Align.CENTER
         configure_container.pack_start(add_connection_button, False, False, 0)
+        # Change colour of update button here.
 
     # So everything is centred even if we change the window height
     valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
@@ -159,7 +162,11 @@ def proxy_button_press(event=None, button=None):
     win.show_all()
 
 
-def apply_changes(event=None, button=None):
+def configure_wifi(event=None, button=None):
     # Call WiFi config
     os.system('rxvt -title \'WiFi\' -e sudo /usr/bin/kano-wifi')
     config_file.replace_setting("Wifi", network_message)
+
+
+def apply_changes(event=None, button=None):
+    return
