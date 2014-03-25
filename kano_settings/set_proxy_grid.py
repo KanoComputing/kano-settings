@@ -156,28 +156,20 @@ def activate(_win, box, _update):
     # Set default/intro text to grey?
     ip_entry = Gtk.Entry()
     ip_entry.props.placeholder_text = "IP address"
-    ip_entry.get_style_context().add_class("grey")
     ip_entry.modify_font(Pango.FontDescription("Bariol 13"))
-    ip_entry.connect('button_press_event', on_entry_clicked)
 
     username_entry = Gtk.Entry()
-    username_entry.get_style_context().add_class("grey")
     username_entry.props.placeholder_text = "Username"
     username_entry.modify_font(Pango.FontDescription("Bariol 13"))
-    username_entry.connect('button_press_event', on_entry_clicked)
 
     port_entry = Gtk.Entry()
     port_entry.props.placeholder_text = "Port"
-    port_entry.get_style_context().add_class("grey")
     port_entry.modify_font(Pango.FontDescription("Bariol 13"))
-    port_entry.connect('button_press_event', on_entry_clicked)
 
     password_entry = Gtk.Entry()
-    password_entry.get_style_context().add_class("grey")
     password_entry.props.placeholder_text = "Password"
     password_entry.set_visibility(False)
     password_entry.modify_font(Pango.FontDescription("Bariol 13"))
-    password_entry.connect('button_press_event', on_entry_clicked)
 
     enable_proxy = Gtk.CheckButton("enable proxy")
     enable_proxy.modify_font(Pango.FontDescription("Bariol 13"))
@@ -225,12 +217,6 @@ def activate(_win, box, _update):
     box.pack_start(title.container, False, False, 0)
     box.pack_start(settings.box, False, False, 0)
     box.pack_end(bottom_row, False, False, 0)
-
-
-def on_entry_clicked(widget, event, data=None):
-    widget.get_style_context().remove_class("grey")
-    widget.get_style_context().add_class("black")
-    widget.select_region(0, -1)
 
 
 def apply_changes(button):
