@@ -52,36 +52,17 @@ def activate(_win, _box, _update):
     internet_status_style.add_class("internet_status_top")
     internet_action_style.add_class("internet_status_bottom")
 
-    #internet_status.set_alignment(xalign=0, yalign=0.2)
-    #internet_action.set_alignment(xalign=0, yalign=0.2)
-
     status_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
     status_box.props.valign = Gtk.Align.CENTER
 
     configure_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     configure_container.props.halign = Gtk.Align.CENTER
-    # The size of the event box depends on WIFI_IMG_HEIGHT so that it is always centred.
-    # message_box_size = WIFI_IMG_HEIGHT - 25
-    # status_box.set_size_request(150, message_box_size)
 
     container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     container.pack_start(status_box, False, False, 2)
     container.pack_start(internet_img, False, False, 2)
 
     if constants.has_internet:
-        # Get information
-        """network = ''
-                                command_ip = ''
-                                command_network = '/sbin/iwconfig wlan0 | grep \'ESSID:\' | awk \'{print $4}\' | sed \'s/ESSID://g\' | sed \'s/\"//g\''
-                                out, e, _ = utils.run_cmd(command_network)
-                                if e:
-                                    network = "Ethernet"
-                                    command_ip = '/sbin/ifconfig eth0 | grep inet | awk \'{print $2}\' | cut -d\':\' -f2'
-                                else:
-                                    network = out
-                                    command_ip = '/sbin/ifconfig wlan0 | grep inet | awk \'{print $2}\' | cut -d\':\' -f2'
-                                ip, _, _ = utils.run_cmd(command_ip)
-                                print "Network: %s IP: %s" % (network, ip)"""
 
         status_box.pack_start(internet_status, False, False, 3)
         status_box.pack_start(internet_action, False, False, 3)
@@ -89,8 +70,6 @@ def activate(_win, _box, _update):
 
         network = network_info()[0]
         ip = network_info()[1]
-
-        #configure_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
 
         internet_img.set_from_file(constants.media + "/Graphics/Internet-Connection.png")
         title.title.set_text("Connection found!")
