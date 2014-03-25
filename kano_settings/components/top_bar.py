@@ -90,3 +90,19 @@ class Top_bar():
         self.container.set_size_request(WINDOW_WIDTH, 44)
 
         self.background.add(self.container)
+
+    def disable_prev(self):
+        self.prev_button.set_sensitive(False)
+        self.prev_button.set_image(self.pale_prev_arrow)
+
+    def enable_prev(self):
+        self.prev_button.set_sensitive(True)
+        self.prev_button.set_image(self.dark_prev_arrow)
+
+    def disable_next(self):
+        self.next_button.set_sensitive(False)
+        self.next_button.set_image(self.pale_next_arrow)
+
+    def enable_next(self):
+        self.next_button.set_sensitive(True)
+        self.next_button.set_image(self.dark_next_arrow)

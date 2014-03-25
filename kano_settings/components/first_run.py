@@ -47,6 +47,7 @@ class First_Run():
         # Check we're in a valid state
         if win.state == -1:
             win.state = 0
+            win.top_bar.disable_prev()
             return
 
         # Remove element in the dynamic box
@@ -59,10 +60,16 @@ class First_Run():
         # Change label on Apply Changes button
         if win.state == MAX_STATE - 1:
             win.update.text.set_text("FINISH")
+            win.top_bar.enable_prev()
+            win.top_bar.disable_next()
         elif win.state > 0:
             win.update.text.set_text("NEXT")
+            win.top_bar.enable_prev()
+            win.top_bar.enable_next()
         else:
             win.update.text.set_text("GET STARTED")
+            win.top_bar.disable_prev()
+            win.top_bar.enable_next()
         # Refresh window
         win.show_all()
 
@@ -90,10 +97,18 @@ class First_Run():
         # Change label on Apply Changes button
         if win.state == MAX_STATE - 1:
             win.update.text.set_text("FINISH")
-        elif win.state > 0:
-            win.update.text.set_text("NEXT")
-        else:
+            win.top_bar.enable_prev()
+            win.top_bar.disable_next()
+        elif win.state == 0:
             win.update.text.set_text("GET STARTED")
+            win.top_bar.disable_prev()
+            win.top_bar.enable_next()
+        # So we don't count set_proxy
+        elif win.state < MAX_STATE:
+            win.update.text.set_text("NEXT")
+            win.top_bar.enable_prev()
+            win.top_bar.enable_next()
+
         # Refresh window
         win.show_all()
 
