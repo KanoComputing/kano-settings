@@ -145,7 +145,7 @@ class Default_Intro():
         win.show_all()
 
     # This updates the current level.
-    def update(self, widget):
+    def update(self, widget, arg2=None):
         returnValue = self.state_to_widget(win.state).apply_changes(widget)
         if returnValue == -1:
             return
