@@ -19,6 +19,7 @@ overscan = False
 reboot = False
 update = None
 display_name = None
+CONTAINER_HEIGHT = 70
 
 
 def activate(_win, box, _update):
@@ -42,11 +43,11 @@ def activate(_win, box, _update):
 
     box.pack_start(settings.box, False, False, 0)
 
-    horizontal_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=20)
+    horizontal_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=40)
     horizontal_container.set_valign(Gtk.Align.CENTER)
 
-    settings.box.pack_start(horizontal_container, False, False, 0)
-    horizontal_container.set_size_request(300, 120)
+    #settings.box.pack_start(horizontal_container, False, False, 0)
+    #horizontal_container.set_size_request(300, 10)
 
     # HDMI mode combo box
     mode_combo = Gtk.ComboBoxText.new()
@@ -75,6 +76,12 @@ def activate(_win, box, _update):
     set_defaults("overscan", combo=None, button=check_button)
 
     horizontal_container.pack_start(check_button, False, False, 0)
+
+    valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
+    padding_above = (settings.height - CONTAINER_HEIGHT) / 2
+    valign.set_padding(padding_above, 0, 0, 0)
+    valign.add(horizontal_container)
+    settings.box.pack_start(valign, False, False, 0)
 
     # Add apply changes button under the main settings content
     box.pack_start(update.box, False, False, 0)

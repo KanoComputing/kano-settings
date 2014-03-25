@@ -10,6 +10,7 @@
 /* Define colours */
 
 @define-color button_color #8fd25e;
+@define-color orange #ff842A;
 
 /* All */
 * {
@@ -185,5 +186,7 @@ GtkEventBox {
     color: #520000;
 }
 .orange {
-    color: #ff4066;
+    color: @orange;
+    background-color:@orange;
+    font-weight:bold;
 }

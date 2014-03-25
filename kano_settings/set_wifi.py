@@ -13,7 +13,7 @@ import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
 import kano_settings.config_file as config_file
 #import kano.utils as utils
-import set_proxy_grid
+import kano_settings.set_proxy_grid as set_proxy_grid
 
 network_message = ""
 win = None
@@ -45,31 +45,30 @@ def activate(_win, _box, _update):
     #internet_img.
 
     internet_status = Gtk.Label()
-    internet_status.modify_font(Pango.FontDescription("Bariol bold 14"))
+    internet_status.modify_font(Pango.FontDescription("Bariol bold 16"))
     internet_status_style = internet_status.get_style_context()
 
     internet_action = Gtk.Label()
-    internet_action.modify_font(Pango.FontDescription("Bariol bold 13"))
+    internet_action.modify_font(Pango.FontDescription("Bariol 14"))
     internet_action_style = internet_action.get_style_context()
-    internet_action_style.add_class("white")
     internet_status_style.add_class("internet_status_top")
     internet_action_style.add_class("internet_status_bottom")
 
-    internet_status.set_alignment(xalign=0, yalign=0.2)
-    internet_action.set_alignment(xalign=0, yalign=0.2)
+    #internet_status.set_alignment(xalign=0, yalign=0.2)
+    #internet_action.set_alignment(xalign=0, yalign=0.2)
 
     status_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
     status_box.props.valign = Gtk.Align.CENTER
 
-    configure_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-    status_box.add(configure_container)
+    configure_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+    configure_container.props.halign = Gtk.Align.CENTER
     # The size of the event box depends on WIFI_IMG_HEIGHT so that it is always centred.
     # message_box_size = WIFI_IMG_HEIGHT - 25
     # status_box.set_size_request(150, message_box_size)
 
     container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-    container.pack_start(status_box, False, False, 0)
-    container.pack_start(internet_img, False, False, 0)
+    container.pack_start(status_box, False, False, 2)
+    container.pack_start(internet_img, False, False, 2)
 
     if constants.has_internet:
         # Get information
@@ -86,29 +85,43 @@ def activate(_win, _box, _update):
                                 ip, _, _ = utils.run_cmd(command_ip)
                                 print "Network: %s IP: %s" % (network, ip)"""
 
+        status_box.pack_start(internet_status, False, False, 3)
+        status_box.pack_start(internet_action, False, False, 3)
+        status_box.pack_start(configure_container, False, False, 3)
+
         network_info = set_proxy_grid.network_info()
-        network = network_info()[0]
-        ip = network_info()[1]
+        network = network_info[0]
+        ip = network_info[1]
 
         #configure_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
 
         internet_img.set_from_file(constants.media + "/Graphics/Internet-Connection.png")
         title.title.set_text("Connection found!")
         title.description.set_text("Great!")
-        proxy_button = Gtk.EventBox("Proxy")
+        proxy_button = Gtk.EventBox()
+        proxy_label = Gtk.Label("Proxy")
+        proxy_label.get_style_context().add_class("orange")
+        proxy_button.add(proxy_label)
+        proxy_button.connect("button_press_event", proxy_button_press)
 
-        if network == "Ethernet":
-            internet_status.set_text(network)
-            internet_action.set_text(ip)
+        internet_status.set_text(network)
+        internet_action.set_text(ip)
+
+        if network != "Ethernet":
+            # Change to ethernet image here
+            internet_img.set_from_file(constants.media + "/Graphics/Internet-Connection.png")
+
             configure_button = Gtk.EventBox()
             configure_label = Gtk.Label("Configure")
+            configure_label.get_style_context().add_class("orange")
             configure_label.modify_font(Pango.FontDescription("Bariol 13"))
             configure_button.add(configure_label)
+            configure_button.connect("button_press_event", apply_changes)
             configure_container.pack_start(configure_button, False, False, 0)
+            divider_label = Gtk.Label("|")
+            configure_container.pack_start(divider_label, False, False, 3)
 
         configure_container.pack_start(proxy_button, False, False, 0)
-        status_box.pack_start(internet_status, False, False, 2)
-        status_box.pack_start(internet_action, False, False, 2)
 
     else:
         internet_img.set_from_file(constants.media + "/Graphics/Internet-noConnection.png")

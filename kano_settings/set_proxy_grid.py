@@ -15,7 +15,7 @@ import kano_settings.proxy as proxy
 import kano.utils as utils
 
 win = None
-update = None
+next_button = None
 ip_entry = None
 port_entry = None
 username_entry = None
@@ -61,7 +61,7 @@ def set_settings(proxyip, proxyport, proxytype, username='', password=''):
 # Validation functions
 
 def proxy_status(widget):
-    global win, update, ip_entry, port_entry, type_entry, username_entry
+    global win, next_button, ip_entry, port_entry, type_entry, username_entry
 
     if widget.get_active():
         ip_entry.set_sensitive(True)
@@ -77,12 +77,12 @@ def proxy_status(widget):
         port_entry.set_sensitive(False)
         type_entry.set_sensitive(False)
         username_entry.set_sensitive(False)
-        update.button.set_sensitive(True)
+        next_button.set_sensitive(True)
 
 
 # if proxy enabled: ip address, port, and type are mandatory
 def proxy_enabled(widget=None, event=None):
-    global win, ip_entry, type_entry, port_entry, update
+    global win, ip_entry, type_entry, port_entry, next_button
 
     # Get IP address
     # Get port
@@ -97,11 +97,11 @@ def proxy_enabled(widget=None, event=None):
                                    )
         dialog.format_secondary_text("You enabled the proxy, and need to fill in the ip, port and type text fields")
         dialog.run()
-        update.button.set_sensitive(False)
+        next_button.set_sensitive(False)
         return False
 
     if valid_ip_address(ip_text):
-        update.button.set_sensitive(True)
+        next_button.set_sensitive(True)
         return True
 
     return False
@@ -109,7 +109,7 @@ def proxy_enabled(widget=None, event=None):
 
 # ip address needs to be a pure ipv4 format at this moment: x.y.z.q (no segment mask as in /xx)
 def valid_ip_address(ip_widget, event=None):
-    global win, update
+    global win, next_button
 
     # Find the index of "/"
     # Split into substring from "."
@@ -124,12 +124,12 @@ def valid_ip_address(ip_widget, event=None):
         #dialog.format_secondary_text("Format like x.y.z.q")
         #dialog.run()
         print "Well done"
-        update.button.set_sensitive(True)
+        next_button.set_sensitive(True)
         return True
 
     else:
         print "Hm, incorrect"
-        update.button.set_sensitive(False)
+        next_button.set_sensitive(False)
         return False
 
 
@@ -143,13 +143,16 @@ def is_not_empty(widget, event=None):
 
 
 def activate(_win, box, _update):
-    global win, update, ip_entry, port_entry, username_entry, type_entry
+    global win, next_button, ip_entry, port_entry, username_entry, type_entry
 
     win = _win
-    update = _update
     title = heading.Heading("Proxy", "Blah blah blah")
     settings = fixed_size_box.Fixed()
     grid = Gtk.Grid(column_homogeneous=False, column_spacing=10, row_spacing=10)
+    win.state = 6
+
+    win.top_bar.next_button.set_sensitive(False)
+    win.top_bar.next_button.set_image(win.top_bar.pale_next_arrow)
 
     ip_entry = Gtk.Entry()
     ip_entry.set_text("ip")
@@ -177,8 +180,15 @@ def activate(_win, box, _update):
     radio2.modify_font(Pango.FontDescription("Bariol 13"))
     radio2.set_can_focus(False)
 
+    next_button = Gtk.EventBox()
+    next_button.set_size_request(150, 44)
+    next_label = Gtk.Label("BACK TO WIFI")
+    next_button.add(next_label)
+    next_button.get_style_context().add_class("apply_changes_button")
+    next_button.connect("button_press_event", back_to_wifi)
+
     apply_changes_alignment = Gtk.Alignment(xalign=0, yalign=0, xscale=0, yscale=0)
-    apply_changes_alignment.add(update.box)
+    apply_changes_alignment.add(next_button)
 
     bottom_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     bottom_row.pack_start(enable_proxy, False, False, 0)
@@ -194,7 +204,6 @@ def activate(_win, box, _update):
     #grid.attach(label_box, 0, 4, 1, 1)
     #grid.attach(bottom_row, 0, 5, 5, 1)
 
-    #settings.box.pack_start(grid, False, False, 0)
     grid_alignment = Gtk.Alignment(xalign=0, yalign=0, xscale=0, yscale=0)
     grid_alignment.add(grid)
     padding_above = (settings.height - GRID_HEIGHT) / 2
@@ -235,5 +244,12 @@ def apply_changes(button):
     #proxy_text = proxy_entry.get_text()
     #type_text = type_entry.get_text()
     #set_settings(proxyip, proxyport, proxytype)
+    back_to_wifi(button)
+    return
+
+
+def back_to_wifi(button):
+    global win
+
     win.disconnect("key-release-event", proxy_enabled)
     return

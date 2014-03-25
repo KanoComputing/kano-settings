@@ -14,7 +14,7 @@ class Fixed(Gtk.Box):
 
     def __init__(self):
         self.width = 400
-        self.height = 180
+        self.height = 160
         self.box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
         self.box.set_size_request(self.width, self.height)
         self.box.props.valign = Gtk.Align.CENTER
