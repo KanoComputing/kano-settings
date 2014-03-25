@@ -33,7 +33,7 @@ def activate(_win, box, _update):
     # Get display name
     cmd = '/opt/vc/bin/tvservice -n'
     display_name, _, _ = utils.run_cmd(cmd)
-    display_name = display_name[12:]
+    display_name = display_name[12:].rstrip()
 
     title = heading.Heading("Display - " + display_name, "How sharp can you go?")
     box.pack_start(title.container, False, False, 0)
@@ -45,9 +45,6 @@ def activate(_win, box, _update):
 
     horizontal_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=40)
     horizontal_container.set_valign(Gtk.Align.CENTER)
-
-    #settings.box.pack_start(horizontal_container, False, False, 0)
-    #horizontal_container.set_size_request(300, 10)
 
     # HDMI mode combo box
     mode_combo = Gtk.ComboBoxText.new()
