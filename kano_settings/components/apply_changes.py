@@ -15,7 +15,7 @@ class Apply():
     def __init__(self, icon_first=True):
 
         # Create button
-        self.button = Gtk.Button()
+        self.button = Gtk.EventBox()
 
         self.text = Gtk.Label()
         self.text.modify_font(Pango.FontDescription("Bariol bold 13"))
@@ -26,7 +26,7 @@ class Apply():
         self.label.add(self.text)
         self.button.add(self.label)
         self.label.props.halign = Gtk.Align.CENTER
-        self.button.set_size_request(100, 44)
+        self.button.set_size_request(130, 44)
 
         # Get rid of annoying dotted borders around click buttons
         self.button.set_can_focus(False)

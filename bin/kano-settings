@@ -20,6 +20,7 @@ if __name__ == '__main__' and __package__ is None:
 import kano_settings.set_intro as set_intro
 import kano_settings.set_audio as set_audio
 import kano_settings.set_display as set_display
+import kano_settings.set_wifi as set_wifi
 import kano_settings.config_file as config_file
 import kano_settings.components.top_bar as top_bar
 import kano_settings.components.apply_changes as apply_changes
@@ -44,7 +45,7 @@ class MainWindow(Gtk.Window):
         self.last_level_visited = 0
 
         WINDOW_WIDTH = 650
-        WINDOW_HEIGHT = 350
+        WINDOW_HEIGHT = 390
 
         # Create main window
         Gtk.Window.__init__(self, title="Kano-Settings")
@@ -52,6 +53,8 @@ class MainWindow(Gtk.Window):
         # Remove decoration
         self.set_decorated(False)
         self.set_size_request(WINDOW_WIDTH, WINDOW_HEIGHT)
+
+        self.set_resizable(False)
 
         # Main container of the window
         self.grid = Gtk.Grid()
@@ -71,22 +74,27 @@ class MainWindow(Gtk.Window):
             self.update = apply_changes.Apply()
             self.update.text.set_text("APPLY CHANGES")
             self.run_through = default_intro.Default_Intro(self, WINDOW_HEIGHT, self.top_bar.height)
-            self.top_bar.next_button.connect("clicked", self.run_through.on_next)
-            self.top_bar.prev_button.connect("clicked", self.run_through.on_prev)
+            self.top_bar.next_button.connect("button_press_event", self.run_through.on_next)
+            self.top_bar.prev_button.connect("button_press_event", self.run_through.on_prev)
             self.top_bar.prev_button.set_image(self.top_bar.pale_prev_arrow)
             self.top_bar.next_button.set_image(self.top_bar.pale_next_arrow)
-            self.update.button.connect('clicked', self.run_through.update)
+            self.update.button.connect('button_press_event', self.run_through.update)
 
         else:
             self.update = apply_changes.Apply()
             self.update.text.set_text("GET STARTED")
             self.run_through = first_run.First_Run(self)
-            self.update.button.connect('clicked', self.run_through.update_and_next)
+            self.update.button.connect('button_press_event', self.run_through.update_and_next)
             set_intro.activate(self, self.changeable_content, self.update)
-            self.top_bar.prev_button.connect("clicked", self.run_through.on_prev)
-            self.top_bar.next_button.connect("clicked", self.run_through.on_next)
+            self.top_bar.prev_button.connect("button_press_event", self.run_through.on_prev)
+            self.top_bar.next_button.connect("button_press_event", self.run_through.on_next)
             self.top_bar.prev_button.set_image(self.top_bar.pale_prev_arrow)
             self.top_bar.next_button.set_image(self.top_bar.dark_next_arrow)
+
+        # To quickly test the proxy settings
+
+        #set_wifi.activate(self, self.changeable_content, self.update)
+        #set_wifi.proxy_button_press()
 
         self.grid.attach(self.top_bar.background, 0, 0, 1, 1)
         self.grid.attach(self.changeable_content, 0, 2, 1, 1)
@@ -117,7 +125,7 @@ def main():
 def close_window(event="delete-event", button=win):
 
     if set_audio.reboot or set_display.reboot:
-        #Bring in message dialog box
+        # Bring in message dialog box
         dialog = Gtk.MessageDialog(
             button, 0, Gtk.MessageType.INFO,
             Gtk.ButtonsType.OK, "So you know..."

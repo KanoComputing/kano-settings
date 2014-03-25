@@ -14,6 +14,7 @@ import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_audio as set_audio
 import kano_settings.set_display as set_display
 import kano_settings.set_wifi as set_wifi
+import kano_settings.set_proxy_grid as set_proxy_grid
 import kano_settings.config_file as config_file
 
 win = None
@@ -26,7 +27,7 @@ class First_Run():
 
         win = _win
 
-    def update_and_next(self, widget=None):
+    def update_and_next(self, widget=None, arg2=None):
         global win
 
         returnValue = self.state_to_widget(win.state).apply_changes(win.update.button)
@@ -38,10 +39,10 @@ class First_Run():
         return
 
     # When clicking previous arrow on first run through
-    def on_prev(self, widget=None):
+    def on_prev(self, widget=None, arg2=None):
         global win
 
-         # Update current state
+        # Update current state
         win.state = (win.state - 1)
         # Check we're in a valid state
         if win.state == -1:
@@ -66,7 +67,7 @@ class First_Run():
         win.show_all()
 
     # When clicking next arrow button on first run through
-    def on_next(self, widget=None):
+    def on_next(self, widget=None, arg2=None):
         global grid, box, state, win
 
         # Update current state
@@ -104,6 +105,7 @@ class First_Run():
             3: set_audio,
             4: set_display,
             5: set_wifi,
+            6: set_proxy_grid,
         }[x]
 
 
