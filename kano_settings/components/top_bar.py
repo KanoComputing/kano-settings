@@ -60,18 +60,21 @@ class Top_bar():
         #self.prev_button.set_image(self.prev_arrow)
         self.prev_button.set_size_request(TOP_BAR_HEIGHT, TOP_BAR_HEIGHT)
         self.prev_button.set_can_focus(False)
+        self.prev_button.get_style_context().add_class("top_bar_button")
 
         # Next button
         self.next_button = Gtk.Button()
         #self.next_button.set_image(self.next_arrow)
         self.next_button.set_size_request(TOP_BAR_HEIGHT, TOP_BAR_HEIGHT)
         self.next_button.set_can_focus(False)
+        self.next_button.get_style_context().add_class("top_bar_button")
 
         # Close button
         self.close_button = Gtk.Button()
         self.close_button.set_image(self.cross)
         self.close_button.set_size_request(TOP_BAR_HEIGHT, TOP_BAR_HEIGHT)
         self.close_button.set_can_focus(False)
+        self.close_button.get_style_context().add_class("top_bar_button")
 
         """        # Container of all the elements
         self.container = Gtk.Box()

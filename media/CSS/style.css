@@ -9,8 +9,14 @@
 
 /* Define colours */
 
-@define-color button_color #8fd25e;
+@define-color button_color #a0d779;
 @define-color orange #ff842A;
+@define-color title_color #323232;
+@define-color subheading_color #6e6e6e;
+@define-color inactive_writing #cdcdcd;
+@define-color inactive_border #e1e1e1;
+@define-color active_writing #323232;
+@define-color active_border #ababab;
 
 /* All */
 * {
@@ -28,11 +34,78 @@ GtkWindow {
 }
 
 GtkButton {
-    color: #000000;
     background:transparent;
     border-style: none; /* Remove grey border on outside */
     border-width:0px;
     border-color: transparent;
+}
+
+/*GtkLabel {
+    color: #00ff00;
+}*/
+
+GtkEventBox {
+    background:transparent;
+    border-style: none; /* Remove grey border on outside */
+    border-width:0px;
+    border-color: transparent;
+    border-radius: 3px;
+}
+
+GtkComboBox {
+    color: @active_writing; /* Font color of selected item in drpdown list */
+}
+/* Workaround for lp:949368 */
+GtkComboBox GtkButton {
+    border-color: @active_border;
+    border-style: solid;
+    border-width: 2px;
+    border-radius:2px;
+    color: @active_writing;
+}
+/*GtkComboBox .menuitem * {
+    color: @button_color;
+}
+GtkComboBox .menuitem *:hover {
+    color: @button_color;
+}*/
+
+/*GtkEntry*/
+GtkEntry {
+    border-color: @active_border;
+    color: @active_writing;
+    border-style: solid;
+    border-width: 2px;
+    border-radius:3px;
+    padding: 10px;
+}
+GtkEntry:insensitive {
+    border-color: @inactive_border;
+    color: @inactive_writing;
+    border-style: solid;
+    border-width: 2px;
+    border-radius:3px;
+}
+
+GtkImage {
+    background: transparent;
+}
+
+GtkCheckButton,
+GtkRadioButton {
+    border-style: solid;
+    border-color: @active_border;
+    border-width: 2px;
+}
+
+GtkCheckButton:active,
+GtkRadioButton:active {
+    color: #9ed874;
+}
+
+GtkRadioButton
+GtkLabel{
+    color: @active_writing;
 }
 
 /* The main button that updates the changes made in each level */
@@ -47,14 +120,19 @@ GtkButton {
     /* For Next -> : padding:9px 4px 9px 17px;*/
     border-radius:3px;
     font-weight:bold;
+    color: #ff0000;
 }
 
 .apply_changes_button:insensitive {
-    background: #eeeeee;
+    background: @inactive_border;
 }
 
-.apply_changes_label {
+.apply_changes_text {
     color: #ffffff;
+}
+
+.apply_changes_text:insensitive {
+    color: #aaaaaa;
 }
 
 /* The bar at the top that mimics the window bar */
@@ -62,89 +140,30 @@ GtkButton {
     background: #eeeeee;
 }
 /* The title of the current level*/
-.title{
-    color:#000000;
+.title {
+    color: @title_color;
     padding-top:25px;
     font-weight:bold;
 }
 /* Description of current project */
 .description {
+    color: @subheading_color;
     padding-bottom: 18px;
-    color:#aaaaaa;
 }
-GtkImage {
-    background: transparent;
-}
+
 /* Title of menu button on default intro screen (Keyboard, Wfi etc) */
-.intro_label {
-    color: #ff842A;
+.menu_intro_label {
+    color: @orange;
     font-weight:bold;
 }
 /* Info about the settings of the curet project */
-.custom_label {
-    color: #888888;
+.menu_custom_label {
+    color: @subheading_color;
 }
 /* Header in top bar (title of window) */
 .header {
     color: #222222;
     font-weight: bold;
-}
-
-GtkComboBox {
-    color: #000000; /* Font color of selected item in drpdown list */
-}
-/* Workaround for lp:949368 */
-GtkComboBox GtkButton {
-    border-color: #bbbbbb;
-    border-style: solid;
-    border-width: 2px;
-    border-radius:2px;
-    color: #000000;
-}
-/*GtkComboBox .menuitem * {
-    color: @button_color;
-}
-GtkComboBox .menuitem *:hover {
-    color: @button_color;
-}*/
-
-/*GtkEntry*/
-GtkEntry {
-    border-color: #bbbbbb;
-    border-style: solid;
-    border-width: 2px;
-    border-radius:3px;
-    padding: 10px;
-}
-GtkEntry:insensitive {
-    border-color: #dddddd;
-    border-style: solid;
-    border-width: 2px;
-    border-radius:2px;
-    color: #dddddd;
-}
-/*.background-image {
-    url: "media/Graphics/keyboard.png"
-}*/
-
-GtkCheckButton,
-GtkRadioButton {
-    border-style: solid;
-    border-color: #dddddd;
-    border-width: 2px;
-}
-
-/*GtkCheckButton:active,*/
-GtkRadioButton:active {
-    color: #9ed874;
-}
-
-GtkRadioButton GtkLabel{
-    color:#000000;
-}
-
-GtkEventBox {
-    /*border-radius: 3px;*/
 }
 
 /*.check {
@@ -158,11 +177,13 @@ GtkEventBox {
 /* Top wiriting in internet status box */
 .internet_status_top {
     padding:0px 10px;
+    color: @title_color;
 }
 
 /* Bottom wiriting in internet status box */
 .internet_status_bottom {
     padding:0px 10px;
+    color: @subheading_color;
 }
 
 .connected {
@@ -176,9 +197,9 @@ GtkEventBox {
     font-weight:bold;
     margin:10px;
 }
-.white {
+/*.white {
     color: #ffffff;
-}
+}*/
 .dark_green {
     color: #0A5200;
 }

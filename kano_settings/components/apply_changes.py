@@ -16,13 +16,12 @@ class Apply():
 
         # Create button
         self.button = Gtk.EventBox()
-
         self.text = Gtk.Label()
         self.text.modify_font(Pango.FontDescription("Bariol bold 13"))
-        # Contains writing and icon of button
+        self.text.get_style_context().add_class("apply_changes_text")
+
+        # Contains writing of button
         self.label = Gtk.Box()
-        self.label_style = self.button.get_style_context()
-        self.label_style.add_class("apply_changes_label")
         self.label.add(self.text)
         self.button.add(self.label)
         self.label.props.halign = Gtk.Align.CENTER
@@ -30,17 +29,19 @@ class Apply():
 
         # Get rid of annoying dotted borders around click buttons
         self.button.set_can_focus(False)
-        # Allow button to be styled in css
+
+        # Allows button to be styled in css
         self.button_style = self.button.get_style_context()
         self.button_style.add_class("apply_changes_button")
+
+        # This stops the button resizing to fit the size of it's container
         self.box = Gtk.Box()
         self.box.pack_start(self.button, False, False, 0)
         self.box.props.halign = Gtk.Align.CENTER
 
     def enable(self):
-
         self.button.set_sensitive(True)
 
+    # styling of disabled button is in style.css
     def disable(self):
-
         self.button.set_sensitive(False)

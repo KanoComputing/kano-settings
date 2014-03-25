@@ -19,7 +19,7 @@ class Menu_button():
 
         # Info about the different settings
         self.title = Gtk.Label(name)
-        self.title.get_style_context().add_class("intro_label")
+        self.title.get_style_context().add_class("menu_intro_label")
         self.title.set_alignment(xalign=0, yalign=0.8)
 
         #info = config_file.read_from_file(custom_info[x])
@@ -31,7 +31,7 @@ class Menu_button():
 
         self.description = Gtk.Label(description)
         self.description.modify_font(Pango.FontDescription("Bariol 13"))
-        self.description.get_style_context().add_class("custom_label")
+        self.description.get_style_context().add_class("menu_custom_label")
         self.description.set_size_request(120, 10)
         self.description.set_alignment(xalign=0, yalign=0.2)
 
