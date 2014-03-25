@@ -78,6 +78,7 @@ def activate(_win, changeable_content, _update):
 
     if current_email is not None:
         text = current_email.replace('\n', '')
+        update_config()
 
     entry1.set_text(text)
     check_email(entry1, 1)
@@ -102,6 +103,15 @@ def activate(_win, changeable_content, _update):
 
     entry1.connect('key_release_event', check_email)
     entry2.connect('key_release_event', check_match)
+
+
+def read_config():
+    return config_file.read_from_file("Email")
+
+
+def update_config():
+    # Add new configurations to config file.
+    config_file.replace_setting("Email", current_email)
 
 
 def check_match(entry, event):
