@@ -26,7 +26,7 @@ class Apply():
         self.label.add(self.text)
         self.button.add(self.label)
         self.label.props.halign = Gtk.Align.CENTER
-        self.button.set_size_request(130, 44)
+        self.button.set_size_request(150, 44)
 
         # Get rid of annoying dotted borders around click buttons
         self.button.set_can_focus(False)
