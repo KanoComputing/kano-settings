@@ -234,9 +234,9 @@ def network_info():
         network = out
         command_ip = '/sbin/ifconfig wlan0 | grep inet | awk \'{print $2}\' | cut -d\':\' -f2'
     ip, _, _ = utils.run_cmd(command_ip)
-    print "Network: %s IP: %s" % (network, ip)
+    print "Network: %s IP: %s" % (network.rstrip(), ip.rstrip())
 
-    return [network, ip.rstrip()]
+    return [network.rstrip(), ip.rstrip()]
 
 
 def apply_changes(button):
