@@ -12,7 +12,7 @@ import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
 import kano_settings.config_file as config_file
-#import kano.utils as utils
+import kano.utils as utils
 import kano_settings.set_proxy_grid as set_proxy_grid
 
 network_message = ""
@@ -87,9 +87,8 @@ def activate(_win, _box, _update):
         status_box.pack_start(internet_action, False, False, 3)
         status_box.pack_start(configure_container, False, False, 3)
 
-        network_info = set_proxy_grid.network_info()
-        network = network_info[0]
-        ip = network_info[1]
+        network = network_info()[0]
+        ip = network_info()[1]
 
         #configure_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
 
@@ -149,6 +148,23 @@ def activate(_win, _box, _update):
 
     box.pack_start(update.box, False, False, 0)
     update.enable()
+
+
+def network_info():
+    network = ''
+    command_ip = ''
+    command_network = '/sbin/iwconfig wlan0 | grep \'ESSID:\' | awk \'{print $4}\' | sed \'s/ESSID://g\' | sed \'s/\"//g\''
+    out, e, _ = utils.run_cmd(command_network)
+    if e:
+        network = "Ethernet"
+        command_ip = '/sbin/ifconfig eth0 | grep inet | awk \'{print $2}\' | cut -d\':\' -f2'
+    else:
+        network = out
+        command_ip = '/sbin/ifconfig wlan0 | grep inet | awk \'{print $2}\' | cut -d\':\' -f2'
+    ip, _, _ = utils.run_cmd(command_ip)
+    print "Network: %s IP: %s" % (network.rstrip(), ip.rstrip())
+
+    return [network.rstrip(), ip.rstrip()]
 
 
 def proxy_button_press(event=None, button=None):
