@@ -18,6 +18,7 @@ port_entry = None
 username_entry = None
 password_entry = None
 proxy_type = None
+enable_proxy = False
 
 GRID_HEIGHT = 150
 
@@ -45,7 +46,7 @@ def set_settings(proxyip, proxyport, proxytype, username='', password=''):
     settings = {
         'proxy-ip': proxyip,
         'proxy-port': proxyport,
-        'proxy-type': proxytype,   # on of : "socks_v4 socks_v5" or "http_v1.0"
+        'proxy-type': proxytype,   # one of : "socks_v4 socks_v5" or "http_v1.0"
         'username': None,
         'password': None
     }
@@ -54,11 +55,11 @@ def set_settings(proxyip, proxyport, proxytype, username='', password=''):
 
 # Validation functions
 
-
 def proxy_status(widget):
-    global win, next_button, ip_entry, port_entry, password_entry, username_entry
+    global win, next_button, ip_entry, port_entry, password_entry, username_entry, enable_proxy
 
-    if widget.get_active():
+    enable_proxy = widget.get_active()
+    if enable_proxy:
         ip_entry.set_sensitive(True)
         port_entry.set_sensitive(True)
         password_entry.set_sensitive(True)
@@ -164,10 +165,10 @@ def activate(_win, box, _update):
     password_entry.set_visibility(False)
     password_entry.modify_font(Pango.FontDescription("Bariol 13"))
 
-    enable_proxy = Gtk.CheckButton("enable proxy")
-    enable_proxy.modify_font(Pango.FontDescription("Bariol 13"))
-    enable_proxy.connect("clicked", proxy_status)
-    enable_proxy.set_can_focus(False)
+    checkbutton = Gtk.CheckButton("enable proxy")
+    checkbutton.modify_font(Pango.FontDescription("Bariol 13"))
+    checkbutton.connect("clicked", proxy_status)
+    checkbutton.set_can_focus(False)
 
     radio1 = Gtk.RadioButton.new_with_label_from_widget(None, "socks_v4 socks_v5")
     radio1.modify_font(Pango.FontDescription("Bariol 13"))
@@ -192,7 +193,7 @@ def activate(_win, box, _update):
     apply_changes_alignment.add(next_button)
 
     bottom_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-    bottom_row.pack_start(enable_proxy, False, False, 0)
+    bottom_row.pack_start(checkbutton, False, False, 0)
     bottom_row.pack_start(apply_changes_alignment, False, False, 0)
     apply_changes_alignment.set_padding(2, 2, 60, 2)
 
@@ -213,13 +214,16 @@ def activate(_win, box, _update):
     box.pack_start(settings.box, False, False, 0)
     box.pack_end(bottom_row, False, False, 0)
 
-    proxy_status(enable_proxy)
+    proxy_status(checkbutton)
 
 
 def apply_changes(button):
-    proxyip = ip_entry.get_text()
-    proxyport = port_entry.get_text()
-    set_settings(proxyip, proxyport, proxy_type)
+    # This needs to distinguish between whether proxy has actually been enabled or not
+    if enable_proxy:
+        proxyip = ip_entry.get_text()
+        proxyport = port_entry.get_text()
+        set_settings(proxyip, proxyport, proxy_type)
+
     back_to_wifi(button)
     return
 
@@ -227,5 +231,5 @@ def apply_changes(button):
 def back_to_wifi(button, arg2=None):
     global win
 
-    win.disconnect("key-release-event", proxy_enabled)
+    win.disconnect(proxy_enabled)
     return
