@@ -14,7 +14,7 @@ import kano_settings.set_email as set_email
 import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_audio as set_audio
 import kano_settings.set_display as set_display
-import kano_settings.set_wifi as set_wifi
+import kano_settings.set_wifi_proxy as set_wifi_proxy
 import kano_settings.config_file as config_file
 import kano_settings.components.menu_button as menu_button
 import kano_settings.constants as constants
@@ -99,7 +99,6 @@ class Default_Intro():
     # Takes you back to the introduction screen (on pressing prev button)
     def on_prev(self, arg2=None, arg3=None):
         global win
-        # save last level?
         for i in win.changeable_content.get_children():
             win.changeable_content.remove(i)
         self.update_intro()
@@ -146,6 +145,7 @@ class Default_Intro():
 
     # This updates the current level.
     def update(self, widget, arg2=None):
+        print "Update hit"
         returnValue = self.state_to_widget(win.state).apply_changes(widget)
         if returnValue == -1:
             return
@@ -160,5 +160,5 @@ class Default_Intro():
             2: set_email,
             3: set_audio,
             4: set_display,
-            5: set_wifi,
+            5: set_wifi_proxy,
         }[x]

@@ -13,7 +13,6 @@ import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
 import kano_settings.config_file as config_file
 import kano.utils as utils
-import kano_settings.set_proxy as set_proxy
 
 network_message = ""
 win = None
@@ -22,7 +21,7 @@ update = None
 WIFI_IMG_HEIGHT = 110
 
 
-def activate(_win, _box, _update):
+def activate(_win, _box, _update, to_proxy_button):
     global network_message, box, win, update
 
     win = _win
@@ -32,8 +31,8 @@ def activate(_win, _box, _update):
     title = heading.Heading("", "")
     box.pack_start(title.container, False, False, 0)
 
-    proxy_button = Gtk.Button("Proxy Button")
-    proxy_button.connect("button-press-event", proxy_button_press)
+    #proxy_button = Gtk.Button("Proxy Button")
+    #proxy_button.connect("button-press-event", proxy_button_press)
     #box.pack_start(proxy_button, False, False, 0)
 
     # Table
@@ -82,12 +81,13 @@ def activate(_win, _box, _update):
         internet_img.set_from_file(constants.media + "/Graphics/Internet-Connection.png")
         title.title.set_text("Connection found!")
         title.description.set_text("Great!")
-        proxy_button = Gtk.EventBox()
-        proxy_label = Gtk.Label("Proxy")
-        proxy_label.get_style_context().add_class("orange")
-        proxy_label.modify_font(Pango.FontDescription("Bariol 13"))
-        proxy_button.add(proxy_label)
-        proxy_button.connect("button_press_event", proxy_button_press)
+        proxy_button = to_proxy_button
+        #proxy_button = Gtk.EventBox()
+        #proxy_label = Gtk.Label("Proxy")
+        #proxy_label.get_style_context().add_class("orange")
+        #proxy_label.modify_font(Pango.FontDescription("Bariol 13"))
+        #proxy_button.add(proxy_label)
+        #proxy_button.connect("button_press_event", proxy_button_press)
 
         internet_status.set_text(network)
         internet_action.set_text(ip)
@@ -118,6 +118,17 @@ def activate(_win, _box, _update):
         configure_container.pack_start(add_connection_button, False, False, 0)
         # Change colour of update button here.
 
+        ########
+        #proxy_button = Gtk.EventBox()
+        #proxy_label = Gtk.Label("Proxy")
+        #proxy_label.get_style_context().add_class("orange")
+        #proxy_label.modify_font(Pango.FontDescription("Bariol 13"))
+        #proxy_button.add(proxy_label)
+        #proxy_button.connect("button_press_event", proxy_button_press)
+        proxy_button = to_proxy_button
+        configure_container.pack_start(proxy_button, False, False, 0)
+        #########
+
     # So everything is centred even if we change the window height
     valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
     padding_above = (settings.height - WIFI_IMG_HEIGHT) / 2
@@ -146,15 +157,16 @@ def network_info():
     return [network.rstrip(), ip.rstrip()]
 
 
-def proxy_button_press(event=None, button=None):
+"""def proxy_button_press(event=None, button=None):
     global win, update, box
 
     # Remove element in the dynamic box
     for i in box.get_children():
         box.remove(i)
 
-    set_proxy.activate(win, box, update)
-    win.show_all()
+    #set_proxy.activate(win, box, update)
+    wifi_proxy_communication.to_proxy(win, box)
+    win.show_all()"""
 
 
 def configure_wifi(event=None, button=None):
