@@ -17,6 +17,7 @@ ip_entry = None
 port_entry = None
 username_entry = None
 password_entry = None
+proxy_type = None
 
 GRID_HEIGHT = 150
 
@@ -124,6 +125,15 @@ def is_not_empty(widget, event=None):
     False
 
 
+def proxy_type(radio_button):
+    global proxy_type
+
+    if radio_button.get_active():
+        proxy_type = "socks_v4 socks_v5"
+    else:
+        proxy_type = "http_v1.0"
+
+
 def activate(_win, box, _update):
     global win, next_button, ip_entry, port_entry, username_entry, password_entry
 
@@ -167,6 +177,10 @@ def activate(_win, box, _update):
     radio2.modify_font(Pango.FontDescription("Bariol 13"))
     radio2.set_can_focus(False)
 
+    radio1.connect("toggled", proxy_type)
+    # Needs to be run once at start
+    proxy_type(radio1)
+
     next_button = Gtk.EventBox()
     next_button.set_size_request(150, 44)
     next_label = Gtk.Label("BACK TO WIFI")
@@ -188,8 +202,6 @@ def activate(_win, box, _update):
     grid.attach(password_entry, 2, 2, 3, 2)
     grid.attach(radio1, 4, 0, 1, 1)
     grid.attach(radio2, 4, 1, 1, 1)
-    #grid.attach(label_box, 0, 4, 1, 1)
-    #grid.attach(bottom_row, 0, 5, 5, 1)
 
     grid_alignment = Gtk.Alignment(xalign=0, yalign=0, xscale=0, yscale=0)
     grid_alignment.add(grid)
@@ -205,10 +217,9 @@ def activate(_win, box, _update):
 
 
 def apply_changes(button):
-    #ip_text = ip_entry.get_text()
-    #proxy_text = proxy_entry.get_text()
-    #password_text = password_entry.get_text()
-    #set_settings(proxyip, proxyport, proxytype)
+    proxyip = ip_entry.get_text()
+    proxyport = port_entry.get_text()
+    set_settings(proxyip, proxyport, proxy_type)
     back_to_wifi(button)
     return
 

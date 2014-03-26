@@ -18,7 +18,6 @@ import re
 HDMI = False
 reboot = False
 file_name = "/etc/rc.local"
-#file_name = "/home/caroline/blah"
 current_img = None
 # Change this value (IMG_HEIGHT) to move the image up or down.
 IMG_HEIGHT = 130
@@ -76,8 +75,6 @@ def activate(_win, box, update):
     valign.set_padding(padding_above, 0, 0, 0)
     valign.add(radio_button_container)
     settings.box.pack_start(valign, False, False, 0)
-
-    #settings.box.pack_start(radio_button_container, False, False, 10)
 
     # Show the current setting by electing the appropriate radio button
     current_setting(analog_button, hdmi_button)
