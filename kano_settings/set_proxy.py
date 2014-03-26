@@ -83,7 +83,7 @@ def proxy_enabled(widget=None, event=None):
     # Get IP address
     # Get port
     # Get type
-    # If these entries are non empty, good - else, bring up alert
+    # If these entries are non empty, good - else, disable the next button
     ip_text = ip_entry.get_text()
     port_text = port_entry.get_text()
     password_text = password_entry.get_text()
@@ -105,7 +105,7 @@ def valid_ip_address(ip_widget, event=None):
     # Find the index of "/"
     # Split into substring from "."
     # Check there are 4 (?).
-    # Return/show tick if good, else alert/show cross image saying the ip address is wrong
+    # Return/show tick if good, else do not allow them to click the next button
     ip_array = ip_widget.split(".")
     slash_array = ip_widget.split("/")
     if len(slash_array) == 1 and len(ip_array) == 4:
@@ -126,7 +126,7 @@ def is_not_empty(widget, event=None):
     False
 
 
-def proxy_type(radio_button):
+def set_proxy_type(radio_button):
     global proxy_type
 
     if radio_button.get_active():
@@ -178,9 +178,9 @@ def activate(_win, box, _update):
     radio2.modify_font(Pango.FontDescription("Bariol 13"))
     radio2.set_can_focus(False)
 
-    radio1.connect("toggled", proxy_type)
+    radio1.connect("toggled", set_proxy_type)
     # Needs to be run once at start
-    proxy_type(radio1)
+    set_proxy_type(radio1)
 
     next_button = Gtk.EventBox()
     next_button.set_size_request(150, 44)
