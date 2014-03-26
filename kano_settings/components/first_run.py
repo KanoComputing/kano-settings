@@ -14,7 +14,7 @@ import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_audio as set_audio
 import kano_settings.set_display as set_display
 import kano_settings.set_wifi as set_wifi
-import kano_settings.set_proxy_grid as set_proxy_grid
+import kano_settings.set_proxy as set_proxy
 import kano_settings.config_file as config_file
 
 win = None
@@ -120,7 +120,7 @@ class First_Run():
             3: set_audio,
             4: set_display,
             5: set_wifi,
-            6: set_proxy_grid,
+            6: set_proxy,
         }[x]
 
 

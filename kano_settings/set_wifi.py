@@ -13,7 +13,7 @@ import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
 import kano_settings.config_file as config_file
 import kano.utils as utils
-import kano_settings.set_proxy_grid as set_proxy_grid
+import kano_settings.set_proxy as set_proxy
 
 network_message = ""
 win = None
@@ -153,7 +153,7 @@ def proxy_button_press(event=None, button=None):
     for i in box.get_children():
         box.remove(i)
 
-    set_proxy_grid.activate(win, box, update)
+    set_proxy.activate(win, box, update)
     win.show_all()
 
 
