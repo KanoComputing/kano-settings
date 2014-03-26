@@ -1,4 +1,4 @@
-kano-settings (1.0-8) unstable; urgency=low
+kano-settings (1.1-1) unstable; urgency=low
 
   * Merged with the kano-connect scripts
   * The connect scripts are now a subpackage of kano-settings
