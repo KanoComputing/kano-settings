@@ -33,6 +33,7 @@ class Apply():
         # Allows button to be styled in css
         self.button_style = self.button.get_style_context()
         self.button_style.add_class("apply_changes_button")
+        self.button_style.add_class("green")
 
         # This stops the button resizing to fit the size of it's container
         self.box = Gtk.Box()
@@ -45,3 +46,11 @@ class Apply():
     # styling of disabled button is in style.css
     def disable(self):
         self.button.set_sensitive(False)
+
+    def grey_background(self):
+        self.button_style.add_class("grey")
+        self.button_style.remove_class("green")
+
+    def green_background(self):
+        self.button_style.add_class("green")
+        self.button_style.remove_class("grey")

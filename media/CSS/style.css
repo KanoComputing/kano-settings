@@ -110,17 +110,17 @@ GtkLabel{
 
 /* The main button that updates the changes made in each level */
 .apply_changes_button {
-    background: @button_color;
-    /*border-top: 9px;
-    border-right:14px;
-    border-bottom: 9px;
-    border-left: 17px;
-    border-color: @button_color;
-    border-style: solid;*/
-    /* For Next -> : padding:9px 4px 9px 17px;*/
+    /*background: @button_color;*/
     border-radius:3px;
     font-weight:bold;
-    color: #ff0000;
+}
+
+.green {
+    background: @button_color;
+}
+
+.grey {
+    background: #dddddd;
 }
 
 .apply_changes_button:insensitive {
