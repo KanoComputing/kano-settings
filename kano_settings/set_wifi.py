@@ -62,6 +62,14 @@ def activate(_win, _box, _update):
     container.pack_start(status_box, False, False, 2)
     container.pack_start(internet_img, False, False, 2)
 
+    add_connection_button = Gtk.EventBox()
+    add_connection_button.get_style_context().add_class("apply_changes_button")
+    add_connection_label = Gtk.Label("ADD CONNECTION")
+    add_connection_label.modify_font(Pango.FontDescription("Bariol bold 14"))
+    add_connection_button.add(add_connection_label)
+    add_connection_button.set_size_request(200, 44)
+    add_connection_button.connect("button_press_event", configure_wifi)
+
     if constants.has_internet:
 
         status_box.pack_start(internet_status, False, False, 3)
@@ -107,14 +115,6 @@ def activate(_win, _box, _update):
         title.title.set_text("No network found")
         title.description.set_text("Aw, man.")
         internet_status.set_text("No network found")
-        add_connection_button = Gtk.EventBox()
-        add_connection_button.get_style_context().add_class("apply_changes_button")
-        add_connection_label = Gtk.Label("ADD CONNECTION")
-        add_connection_label.modify_font(Pango.FontDescription("Bariol bold 14"))
-        add_connection_button.add(add_connection_label)
-        add_connection_button.set_size_request(200, 44)
-        add_connection_button.connect("button_press_event", apply_changes)
-        #add_connection_button.props.valign = Gtk.Align.CENTER
         configure_container.pack_start(add_connection_button, False, False, 0)
         # Change colour of update button here.
 
