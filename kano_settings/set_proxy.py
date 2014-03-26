@@ -188,9 +188,6 @@ def activate(_win, _box, _update, to_wifi_button):
     # Needs to be run once at start
     set_proxy_type(radio1)
 
-    #next_button = Gtk.EventBox()
-    #next_label = Gtk.Label("BACK TO WIFI")
-    #next_button.add(next_label)
     next_button = to_wifi_button
 
     apply_changes_alignment = Gtk.Alignment(xalign=0, yalign=0, xscale=0, yscale=0)
@@ -220,7 +217,7 @@ def activate(_win, _box, _update, to_wifi_button):
 
     proxy_status(checkbutton)
 
-    #win.connect("key-release-event", proxy_enabled)
+    win.connect("key-release-event", proxy_enabled)
 
 
 def apply_changes(button, arg2=None):
