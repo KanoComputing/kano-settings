@@ -65,6 +65,7 @@ def activate(_win, _box, _update, to_proxy_button):
     add_connection_button.get_style_context().add_class("apply_changes_button")
     add_connection_label = Gtk.Label("ADD CONNECTION")
     add_connection_label.modify_font(Pango.FontDescription("Bariol bold 14"))
+    add_connection_label.get_style_context().add_class("apply_changes_text")
     add_connection_button.add(add_connection_label)
     add_connection_button.set_size_request(200, 44)
     add_connection_button.connect("button_press_event", configure_wifi)
@@ -82,12 +83,6 @@ def activate(_win, _box, _update, to_proxy_button):
         title.title.set_text("Connection found!")
         title.description.set_text("Great!")
         proxy_button = to_proxy_button
-        #proxy_button = Gtk.EventBox()
-        #proxy_label = Gtk.Label("Proxy")
-        #proxy_label.get_style_context().add_class("orange")
-        #proxy_label.modify_font(Pango.FontDescription("Bariol 13"))
-        #proxy_button.add(proxy_label)
-        #proxy_button.connect("button_press_event", proxy_button_press)
 
         internet_status.set_text(network)
         internet_action.set_text(ip)
@@ -117,17 +112,8 @@ def activate(_win, _box, _update, to_proxy_button):
         internet_status.set_text("No network found")
         configure_container.pack_start(add_connection_button, False, False, 0)
         # Change colour of update button here.
-
-        ########
-        #proxy_button = Gtk.EventBox()
-        #proxy_label = Gtk.Label("Proxy")
-        #proxy_label.get_style_context().add_class("orange")
-        #proxy_label.modify_font(Pango.FontDescription("Bariol 13"))
-        #proxy_button.add(proxy_label)
-        #proxy_button.connect("button_press_event", proxy_button_press)
-        proxy_button = to_proxy_button
-        configure_container.pack_start(proxy_button, False, False, 0)
-        #########
+        update.grey_background()
+        update.text.set_text("SKIP THIS STEP")
 
     # So everything is centred even if we change the window height
     valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
@@ -155,18 +141,6 @@ def network_info():
     print "Network: %s IP: %s" % (network.rstrip(), ip.rstrip())
 
     return [network.rstrip(), ip.rstrip()]
-
-
-"""def proxy_button_press(event=None, button=None):
-    global win, update, box
-
-    # Remove element in the dynamic box
-    for i in box.get_children():
-        box.remove(i)
-
-    #set_proxy.activate(win, box, update)
-    wifi_proxy_communication.to_proxy(win, box)
-    win.show_all()"""
 
 
 def configure_wifi(event=None, button=None):

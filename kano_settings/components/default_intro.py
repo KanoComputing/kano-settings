@@ -123,7 +123,7 @@ class Default_Intro():
         win.last_level_visited = win.state
         win.show_all()
 
-    # On clicing a level button on default intro screen
+    # On clicking a level button on default intro screen
     def go_to_level(self, widget):
         global win
         # Remove element in the dynamic box
@@ -145,7 +145,6 @@ class Default_Intro():
 
     # This updates the current level.
     def update(self, widget, arg2=None):
-        print "Update hit"
         returnValue = self.state_to_widget(win.state).apply_changes(widget)
         if returnValue == -1:
             return

@@ -78,3 +78,8 @@ def to_wifi(event=None, arg=None):
     set_wifi.activate(win, box, update, to_proxy_button)
 
     win.show_all()
+
+
+def apply_changes(event=None, button=None):
+    set_wifi.apply_changes()
+    return
