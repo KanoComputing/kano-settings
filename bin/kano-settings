@@ -20,7 +20,7 @@ if __name__ == '__main__' and __package__ is None:
 import kano_settings.set_intro as set_intro
 import kano_settings.set_audio as set_audio
 import kano_settings.set_display as set_display
-import kano_settings.set_wifi as set_wifi
+#import kano_settings.set_wifi as set_wifi
 import kano_settings.config_file as config_file
 import kano_settings.components.top_bar as top_bar
 import kano_settings.components.apply_changes as apply_changes
@@ -53,6 +53,7 @@ class MainWindow(Gtk.Window):
         # Remove decoration
         self.set_decorated(False)
         self.set_size_request(WINDOW_WIDTH, WINDOW_HEIGHT)
+        self.set_position(Gtk.WindowPosition.CENTER)
 
         self.set_resizable(False)
 

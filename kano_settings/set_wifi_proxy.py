@@ -33,7 +33,7 @@ def activate(_win, _box, _update):
 def to_proxy(event=None, arg=None):
     global win, box, update
 
-    to_wifi_button = generate_wifi_button
+    to_wifi_button = generate_wifi_button()
 
     for i in box.get_children():
         box.remove(i)
