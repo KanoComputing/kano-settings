@@ -1,4 +1,4 @@
-#! /usr/bin/python
+#!/usr/bin/env python
 
 # kano-wifi
 #
@@ -41,7 +41,7 @@ def display_networks(iwl, page=0, perpage=NETWORKS_PER_PAGE):
     displayed=0
 
     print_header()
-  
+
     for idx, netw in enumerate(iwl[start:end]):
         enctxt = 'Open'
         if netw['encryption'] != 'off':
@@ -54,7 +54,7 @@ def display_networks(iwl, page=0, perpage=NETWORKS_PER_PAGE):
 
 
 def prompt_hidden():
-    
+
     protection = essid = encryption = enckey = None
 
     print_header()
@@ -90,12 +90,12 @@ def prompt_hidden():
             msg = 'Please enter a valid network passphrase'
             subprocess.call(['typewriter_echo', msg, '0', '1'])
             enckey = getpass.getpass()
-    
+
     return (essid, encryption, enckey)
-    
+
 
 if __name__  ==  '__main__':
-    
+
     # Position the window
     os.system('kano-window-tool -t \"WiFi\" -c -f -dyes')
     # Load the cache
@@ -230,7 +230,7 @@ if __name__  ==  '__main__':
             essid = (iwl[selected]['essid'])
             encryption = (iwl[selected]['encryption'])
             enckey = None
-            
+
             print_header()
             msg = 'Let\'s connect to %s' % essid
             subprocess.call(['typewriter_echo', msg, '0', '2'])
