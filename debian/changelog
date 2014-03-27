@@ -1,3 +1,10 @@
+kano-settings (1.1-1) unstable; urgency=low
+
+  * Merged with the kano-connect scripts
+  * The connect scripts are now a subpackage of kano-settings
+
+ -- Team Kano <dev@kano.me>  Wed, 26 Mar 2014 15:59:19 +0000
+
 kano-settings (1.0-7) unstable; urgency=low
 
   * Package rebuilt, updated to revision 77f4b499.

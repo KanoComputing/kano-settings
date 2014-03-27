@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# postinst
+#
+# Copyright (C) 2014 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+
+TMP_FILE=/tmp/kano-connect_conf
+
+case "$1" in
+    configure)
+
+        # Create custom sudoers file
+        echo "%sudo   ALL=(root) NOPASSWD: /usr/bin/kano-wifi" > $TMP_FILE
+
+        # The owner and group for the sudoers file must both be 0
+        chown root:root $TMP_FILE
+
+        # The file permissions must be set to 0440
+        chmod 0440 $TMP_FILE
+
+        # Move the file to the sudoers directory
+        mv $TMP_FILE /etc/sudoers.d/
+
+        # For those who upgrade, we improve Realtek 8192 wireless chipsets
+        # reliability by disabling the power safe and sleep modes
+        # 
+        if [ ! -e /etc/modprobe.d/8192cu.conf ]; then
+            echo "Disabling 8182CU USB Wireless Power safe and Suspend modes"
+            printf "# Disable 8192CU power safe and suspend mode\n" > /etc/modprobe.d/8192cu.conf
+            printf "options 8192cu rtw_power_mgnt=0 rtw_enusbss=0\n" >> /etc/modprobe.d/8192cu.conf
+            echo "A system restart is suggested but not mandatory"
+	fi
+	;;
+
+esac
+
+#DEBHELPER#
+
+exit 0

@@ -1,0 +1,6 @@
+./bin/kano-connect usr/bin
+./bin/kano-wifi usr/bin
+./kano_connect/kanowifilib.py usr/lib/python2.7/dist-packages/
+
+./icon/WiFi /usr/share/kano-desktop/extras
+./icon/wifi.png /usr/share/kano-desktop/icons

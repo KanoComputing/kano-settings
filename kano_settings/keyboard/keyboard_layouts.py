@@ -7,6 +7,7 @@
 #
 # Country code mappings to keyboard model names, and keyboard variant names collected from
 # Debian console-setup source package, version 1.88: http://packages.debian.org/source/wheezy/console-setup
+# http://dev.kano.me/public/Keyboardnames.pl.txt
 #
 # Mapping of country names to keyboard layout codes,
 # With additional names for natural country prompts (for example United Kingdom, England, UK, etc)
@@ -132,6 +133,7 @@ layouts_america = {
 }
 
 layouts_australia = {
+    'Australia': 'gb',
     'Maori': 'mao',
 }
 
