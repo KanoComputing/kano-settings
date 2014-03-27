@@ -18,7 +18,7 @@ import kano_settings.set_wifi as set_wifi
 import kano_settings.config_file as config_file
 import kano_settings.components.menu_button as menu_button
 import kano_settings.constants as constants
-from kanowifilib import is_internet
+from kano.network import is_internet
 
 names = ["Keyboard", "Email", "Audio", "Display", "Wifi"]
 custom_info = ["Keyboard-country-human", "Email", "Audio", "Display-mode", "Wifi"]
