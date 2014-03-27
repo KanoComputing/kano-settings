@@ -142,7 +142,7 @@ def activate(_win, _box, _update, to_wifi_button):
 
     win = _win
     box = _box
-    title = heading.Heading("Proxy", "Blah blah blah")
+    title = heading.Heading("Proxy", "Connect via a friend")
     settings = fixed_size_box.Fixed()
     grid = Gtk.Grid(column_homogeneous=False, column_spacing=10, row_spacing=10)
     win.state = 6
