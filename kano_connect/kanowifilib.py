@@ -13,8 +13,13 @@
 # Common module for wireless support functions
 #
 
-import os, time, subprocess, syslog
-import shlex, json, re
+import os
+import time
+import subprocess
+import syslog
+import shlex
+import json
+import re
 
 
 class IWList():
@@ -72,7 +77,7 @@ class IWList():
         # Data is separated by cells, now we'll parse each cell's data
         parsedCellData = {}
         for s in cellDataL:
-              if s is not None:
+            if s is not None:
                 (cellNumber, cellData) = self.parseCellData("\n".join(s))
                 parsedCellData[cellNumber] = cellData
         #log.debug("parseRawData: parsed "+str(len(cellDataL))+" cells")
@@ -136,7 +141,7 @@ class IWList():
         else:
             ret = s[1].strip()
         return ret
- 
+
     def getCellIE(self, s):
         s = s.split(":")
         if len(s) > 2:
@@ -144,14 +149,14 @@ class IWList():
         else:
             ret = s[1].strip()
         return ret
-      
+
     def getCellBitRates(self, s, rawdatas):
         # Pre-condition: s is in rawdatas, and bit rates are described in 3 lines
         ixBitRate = rawdatas.index(s)
         rawBitRate = rawdatas[ixBitRate].split(":")[1].strip() + "; " + rawdatas[ixBitRate + 1].strip() + "; " + \
             rawdatas[ixBitRate + 2].strip()
         return rawBitRate
-    
+
     def getCellNumber(self, s):
         return s.strip().split(" ")[1]
 
@@ -210,7 +215,7 @@ class IWList():
             import pprint
             pp = pprint.PrettyPrinter(indent=4, depth=6)
             print 'Debug on: Dumping parsed wireless info:'
-            pp.pprint (self.data)
+            pp.pprint(self.data)
 
         self.iwnets = []
         for w in self.data:
@@ -219,12 +224,12 @@ class IWList():
             # Basic signal information, excluding hidden SSIDs
             if len(ww['ESSID']):
                 wnet = {
-                    'essid' : ww['ESSID'] if len(ww['ESSID']) else ww['MAC'],
-                    'channel' : ww['Channel'],
-                    'signal' : ww['Signal'],
-                    'quality' : ww['Quality']
-                    }
-                
+                    'essid': ww['ESSID'] if len(ww['ESSID']) else ww['MAC'],
+                    'channel': ww['Channel'],
+                    'signal': ww['Signal'],
+                    'quality': ww['Quality']
+                }
+
                 # Identify security information
                 if ww['Encryption'] == 'off':
                     enc = 'off'
@@ -232,24 +237,24 @@ class IWList():
                     enc = 'wep'
 
                     # Look through Extra information data in search for WPA encryption flag
-                    if ww.has_key('Extra'):
+                    if 'Extra' in ww:
                         for xtra in ww['Extra']:
-                            if xtra.upper().find ('WPA') != -1:
+                            if xtra.upper().find('WPA') != -1:
                                 enc = 'wpa'
 
                     # Same with the IE data chunks
-                    if ww.has_key('IE'):
+                    if 'IE' in ww:
                         for ie in ww['IE']:
-                            if ie.upper().find ('WPA') != -1:
+                            if ie.upper().find('WPA') != -1:
                                 enc = 'wpa'
 
                 if unsecure and enc != 'off':
                     pass
                 else:
                     wnet['encryption'] = enc
-                    self.iwnets.append (wnet)
+                    self.iwnets.append(wnet)
 
-        self.iwnets =  sorted(self.iwnets, key=self.sortNetworks, reverse=True)
+        self.iwnets = sorted(self.iwnets, key=self.sortNetworks, reverse=True)
         if first and len(self.iwnets) > 1:
             return [self.iwnets[0]]
         else:
@@ -290,16 +295,18 @@ def is_device(iface):
 
     return False
 
+
 def is_ethernet_plugged(eth_device='eth0'):
     plugged = False
     try:
-        with open ('/sys/class/net/%s/operstate' % (eth_device), 'r') as f:
+        with open('/sys/class/net/%s/operstate' % (eth_device), 'r') as f:
             if f.read().strip('\n').lower() == 'up':
                 plugged = True
     except:
         pass
 
     return plugged
+
 
 def is_connected(iface):
     '''
@@ -328,11 +335,12 @@ def is_connected(iface):
 
     return (essid, mode, ap)
 
+
 def is_gateway():
     '''
     Find the default route gateway, try to contact it. Return True if responding
     '''
-    responds=False
+    responds = False
     out, err = execute("ip route show")
     guess_ip = re.match('^default via ([0-9\.]*) .*', out)
     if guess_ip:
@@ -346,15 +354,17 @@ def is_gateway():
 
     return responds
 
+
 def is_internet():
     '''
     Returns True if Internet is available, False otherwise
     '''
     try:
-        rc = os.system ('/usr/bin/is_internet')
+        rc = os.system('/usr/bin/is_internet')
         return rc == 0
     except:
         return False
+
 
 def wpa_conf(essid, psk, confile):
     wpa_conf = '''
@@ -478,7 +488,7 @@ class KwifiCache:
 
     def _save_cache_(self, essid, encryption, enckey):
         wdata = json.dumps({'essid': essid, 'encryption': encryption, 'enckey': enckey},
-                            sort_keys=True, indent=4, separators=(',', ': '))
+                           sort_keys=True, indent=4, separators=(',', ': '))
         with open(self.cache_file, 'w') as f:
             f.write(wdata)
         return True
@@ -491,9 +501,10 @@ class KwifiCache:
         wdata = json.loads(lastknown)
         return wdata
 
-if __name__ == '__main__':
 
-    import sys, pprint
+if __name__ == '__main__':
+    import sys
+    import pprint
 
     pp = pprint.PrettyPrinter(indent=4, depth=6)
     wiface = 'wlan0'
@@ -503,15 +514,15 @@ if __name__ == '__main__':
         print 'Syntax: kanowifilib.py <iwlist dump file>'
         sys.exit(1)
     else:
-        iwlist= sys.argv[1]
+        iwlist = sys.argv[1]
 
     print 'Parsing info from file: %s\n' % iwlist
     iwl = IWList(wiface, iwlist=iwlist)
 
     print '>>> Raw parsed data follows:'
-    pp.pprint (iwl.data)
+    pp.pprint(iwl.data)
 
     print '>>> Compact parsed data follows:'
-    pp.pprint (iwl.getList())
+    pp.pprint(iwl.getList())
 
     sys.exit(0)
