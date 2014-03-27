@@ -26,7 +26,7 @@ win = None
 NUMBER_OF_ROWS = 3
 NUMBER_OF_COLUMNS = 2
 ROW_PADDING = 5
-COLUMN_PADDING = 5
+COLUMN_PADDING = 30
 
 
 class Default_Intro():
@@ -60,11 +60,11 @@ class Default_Intro():
         self.height = NUMBER_OF_ROWS * self.item.button.height + ROW_PADDING * NUMBER_OF_ROWS * 2
 
         # Attach to table
-        self.table.attach(buttons[0], 0, 1, 0, 1, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, ROW_PADDING, COLUMN_PADDING)
-        self.table.attach(buttons[1], 0, 1, 1, 2, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, ROW_PADDING, COLUMN_PADDING)
-        self.table.attach(buttons[2], 0, 1, 2, 3, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, ROW_PADDING, COLUMN_PADDING)
-        self.table.attach(buttons[3], 1, 2, 0, 1, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, ROW_PADDING, COLUMN_PADDING)
-        self.table.attach(buttons[4], 1, 2, 1, 2, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, ROW_PADDING, COLUMN_PADDING)
+        self.table.attach(buttons[0], 0, 1, 0, 1, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
+        self.table.attach(buttons[1], 0, 1, 1, 2, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
+        self.table.attach(buttons[2], 0, 1, 2, 3, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
+        self.table.attach(buttons[3], 1, 2, 0, 1, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
+        self.table.attach(buttons[4], 1, 2, 1, 2, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
         #self.table.set_size_request(450, 100)
 
         self.valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)

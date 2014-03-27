@@ -48,7 +48,8 @@ class Menu_button():
         self.container.props.valign = Gtk.Align.CENTER
 
         self.button.add(self.container)
-        self.button.set_size_request(200, 100)
 
         self.button.height = 100
-        self.button.width = 200
+        self.button.width = 150
+
+        self.button.set_size_request(self.button.width, self.button.height)

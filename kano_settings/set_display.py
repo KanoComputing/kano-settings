@@ -35,7 +35,7 @@ def activate(_win, box, _update):
     display_name, _, _ = utils.run_cmd(cmd)
     display_name = display_name[12:].rstrip()
 
-    title = heading.Heading("Display - " + display_name, "How sharp can you go?")
+    title = heading.Heading("Display", display_name)
     box.pack_start(title.container, False, False, 0)
 
     # Contains main buttons
