@@ -166,6 +166,8 @@ def activate(_win, _box, _update, to_wifi_button):
     password_entry.props.placeholder_text = "Password"
     password_entry.set_visibility(False)
     password_entry.modify_font(Pango.FontDescription("Bariol 13"))
+    password_box = Gtk.Box()
+    password_box.add(password_entry)
 
     checkbutton = Gtk.CheckButton("enable proxy")
     checkbutton.modify_font(Pango.FontDescription("Bariol 13"))
@@ -197,7 +199,7 @@ def activate(_win, _box, _update, to_wifi_button):
     grid.attach(ip_entry, 0, 0, 2, 2)
     grid.attach(username_entry, 0, 2, 2, 2)
     grid.attach(port_entry, 2, 0, 2, 2)
-    grid.attach(password_entry, 2, 2, 3, 2)
+    grid.attach(password_box, 2, 2, 3, 2)
     grid.attach(radio1, 4, 0, 1, 1)
     grid.attach(radio2, 4, 1, 1, 1)
 
