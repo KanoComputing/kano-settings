@@ -19,10 +19,8 @@ username_entry = None
 password_entry = None
 proxy_type = None
 enable_proxy = False
-window_handler = None
 next_button = None
 update = None
-apply_changes_alignment = None
 
 GRID_HEIGHT = 150
 
@@ -61,7 +59,7 @@ def set_settings(proxyip, proxyport, proxytype, username='', password=''):
 # If the "enable proxy" checkbox is checked/uncheckout, this function is activated
 # Disables the text entries if enable proxy is not checked
 def proxy_status(widget):
-    global win, next_button, ip_entry, port_entry, password_entry, username_entry, enable_proxy, window_handler
+    global win, next_button, ip_entry, port_entry, password_entry, username_entry, enable_proxy
 
     enable_proxy = widget.get_active()
     if enable_proxy:
@@ -140,11 +138,10 @@ def set_proxy_type(radio_button):
 
 
 def activate(_win, _box, _update, to_wifi_button):
-    global win, ip_entry, port_entry, username_entry, password_entry, window_handler, box, next_button, apply_changes_alignment, update
+    global win, ip_entry, port_entry, username_entry, password_entry, box, next_button
 
     win = _win
     box = _box
-    update = _update
     title = heading.Heading("Proxy", "Blah blah blah")
     settings = fixed_size_box.Fixed()
     grid = Gtk.Grid(column_homogeneous=False, column_spacing=10, row_spacing=10)
@@ -153,7 +150,6 @@ def activate(_win, _box, _update, to_wifi_button):
     win.top_bar.next_button.set_sensitive(False)
     win.top_bar.next_button.set_image(win.top_bar.pale_next_arrow)
 
-    # Set default/intro text to grey?
     ip_entry = Gtk.Entry()
     ip_entry.props.placeholder_text = "IP address"
     ip_entry.modify_font(Pango.FontDescription("Bariol 13"))
@@ -217,24 +213,21 @@ def activate(_win, _box, _update, to_wifi_button):
 
     proxy_status(checkbutton)
 
+    # Need to disconnect this on exit
     win.connect("key-release-event", proxy_enabled)
 
 
 def apply_changes(button, arg2=None):
-    global box, apply_changes_alignment
+    global box
 
     print "Apply changes entered"
 
-    # Remove element in the dynamic box
-    #for i in apply_changes_alignment.get_children():
-    #    apply_changes_alignment.remove(i)
     # This needs to distinguish between whether proxy has actually been enabled or not
 
-    #if enable_proxy:
-    #    proxyip = ip_entry.get_text()
-    #    proxyport = port_entry.get_text()
-    #    set_settings(proxyip, proxyport, proxy_type)
+    if enable_proxy:
+        proxyip = ip_entry.get_text()
+        proxyport = port_entry.get_text()
+        set_settings(proxyip, proxyport, proxy_type)
 
-    #set_wifi.activate(win, box, update)
     return
 
