@@ -102,8 +102,8 @@ class Default_Intro():
         for i in win.changeable_content.get_children():
             win.changeable_content.remove(i)
         self.update_intro()
-        win.top_bar.prev_button.set_image(win.top_bar.pale_prev_arrow)
-        win.top_bar.next_button.set_image(win.top_bar.dark_next_arrow)
+        win.top_bar.disable_prev()
+        win.top_bar.enable_next()
         win.changeable_content.pack_start(self.valign, False, False, 0)
         self.update_next_button(win)
         win.show_all()
@@ -117,8 +117,8 @@ class Default_Intro():
         for i in win.changeable_content.get_children():
             win.changeable_content.remove(i)
 
-        win.top_bar.prev_button.set_image(win.top_bar.dark_prev_arrow)
-        win.top_bar.next_button.set_image(win.top_bar.pale_next_arrow)
+        win.top_bar.enable_prev()
+        win.top_bar.disable_next()
 
         self.state_to_widget(win.last_level_visited).activate(win, win.changeable_content, win.update)
         win.last_level_visited = win.state
@@ -141,8 +141,8 @@ class Default_Intro():
         win.last_level_visited = win.state
 
         # Grey out next arrow and darken prev arrow
-        win.top_bar.prev_button.set_image(win.top_bar.dark_prev_arrow)
-        win.top_bar.next_button.set_image(win.top_bar.pale_next_arrow)
+        win.top_bar.enable_prev()
+        win.top_bar.disable_next()
 
         # Call next state
         self.state_to_widget(win.state).activate(win, win.changeable_content, win.update)

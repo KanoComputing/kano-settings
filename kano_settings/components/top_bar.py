@@ -76,15 +76,6 @@ class Top_bar():
         self.close_button.set_can_focus(False)
         self.close_button.get_style_context().add_class("top_bar_button")
 
-        """        # Container of all the elements
-        self.container = Gtk.Box()
-        self.container.set_homogeneous(False)
-        self.container.add(self.prev_button)
-        self.container.pack_start(self.next_button, False, False, 0)
-        self.container.pack_start(self.align_header, True, True, 0)
-        self.container.pack_end(self.close_button, False, False, 0)
-        self.background.add(self.container)"""
-
         self.container = Gtk.Grid()
         self.container.attach(self.prev_button, 0, 0, 1, 1)
         self.container.attach(self.next_button, 1, 0, 1, 1)
