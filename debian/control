@@ -18,4 +18,3 @@ Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, python, udhcpc,
          rxvt-unicode-256color, kano-desktop (>= 1.0-37), kano-toolset(
 Description: Software to make Kanux connect over Wireless networksautomatically.
- It contains the kanowifilib and the kano-connect script.
