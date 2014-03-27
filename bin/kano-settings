@@ -45,7 +45,7 @@ class MainWindow(Gtk.Window):
         self.last_level_visited = 0
 
         WINDOW_WIDTH = 650
-        WINDOW_HEIGHT = 390
+        WINDOW_HEIGHT = 405
 
         # Create main window
         Gtk.Window.__init__(self, title="Kano-Settings")

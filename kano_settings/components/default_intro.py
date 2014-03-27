@@ -57,7 +57,7 @@ class Default_Intro():
         self.update_intro()
 
         # calculate height that the icons take up so we can centre it
-        self.height = NUMBER_OF_ROWS * self.item.button.height
+        self.height = NUMBER_OF_ROWS * self.item.button.height + ROW_PADDING * NUMBER_OF_ROWS * 2
 
         # Attach to table
         self.table.attach(buttons[0], 0, 1, 0, 1, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, ROW_PADDING, COLUMN_PADDING)
