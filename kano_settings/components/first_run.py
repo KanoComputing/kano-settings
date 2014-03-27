@@ -13,8 +13,7 @@ import kano_settings.set_email as set_email
 import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_audio as set_audio
 import kano_settings.set_display as set_display
-import kano_settings.set_wifi as set_wifi
-import kano_settings.set_proxy as set_proxy
+import kano_settings.set_wifi_proxy as set_wifi_proxy
 import kano_settings.config_file as config_file
 
 win = None
@@ -27,7 +26,7 @@ class First_Run():
 
         win = _win
 
-    def update_and_next(self, widget=None, arg2=None):
+    def update(self, widget=None, arg2=None):
         global win
 
         returnValue = self.state_to_widget(win.state).apply_changes(win.update.button)
@@ -36,7 +35,6 @@ class First_Run():
             return
 
         self.on_next()
-        return
 
     # When clicking previous arrow on first run through
     def on_prev(self, widget=None, arg2=None):
@@ -56,20 +54,8 @@ class First_Run():
 
         # Call next state
         self.state_to_widget(win.state).activate(win, win.changeable_content, win.update)
+        self.update_next_button(win)
 
-        # Change label on Apply Changes button
-        if win.state == MAX_STATE - 1:
-            win.update.text.set_text("FINISH")
-            win.top_bar.enable_prev()
-            win.top_bar.disable_next()
-        elif win.state > 0:
-            win.update.text.set_text("NEXT")
-            win.top_bar.enable_prev()
-            win.top_bar.enable_next()
-        else:
-            win.update.text.set_text("GET STARTED")
-            win.top_bar.disable_prev()
-            win.top_bar.enable_next()
         # Refresh window
         win.show_all()
 
@@ -93,24 +79,30 @@ class First_Run():
 
         # Call next state
         self.state_to_widget(win.state).activate(win, win.changeable_content, win.update)
+        self.update_next_button(win)
+
+        # Refresh window
+        win.show_all()
+
+    # Apply Changes button needs to be updated depending on which level it's on
+    def update_next_button(self, win):
 
         # Change label on Apply Changes button
         if win.state == MAX_STATE - 1:
+            win.update.green_background()
             win.update.text.set_text("FINISH")
             win.top_bar.enable_prev()
             win.top_bar.disable_next()
         elif win.state == 0:
+            win.update.green_background()
             win.update.text.set_text("GET STARTED")
             win.top_bar.disable_prev()
             win.top_bar.enable_next()
-        # So we don't count set_proxy
-        elif win.state < MAX_STATE:
+        else:
+            win.update.green_background()
             win.update.text.set_text("NEXT")
             win.top_bar.enable_prev()
             win.top_bar.enable_next()
-
-        # Refresh window
-        win.show_all()
 
     def state_to_widget(self, x):
         return {
@@ -119,8 +111,7 @@ class First_Run():
             2: set_email,
             3: set_audio,
             4: set_display,
-            5: set_wifi,
-            6: set_proxy,
+            5: set_wifi_proxy
         }[x]
 
 

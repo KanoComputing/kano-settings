@@ -20,7 +20,7 @@ if __name__ == '__main__' and __package__ is None:
 import kano_settings.set_intro as set_intro
 import kano_settings.set_audio as set_audio
 import kano_settings.set_display as set_display
-import kano_settings.set_wifi as set_wifi
+#import kano_settings.set_wifi as set_wifi
 import kano_settings.config_file as config_file
 import kano_settings.components.top_bar as top_bar
 import kano_settings.components.apply_changes as apply_changes
@@ -53,6 +53,7 @@ class MainWindow(Gtk.Window):
         # Remove decoration
         self.set_decorated(False)
         self.set_size_request(WINDOW_WIDTH, WINDOW_HEIGHT)
+        self.set_position(Gtk.WindowPosition.CENTER)
 
         self.set_resizable(False)
 
@@ -71,6 +72,9 @@ class MainWindow(Gtk.Window):
 
         # Init
         if config_file.read_from_file('Completed') == "1":
+            # we define the main button here so that the text is controlled by which flow we enter
+            # ie on the first run, we want the button to say Next until the last screen, in which case it says Finish
+            # So we want to control this text in default_intro.py and first_run.py
             self.update = apply_changes.Apply()
             self.update.text.set_text("APPLY CHANGES")
             self.run_through = default_intro.Default_Intro(self, WINDOW_HEIGHT, self.top_bar.height)
@@ -84,14 +88,14 @@ class MainWindow(Gtk.Window):
             self.update = apply_changes.Apply()
             self.update.text.set_text("GET STARTED")
             self.run_through = first_run.First_Run(self)
-            self.update.button.connect('button_press_event', self.run_through.update_and_next)
+            self.update.button.connect('button_press_event', self.run_through.update)
             set_intro.activate(self, self.changeable_content, self.update)
             self.top_bar.prev_button.connect("button_press_event", self.run_through.on_prev)
             self.top_bar.next_button.connect("button_press_event", self.run_through.on_next)
             self.top_bar.prev_button.set_image(self.top_bar.pale_prev_arrow)
             self.top_bar.next_button.set_image(self.top_bar.dark_next_arrow)
 
-        # To quickly test the proxy settings
+        # To quickly test the proxy settings, uncomment out lines below
 
         #set_wifi.activate(self, self.changeable_content, self.update)
         #set_wifi.proxy_button_press()

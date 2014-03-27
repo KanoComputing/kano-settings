@@ -14,7 +14,7 @@ import kano_settings.set_email as set_email
 import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_audio as set_audio
 import kano_settings.set_display as set_display
-import kano_settings.set_wifi as set_wifi
+import kano_settings.set_wifi_proxy as set_wifi_proxy
 import kano_settings.config_file as config_file
 import kano_settings.components.menu_button as menu_button
 import kano_settings.constants as constants
@@ -99,13 +99,13 @@ class Default_Intro():
     # Takes you back to the introduction screen (on pressing prev button)
     def on_prev(self, arg2=None, arg3=None):
         global win
-        # save last level?
         for i in win.changeable_content.get_children():
             win.changeable_content.remove(i)
         self.update_intro()
         win.top_bar.prev_button.set_image(win.top_bar.pale_prev_arrow)
         win.top_bar.next_button.set_image(win.top_bar.dark_next_arrow)
         win.changeable_content.pack_start(self.valign, False, False, 0)
+        self.update_next_button(win)
         win.show_all()
 
     # When clicking next in the default intro screen - takes you to the last level you visited
@@ -124,7 +124,12 @@ class Default_Intro():
         win.last_level_visited = win.state
         win.show_all()
 
-    # On clicing a level button on default intro screen
+    # Apply Changes button needs to be updated depending on which level it's on
+    def update_next_button(self, win):
+        win.update.green_background()
+        win.update.text.set_text("APPLY CHANGES")
+
+    # On clicking a level button on default intro screen
     def go_to_level(self, widget):
         global win
         # Remove element in the dynamic box
@@ -160,5 +165,5 @@ class Default_Intro():
             2: set_email,
             3: set_audio,
             4: set_display,
-            5: set_wifi,
+            5: set_wifi_proxy,
         }[x]

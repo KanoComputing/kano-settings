@@ -12,13 +12,15 @@ import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.proxy as proxy
 
 win = None
-next_button = None
+box = None
 ip_entry = None
 port_entry = None
 username_entry = None
 password_entry = None
 proxy_type = None
 enable_proxy = False
+next_button = None
+update = None
 
 GRID_HEIGHT = 150
 
@@ -54,7 +56,8 @@ def set_settings(proxyip, proxyport, proxytype, username='', password=''):
 
 
 # Validation functions
-
+# If the "enable proxy" checkbox is checked/uncheckout, this function is activated
+# Disables the text entries if enable proxy is not checked
 def proxy_status(widget):
     global win, next_button, ip_entry, port_entry, password_entry, username_entry, enable_proxy
 
@@ -64,7 +67,6 @@ def proxy_status(widget):
         port_entry.set_sensitive(True)
         password_entry.set_sensitive(True)
         username_entry.set_sensitive(True)
-        win.connect("key-release-event", proxy_enabled)
         # Run to see if it need enabling
         proxy_enabled()
 
@@ -135,10 +137,11 @@ def set_proxy_type(radio_button):
         proxy_type = "http_v1.0"
 
 
-def activate(_win, box, _update):
-    global win, next_button, ip_entry, port_entry, username_entry, password_entry
+def activate(_win, _box, _update, to_wifi_button):
+    global win, ip_entry, port_entry, username_entry, password_entry, box, next_button
 
     win = _win
+    box = _box
     title = heading.Heading("Proxy", "Blah blah blah")
     settings = fixed_size_box.Fixed()
     grid = Gtk.Grid(column_homogeneous=False, column_spacing=10, row_spacing=10)
@@ -147,7 +150,6 @@ def activate(_win, box, _update):
     win.top_bar.next_button.set_sensitive(False)
     win.top_bar.next_button.set_image(win.top_bar.pale_next_arrow)
 
-    # Set default/intro text to grey?
     ip_entry = Gtk.Entry()
     ip_entry.props.placeholder_text = "IP address"
     ip_entry.modify_font(Pango.FontDescription("Bariol 13"))
@@ -182,12 +184,7 @@ def activate(_win, box, _update):
     # Needs to be run once at start
     set_proxy_type(radio1)
 
-    next_button = Gtk.EventBox()
-    next_button.set_size_request(150, 44)
-    next_label = Gtk.Label("BACK TO WIFI")
-    next_button.add(next_label)
-    next_button.get_style_context().add_class("apply_changes_button")
-    next_button.connect("button_press_event", back_to_wifi)
+    next_button = to_wifi_button
 
     apply_changes_alignment = Gtk.Alignment(xalign=0, yalign=0, xscale=0, yscale=0)
     apply_changes_alignment.add(next_button)
@@ -216,20 +213,21 @@ def activate(_win, box, _update):
 
     proxy_status(checkbutton)
 
+    # Need to disconnect this on exit
+    win.connect("key-release-event", proxy_enabled)
 
-def apply_changes(button):
+
+def apply_changes(button, arg2=None):
+    global box
+
+    print "Apply changes entered"
+
     # This needs to distinguish between whether proxy has actually been enabled or not
+
     if enable_proxy:
         proxyip = ip_entry.get_text()
         proxyport = port_entry.get_text()
         set_settings(proxyip, proxyport, proxy_type)
 
-    back_to_wifi(button)
     return
 
-
-def back_to_wifi(button, arg2=None):
-    global win
-
-    win.disconnect(proxy_enabled)
-    return

@@ -11,7 +11,6 @@ import kano_settings.config_file as config_file
 import kano_settings.components.heading as heading
 import kano_settings.constants as constants
 import kano_settings.components.fixed_size_box as fixed_size_box
-#import kano_settings.components.vertical_align as vertical_align
 import os
 import re
 
