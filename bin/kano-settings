@@ -27,7 +27,7 @@ import kano_settings.components.apply_changes as apply_changes
 import kano_settings.constants as constants
 import kano_settings.components.first_run as first_run
 import kano_settings.components.default_intro as default_intro
-from kanowifilib import is_internet
+from kano.network import is_internet
 
 win = None
 MAX_STATE = 6
