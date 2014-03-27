@@ -71,6 +71,9 @@ class MainWindow(Gtk.Window):
 
         # Init
         if config_file.read_from_file('Completed') == "1":
+            # we define the main button here so that the text is controlled by which flow we enter
+            # ie on the first run, we want the button to say Next until the last screen, in which case it says Finish
+            # So we want to control this text in default_intro.py and first_run.py
             self.update = apply_changes.Apply()
             self.update.text.set_text("APPLY CHANGES")
             self.run_through = default_intro.Default_Intro(self, WINDOW_HEIGHT, self.top_bar.height)
@@ -91,7 +94,7 @@ class MainWindow(Gtk.Window):
             self.top_bar.prev_button.set_image(self.top_bar.pale_prev_arrow)
             self.top_bar.next_button.set_image(self.top_bar.dark_next_arrow)
 
-        # To quickly test the proxy settings
+        # To quickly test the proxy settings, uncomment out lines below
 
         #set_wifi.activate(self, self.changeable_content, self.update)
         #set_wifi.proxy_button_press()

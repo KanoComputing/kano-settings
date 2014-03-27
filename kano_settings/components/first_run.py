@@ -54,20 +54,8 @@ class First_Run():
 
         # Call next state
         self.state_to_widget(win.state).activate(win, win.changeable_content, win.update)
+        self.update_next_button(win)
 
-        # Change label on Apply Changes button
-        if win.state == MAX_STATE - 1:
-            win.update.text.set_text("FINISH")
-            win.top_bar.enable_prev()
-            win.top_bar.disable_next()
-        elif win.state > 0:
-            win.update.text.set_text("NEXT")
-            win.top_bar.enable_prev()
-            win.top_bar.enable_next()
-        else:
-            win.update.text.set_text("GET STARTED")
-            win.top_bar.disable_prev()
-            win.top_bar.enable_next()
         # Refresh window
         win.show_all()
 
@@ -91,23 +79,30 @@ class First_Run():
 
         # Call next state
         self.state_to_widget(win.state).activate(win, win.changeable_content, win.update)
+        self.update_next_button(win)
+
+        # Refresh window
+        win.show_all()
+
+    # Apply Changes button needs to be updated depending on which level it's on
+    def update_next_button(self, win):
 
         # Change label on Apply Changes button
         if win.state == MAX_STATE - 1:
+            win.update.green_background()
             win.update.text.set_text("FINISH")
             win.top_bar.enable_prev()
             win.top_bar.disable_next()
         elif win.state == 0:
+            win.update.green_background()
             win.update.text.set_text("GET STARTED")
             win.top_bar.disable_prev()
             win.top_bar.enable_next()
         else:
+            win.update.green_background()
             win.update.text.set_text("NEXT")
             win.top_bar.enable_prev()
             win.top_bar.enable_next()
-
-        # Refresh window
-        win.show_all()
 
     def state_to_widget(self, x):
         return {

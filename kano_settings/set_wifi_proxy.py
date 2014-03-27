@@ -24,21 +24,8 @@ def activate(_win, _box, _update):
     box = _box
     update = _update
 
-    to_proxy_button = Gtk.EventBox()
-    to_proxy_label = Gtk.Label("Proxy")
-    to_proxy_label.get_style_context().add_class("orange")
-    to_proxy_button.add(to_proxy_label)
-
-    to_wifi_button = Gtk.EventBox()
-    to_wifi_button.get_style_context().add_class("apply_changes_button")
-    to_wifi_label = Gtk.Label("BACK TO WIFI")
-    to_wifi_label.get_style_context().add_class("apply_changes_text")
-    to_wifi_button.add(to_wifi_label)
-    to_wifi_button.modify_font(Pango.FontDescription("Bariol 13"))
-    to_wifi_button.set_size_request(150, 44)
-
-    to_proxy_button.connect("button_press_event", to_proxy)
-    to_wifi_button.connect("button_press_event", to_wifi)
+    to_proxy_button = generate_proxy_button()
+    to_wifi_button = generate_wifi_button()
 
     set_wifi.activate(win, box, update, to_proxy_button)
 
@@ -46,14 +33,7 @@ def activate(_win, _box, _update):
 def to_proxy(event=None, arg=None):
     global win, box, update
 
-    to_wifi_button = Gtk.EventBox()
-    to_wifi_button.get_style_context().add_class("apply_changes_button")
-    to_wifi_label = Gtk.Label("BACK TO WIFI")
-    to_wifi_label.get_style_context().add_class("apply_changes_text")
-    to_wifi_button.add(to_wifi_label)
-    to_wifi_button.modify_font(Pango.FontDescription("Bariol 13"))
-    to_wifi_button.set_size_request(150, 44)
-    to_wifi_button.connect("button_press_event", to_wifi)
+    to_wifi_button = generate_wifi_button
 
     for i in box.get_children():
         box.remove(i)
@@ -63,20 +43,36 @@ def to_proxy(event=None, arg=None):
     win.show_all()
 
 
-def to_wifi(event=None, arg=None):
-    global win, box, update, to_proxy_button
+def generate_wifi_button():
+    to_wifi_button = Gtk.EventBox()
+    to_wifi_button.get_style_context().add_class("apply_changes_button")
+    to_wifi_button.get_style_context().add_class("green")
+    to_wifi_label = Gtk.Label("BACK TO WIFI")
+    to_wifi_label.get_style_context().add_class("apply_changes_text")
+    to_wifi_button.add(to_wifi_label)
+    to_wifi_button.modify_font(Pango.FontDescription("Bariol 13"))
+    to_wifi_button.set_size_request(150, 44)
+    to_wifi_button.connect("button_press_event", to_wifi)
+    return to_wifi_button
 
+
+def generate_proxy_button():
     to_proxy_button = Gtk.EventBox()
     to_proxy_label = Gtk.Label("Proxy")
     to_proxy_label.get_style_context().add_class("orange")
     to_proxy_button.add(to_proxy_label)
     to_proxy_button.connect("button_press_event", to_proxy)
+    return to_proxy_button
 
+
+def to_wifi(event=None, arg=None):
+    global win, box, update, to_proxy_button
+
+    to_proxy_button = generate_proxy_button()
     for i in box.get_children():
         box.remove(i)
 
     set_wifi.activate(win, box, update, to_proxy_button)
-
     win.show_all()
 
 

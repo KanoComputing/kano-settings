@@ -12,11 +12,11 @@ from gi.repository import Gtk, Pango
 
 class Apply():
 
-    def __init__(self, icon_first=True):
+    def __init__(self, name=""):
 
         # Create button
         self.button = Gtk.EventBox()
-        self.text = Gtk.Label()
+        self.text = Gtk.Label(name)
         self.text.modify_font(Pango.FontDescription("Bariol bold 13"))
         self.text.get_style_context().add_class("apply_changes_text")
 

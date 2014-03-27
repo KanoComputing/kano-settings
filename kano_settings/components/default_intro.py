@@ -105,6 +105,7 @@ class Default_Intro():
         win.top_bar.prev_button.set_image(win.top_bar.pale_prev_arrow)
         win.top_bar.next_button.set_image(win.top_bar.dark_next_arrow)
         win.changeable_content.pack_start(self.valign, False, False, 0)
+        self.update_next_button(win)
         win.show_all()
 
     # When clicking next in the default intro screen - takes you to the last level you visited
@@ -122,6 +123,11 @@ class Default_Intro():
         self.state_to_widget(win.last_level_visited).activate(win, win.changeable_content, win.update)
         win.last_level_visited = win.state
         win.show_all()
+
+    # Apply Changes button needs to be updated depending on which level it's on
+    def update_next_button(self, win):
+        win.update.green_background()
+        win.update.text.set_text("APPLY CHANGES")
 
     # On clicking a level button on default intro screen
     def go_to_level(self, widget):

@@ -63,6 +63,7 @@ def activate(_win, _box, _update, to_proxy_button):
 
     add_connection_button = Gtk.EventBox()
     add_connection_button.get_style_context().add_class("apply_changes_button")
+    add_connection_button.get_style_context().add_class("green")
     add_connection_label = Gtk.Label("ADD CONNECTION")
     add_connection_label.modify_font(Pango.FontDescription("Bariol bold 14"))
     add_connection_label.get_style_context().add_class("apply_changes_text")
@@ -71,6 +72,9 @@ def activate(_win, _box, _update, to_proxy_button):
     add_connection_button.connect("button_press_event", configure_wifi)
 
     if constants.has_internet:
+
+        update.green_background()
+        update.text.set_text("FINISH")
 
         status_box.pack_start(internet_status, False, False, 3)
         status_box.pack_start(internet_action, False, False, 3)
