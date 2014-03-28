@@ -125,7 +125,6 @@ def close_window(event="delete-event", button=win):
             Gtk.ButtonsType.OK, "So you know...")
         dialog.format_secondary_text("..you will need to reboot to see all your changes")
         response = dialog.run()
-        print("INFO dialog closed")
 
         if response == Gtk.ResponseType.OK:
             dialog.destroy()

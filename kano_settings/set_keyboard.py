@@ -185,8 +185,6 @@ def set_defaults(setting):
 def on_continent_changed(combo):
     global selected_continent_hr, selected_continent_index, update
 
-    print "Hit on_continent_changed"
-
     continent = selected_continent_hr
     tree_iter = combo.get_active_iter()
 
@@ -205,8 +203,6 @@ def on_continent_changed(combo):
 
 def on_country_changed(combo):
     global win, selected_country, selected_country_index, selected_country_hr, selected_layout, variants_combo, update
-
-    print "Hit on_country_changed"
 
     country = None
     tree_iter = combo.get_active_iter()
@@ -239,8 +235,6 @@ def on_country_changed(combo):
 
 def on_variants_changed(combo):
     global win, selected_variant, selected_variant_hr, selected_variant_index, update
-
-    print "Hit on_variants_changed"
 
     tree_iter = combo.get_active_iter()
     if tree_iter is not None:

@@ -65,18 +65,11 @@ def replace_setting(setting_name, setting):
         file_index3 = file_content[file_index:].index('\n')
         old_string = file_content[file_index: file_index3 + file_index]
         new_string = setting_name + ':' + setting
-        print("old_string = " + old_string)
-        print("new_string = " + new_string)
-
         replace(path, old_string, new_string)
-        print("SUCCESS: completed replace_setting")
         return 0
 
     except Exception as e:
         # Failure is probably down to the setting not existing
-        print("FAIL: replace_setting")
-        print(e)
-        #f.close()
         write_to_file(setting_name, setting)
         return
 
@@ -94,12 +87,9 @@ def write_to_file(setting_name, setting):
         new_string = setting_name + ":" + setting + "\n"
         f.write(new_string)
         f.close()
-        print("SUCCESS: write_to_file completed")
         return
 
     except Exception as e:
-        print("FAIL: write_to_file")
-        print(e)
         return
 
 
@@ -120,12 +110,9 @@ def read_from_file(setting_name):
         # file_index does not take into account the length of the setting name
         setting = file_content[index1 + len(setting_name) + 1: index2 + index1]
         f.close()
-        print("SUCCESS: completed read_from_file")
         return setting
 
     except Exception as e:
-        print("FAIL: read_from_file")
-        print(e)
         # change to custom defaults
         setting_prop = set_defaults(setting_name)
         return setting_prop

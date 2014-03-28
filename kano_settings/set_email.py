@@ -128,7 +128,6 @@ def check_email(entry, event):
     email = entry.get_text()
     # Validate email
     if not is_email(email):
-        print("Email validation failed")
         success_icon.set_from_pixbuf(cross)
         entry2.set_sensitive(False)
 
