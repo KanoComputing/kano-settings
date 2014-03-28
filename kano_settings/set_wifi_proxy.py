@@ -6,7 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk
 import kano_settings.set_proxy as set_proxy
 import kano_settings.set_wifi as set_wifi
 
@@ -50,7 +50,6 @@ def generate_wifi_button():
     to_wifi_label = Gtk.Label("BACK TO WIFI")
     to_wifi_label.get_style_context().add_class("apply_changes_text")
     to_wifi_button.add(to_wifi_label)
-    to_wifi_button.modify_font(Pango.FontDescription("Bariol 13"))
     to_wifi_button.set_size_request(150, 44)
     to_wifi_button.connect("button_press_event", to_wifi)
     return to_wifi_button

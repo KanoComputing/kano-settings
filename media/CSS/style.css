@@ -54,6 +54,7 @@ GtkEventBox {
 
 GtkComboBox {
     color: @active_writing; /* Font color of selected item in drpdown list */
+    font: Bariol 12;
 }
 /* Workaround for lp:949368 */
 GtkComboBox GtkButton {
@@ -70,7 +71,6 @@ GtkComboBox .menuitem *:hover {
     color: @button_color;
 }*/
 
-/*GtkEntry*/
 GtkEntry {
     border-color: @active_border;
     color: @active_writing;
@@ -78,6 +78,7 @@ GtkEntry {
     border-width: 2px;
     border-radius:3px;
     padding: 10px;
+    font: Bariol 13;
 }
 GtkEntry:insensitive {
     border-color: @inactive_border;
@@ -96,6 +97,7 @@ GtkRadioButton {
     border-style: solid;
     border-color: @active_border;
     border-width: 2px;
+    font: Bariol 13;
 }
 
 GtkCheckButton:active,
@@ -112,7 +114,6 @@ GtkLabel{
 .apply_changes_button {
     /*background: @button_color;*/
     border-radius:3px;
-    font-weight:bold;
 }
 
 .green {
@@ -129,6 +130,7 @@ GtkLabel{
 
 .apply_changes_text {
     color: #ffffff;
+    font: Bariol Bold 13;
 }
 
 .apply_changes_text:insensitive {
@@ -139,31 +141,39 @@ GtkLabel{
 .top_bar_container {
     background: #eeeeee;
 }
+.top_bar_button {
+    background: #eeeeee;
+}
 /* The title of the current level*/
 .title {
     color: @title_color;
     padding-top:25px;
-    font-weight:bold;
+    font: Bariol Bold 16;
 }
 /* Description of current project */
 .description {
     color: @subheading_color;
     padding-bottom: 18px;
+    font: Bariol 14;
 }
 
 /* Title of menu button on default intro screen (Keyboard, Wfi etc) */
 .menu_intro_label {
     color: @orange;
-    font-weight:bold;
+    font: Bariol Bold 13;
 }
 /* Info about the settings of the curet project */
 .menu_custom_label {
     color: @subheading_color;
+    font: Bariol 13;
 }
 /* Header in top bar (title of window) */
 .header {
     color: #222222;
-    font-weight: bold;
+    font: Bariol Bold 13;
+}
+.configure_label {
+    font: Bariol 13;
 }
 
 /*.check {
@@ -178,12 +188,14 @@ GtkLabel{
 .internet_status_top {
     padding:0px 10px;
     color: @title_color;
+    font: Bariol bold 16;
 }
 
 /* Bottom wiriting in internet status box */
 .internet_status_bottom {
     padding:0px 10px;
     color: @subheading_color;
+    font: Bariol 14;
 }
 
 .connected {

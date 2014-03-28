@@ -7,16 +7,14 @@
 #
 # This is the container and text (title and description) of each of the projects
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk
 
 
 class Heading():
     def __init__(self, title, description):
 
         self.title = Gtk.Label(title)
-        self.title.modify_font(Pango.FontDescription("Bariol 16"))
         self.description = Gtk.Label(description)
-        self.description.modify_font(Pango.FontDescription("Bariol 14"))
 
         self.title_style = self.title.get_style_context()
         self.title_style.add_class('title')

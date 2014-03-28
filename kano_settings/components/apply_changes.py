@@ -7,7 +7,7 @@
 #
 # This controls the style of the main button in the projects that applies the changes
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk
 
 
 class Apply():
@@ -17,7 +17,6 @@ class Apply():
         # Create button
         self.button = Gtk.EventBox()
         self.text = Gtk.Label(name)
-        self.text.modify_font(Pango.FontDescription("Bariol bold 13"))
         self.text.get_style_context().add_class("apply_changes_text")
 
         # Contains writing of button

@@ -6,7 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk
 import os
 import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
@@ -42,11 +42,9 @@ def activate(_win, _box, _update, to_proxy_button):
     internet_img = Gtk.Image()
 
     internet_status = Gtk.Label()
-    internet_status.modify_font(Pango.FontDescription("Bariol bold 16"))
     internet_status_style = internet_status.get_style_context()
 
     internet_action = Gtk.Label()
-    internet_action.modify_font(Pango.FontDescription("Bariol 14"))
     internet_action_style = internet_action.get_style_context()
     internet_status_style.add_class("internet_status_top")
     internet_action_style.add_class("internet_status_bottom")
@@ -65,7 +63,6 @@ def activate(_win, _box, _update, to_proxy_button):
     add_connection_button.get_style_context().add_class("apply_changes_button")
     add_connection_button.get_style_context().add_class("green")
     add_connection_label = Gtk.Label("ADD CONNECTION")
-    add_connection_label.modify_font(Pango.FontDescription("Bariol bold 14"))
     add_connection_label.get_style_context().add_class("apply_changes_text")
     add_connection_button.add(add_connection_label)
     add_connection_button.set_size_request(200, 44)
@@ -99,7 +96,7 @@ def activate(_win, _box, _update, to_proxy_button):
             configure_button = Gtk.EventBox()
             configure_label = Gtk.Label("Configure")
             configure_label.get_style_context().add_class("orange")
-            configure_label.modify_font(Pango.FontDescription("Bariol 13"))
+            configure_label.get_style_context().add_class("configure_label")
             configure_button.add(configure_label)
             configure_button.connect("button_press_event", configure_wifi)
             configure_container.pack_start(configure_button, False, False, 0)

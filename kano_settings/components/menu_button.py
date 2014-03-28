@@ -7,7 +7,7 @@
 #
 # This controls the button styling in the default introduction screen which shows all the settings
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk
 import kano_settings.constants as constants
 
 
@@ -30,7 +30,6 @@ class Menu_button():
                 description = description[0:12] + '...'
 
         self.description = Gtk.Label(description)
-        self.description.modify_font(Pango.FontDescription("Bariol 13"))
         self.description.get_style_context().add_class("menu_custom_label")
         self.description.set_size_request(120, 10)
         self.description.set_alignment(xalign=0, yalign=0.3)

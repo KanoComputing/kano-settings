@@ -6,7 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk, Pango, GObject
+from gi.repository import Gtk, GObject
 GObject.threads_init()
 import threading
 import kano_settings.keyboard.keyboard_layouts as keyboard_layouts
@@ -125,10 +125,6 @@ def activate(_win, box, _update):
 
     # Refresh window
     win.show_all()
-
-    continents_combo.get_child().modify_font(Pango.FontDescription("Bariol 12"))
-    variants_combo.get_child().modify_font(Pango.FontDescription("Bariol 12"))
-    countries_combo.get_child().modify_font(Pango.FontDescription("Bariol 12"))
 
 
 def apply_changes(button):

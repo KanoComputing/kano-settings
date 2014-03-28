@@ -6,7 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk
 import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.proxy as proxy
@@ -152,34 +152,27 @@ def activate(_win, _box, _update, to_wifi_button):
 
     ip_entry = Gtk.Entry()
     ip_entry.props.placeholder_text = "IP address"
-    ip_entry.modify_font(Pango.FontDescription("Bariol 13"))
 
     username_entry = Gtk.Entry()
     username_entry.props.placeholder_text = "Username"
-    username_entry.modify_font(Pango.FontDescription("Bariol 13"))
 
     port_entry = Gtk.Entry()
     port_entry.props.placeholder_text = "Port"
-    port_entry.modify_font(Pango.FontDescription("Bariol 13"))
 
     password_entry = Gtk.Entry()
     password_entry.props.placeholder_text = "Password"
     password_entry.set_visibility(False)
-    password_entry.modify_font(Pango.FontDescription("Bariol 13"))
     password_box = Gtk.Box()
     password_box.add(password_entry)
 
     checkbutton = Gtk.CheckButton("enable proxy")
-    checkbutton.modify_font(Pango.FontDescription("Bariol 13"))
     checkbutton.connect("clicked", proxy_status)
     checkbutton.set_can_focus(False)
 
     radio1 = Gtk.RadioButton.new_with_label_from_widget(None, "socks_v4 socks_v5")
-    radio1.modify_font(Pango.FontDescription("Bariol 13"))
     radio1.set_can_focus(False)
 
     radio2 = Gtk.RadioButton.new_with_label_from_widget(radio1, "http_v1.0")
-    radio2.modify_font(Pango.FontDescription("Bariol 13"))
     radio2.set_can_focus(False)
 
     radio1.connect("toggled", set_proxy_type)

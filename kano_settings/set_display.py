@@ -6,7 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk
 import kano_settings.config_file as config_file
 import kano_settings.screen.screen_config as screen_config
 import kano_settings.components.heading as heading
@@ -63,7 +63,6 @@ def activate(_win, box, _update):
     # Overscan check button
     check_button = Gtk.CheckButton("Overscan?")
     check_button.set_can_focus(False)
-    check_button.modify_font(Pango.FontDescription("Bariol 14"))
     check_button.props.valign = Gtk.Align.CENTER
     check_button.connect("clicked", on_button_toggled)
 

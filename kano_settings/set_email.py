@@ -6,7 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk
 from pwd import getpwnam
 import os
 import re
@@ -69,10 +69,8 @@ def activate(_win, changeable_content, _update):
     cross = icons.Icons("cross").subpixbuf
 
     entry1 = Gtk.Entry()
-    entry1.modify_font(Pango.FontDescription("Bariol 13"))
     entry1.set_size_request(250, 44)
     entry2 = Gtk.Entry()
-    entry2.modify_font(Pango.FontDescription("Bariol 13"))
     entry2.set_sensitive(False)
     entry2.set_size_request(250, 44)
 
@@ -86,8 +84,6 @@ def activate(_win, changeable_content, _update):
     email_entry.attach(entry1, 0, 0, 1, 1)
     email_entry.attach(entry2, 0, 1, 1, 1)
     email_entry.attach(success_icon, 1, 0, 1, 1)
-    #email_entry.pack_start(entry1, False, False, 0)
-    #email_entry.pack_start(entry2, False, False, 0)
 
     valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
     padding_above = (settings.height - EMAIL_ENTRY_HEIGHT) / 2

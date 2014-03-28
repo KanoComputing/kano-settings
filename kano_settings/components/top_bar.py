@@ -7,7 +7,7 @@
 #
 # This controls the styling of the (pretend) top window bar.
 
-from gi.repository import Gtk, Pango
+from gi.repository import Gtk
 import kano_settings.components.icons as icons
 
 TOP_BAR_HEIGHT = 44
@@ -30,8 +30,6 @@ class Top_bar():
 
         # Main title of the window bar.
         self.header = Gtk.Label("Kano Settings")
-        #self.header.props.halign = Gtk.Align.CENTER
-        self.header.modify_font(Pango.FontDescription("Bariol 13"))
         self.header.get_style_context().add_class("header")
 
         self.align_header = Gtk.Alignment(xalign=1, yalign=0, xscale=0, yscale=0)
