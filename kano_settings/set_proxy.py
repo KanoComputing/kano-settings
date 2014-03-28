@@ -137,8 +137,8 @@ def activate(_win, _box, _update, to_wifi_button):
     grid = Gtk.Grid(column_homogeneous=False, column_spacing=10, row_spacing=10)
     win.state = 6
 
-    win.top_bar.next_button.set_sensitive(False)
-    win.top_bar.next_button.set_image(win.top_bar.pale_next_arrow)
+    #win.top_bar.next_button.set_sensitive(False)
+    #win.top_bar.next_button.set_image(win.top_bar.pale_next_arrow)
 
     ip_entry = Gtk.Entry()
     ip_entry.props.placeholder_text = "IP address"
@@ -202,7 +202,7 @@ def activate(_win, _box, _update, to_wifi_button):
     win.connect("key-release-event", proxy_enabled)
 
 
-def apply_changes(button, arg2=None):
+def apply_changes(button=None, arg2=None):
 
     # This needs to distinguish between whether proxy has actually been enabled or not
 

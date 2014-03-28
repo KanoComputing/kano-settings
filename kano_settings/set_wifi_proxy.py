@@ -67,6 +67,9 @@ def generate_proxy_button():
 def to_wifi(event=None, arg=None):
     global win, box, update, to_proxy_button
 
+    # Apply changes from set_proxy
+    set_proxy.apply_changes()
+
     to_proxy_button = generate_proxy_button()
     for i in box.get_children():
         box.remove(i)
