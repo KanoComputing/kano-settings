@@ -44,13 +44,13 @@ def get_settings():
     return pxysettings.get_settings()
 
 
-def set_settings(proxyip, proxyport, proxytype, username='', password=''):
+def set_settings(proxyip, proxyport, proxytype, username=None, password=None):
     settings = {
         'proxy-ip': proxyip,
         'proxy-port': proxyport,
         'proxy-type': proxytype,   # one of : "socks_v4 socks_v5" or "http_v1.0"
-        'username': None,
-        'password': None
+        'username': username,
+        'password': password
     }
     pxysettings.set_settings(settings)
 
@@ -88,8 +88,7 @@ def proxy_enabled(widget=None, event=None):
     # If these entries are non empty, good - else, disable the next button
     ip_text = ip_entry.get_text()
     port_text = port_entry.get_text()
-    password_text = password_entry.get_text()
-    if ip_text == "" or port_text == "" or password_text == "":
+    if ip_text == "" or port_text == "":
         next_button.set_sensitive(False)
         return False
 
@@ -117,15 +116,6 @@ def valid_ip_address(ip_widget, event=None):
     else:
         next_button.set_sensitive(False)
         return False
-
-
-def is_not_empty(widget, event=None):
-    global win
-
-    if widget.get_text() != "":
-        return True
-
-    False
 
 
 def set_proxy_type(radio_button):
@@ -213,16 +203,15 @@ def activate(_win, _box, _update, to_wifi_button):
 
 
 def apply_changes(button, arg2=None):
-    global box
-
-    print "Apply changes entered"
 
     # This needs to distinguish between whether proxy has actually been enabled or not
 
     if enable_proxy:
         proxyip = ip_entry.get_text()
         proxyport = port_entry.get_text()
-        set_settings(proxyip, proxyport, proxy_type)
+        username = username_entry.get_text()
+        password = password_entry.get_text()
+        set_settings(proxyip, proxyport, proxy_type, username, password)
 
     return
 
