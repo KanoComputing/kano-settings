@@ -29,13 +29,7 @@ def activate(_win, _box, _update):
     to_proxy_button = generate_proxy_button()
     to_wifi_button = generate_wifi_button()
     disable_proxy = generate_disable_proxy()
-    print "set_wifi_proxy.activate"
-    print "to_proxy_button = " + str(to_proxy_button)
-    print "to_wifi_button = " + str(to_wifi_button)
-    print "disable_proxy = " + str(disable_proxy)
-
     constants.proxy_enabled = set_proxy.is_enabled()
-
     set_wifi.activate(win, box, update, to_proxy_button, disable_proxy)
 
 
@@ -47,7 +41,7 @@ def generate_wifi_button():
     to_wifi_label.get_style_context().add_class("apply_changes_text")
     to_wifi_button.add(to_wifi_label)
     to_wifi_button.set_size_request(150, 44)
-    to_wifi_button.connect("button_press_event", to_wifi)
+    to_wifi_button.connect("button_press_event", to_wifi_apply_changes)
     return to_wifi_button
 
 
@@ -69,20 +63,24 @@ def generate_disable_proxy():
     return disable_proxy_button
 
 
+# Reached when orange disable proxy button is clicked
 def disable_proxy_function(arg1=None, arg2=None):
 
     set_proxy.disable()
+    # Go to set_wifi without calling set_proxy.apply_changes()
     to_wifi()
-    constants.proxy_enabled = False
+    constants.proxy_enabled = set_proxy.is_enabled()
 
 
-def to_wifi(event=None, arg=None):
+def to_wifi_apply_changes(event=None, arg=None):
     global win, box, update, to_proxy_button
 
-    if constants.proxy_enabled is False:
-        # Apply changes from set_proxy
-        set_proxy.apply_changes()
+    # Apply changes from set_proxy
+    set_proxy.apply_changes()
+    to_wifi()
 
+
+def to_wifi():
     to_proxy_button = generate_proxy_button()
     remove_children(box)
     set_wifi.activate(win, box, update, to_proxy_button)

@@ -11,6 +11,7 @@ import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.proxy as proxy
 import kano_settings.constants as constants
+import kano_settings.config_file as config_file
 
 win = None
 box = None
@@ -22,6 +23,7 @@ proxy_type = None
 enable_proxy = False
 next_button = None
 update = None
+checkbutton = None
 
 GRID_HEIGHT = 150
 
@@ -128,6 +130,16 @@ def set_proxy_type(radio_button):
         proxy_type = "http_v1.0"
 
 
+def set_proxy_type_button(radio1, radio2):
+
+    if proxy_type == "socks_v4 socks_v5":
+        radio2.set_active(True)
+        radio1.set_active(False)
+    else:
+        radio2.set_active(False)
+        radio1.set_active(True)
+
+
 def activate(_win, _box, _update, to_wifi_button):
     global win, ip_entry, port_entry, username_entry, password_entry, box, next_button
 
@@ -154,19 +166,18 @@ def activate(_win, _box, _update, to_wifi_button):
     password_box.add(password_entry)
 
     checkbutton = Gtk.CheckButton("enable proxy")
+    enabled = is_enabled()
+    checkbutton.set_active(enabled)
     checkbutton.connect("clicked", proxy_status)
     checkbutton.set_can_focus(False)
 
     radio1 = Gtk.RadioButton.new_with_label_from_widget(None, "socks_v4 socks_v5")
     radio1.set_can_focus(False)
-
     radio2 = Gtk.RadioButton.new_with_label_from_widget(radio1, "http_v1.0")
     radio2.set_can_focus(False)
 
     radio1.connect("toggled", set_proxy_type)
-    # Needs to be run once at start
-    set_proxy_type(radio1)
-
+    read_config(radio1, radio2)
     next_button = to_wifi_button
 
     apply_changes_alignment = Gtk.Alignment(xalign=0, yalign=0, xscale=0, yscale=0)
@@ -200,9 +211,34 @@ def activate(_win, _box, _update, to_wifi_button):
     win.connect("key-release-event", proxy_enabled)
 
 
-def apply_changes(button=None, arg2=None):
+# Update for proxy
+def read_config(radio1, radio2):
+    global port_entry, username_entry, ip_entry, proxy_type
 
-    # This needs to distinguish between whether proxy has actually been enabled or not
+    port_text = config_file.read_from_file("Proxy-port")
+    port_entry.set_text(port_text)
+
+    ip_text = config_file.read_from_file("Proxy-ip")
+    ip_entry.set_text(ip_text)
+
+    username_text = config_file.read_from_file("Proxy-username")
+    username_entry.set_text(username_text)
+
+    proxy_type = config_file.read_from_file("Proxy_type")
+    set_proxy_type_button(radio1, radio2)
+
+
+# Update for proxy
+def update_config(proxyip, proxyport, proxy_type, username):
+    config_file.replace_setting("Proxy-port", proxyport)
+    config_file.replace_setting("Proxy-ip", proxyip)
+    config_file.replace_setting("Proxy-username", username)
+    config_file.replace_setting("Proxy_type", proxy_type)
+
+
+def apply_changes(button=None, arg2=None):
+    print "set_proxy, apply_changes"
+    print "enable_proxy = " + str(enable_proxy)
 
     if enable_proxy:
         proxyip = ip_entry.get_text()
@@ -211,7 +247,11 @@ def apply_changes(button=None, arg2=None):
         password = password_entry.get_text()
         set_settings(proxyip, proxyport, proxy_type, username, password)
         enable()
+        update_config(proxyip, proxyport, proxy_type, username)
         constants.proxy_enabled = True
 
-    return
+    else:
+        disable()
+        constants.proxy_enabled = is_enabled()
 
+    return
