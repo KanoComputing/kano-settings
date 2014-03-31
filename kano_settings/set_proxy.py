@@ -10,6 +10,7 @@ from gi.repository import Gtk
 import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.proxy as proxy
+import kano_settings.constants as constants
 
 win = None
 box = None
@@ -137,9 +138,6 @@ def activate(_win, _box, _update, to_wifi_button):
     grid = Gtk.Grid(column_homogeneous=False, column_spacing=10, row_spacing=10)
     win.state = 6
 
-    #win.top_bar.next_button.set_sensitive(False)
-    #win.top_bar.next_button.set_image(win.top_bar.pale_next_arrow)
-
     ip_entry = Gtk.Entry()
     ip_entry.props.placeholder_text = "IP address"
 
@@ -212,6 +210,8 @@ def apply_changes(button=None, arg2=None):
         username = username_entry.get_text()
         password = password_entry.get_text()
         set_settings(proxyip, proxyport, proxy_type, username, password)
+        enable()
+        constants.proxy_enabled = True
 
     return
 

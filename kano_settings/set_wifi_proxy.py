@@ -9,12 +9,14 @@
 from gi.repository import Gtk
 import kano_settings.set_proxy as set_proxy
 import kano_settings.set_wifi as set_wifi
+import kano_settings.constants as constants
 
 win = None
 box = None
 update = None
-#to_wifi_button = None
-#to_proxy_button = None
+to_wifi_button = None
+to_proxy_button = None
+disable_proxy = None
 
 
 def activate(_win, _box, _update):
@@ -26,21 +28,15 @@ def activate(_win, _box, _update):
 
     to_proxy_button = generate_proxy_button()
     to_wifi_button = generate_wifi_button()
+    disable_proxy = generate_disable_proxy()
+    print "set_wifi_proxy.activate"
+    print "to_proxy_button = " + str(to_proxy_button)
+    print "to_wifi_button = " + str(to_wifi_button)
+    print "disable_proxy = " + str(disable_proxy)
 
-    set_wifi.activate(win, box, update, to_proxy_button)
+    constants.proxy_enabled = set_proxy.is_enabled()
 
-
-def to_proxy(event=None, arg=None):
-    global win, box, update
-
-    to_wifi_button = generate_wifi_button()
-
-    for i in box.get_children():
-        box.remove(i)
-
-    set_proxy.activate(win, box, update, to_wifi_button)
-
-    win.show_all()
+    set_wifi.activate(win, box, update, to_proxy_button, disable_proxy)
 
 
 def generate_wifi_button():
@@ -64,18 +60,47 @@ def generate_proxy_button():
     return to_proxy_button
 
 
+def generate_disable_proxy():
+    disable_proxy_button = Gtk.EventBox()
+    disable_proxy_label = Gtk.Label("Disable proxy")
+    disable_proxy_label.get_style_context().add_class("orange")
+    disable_proxy_button.add(disable_proxy_label)
+    disable_proxy_button.connect("button_press_event", disable_proxy_function)
+    return disable_proxy_button
+
+
+def disable_proxy_function(arg1=None, arg2=None):
+
+    set_proxy.disable()
+    to_wifi()
+    constants.proxy_enabled = False
+
+
 def to_wifi(event=None, arg=None):
     global win, box, update, to_proxy_button
 
-    # Apply changes from set_proxy
-    set_proxy.apply_changes()
+    if constants.proxy_enabled is False:
+        # Apply changes from set_proxy
+        set_proxy.apply_changes()
 
     to_proxy_button = generate_proxy_button()
-    for i in box.get_children():
-        box.remove(i)
-
+    remove_children(box)
     set_wifi.activate(win, box, update, to_proxy_button)
     win.show_all()
+
+
+def to_proxy(event=None, arg=None):
+    global win, box, update
+
+    to_wifi_button = generate_wifi_button()
+    remove_children(box)
+    set_proxy.activate(win, box, update, to_wifi_button)
+    win.show_all()
+
+
+def remove_children(box):
+    for i in box.get_children():
+        box.remove(i)
 
 
 def apply_changes(event=None, button=None):

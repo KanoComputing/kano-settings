@@ -15,9 +15,11 @@ import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_audio as set_audio
 import kano_settings.set_display as set_display
 import kano_settings.set_wifi_proxy as set_wifi_proxy
+import kano_settings.set_proxy as set_proxy
 import kano_settings.config_file as config_file
 import kano_settings.components.menu_button as menu_button
 import kano_settings.constants as constants
+#from kanowifilib import is_internet
 from kano.network import is_internet
 
 names = ["Keyboard", "Email", "Audio", "Display", "Wifi"]
@@ -90,8 +92,11 @@ class Default_Intro():
         text = ''
         # Check for internet
         constants.has_internet = is_internet()
+        constants.proxy_enabled = set_proxy.is_enabled()
         if constants.has_internet:
             text = 'Connected'
+        elif constants.proxy_enabled:
+            text = "Proxy enabled"
         else:
             text = 'Not connected'
         self.labels[len(custom_info) - 1].set_text(text)

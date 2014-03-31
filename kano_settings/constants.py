@@ -21,3 +21,4 @@ else:
     sys.exit('Media folder missing!')
 
 has_internet = False
+proxy_enabled = False

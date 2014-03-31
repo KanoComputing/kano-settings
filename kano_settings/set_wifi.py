@@ -13,6 +13,7 @@ import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
 import kano_settings.config_file as config_file
 import kano.utils as utils
+from kano.network import is_internet
 
 network_message = ""
 win = None
@@ -21,8 +22,15 @@ update = None
 WIFI_IMG_HEIGHT = 110
 
 
-def activate(_win, _box, _update, to_proxy_button):
+def activate(_win, _box, _update, proxy_button, disable_proxy=None):
     global network_message, box, win, update
+
+    constants.has_internet = is_internet()
+
+    print "set_wifi.activate"
+    print "disable_proxy = " + str(disable_proxy)
+    print "constants.proxy_enabled = " + str(constants.proxy_enabled)
+    print "constants.has_internet = " + str(constants.has_internet)
 
     win = _win
     box = _box
@@ -30,10 +38,6 @@ def activate(_win, _box, _update, to_proxy_button):
 
     title = heading.Heading("", "")
     box.pack_start(title.container, False, False, 0)
-
-    #proxy_button = Gtk.Button("Proxy Button")
-    #proxy_button.connect("button-press-event", proxy_button_press)
-    #box.pack_start(proxy_button, False, False, 0)
 
     # Table
     settings = fixed_size_box.Fixed()
@@ -83,7 +87,6 @@ def activate(_win, _box, _update, to_proxy_button):
         internet_img.set_from_file(constants.media + "/Graphics/Internet-Connection.png")
         title.title.set_text("Connection found!")
         title.description.set_text("Great!")
-        proxy_button = to_proxy_button
 
         internet_status.set_text(network)
         internet_action.set_text(ip)
@@ -104,6 +107,10 @@ def activate(_win, _box, _update, to_proxy_button):
             configure_container.pack_start(divider_label, False, False, 3)
 
         configure_container.pack_start(proxy_button, False, False, 0)
+
+    elif constants.proxy_enabled and disable_proxy:
+
+        container.pack_start(disable_proxy, False, False, 0)
 
     else:
         status_box.pack_start(configure_container, False, False, 0)

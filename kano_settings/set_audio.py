@@ -26,7 +26,6 @@ def file_replace(fname, pat, s_after):
     # first, see if the pattern is even in the file.
     with open(fname) as f:
         if not any(re.search(pat, line) for line in f):
-            print("FAIL: set_audio.py, file_replace, pattern not found in file")
             return -1  # pattern does not occur in file so we are done.
 
     # pattern is in the file, so perform replace operation.
