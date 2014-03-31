@@ -148,7 +148,6 @@ def activate(_win, _box, _update, to_wifi_button):
     title = heading.Heading("Proxy", "Connect via a friend")
     settings = fixed_size_box.Fixed()
     grid = Gtk.Grid(column_homogeneous=False, column_spacing=10, row_spacing=10)
-    win.state = 6
 
     ip_entry = Gtk.Entry()
     ip_entry.props.placeholder_text = "IP address"

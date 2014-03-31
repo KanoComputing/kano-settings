@@ -37,7 +37,7 @@ def generate_wifi_button():
     to_wifi_button = Gtk.EventBox()
     to_wifi_button.get_style_context().add_class("apply_changes_button")
     to_wifi_button.get_style_context().add_class("green")
-    to_wifi_label = Gtk.Label("BACK TO WIFI")
+    to_wifi_label = Gtk.Label("APPLY CHANGES")
     to_wifi_label.get_style_context().add_class("apply_changes_text")
     to_wifi_button.add(to_wifi_label)
     to_wifi_button.set_size_request(150, 44)
