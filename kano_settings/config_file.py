@@ -148,6 +148,8 @@ def set_defaults(setting_name):
         setting_prop = "0"
     elif setting_name == "Completed":
         setting_prop = "0"
+    else:
+        setting_prop = ""
 
     write_to_file(setting_name, setting_prop)
 

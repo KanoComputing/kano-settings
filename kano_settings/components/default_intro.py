@@ -9,7 +9,6 @@
 
 from gi.repository import Gtk
 
-import kano_settings.set_intro as set_intro
 import kano_settings.set_email as set_email
 import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_audio as set_audio
@@ -116,8 +115,6 @@ class Default_Intro():
     # When clicking next in the default intro screen - takes you to the last level you visited
     def on_next(self, widget=None, arg2=None):
         global win
-        if win.last_level_visited == 0:
-            return
 
         for i in win.changeable_content.get_children():
             win.changeable_content.remove(i)
@@ -137,11 +134,12 @@ class Default_Intro():
     # On clicking a level button on default intro screen
     def go_to_level(self, widget):
         global win
+
         # Remove element in the dynamic box
         for i in win.changeable_content.get_children():
             win.changeable_content.remove(i)
         # Update current state
-        win.state = widget.state + 1
+        win.state = widget.state
         # Record this level so we can go back to it
         win.last_level_visited = win.state
 
@@ -156,6 +154,7 @@ class Default_Intro():
 
     # This updates the current level.
     def update(self, widget, arg2=None):
+
         returnValue = self.state_to_widget(win.state).apply_changes(widget)
         if returnValue == -1:
             return
@@ -165,10 +164,9 @@ class Default_Intro():
 
     def state_to_widget(self, x):
         return {
-            0: set_intro,
-            1: set_keyboard,
-            2: set_email,
-            3: set_audio,
-            4: set_display,
-            5: set_wifi_proxy,
+            0: set_keyboard,
+            1: set_email,
+            2: set_audio,
+            3: set_display,
+            4: set_wifi_proxy,
         }[x]
