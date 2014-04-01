@@ -28,7 +28,32 @@ class LibPreload:
                     return True
         return False
 
+    # FIXME: This code shouts for a convenient refactoring
+    # It does not work 100% as sometimes Chromium stalls. A restart sometimes solves the problem
+    def chromium_proxy (self, ip, port, ptype, username, password, enable=True):
+        chromium_cfg = '/etc/chromium/default'
+        if enable == True:
+            if 'socks_v5' in ptype:
+                proxy_type = 'socks5'
+            else:
+                proxy_type = 'http'
+
+            strflags = '"--password-store=detect --proxy-server="%s://%s:%s""' % (proxy_type, ip, port)
+        else:
+            strflags = '"--password-store=detect"'
+
+        strflags = strflags.replace ('/', '\/')
+        cmd = "/bin/sed -i 's/CHROMIUM_FLAGS=.*/CHROMIUM_FLAGS=%s/g' %s" % (strflags, chromium_cfg)
+        rc = os.system (cmd)
+        return (rc==0)
+
     def proxify(self, enable=False):
+
+        # Chromium settings go to its config file. Change them now
+        p = ProxySettings().get_settings()
+        print 'setting chromium'
+        self.chromium_proxy (p['proxy-ip'], p['proxy-port'], p['proxy-type'], None, None, enable)
+        
         # If the change is already set, do nothing
         if enable == self.is_enabled():
             return True
