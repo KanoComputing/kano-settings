@@ -1,0 +1,13 @@
+#!/bin/bash
+
+FNAME=/home/$USER/.kano-settings
+
+while read line
+do
+    if [[ $line = "Completed:1" ]] ; then
+        exit 0
+    fi
+done < $FNAME
+
+sudo /usr/bin/kano-settings
+exit 0
