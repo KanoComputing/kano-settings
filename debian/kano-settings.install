@@ -1,4 +1,5 @@
 bin/kano-settings /usr/bin
+bin/ks /usr/bin
 
 kano_settings/* /usr/lib/python2.7/dist-packages/kano_settings
 media/* /usr/share/kano-settings/media
