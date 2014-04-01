@@ -27,11 +27,6 @@ def activate(_win, _box, _update, proxy_button, disable_proxy=None):
 
     constants.has_internet = is_internet()
 
-    print "set_wifi.activate"
-    print "disable_proxy = " + str(disable_proxy)
-    print "constants.proxy_enabled = " + str(constants.proxy_enabled)
-    print "constants.has_internet = " + str(constants.has_internet)
-
     win = _win
     box = _box
     update = _update
