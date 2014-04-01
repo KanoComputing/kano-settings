@@ -1,4 +1,11 @@
-#!/bin/bash
+#!/usr/bin/env python
+
+# ks
+#
+# Copyright (C) 2014 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+# This controls whether kano-settings gets shown straight after booting up
 
 FNAME=/home/$USER/.kano-settings
 
