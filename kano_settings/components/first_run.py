@@ -108,10 +108,10 @@ class First_Run():
         return {
             0: set_intro,
             1: set_keyboard,
-            2: set_email,
-            3: set_audio,
-            4: set_display,
-            5: set_wifi_proxy
+            2: set_audio,
+            3: set_display,
+            4: set_email,
+            5: set_wifi_proxy,
         }[x]
 
 

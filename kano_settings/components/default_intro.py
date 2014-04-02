@@ -165,8 +165,8 @@ class Default_Intro():
     def state_to_widget(self, x):
         return {
             0: set_keyboard,
-            1: set_email,
-            2: set_audio,
-            3: set_display,
+            1: set_audio,
+            2: set_display,
+            3: set_email,
             4: set_wifi_proxy,
         }[x]
