@@ -40,6 +40,11 @@ class First_Run():
     def on_prev(self, widget=None, arg2=None):
         global win
 
+        # Check if we're in set_proxy screen
+        if set_wifi_proxy.in_proxy:
+            set_wifi_proxy.to_wifi()
+            return
+
         # Update current state
         win.state = (win.state - 1)
         # Check we're in a valid state

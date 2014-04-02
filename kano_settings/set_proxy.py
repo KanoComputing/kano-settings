@@ -23,7 +23,6 @@ proxy_type = None
 enable_proxy = False
 next_button = None
 update = None
-checkbutton = None
 
 GRID_HEIGHT = 150
 

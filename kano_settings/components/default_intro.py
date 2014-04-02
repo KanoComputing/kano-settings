@@ -105,6 +105,12 @@ class Default_Intro():
         global win
         for i in win.changeable_content.get_children():
             win.changeable_content.remove(i)
+
+        # If in set_proxy
+        if set_wifi_proxy.in_proxy:
+            set_wifi_proxy.to_wifi()
+            return
+
         self.update_intro()
         win.top_bar.disable_prev()
         win.top_bar.enable_next()
