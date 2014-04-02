@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# set_wifi.py
+# set_proxy.py
 #
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
@@ -132,11 +132,11 @@ def set_proxy_type(radio_button):
 def set_proxy_type_button(radio1, radio2):
 
     if proxy_type == "socks_v4 socks_v5":
-        radio2.set_active(True)
-        radio1.set_active(False)
-    else:
-        radio2.set_active(False)
         radio1.set_active(True)
+        radio2.set_active(False)
+    else:
+        radio1.set_active(False)
+        radio2.set_active(True)
 
 
 def activate(_win, _box, _update, to_wifi_button):
@@ -175,6 +175,10 @@ def activate(_win, _box, _update, to_wifi_button):
     radio2.set_can_focus(False)
 
     radio1.connect("toggled", set_proxy_type)
+
+    # Run once so we have the correct string proxy_type
+    set_proxy_type(radio1)
+
     read_config(radio1, radio2)
     next_button = to_wifi_button
 
@@ -235,8 +239,6 @@ def update_config(proxyip, proxyport, proxy_type, username):
 
 
 def apply_changes(button=None, arg2=None):
-    print "set_proxy, apply_changes"
-    print "enable_proxy = " + str(enable_proxy)
 
     if enable_proxy:
         proxyip = ip_entry.get_text()
