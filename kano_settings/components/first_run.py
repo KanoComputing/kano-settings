@@ -63,15 +63,16 @@ class First_Run():
     def on_next(self, widget=None, arg2=None):
         global grid, box, state, win
 
-        # Update current state
-        win.state = (win.state + 1)
-        # If we've clicked on the finished
-        if win.state == MAX_STATE:
+        # If finished, needs a separate logic
+        if win.state == MAX_STATE - 1:
             # Write to config file to say we've completed the level.
             config_file.replace_setting("Completed", "1")
             # Finished, so close window
             close_window()
             return
+
+        # Update current state
+        win.state = (win.state + 1)
 
         # Remove element in the dynamic box
         for i in win.changeable_content.get_children():
@@ -132,5 +133,7 @@ def close_window(event="delete-event", button=win):
             return
         else:
             dialog.destroy()
+            Gtk.main_quit()
+            return
     else:
         Gtk.main_quit()
