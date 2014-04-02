@@ -85,8 +85,9 @@ def to_wifi(arg1=None, arg2=None):
     global in_proxy
 
     to_proxy_button = generate_proxy_button()
+    disable_proxy = generate_disable_proxy()
     remove_children(box)
-    set_wifi.activate(win, box, update, to_proxy_button)
+    set_wifi.activate(win, box, update, to_proxy_button, disable_proxy)
     in_proxy = False
     win.show_all()
 
