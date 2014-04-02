@@ -23,7 +23,6 @@
     -GtkButton-inner-border: 0;
     -unico-focus-border-color: transparent; /* Removes the annoying red outline on active buttons*/
     engine: none; /* Turns off annoying borders */
-    /*background: #ffffff;*/
     border-width: 0px;
 }
 
@@ -39,10 +38,6 @@ GtkButton {
     border-width:0px;
     border-color: transparent;
 }
-
-/*GtkLabel {
-    color: #00ff00;
-}*/
 
 GtkEventBox {
     background:transparent;
@@ -61,15 +56,19 @@ GtkComboBox GtkButton {
     border-color: @active_border;
     border-style: solid;
     border-width: 2px;
-    border-radius:2px;
+    border-radius:3px;
     color: @active_writing;
 }
-/*GtkComboBox .menuitem * {
-    color: @button_color;
+GtkComboBox .menu {
+    border-style: solid;
+    border-width: 2px;
+    border-radius: 3px;
+    border-color: @active_border;
 }
-GtkComboBox .menuitem *:hover {
-    color: @button_color;
-}*/
+GtkComboBox .button {
+    border-style:solid;
+    border-radius:3px;
+}
 
 GtkEntry {
     border-color: @active_border;
@@ -176,14 +175,6 @@ GtkLabel{
     font: Bariol 13;
 }
 
-/*.check {
-    border-st
-    -unico-outer-stroke-gradient: -gtk-gradient (linear, left top, left bottom,
-                                                 from (alpha (shade (@bg_color, 0.85), 0.2)),
-                                                 to (alpha (shade (@bg_color, 1.25), 0.6)));
-    -unico-outer-stroke-width: 1px;
-}*/
-
 /* Top wiriting in internet status box */
 .internet_status_top {
     padding:0px 10px;
@@ -209,9 +200,7 @@ GtkLabel{
     font-weight:bold;
     margin:10px;
 }
-/*.white {
-    color: #ffffff;
-}*/
+
 .dark_green {
     color: #0A5200;
 }
