@@ -21,8 +21,8 @@ import kano_settings.constants as constants
 #from kanowifilib import is_internet
 from kano.network import is_internet
 
-names = ["Keyboard", "Email", "Audio", "Display", "Wifi"]
-custom_info = ["Keyboard-country-human", "Email", "Audio", "Display-mode", "Wifi"]
+names = ["Keyboard", "Audio", "Display", "Email", "Wifi"]
+custom_info = ["Keyboard-country-human", "Audio", "Display-mode", "Email", "Wifi"]
 win = None
 NUMBER_OF_ROWS = 3
 NUMBER_OF_COLUMNS = 2

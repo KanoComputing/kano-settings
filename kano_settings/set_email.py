@@ -59,7 +59,7 @@ def activate(_win, changeable_content, _update):
     update = _update
 
     # Text entry
-    text = "Email"
+    text = ""
     email_entry = Gtk.Grid(column_homogeneous=False,
                            column_spacing=22,
                            row_spacing=22)
@@ -78,6 +78,7 @@ def activate(_win, changeable_content, _update):
         text = current_email.replace('\n', '')
         update_config()
 
+    entry1.props.placeholder_text = "Email"
     entry1.set_text(text)
     check_email(entry1, 1)
 
