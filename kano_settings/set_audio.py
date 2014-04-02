@@ -41,7 +41,7 @@ def file_replace(fname, pat, s_after):
 def activate(_win, box, update):
     global current_img
 
-    title = heading.Heading("Audio settings", "Can you hear me?")
+    title = heading.Heading("Audio", "Can you hear me?")
     box.pack_start(title.container, False, False, 0)
 
     # Settings container

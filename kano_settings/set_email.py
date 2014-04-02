@@ -51,7 +51,7 @@ def activate(_win, changeable_content, _update):
     except:
         pass
 
-    title = heading.Heading("Change your email", "Stay informed about your progress")
+    title = heading.Heading("Set your email", "Stay informed about your progress")
 
     # Settings container
     settings = fixed_size_box.Fixed()
