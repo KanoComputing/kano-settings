@@ -97,6 +97,10 @@ def apply_changes(button):
         new_line = "amixer -c 0 cset numid=3 1"
         config = "Analogue"
 
+    # if audio settings haven't changed, don't apply new changes
+    if config_file.compare("Audio", config):
+        return
+
     outcome = file_replace(file_name, pattern, new_line)
     # Don't continue if we don't manage to change the audio settings in the file.
     if outcome == -1:

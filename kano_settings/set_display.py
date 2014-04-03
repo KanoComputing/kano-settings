@@ -91,6 +91,9 @@ def apply_changes(button):
     # Of the form "auto" or "cea:1" or "dmt:1" etc.
     parse_mode = mode.split(" ")[0]
 
+    if compare():
+        return
+
     screen_config.set_hdmi_mode(parse_mode)
     # Set overscan
     if overscan is True:
@@ -117,6 +120,16 @@ def update_config():
     config_file.replace_setting("Display-mode", str(mode))
     config_file.replace_setting("Display-mode-index", str(mode_index))
     config_file.replace_setting("Display-overscan", str(overscan))
+
+
+def compare():
+
+    # Add new configurations to config file.
+    name = config_file.compare("Display-name", display_name)
+    display_mode = config_file.compare("Display-mode", str(mode))
+    display_mode_index = config_file.compare("Display-mode-index", str(mode_index))
+    display_overscan = config_file.compare("Display-overscan", str(overscan))
+    return name and display_mode and display_mode_index and display_overscan
 
 
 # setting = "resolution" or "overscan"

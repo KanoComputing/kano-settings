@@ -47,6 +47,13 @@ def replace(fname, pat, s_after):
         out.close()
         os.rename(out_fname, fname)
 
+# Returns true if the old setting is the same as the new one
+def compare(setting_name, setting):
+
+    setting = str(setting)
+    old_setting = read_from_file(setting_name)
+    return setting == old_setting
+
 
 def replace_setting(setting_name, setting):
 
@@ -133,7 +140,7 @@ def set_defaults(setting_name):
     elif setting_name == "Keyboard-continent-human":
         setting_prop = "America"
     elif setting_name == "Keyboard-country-human":
-        setting_prop = "USA"
+        setting_prop = "United States"
     elif setting_name == "Keyboard-variant-human":
         setting_prop = "Generic"
     elif setting_name == "Audio":
@@ -141,7 +148,7 @@ def set_defaults(setting_name):
     elif setting_name == "Wifi":
         setting_prop = ""
     elif setting_name == "Display-mode":
-        setting_prop = "Auto"
+        setting_prop = "auto"
     elif setting_name == "Display-mode-index":
         setting_prop = "0"
     elif setting_name == "Display-overscan":
