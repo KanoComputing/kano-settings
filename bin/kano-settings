@@ -95,11 +95,6 @@ class MainWindow(Gtk.Window):
             self.top_bar.disable_prev()
             self.top_bar.next_button.set_image(self.top_bar.dark_next_arrow)
 
-        # To quickly test the proxy settings, uncomment out lines below
-
-        #set_wifi.activate(self, self.changeable_content, self.update)
-        #set_wifi.proxy_button_press()
-
         self.grid.attach(self.top_bar.background, 0, 0, 1, 1)
         self.grid.attach(self.changeable_content, 0, 2, 1, 1)
         self.grid.set_row_spacing(0)
