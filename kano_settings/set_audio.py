@@ -16,7 +16,8 @@ import re
 
 HDMI = False
 reboot = False
-file_name = "/etc/rc.local"
+file_name_rc_local = "/etc/rc.local"
+file_name_boot_config = "/boot/config.txt"
 current_img = None
 # Change this value (IMG_HEIGHT) to move the image up or down.
 IMG_HEIGHT = 130
@@ -88,22 +89,28 @@ def apply_changes(button):
     # 1 analog
     # 2 hdmi
 
-    pattern = "amixer -c 0 cset numid=3 [0-9]"
-    new_line = None
+    #Uncomment/comment out the line  in /boot/config.txt
+    boot_config = "#?hdmi_ignore_edid_audio=1"
+    rc_local = "amixer -c 0 cset numid=3 [0-9]"
+    new_rc_local = None
+    new_boot_config = None
     if HDMI is True:
-        new_line = "amixer -c 0 cset numid=3 2"
+        new_rc_local = "amixer -c 0 cset numid=3 2"
+        new_boot_config = "#hdmi_ignore_edid_audio=1"
         config = "HDMI"
     else:
-        new_line = "amixer -c 0 cset numid=3 1"
+        new_rc_local = "amixer -c 0 cset numid=3 1"
+        new_boot_config = "hdmi_ignore_edid_audio=1"
         config = "Analogue"
 
     # if audio settings haven't changed, don't apply new changes
     if config_file.compare("Audio", config):
         return
 
-    outcome = file_replace(file_name, pattern, new_line)
+    outcome_rc = file_replace(file_name_rc_local, rc_local, new_rc_local)
+    outcome_boot = file_replace(file_name_boot_config, boot_config, new_boot_config)
     # Don't continue if we don't manage to change the audio settings in the file.
-    if outcome == -1:
+    if outcome_rc == -1 or outcome_boot == -1:
         return
 
     config_file.replace_setting("Audio", config)
@@ -113,7 +120,7 @@ def apply_changes(button):
 
 def current_setting(analogue_button, hdmi_button):
 
-    f = open(file_name, 'r')
+    f = open(file_name_rc_local, 'r')
     file_string = str(f.read())
     analogue_string = "amixer -c 0 cset numid=3 1"
     hdmi_string = "amixer -c 0 cset numid=3 2"
