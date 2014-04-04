@@ -157,11 +157,12 @@ def configure_wifi(event=None, button=None):
 def apply_changes(event=None, button=None):
     return
 
+
 def send_email():
     USER = os.environ['SUDO_USER']
     emailFile = "/home/%s/.email" % (USER)
     # Check if the .email file exists
-    if os.path.isfile(emailFile):
+    if isfile(emailFile):
         email = config_file.read_from_file("Email")
         command_id = 'tail -1 /proc/cpuinfo'
         id, _, _ = utils.run_cmd(command_id)
