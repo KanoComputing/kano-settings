@@ -10,20 +10,29 @@
 /* Define colours */
 
 @define-color button_color #a0d779;
-@define-color orange #ff842A;
+@define-color kano_orange #ff842A;
 @define-color title_color #323232;
 @define-color subheading_color #6e6e6e;
 @define-color inactive_writing #cdcdcd;
 @define-color inactive_border #e1e1e1;
 @define-color active_writing #323232;
 @define-color active_border #ababab;
+@define-color hover_color #eeeeee;
 
 /* All */
 * {
     -GtkButton-inner-border: 0;
+    -GtkEntry-inner-border: 0;
+    -GtkComboBox-inner-border: 0;
+    -GtkMenuToolButton-inner-border: 0;
+    -GtkTreeMenu-inner-border: 0;
     -unico-focus-border-color: transparent; /* Removes the annoying red outline on active buttons*/
     engine: none; /* Turns off annoying borders */
     border-width: 0px;
+    -GtkWidget-focus-line-width: 0px;
+    -GtkTreeView-vertical-separator: 0;
+    -GtkWidget-separator-width: 0;
+    -GtkWidget-separator-height: 0;
 }
 
 GtkWindow {
@@ -48,26 +57,29 @@ GtkEventBox {
 }
 
 GtkComboBox {
-    color: @active_writing; /* Font color of selected item in drpdown list */
-    font: Bariol 12;
-}
-/* Workaround for lp:949368 */
-GtkComboBox GtkButton {
-    border-color: @active_border;
-    border-style: solid;
-    border-width: 2px;
-    border-radius:3px;
-    color: @active_writing;
+    /* font effect arrow size */
+    font: Bariol 5;
 }
 GtkComboBox .menu {
     border-style: solid;
     border-width: 2px;
     border-radius: 3px;
     border-color: @active_border;
+    /* font and color properties have no effect here */
+    /*font: Bariol 20;
+    color: @kano_orange;*/
 }
+
 GtkComboBox .button {
-    border-style:solid;
+    border-color: @active_border;
+    border-style: solid;
+    border-width: 2px;
     border-radius:3px;
+}
+
+GtkComboBox .separator {
+    /* This removes lines in combotextbox*/
+    -GtkWidget-wide-separators: true;
 }
 
 GtkEntry {
@@ -158,7 +170,7 @@ GtkLabel{
 
 /* Title of menu button on default intro screen (Keyboard, Wfi etc) */
 .menu_intro_label {
-    color: @orange;
+    color: @kano_orange;
     font: Bariol Bold 13;
 }
 /* Info about the settings of the curet project */
@@ -208,7 +220,7 @@ GtkLabel{
     color: #520000;
 }
 .orange {
-    color: @orange;
-    background-color:@orange;
+    color: @kano_orange;
+    background-color:@kano_orange;
     font-weight:bold;
 }

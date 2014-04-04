@@ -73,8 +73,6 @@ def activate(_win, box, _update):
         continents_combo.append_text(c)
     continents_combo.connect("changed", on_continent_changed)
 
-    # Styling of combo box
-    continents_combo.get_style_context().add_class("combo_box_text")
     # Create Countries Combo box
     countries_combo = Gtk.ComboBoxText.new()
     countries_combo.connect("changed", on_country_changed)

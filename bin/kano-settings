@@ -44,7 +44,7 @@ class MainWindow(Gtk.Window):
 
         self.last_level_visited = 0
 
-        WINDOW_WIDTH = 650
+        WINDOW_WIDTH = 680
         WINDOW_HEIGHT = 405
 
         # Create main window
