@@ -47,6 +47,7 @@ def replace(fname, pat, s_after):
         out.close()
         os.rename(out_fname, fname)
 
+
 # Returns true if the old setting is the same as the new one
 def compare(setting_name, setting):
 
@@ -138,7 +139,7 @@ def set_defaults(setting_name):
     elif setting_name == "Keyboard-variant-index":
         setting_prop = str(0)
     elif setting_name == "Keyboard-continent-human":
-        setting_prop = "America"
+        setting_prop = "america"
     elif setting_name == "Keyboard-country-human":
         setting_prop = "United States"
     elif setting_name == "Keyboard-variant-human":

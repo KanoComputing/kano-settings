@@ -122,14 +122,14 @@ def update_config():
     config_file.replace_setting("Display-overscan", str(overscan))
 
 
+# Returns True if all the entries are the same as the ones stored in the config file.
 def compare():
 
-    # Add new configurations to config file.
-    name = config_file.compare("Display-name", display_name)
+    # Compare new entries to old ones already stored.
     display_mode = config_file.compare("Display-mode", str(mode))
     display_mode_index = config_file.compare("Display-mode-index", str(mode_index))
     display_overscan = config_file.compare("Display-overscan", str(overscan))
-    return name and display_mode and display_mode_index and display_overscan
+    return display_mode and display_mode_index and display_overscan
 
 
 # setting = "resolution" or "overscan"

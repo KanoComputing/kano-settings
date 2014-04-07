@@ -89,11 +89,13 @@ def apply_changes(button):
     # 1 analog
     # 2 hdmi
 
-    #Uncomment/comment out the line  in /boot/config.txt
+    # Uncomment/comment out the line  in /boot/config.txt
     boot_config = "#?hdmi_ignore_edid_audio=1"
     rc_local = "amixer -c 0 cset numid=3 [0-9]"
     new_rc_local = None
     new_boot_config = None
+
+    # These are the changes we'll apply if they have changed from what they were
     if HDMI is True:
         new_rc_local = "amixer -c 0 cset numid=3 2"
         new_boot_config = "#hdmi_ignore_edid_audio=1"

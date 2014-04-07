@@ -106,7 +106,7 @@ def read_config():
     return config_file.read_from_file("Email")
 
 
-def update_config():
+def update_config(email):
     # Add new configurations to config file.
     config_file.replace_setting("Email", current_email)
 
@@ -138,7 +138,6 @@ def check_email(entry, event):
 
 
 def apply_changes(button):
-    global entry1, entry2, current_email
 
     email1 = entry1.get_text()
 
