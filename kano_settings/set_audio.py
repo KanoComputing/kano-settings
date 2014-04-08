@@ -84,7 +84,7 @@ def activate(_win, box, update):
 
 
 def apply_changes(button):
-    global HDMI, reboot, hdmi_img, analogue_img
+    global HDMI, reboot, hdmi_img
     # amixer -c 0 cset numid=3 N
     # 1 analog
     # 2 hdmi
