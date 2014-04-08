@@ -15,14 +15,15 @@ import kano_settings.set_audio as set_audio
 import kano_settings.set_display as set_display
 import kano_settings.set_wifi_proxy as set_wifi_proxy
 import kano_settings.set_proxy as set_proxy
+import kano_settings.set_overclock as set_overclock
 import kano_settings.config_file as config_file
 import kano_settings.components.menu_button as menu_button
 import kano_settings.components.cursor as cursor
 import kano_settings.constants as constants
 from kano.network import is_internet
 
-names = ["Keyboard", "Audio", "Display", "Email", "Wifi"]
-custom_info = ["Keyboard-country-human", "Audio", "Display-mode", "Email", "Wifi"]
+names = ["Keyboard", "Audio", "Display", "Email", "Wifi", "Overclocking"]
+custom_info = ["Keyboard-country-human", "Audio", "Display-mode", "Email", "Wifi", "Overclocking"]
 win = None
 NUMBER_OF_ROWS = 3
 NUMBER_OF_COLUMNS = 2
@@ -72,6 +73,7 @@ class Default_Intro():
         self.table.attach(buttons[2], 0, 1, 2, 3, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
         self.table.attach(buttons[3], 1, 2, 0, 1, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
         self.table.attach(buttons[4], 1, 2, 1, 2, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
+        self.table.attach(buttons[5], 1, 2, 2, 3, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
         #self.table.set_size_request(450, 100)
 
         self.valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
@@ -185,4 +187,5 @@ class Default_Intro():
             2: set_display,
             3: set_email,
             4: set_wifi_proxy,
+            5: set_overclock,
         }[x]
