@@ -4,5 +4,5 @@ bin/ks /usr/bin
 kano_settings/* /usr/lib/python2.7/dist-packages/kano_settings
 media/* /usr/share/kano-settings/media
 
-icon/Settings /usr/share/kano-desktop/extras
-icon/kano-settings.png /usr/share/kano-desktop/icons
+icon/Settings /usr/share/kano-extras/extras
+icon/kano-settings.png /usr/share/kano-extras/icons
