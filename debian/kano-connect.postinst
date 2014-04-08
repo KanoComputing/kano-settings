@@ -32,6 +32,13 @@ case "$1" in
             printf "options 8192cu rtw_power_mgnt=0 rtw_enusbss=0\n" >> /etc/modprobe.d/8192cu.conf
             echo "A system restart is suggested but not mandatory"
 	fi
+
+        # For those who upgrade from previous kanux versions, the "interfaces" file has to be migrated
+        # to account for ethernet post-up udhcpc new script. This also fixes tzupdate/rdate reliability
+        # FIXME: I can't find the way to tell sed to use bash replaceable variables here.
+
+        sed -i 's/.*\/usr\/local\/bin\/tzupdate \&\& \/usr\/bin\/rdate.*/ post-up \/sbin\/udhcpc -p \/var\/run\/udhcpc-eth0.pid --script=\/etc\/udhcpc\/kano.script -S -i eth0/g' /etc/network/interfaces
+
 	;;
 
 esac
