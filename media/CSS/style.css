@@ -170,13 +170,13 @@ GtkLabel{
 
 /* Title of menu button on default intro screen (Keyboard, Wfi etc) */
 .menu_intro_label {
-    color: @kano_orange;
-    font: Bariol Bold 13;
+    color: @title_color;
+    font: Bariol Bold 18;
 }
 /* Info about the settings of the curet project */
 .menu_custom_label {
     color: @subheading_color;
-    font: Bariol 13;
+    font: Bariol 12;
 }
 /* Header in top bar (title of window) */
 .header {
