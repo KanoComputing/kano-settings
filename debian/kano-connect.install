@@ -1,5 +1,5 @@
 bin/kano-connect usr/bin
 bin/kano-wifi usr/bin
 
-icon/WiFi /usr/share/kano-desktop/extras
-icon/wifi.png /usr/share/kano-desktop/icons
+icon/WiFi /usr/share/kano-extras/extras
+icon/wifi.png /usr/share/kano-extras/icons
