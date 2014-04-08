@@ -97,8 +97,6 @@ def prompt_hidden():
 
 if __name__ == '__main__':
 
-    # Position the window
-    os.system('kano-window-tool -t \"WiFi\" -c -f -dyes')
     # Load the cache
     wificache = KwifiCache()
 
