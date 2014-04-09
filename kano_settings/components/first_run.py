@@ -12,6 +12,7 @@ import kano_settings.constants as constants
 import kano_settings.set_intro as set_intro
 import kano_settings.set_email as set_email
 import kano_settings.set_keyboard as set_keyboard
+import kano_settings.set_mouse as set_mouse
 import kano_settings.set_audio as set_audio
 import kano_settings.set_display as set_display
 import kano_settings.set_wifi_proxy as set_wifi_proxy
@@ -115,10 +116,11 @@ class First_Run():
         return {
             0: set_intro,
             1: set_keyboard,
-            2: set_audio,
-            3: set_display,
-            4: set_email,
-            5: set_wifi_proxy,
+            2: set_mouse,
+            3: set_audio,
+            4: set_display,
+            5: set_email,
+            6: set_wifi_proxy,
         }[x]
 
 

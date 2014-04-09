@@ -11,6 +11,7 @@ from gi.repository import Gtk
 
 import kano_settings.set_email as set_email
 import kano_settings.set_keyboard as set_keyboard
+import kano_settings.set_mouse as set_mouse
 import kano_settings.set_audio as set_audio
 import kano_settings.set_display as set_display
 import kano_settings.set_wifi_proxy as set_wifi_proxy
@@ -22,8 +23,8 @@ import kano_settings.components.cursor as cursor
 import kano_settings.constants as constants
 from kano.network import is_internet
 
-names = ["Keyboard", "Audio", "Display", "Email", "Wifi", "Overclocking"]
-custom_info = ["Keyboard-country-human", "Audio", "Display-mode", "Email", "Wifi", "Overclocking"]
+names = ["Keyboard", "Mouse", "Audio", "Display", "Email", "Wifi", "Overclocking"]
+custom_info = ["Keyboard-country-human", "Mouse", "Audio", "Display-mode", "Email", "Wifi", "Overclocking"]
 win = None
 NUMBER_OF_ROWS = 3
 NUMBER_OF_COLUMNS = 2
@@ -183,9 +184,10 @@ class Default_Intro():
     def state_to_widget(self, x):
         return {
             0: set_keyboard,
-            1: set_audio,
-            2: set_display,
-            3: set_email,
-            4: set_wifi_proxy,
-            5: set_overclock,
+            1: set_mouse,
+            2: set_audio,
+            3: set_display,
+            4: set_email,
+            5: set_wifi_proxy,
+            6: set_overclock,
         }[x]

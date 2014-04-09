@@ -26,6 +26,7 @@ case "$1" in
 
         # Run kano-settings on first boot by copying into autostart file
         echo "@ks" >> $LXDE_AUTOSTART
+        echo "@startmouse" >> $LXDE_AUTOSTART
 
         ;;
 esac
