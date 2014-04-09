@@ -35,7 +35,7 @@ COLUMN_PADDING = 30
 class Default_Intro():
 
     # Initialises the default into screen
-    def __init__(self, _win, WINDOW_HEIGHT, TOP_BAR_HEIGHT):
+    def __init__(self, _win, WINDOW_HEIGHT, WINDOW_WIDTH, TOP_BAR_HEIGHT):
         global win
 
         win = _win
@@ -77,7 +77,7 @@ class Default_Intro():
         self.table.attach(buttons[5], 1, 2, 2, 3, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
         #self.table.set_size_request(450, 100)
 
-        self.valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
+        self.valign = Gtk.Alignment(xalign=0.5, yalign=0.5, xscale=0, yscale=0)
         # The 44 is the size of the top bar
         # How to centre in a robust way?
         padding_above = (WINDOW_HEIGHT - self.height - TOP_BAR_HEIGHT) / 2
@@ -85,7 +85,19 @@ class Default_Intro():
         self.valign.set_padding(padding_above, 0, 0, 0)
         self.valign.add(self.table)
 
-        win.changeable_content.pack_start(self.valign, False, False, 0)
+        # for scroll bar
+        self.scrolled_window = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
+        self.scrolled_window.props.margin_top = 20
+        self.scrolled_window.props.margin_bottom = 20
+        self.scrolled_window.props.margin_left = 20
+        self.scrolled_window.props.margin_right = 10
+        self.scrolled_window.add_with_viewport(self.valign)
+
+        WINDOW_WIDTH = WINDOW_WIDTH - 20
+        WINDOW_HEIGHT = WINDOW_HEIGHT - 100
+        self.scrolled_window.set_size_request(WINDOW_WIDTH, WINDOW_HEIGHT)
+
+        win.changeable_content.pack_start(self.scrolled_window, False, False, 0)
 
     # This is to update the introdction text, so that if the settings are modified and then we go back to the
     # intro screen, the latest information is shown
@@ -123,7 +135,7 @@ class Default_Intro():
         self.update_intro()
         win.top_bar.disable_prev()
         win.top_bar.enable_next()
-        win.changeable_content.pack_start(self.valign, False, False, 0)
+        win.changeable_content.pack_start(self.scrolled_window, False, False, 0)
         self.update_next_button(win)
         win.show_all()
 
