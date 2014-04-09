@@ -19,7 +19,7 @@ import kano_settings.set_wifi_proxy as set_wifi_proxy
 import kano_settings.config_file as config_file
 
 win = None
-MAX_STATE = 6
+MAX_STATE = 7
 
 
 class First_Run():
