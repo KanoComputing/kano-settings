@@ -18,9 +18,6 @@ if __name__ == '__main__' and __package__ is None:
         sys.path.append(dir_path)
 
 import kano_settings.set_intro as set_intro
-import kano_settings.set_audio as set_audio
-import kano_settings.set_display as set_display
-#import kano_settings.set_wifi as set_wifi
 import kano_settings.config_file as config_file
 import kano_settings.components.top_bar as top_bar
 import kano_settings.components.apply_changes as apply_changes
@@ -123,7 +120,7 @@ def main():
 # On closing window, will alert if any of the listed booleans are True
 def close_window(event="delete-event", button=win):
 
-    if set_audio.reboot or set_display.reboot:
+    if constants.need_reboot:
         # Bring in message dialog box
         dialog = Gtk.MessageDialog(
             button, 0, Gtk.MessageType.INFO,
@@ -131,7 +128,6 @@ def close_window(event="delete-event", button=win):
         )
         dialog.format_secondary_text("..you will need to reboot to see all your changes")
         response = dialog.run()
-        print("INFO dialog closed")
 
         if response == Gtk.ResponseType.OK:
             dialog.destroy()

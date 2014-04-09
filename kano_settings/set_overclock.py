@@ -14,8 +14,8 @@ import kano_settings.components.fixed_size_box as fixed_size_box
 import os
 import re
 
-reboot = False
 selected_button = 0
+initial_button = 0
 boot_config_file = "/boot/config.txt"
 
 
@@ -36,6 +36,7 @@ def file_replace(fname, pat, s_after):
 
 
 def activate(_win, box, update):
+    global selected_button, initial_button
 
     title = heading.Heading("Overclocking", "Let\'s put some power here")
     box.pack_start(title.container, False, False, 0)
@@ -79,7 +80,16 @@ def activate(_win, box, update):
     settings.box.pack_start(valign, False, False, 0)
 
     # Show the current setting by electing the appropriate radio button
-    # current_setting(analog_button, hdmi_button)
+    current_setting()
+    selected_button = initial_button
+    if initial_button == 0:
+        none_button.set_active(True)
+    elif initial_button == 1:
+        modest_button.set_active(True)
+    elif initial_button == 2:
+        medium_button.set_active(True)
+    elif initial_button == 3:
+        high_button.set_active(True)
 
     # Add apply changes button under the main settings content
     box.pack_start(update.box, False, False, 0)
@@ -87,62 +97,86 @@ def activate(_win, box, update):
 
 
 def apply_changes(button):
-    global reboot
 
+    #  Mode      arm_freq    core_freq    sdram_freq   over_voltage
+    # "None"   "700MHz ARM, 250MHz core, 400MHz SDRAM, 0 overvolt"
     # "Modest" "800MHz ARM, 300MHz core, 400MHz SDRAM, 0 overvolt"
     # "Medium" "900MHz ARM, 333MHz core, 450MHz SDRAM, 2 overvolt"
-    # "High" "950MHz ARM, 450MHz core, 450MHz SDRAM, 6 overvolt"
-    # arm_freq=950
-    # core_freq=450
-    # sdram_freq=450
-    # over_voltage=6
+    # "High"   "950MHz ARM, 450MHz core, 450MHz SDRAM, 6 overvolt"
+
+    # Mode has no changed
+    if initial_button == selected_button:
+        return
+
+    config = "High"
     arm_freq = "arm_freq="
     core_freq = "core_freq="
     sdram_freq = "sdram_freq="
     over_voltage = "over_voltage="
-    arm_freq_pattern = "arm_freq=[0-9999]"
-    core_freq_pattern = "core_freq=[0-9999]"
-    sdram_freq_pattern = "sdram_freq=[0-9999]"
+    arm_freq_pattern = "arm_freq=[0-9][0-9][0-9]"
+    core_freq_pattern = "core_freq=[0-9][0-9][0-9]"
+    sdram_freq_pattern = "sdram_freq=[0-9][0-9][0-9]"
     over_voltage_pattern = "over_voltage=[0-9]"
     # None configuration
     if selected_button == 0:
+        config = "None"
         arm_freq += "700"
         core_freq += "250"
         sdram_freq += "400"
         over_voltage += "0"
     # Modest configuration
     elif selected_button == 1:
+        config = "Modest"
         arm_freq += "800"
         core_freq += "300"
         sdram_freq += "400"
         over_voltage += "0"
     # Medium configuration
     elif selected_button == 2:
+        config = "Medium"
         arm_freq += "900"
         core_freq += "333"
         sdram_freq += "450"
         over_voltage += "2"
     # High configuration
     elif selected_button == 3:
+        config = "High"
         arm_freq += "950"
         core_freq += "450"
         sdram_freq += "450"
         over_voltage += "6"
 
-    rc = file_replace(boot_config_file, arm_freq_pattern, arm_freq)
-    rc = file_replace(boot_config_file, core_freq_pattern, core_freq)
-    rc = file_replace(boot_config_file, sdram_freq_pattern, sdram_freq)
-    rc = file_replace(boot_config_file, over_voltage_pattern, over_voltage)
+    # Apply changes
+    file_replace(boot_config_file, arm_freq_pattern, arm_freq)
+    file_replace(boot_config_file, core_freq_pattern, core_freq)
+    file_replace(boot_config_file, sdram_freq_pattern, sdram_freq)
+    file_replace(boot_config_file, over_voltage_pattern, over_voltage)
+
+    # Update config
+    config_file.replace_setting("Overclock", config)
 
     # Tell user to reboot to see changes
-    reboot = True
+    constants.need_reboot = True
 
 
-def current_setting(analogue_button, hdmi_button):
-    global selected_button
+def current_setting():
+    global initial_button
 
-    # Check which is the current setting a set select_button accordingly
-    selected_button = 0
+    f = open(boot_config_file, 'r')
+    file_string = str(f.read())
+    none_string = "core_freq=250"
+    modest_string = "core_freq=300"
+    medium_string = "core_freq=333"
+    high_string = "core_freq=450"
+
+    if file_string.find(none_string) != -1:
+        initial_button = 0
+    elif file_string.find(modest_string) != -1:
+        initial_button = 1
+    elif file_string.find(medium_string) != -1:
+        initial_button = 2
+    elif file_string.find(high_string) != -1:
+        initial_button = 3
 
 
 def on_button_toggled(button):

@@ -8,6 +8,7 @@
 # This controls the flow of the projects on the first run of Kano-settings
 
 from gi.repository import Gtk
+import kano_settings.constants as constants
 import kano_settings.set_intro as set_intro
 import kano_settings.set_email as set_email
 import kano_settings.set_keyboard as set_keyboard
@@ -124,7 +125,7 @@ class First_Run():
 # On closing window, will alert if any of the listed booleans are True
 def close_window(event="delete-event", button=win):
 
-    if set_audio.reboot or set_display.reboot:
+    if constants.need_reboot:
         #Bring in message dialog box
         dialog = Gtk.MessageDialog(
             button, 0, Gtk.MessageType.INFO,

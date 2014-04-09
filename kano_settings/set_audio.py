@@ -15,7 +15,6 @@ import os
 import re
 
 HDMI = False
-reboot = False
 file_name_rc_local = "/etc/rc.local"
 file_name_boot_config = "/boot/config.txt"
 current_img = None
@@ -84,7 +83,7 @@ def activate(_win, box, update):
 
 
 def apply_changes(button):
-    global HDMI, reboot, hdmi_img
+    global HDMI, hdmi_img
     # amixer -c 0 cset numid=3 N
     # 1 analog
     # 2 hdmi
@@ -117,7 +116,7 @@ def apply_changes(button):
 
     config_file.replace_setting("Audio", config)
     # Tell user to reboot to see changes
-    reboot = True
+    constants.need_reboot = True
 
 
 def current_setting(analogue_button, hdmi_button):
@@ -132,9 +131,6 @@ def current_setting(analogue_button, hdmi_button):
 
     elif file_string.find(hdmi_string) != -1:
         hdmi_button.set_active(True)
-
-
-    # Default, first button is active
 
 
 def on_button_toggled(button):

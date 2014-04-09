@@ -11,12 +11,12 @@ import kano_settings.config_file as config_file
 import kano_settings.screen.screen_config as screen_config
 import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
+import kano_settings.constants as constants
 import kano.utils as utils
 
 mode = 'auto'
 mode_index = 0
 overscan = False
-reboot = False
 update = None
 display_name = None
 CONTAINER_HEIGHT = 70
@@ -84,7 +84,6 @@ def activate(_win, box, _update):
 
 
 def apply_changes(button):
-    global reboot
 
     # Set HDMI mode
     # Get mode:group string
@@ -102,7 +101,7 @@ def apply_changes(button):
         screen_config.set_config_option("disable_overscan", 1)
 
     update_config()
-    reboot = True
+    constants.need_reboot = True
 
 
 def read_config():

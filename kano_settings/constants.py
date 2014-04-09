@@ -22,3 +22,4 @@ else:
 
 has_internet = False
 proxy_enabled = False
+need_reboot = False
