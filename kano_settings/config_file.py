@@ -17,7 +17,6 @@ USER_ID = None
 
 def init():
     USER = os.environ['SUDO_USER']
-    #USER_ID = getpwnam(USER).pw_uid
     path = "/home/%s/.kano-settings" % (USER)
     # Update .kano-settings with new current_country and current_variant
     try:
@@ -76,7 +75,7 @@ def replace_setting(setting_name, setting):
         replace(path, old_string, new_string)
         return 0
 
-    except Exception as e:
+    except Exception:
         # Failure is probably down to the setting not existing
         write_to_file(setting_name, setting)
         return
@@ -97,7 +96,7 @@ def write_to_file(setting_name, setting):
         f.close()
         return
 
-    except Exception as e:
+    except Exception:
         return
 
 
@@ -120,7 +119,7 @@ def read_from_file(setting_name):
         f.close()
         return setting
 
-    except Exception as e:
+    except Exception:
         # change to custom defaults
         setting_prop = set_defaults(setting_name)
         return setting_prop
@@ -156,8 +155,10 @@ def set_defaults(setting_name):
         setting_prop = "0"
     elif setting_name == "Completed":
         setting_prop = "0"
-    elif setting_name == "Overclock":
+    elif setting_name == "Overclocking":
         setting_prop = "High"
+    elif setting_name == "Mouse":
+        setting_prop = "Slow"
     else:
         setting_prop = ""
 

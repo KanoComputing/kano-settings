@@ -153,7 +153,7 @@ def apply_changes(button):
     file_replace(boot_config_file, over_voltage_pattern, over_voltage)
 
     # Update config
-    config_file.replace_setting("Overclock", config)
+    config_file.replace_setting("Overclocking", config)
 
     # Tell user to reboot to see changes
     constants.need_reboot = True

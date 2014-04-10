@@ -65,36 +65,21 @@ class Default_Intro():
         # Fill the tabs with the current information
         self.update_intro()
 
-        # calculate height that the icons take up so we can centre it
-        self.height = NUMBER_OF_ROWS * self.item.button.height + ROW_PADDING * NUMBER_OF_ROWS * 2
-
         # Attach to table
         self.table.attach(buttons[0], 0, 1, 0, 1, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
-        self.table.attach(buttons[1], 0, 1, 1, 2, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
-        self.table.attach(buttons[2], 0, 1, 2, 3, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
-        self.table.attach(buttons[3], 1, 2, 0, 1, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
-        self.table.attach(buttons[4], 1, 2, 1, 2, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
+        self.table.attach(buttons[1], 1, 2, 0, 1, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
+        self.table.attach(buttons[2], 0, 1, 1, 2, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
+        self.table.attach(buttons[3], 1, 2, 1, 2, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
+        self.table.attach(buttons[4], 0, 1, 2, 3, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
         self.table.attach(buttons[5], 1, 2, 2, 3, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
-        #self.table.set_size_request(450, 100)
-
-        self.valign = Gtk.Alignment(xalign=0.5, yalign=0.5, xscale=0, yscale=0)
-        # The 44 is the size of the top bar
-        # How to centre in a robust way?
-        padding_above = (WINDOW_HEIGHT - self.height - TOP_BAR_HEIGHT) / 2
-
-        self.valign.set_padding(padding_above, 0, 0, 0)
-        self.valign.add(self.table)
+        self.table.attach(buttons[6], 0, 1, 3, 4, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
 
         # for scroll bar
         self.scrolled_window = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
-        self.scrolled_window.props.margin_top = 20
-        self.scrolled_window.props.margin_bottom = 20
-        self.scrolled_window.props.margin_left = 20
-        self.scrolled_window.props.margin_right = 10
-        self.scrolled_window.add_with_viewport(self.valign)
+        self.scrolled_window.add_with_viewport(self.table)
 
         WINDOW_WIDTH = WINDOW_WIDTH - 20
-        WINDOW_HEIGHT = WINDOW_HEIGHT - 100
+        WINDOW_HEIGHT = WINDOW_HEIGHT - 85
         self.scrolled_window.set_size_request(WINDOW_WIDTH, WINDOW_HEIGHT)
 
         win.changeable_content.pack_start(self.scrolled_window, False, False, 0)
@@ -102,24 +87,26 @@ class Default_Intro():
     # This is to update the introdction text, so that if the settings are modified and then we go back to the
     # intro screen, the latest information is shown
     def update_intro(self):
-        for x in range(len(custom_info) - 1):
+        for x in range(len(custom_info)):
+
             config_file.read_from_file(custom_info[x])
             label_info = str(config_file.read_from_file(custom_info[x]))
             if len(label_info) > 13:
                 label_info = label_info[:13] + "..."
             self.labels[x].set_text(label_info)
 
-        text = ''
-        # Check for internet
-        constants.has_internet = is_internet()
-        constants.proxy_enabled = set_proxy.is_enabled()
-        if constants.has_internet:
-            text = 'Connected'
-        elif constants.proxy_enabled:
-            text = "Proxy enabled"
-        else:
-            text = 'Not connected'
-        self.labels[len(custom_info) - 1].set_text(text)
+            if custom_info[x] == 'Wifi':
+                text = ''
+                # Check for internet
+                constants.has_internet = is_internet()
+                constants.proxy_enabled = set_proxy.is_enabled()
+                if constants.has_internet:
+                    text = 'Connected'
+                elif constants.proxy_enabled:
+                    text = "Proxy enabled"
+                else:
+                    text = 'Not connected'
+                self.labels[x].set_text(text)
 
     # Takes you back to the introduction screen (on pressing prev button)
     def on_prev(self, arg2=None, arg3=None):
