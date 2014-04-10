@@ -26,7 +26,7 @@ from kano.network import is_internet
 names = ["Keyboard", "Mouse", "Audio", "Display", "Email", "Wifi", "Overclocking"]
 custom_info = ["Keyboard-country-human", "Mouse", "Audio", "Display-mode", "Email", "Wifi", "Overclocking"]
 win = None
-NUMBER_OF_ROWS = 3
+NUMBER_OF_ROWS = 4
 NUMBER_OF_COLUMNS = 2
 ROW_PADDING = 5
 COLUMN_PADDING = 30
