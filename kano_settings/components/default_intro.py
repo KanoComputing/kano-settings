@@ -66,13 +66,17 @@ class Default_Intro():
         self.update_intro()
 
         # Attach to table
-        self.table.attach(buttons[0], 0, 1, 0, 1, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
-        self.table.attach(buttons[1], 1, 2, 0, 1, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
-        self.table.attach(buttons[2], 0, 1, 1, 2, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
-        self.table.attach(buttons[3], 1, 2, 1, 2, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
-        self.table.attach(buttons[4], 0, 1, 2, 3, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
-        self.table.attach(buttons[5], 1, 2, 2, 3, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
-        self.table.attach(buttons[6], 0, 1, 3, 4, Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
+        index = 0
+        row = 0
+        while index < len(names):
+            for j in range(0, NUMBER_OF_COLUMNS):
+                if index < len(names):
+                    self.table.attach(buttons[index], j, j + 1, row, row + 1,
+                                      Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
+                    index += 1
+                else:
+                    break
+            row += 1
 
         # for scroll bar
         self.scrolled_window = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
