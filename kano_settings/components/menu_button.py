@@ -22,8 +22,6 @@ class Menu_button():
         self.title.get_style_context().add_class("menu_intro_label")
         self.title.set_alignment(xalign=0, yalign=0.7)
 
-        #info = config_file.read_from_file(custom_info[x])
-
         # Replace some of the info displayed with whitespace so it fits
         if description:
             if len(description) >= 12:

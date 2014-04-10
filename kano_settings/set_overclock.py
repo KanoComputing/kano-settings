@@ -49,33 +49,61 @@ def activate(_win, box, update):
     # None radio button
     none_button = Gtk.RadioButton.new_with_label_from_widget(None, "None")
     none_button.connect("toggled", on_button_toggled)
+    none_button.get_style_context().add_class("overclocking_button")
     none_button.set_can_focus(True)
+    none_info = Gtk.Label("700MHZ ARM, 250MHZ CORE, 400MHZ SDRAM, 0 OVERVOLT")
+    none_info.get_style_context().add_class("overclocking_info")
+
+    none_box = Gtk.Box()
+    none_box.pack_start(none_button, False, False, 0)
+    none_box.pack_start(none_info, False, False, 0)
 
     # Modest radio button
     modest_button = Gtk.RadioButton.new_from_widget(none_button)
     modest_button.set_label("Modest")
     modest_button.connect("toggled", on_button_toggled)
+    modest_button.get_style_context().add_class("overclocking_button")
     modest_button.set_can_focus(False)
+    modest_info = Gtk.Label("800MHZ ARM, 300MHZ CORE, 400MHZ SDRAM, 0 OVERVOLT")
+    modest_info.get_style_context().add_class("overclocking_info")
+
+    modest_box = Gtk.Box()
+    modest_box.pack_start(modest_button, False, False, 0)
+    modest_box.pack_start(modest_info, False, False, 0)
 
     # Medium radio button
     medium_button = Gtk.RadioButton.new_from_widget(none_button)
     medium_button.set_label("Medium")
     medium_button.connect("toggled", on_button_toggled)
+    medium_button.get_style_context().add_class("overclocking_button")
     medium_button.set_can_focus(False)
+    medium_info = Gtk.Label("900MHZ ARM, 333MHZ CORE, 450MHZ SDRAM, 2 OVERVOLT")
+    medium_info.get_style_context().add_class("overclocking_info")
+
+    medium_box = Gtk.Box()
+    medium_box.pack_start(medium_button, False, False, 0)
+    medium_box.pack_start(medium_info, False, False, 0)
 
     # High radio button
     high_button = Gtk.RadioButton.new_from_widget(none_button)
     high_button.set_label("High")
     high_button.connect("toggled", on_button_toggled)
+    high_button.get_style_context().add_class("overclocking_button")
     high_button.set_can_focus(False)
+    high_info = Gtk.Label("950MHZ ARM, 450MHZ CORE, 450MHZ SDRAM, 6 OVERVOLT")
+    high_info.get_style_context().add_class("overclocking_info")
 
-    radio_button_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-    radio_button_container.pack_start(none_button, False, False, 10)
-    radio_button_container.pack_start(modest_button, False, False, 10)
-    radio_button_container.pack_start(medium_button, False, False, 10)
-    radio_button_container.pack_start(high_button, False, False, 10)
+    high_box = Gtk.Box()
+    high_box.pack_start(high_button, False, False, 0)
+    high_box.pack_start(high_info, False, False, 0)
 
-    valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
+    radio_button_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+    radio_button_container.pack_start(none_box, False, False, 5)
+    radio_button_container.pack_start(modest_box, False, False, 5)
+    radio_button_container.pack_start(medium_box, False, False, 5)
+    radio_button_container.pack_start(high_box, False, False, 5)
+
+    valign = Gtk.Alignment(xalign=0.5, yalign=0.5, xscale=0, yscale=0)
     valign.add(radio_button_container)
     settings.box.pack_start(valign, False, False, 0)
 
