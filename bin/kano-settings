@@ -63,7 +63,7 @@ class MainWindow(Gtk.Window):
         self.changeable_content.props.halign = Gtk.Align.CENTER
 
         self.top_bar = top_bar.Top_bar(WINDOW_WIDTH)
-        self.top_bar.close_button.connect("clicked", close_window)
+        self.top_bar.close_button.connect("clicked", first_run.close_window)
 
         # Check for internet
         constants.has_internet = is_internet()
@@ -115,34 +115,10 @@ def main():
     styleContext.add_provider_for_screen(screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
     # Create windown
     win = MainWindow()
-    # Link delete event
-    win.connect("delete-event", close_window)
     # Display window
     win.show_all()
     # start the GTK+ processing loop
     Gtk.main()
-
-
-# On closing window, will alert if any of the listed booleans are True
-def close_window(event="delete-event", button=win):
-
-    if constants.need_reboot:
-        # Bring in message dialog box
-        dialog = Gtk.MessageDialog(
-            button, 0, Gtk.MessageType.INFO,
-            Gtk.ButtonsType.OK, "So you know..."
-        )
-        dialog.format_secondary_text("..you will need to reboot to see all your changes")
-        response = dialog.run()
-
-        if response == Gtk.ResponseType.OK:
-            dialog.destroy()
-            Gtk.main_quit()
-            return
-        else:
-            dialog.destroy()
-    else:
-        Gtk.main_quit()
 
 
 if __name__ == "__main__":
