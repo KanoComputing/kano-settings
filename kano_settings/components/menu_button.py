@@ -31,7 +31,7 @@ class Menu_button():
 
         self.description = Gtk.Label(description)
         self.description.get_style_context().add_class("menu_custom_label")
-        self.description.set_size_request(120, 10)
+        self.description.set_size_request(130, 10)
         self.description.set_alignment(xalign=0, yalign=0.3)
 
         self.button = Gtk.Button()
