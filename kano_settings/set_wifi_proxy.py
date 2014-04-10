@@ -48,7 +48,8 @@ def generate_wifi_button():
 
 def generate_proxy_button():
     to_proxy_button = Gtk.EventBox()
-    to_proxy_label = Gtk.Label("Proxy")
+    # Very hacky way to centre the Proxy button - put spaces in the label
+    to_proxy_label = Gtk.Label("Proxy  ")
     to_proxy_label.get_style_context().add_class("orange")
     to_proxy_button.add(to_proxy_label)
     to_proxy_button.connect("button_press_event", to_proxy)

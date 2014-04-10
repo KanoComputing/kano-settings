@@ -43,17 +43,18 @@ def activate(_win, _box, _update, proxy_button, disable_proxy=None):
 
     internet_status = Gtk.Label()
     internet_status_style = internet_status.get_style_context()
+    internet_status.set_alignment(xalign=1, yalign=0.5)
 
     internet_action = Gtk.Label()
     internet_action_style = internet_action.get_style_context()
     internet_status_style.add_class("internet_status_top")
     internet_action_style.add_class("internet_status_bottom")
+    internet_action.set_alignment(xalign=1, yalign=0.5)
 
     status_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
     status_box.props.valign = Gtk.Align.CENTER
 
     configure_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-    configure_container.props.halign = Gtk.Align.CENTER
 
     container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     container.pack_start(status_box, False, False, 2)
@@ -102,7 +103,8 @@ def activate(_win, _box, _update, proxy_button, disable_proxy=None):
             divider_label = Gtk.Label("|")
             configure_container.pack_start(divider_label, False, False, 3)
 
-        configure_container.pack_start(proxy_button, False, False, 0)
+        configure_container.pack_end(proxy_button, False, False, 0)
+
         # Send user email through Google doc
         send_email()
 
