@@ -17,6 +17,7 @@ import kano_settings.set_audio as set_audio
 import kano_settings.set_display as set_display
 import kano_settings.set_wifi_proxy as set_wifi_proxy
 import kano_settings.config_file as config_file
+import kano_settings.components.cursor as cursor
 
 win = None
 MAX_STATE = 7
@@ -37,6 +38,9 @@ class First_Run():
             return
 
         self.on_next()
+
+        # Change cursor to arrow
+        cursor.arrow_cursor(None, None, win)
 
     # When clicking previous arrow on first run through
     def on_prev(self, widget=None, arg2=None):

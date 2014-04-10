@@ -24,6 +24,7 @@ import kano_settings.components.apply_changes as apply_changes
 import kano_settings.constants as constants
 import kano_settings.components.first_run as first_run
 import kano_settings.components.default_intro as default_intro
+import kano_settings.components.cursor as cursor
 from kano.network import is_internet
 
 win = None
@@ -91,6 +92,11 @@ class MainWindow(Gtk.Window):
             self.top_bar.next_button.connect("button_press_event", self.run_through.on_next)
             self.top_bar.disable_prev()
             self.top_bar.next_button.set_image(self.top_bar.dark_next_arrow)
+
+        self.update.button.connect('enter-notify-event',
+                                   cursor.hand_cursor, self)
+        self.update.button.connect('leave-notify-event',
+                                   cursor.arrow_cursor, self)
 
         self.grid.attach(self.top_bar.background, 0, 0, 1, 1)
         self.grid.attach(self.changeable_content, 0, 2, 1, 1)

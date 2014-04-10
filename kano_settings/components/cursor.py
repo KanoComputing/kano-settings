@@ -12,13 +12,13 @@ from gi.repository import Gdk
 
 
 # win is passed through as an argument
-def hand_cursor(button, event, data):
+def hand_cursor(button, event, win):
     # Change the cursor to hour Glass
     cursor = Gdk.Cursor.new(Gdk.CursorType.HAND1)
-    data[0].get_root_window().set_cursor(cursor)
+    win.get_root_window().set_cursor(cursor)
 
 
-def arrow_cursor(button, event, data):
+def arrow_cursor(button, event, win):
     # Set the cursor to normal Arrow
     cursor = Gdk.Cursor.new(Gdk.CursorType.ARROW)
-    data[0].get_root_window().set_cursor(cursor)
+    win.get_root_window().set_cursor(cursor)

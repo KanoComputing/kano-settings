@@ -58,9 +58,9 @@ class Default_Intro():
             buttons.append(self.item.button)
 
             self.item.button.connect('enter-notify-event',
-                                     cursor.hand_cursor, [win])
+                                     cursor.hand_cursor, win)
             self.item.button.connect('leave-notify-event',
-                                     cursor.arrow_cursor, [win])
+                                     cursor.arrow_cursor, win)
 
         # Fill the tabs with the current information
         self.update_intro()
@@ -168,7 +168,7 @@ class Default_Intro():
         win.show_all()
 
         # Change cursor to arrow
-        cursor.arrow_cursor(None, None, [win])
+        cursor.arrow_cursor(None, None, win)
 
     # This updates the current level.
     def update(self, widget, arg2=None):
@@ -179,6 +179,9 @@ class Default_Intro():
 
         # Go back to intro screen
         self.on_prev()
+
+        # Change cursor to arrow
+        cursor.arrow_cursor(None, None, win)
 
     def state_to_widget(self, x):
         return {
