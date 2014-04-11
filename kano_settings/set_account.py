@@ -10,6 +10,7 @@ from gi.repository import Gtk
 import os
 import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
+from kano.utils import get_user_unsudoed
 
 win = None
 update = None
@@ -107,7 +108,8 @@ def remove_account(event=None, button=None):
     dialog.format_secondary_text("Are you sure you want to delete current user?")
     response = dialog.run()
     if response == Gtk.ResponseType.OK:
-        os.system("sudo kano-init deleteuser")
+        cmd = 'sudo kano-init deleteuser %s' % (get_user_unsudoed())
+        os.system(cmd)
     dialog.destroy()
 
 
