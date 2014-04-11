@@ -212,10 +212,10 @@ GtkLabel{
     font-weight:bold;
     margin:10px;
 }
-.overclocking_button GtkLabel {
+.bold_toggle GtkLabel {
     font: Bariol Bold 13;
 }
-.overclocking_info {
+.normal_label {
     font: Bariol 13;
     color: @subheading_color;
 }
