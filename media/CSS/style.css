@@ -48,13 +48,20 @@ GtkButton {
     border-color: transparent;
 }
 
-GtkEventBox {
+/*GtkEventBox {
     background:transparent;
-    border-style: none; /* Remove grey border on outside */
-    border-width:0px;
+    border-style: none;*/ /* Remove grey border on outside */
+    /*border-width:0px;
     border-color: transparent;
     border-radius: 3px;
 }
+GtkEventBox:hover {
+    background:#ff00ff;
+    border-style: solid;*/ /* Remove grey border on outside */
+    /*border-width:0px;
+    border-color: #ffff00;
+    border-radius: 3px;
+}*/
 
 GtkComboBox {
     /* font effect arrow size */
@@ -100,6 +107,12 @@ GtkEntry:insensitive {
 }
 
 GtkImage {
+    border-style:none;
+    background: transparent;
+}
+
+GtkImage:hover {
+    border-style: none;
     background: transparent;
 }
 
@@ -212,6 +225,34 @@ GtkLabel{
     font-weight:bold;
     margin:10px;
 }
+
+/* Wallpaper icons */
+/* wallpaper_box is the button that shows the wallpaper teh user can choose */
+.wallpaper_box {
+    border-style: solid;
+    border-width: 3px;
+    border-radius: 10px;
+    border-color: transparent;
+}
+.wallpaper_box:hover {
+    background: @button_color;
+    border-style: solid;
+    border-width: 3px;
+    border-radius: 10px;
+    border-color: @button_color;
+}
+/* grey_box does not contain a wallpaper but will have the option for the user to add a custom wallpaper */
+.grey_box {
+    background: @inactive_border;
+    border-radius:10px;
+}
+.grey_box:hover {
+    border-color: @active_border;
+    border-style: solid;
+    border-width: 3px;
+    border-radius:10px;
+}
+/* Styling used on labels in set_overclock and set_mouse */
 .bold_toggle GtkLabel {
     font: Bariol Bold 13;
 }
@@ -276,11 +317,11 @@ GtkLabel{
 }
 
 .scrollbar.button,
-.scrollbar.button:active,
-.scrollbar.button:active:hover,
+.scrollbar.button:active
+/*.scrollbar.button:active:hover,
 .scrollbar.button:insensitive,
 .scrollbar.button:hover:backdrop,
-.scrollbar.button:active:hover:backdrop {
+.scrollbar.button:active:hover:backdrop*/ {
     border-style: none;
     border-image: none;
     border-radius: 0;
@@ -288,12 +329,12 @@ GtkLabel{
     background-color: transparent;
 }
 
-.scrollbar.button:active,
-.scrollbar.button:active:hover {
+.scrollbar.button:active
+/*.scrollbar.button:active:hover*/ {
     background-color: mix(@scrollbar_slider, @scrollbar_trough, 0.8);
 }
 
-.scrollbar.button.top:hover {
+/*.scrollbar.button.top:hover {
     box-shadow: 0 -1 inset mix(@scrollbar_slider, @scrollbar_trough, 0.8);
 }
 
@@ -315,14 +356,14 @@ GtkLabel{
 .scrollbar.button.left:hover:backdrop {
     box-shadow: none;
 }
-
+*/
 .scrollbar.button {
     color: @scrollbar_slider;
 }
 
-.scrollbar.button:hover {
+/*.scrollbar.button:hover {
     color: @scrollbar_slider_prelight;
-}
+}*/
 
 .scrollbar.button:insensitive {
     color: mix(@scrollbar_slider, @scrollbar_trough, 0.6);
