@@ -17,14 +17,15 @@ import kano_settings.set_display as set_display
 import kano_settings.set_wifi_proxy as set_wifi_proxy
 import kano_settings.set_proxy as set_proxy
 import kano_settings.set_overclock as set_overclock
+import kano_settings.set_account as set_account
 import kano_settings.config_file as config_file
 import kano_settings.components.menu_button as menu_button
 import kano_settings.components.cursor as cursor
 import kano_settings.constants as constants
 from kano.network import is_internet
 
-names = ["Keyboard", "Mouse", "Audio", "Display", "Email", "Wifi", "Overclocking"]
-custom_info = ["Keyboard-country-human", "Mouse", "Audio", "Display-mode", "Email", "Wifi", "Overclocking"]
+names = ["Keyboard", "Mouse", "Audio", "Display", "Email", "Wifi", "Overclocking", "Account"]
+custom_info = ["Keyboard-country-human", "Mouse", "Audio", "Display-mode", "Email", "Wifi", "Overclocking", "Account"]
 win = None
 NUMBER_OF_ROWS = 4
 NUMBER_OF_COLUMNS = 2
@@ -196,4 +197,5 @@ class Default_Intro():
             4: set_email,
             5: set_wifi_proxy,
             6: set_overclock,
+            7: set_account,
         }[x]
