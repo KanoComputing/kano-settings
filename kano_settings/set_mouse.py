@@ -88,7 +88,7 @@ def activate(_win, box, update):
     radio_button_container.pack_start(fast_box, False, False, 5)
 
     valign = Gtk.Alignment(xalign=0.5, yalign=0.5, xscale=0, yscale=0)
-    valign.set_padding(100, 0, 0, 0)
+    valign.set_padding(20, 0, 0, 0)
     valign.add(radio_button_container)
     settings.box.pack_start(valign, False, False, 0)
 
