@@ -27,7 +27,6 @@ from kano.network import is_internet
 names = ["Keyboard", "Mouse", "Audio", "Display", "Email", "Wifi", "Overclocking", "Account"]
 custom_info = ["Keyboard-country-human", "Mouse", "Audio", "Display-mode", "Email", "Wifi", "Overclocking", "Account"]
 win = None
-NUMBER_OF_ROWS = 4
 NUMBER_OF_COLUMNS = 2
 
 
@@ -41,8 +40,6 @@ class Default_Intro():
 
         for i in win.changeable_content.get_children():
             win.changeable_content.remove(i)
-
-        self.table = Gtk.Table(NUMBER_OF_ROWS, NUMBER_OF_COLUMNS, True)
 
         buttons = []
         self.labels = []
@@ -67,6 +64,12 @@ class Default_Intro():
 
         # Fill the tabs with the current information
         self.update_intro()
+
+        # Create table
+        numRows = len(names) / NUMBER_OF_COLUMNS
+        if len(names) % NUMBER_OF_COLUMNS != 0:  # Odd number of elements
+            numRows += 1
+        self.table = Gtk.Table(numRows, NUMBER_OF_COLUMNS, True)
 
         # Attach to table
         index = 0
