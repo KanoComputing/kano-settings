@@ -12,7 +12,7 @@ import kano_settings.constants as constants
 
 
 class Menu_button():
-    def __init__(self, name, description=''):
+    def __init__(self, name, description='', window_width=400):
 
         # Contains the info about the level and the image
         self.container = Gtk.Grid()
@@ -47,6 +47,6 @@ class Menu_button():
         self.button.add(self.container)
 
         self.button.height = 100
-        self.button.width = 150
+        self.button.width = (window_width - 30) / 2
 
         self.button.set_size_request(self.button.width, self.button.height)

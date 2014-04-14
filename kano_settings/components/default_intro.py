@@ -29,8 +29,6 @@ custom_info = ["Keyboard-country-human", "Mouse", "Audio", "Display-mode", "Emai
 win = None
 NUMBER_OF_ROWS = 4
 NUMBER_OF_COLUMNS = 2
-ROW_PADDING = 5
-COLUMN_PADDING = 30
 
 
 class Default_Intro():
@@ -49,9 +47,13 @@ class Default_Intro():
         buttons = []
         self.labels = []
 
+        # The window width and height is reduced for the scrolled window and menu buttons (to account for the scrollbar)
+        WINDOW_WIDTH = WINDOW_WIDTH - 20
+        WINDOW_HEIGHT = WINDOW_HEIGHT - 101
+
         # names at top of file
         for x in range(len(names)):
-            self.item = menu_button.Menu_button(names[x], '')
+            self.item = menu_button.Menu_button(names[x], '', WINDOW_WIDTH)
             self.labels.append(self.item.description)
             # Update the state of the button, so we know which button has been clicked on.
             self.item.button.state = x
@@ -73,7 +75,9 @@ class Default_Intro():
             for j in range(0, NUMBER_OF_COLUMNS):
                 if index < len(names):
                     self.table.attach(buttons[index], j, j + 1, row, row + 1,
-                                      Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, COLUMN_PADDING, ROW_PADDING)
+                                      Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL, 0, 0)
+                    if row % 2:
+                        buttons[index].get_style_context().add_class('appgrid_grey')
                     index += 1
                 else:
                     break
@@ -82,9 +86,6 @@ class Default_Intro():
         # for scroll bar
         self.scrolled_window = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
         self.scrolled_window.add_with_viewport(self.table)
-
-        WINDOW_WIDTH = WINDOW_WIDTH - 20
-        WINDOW_HEIGHT = WINDOW_HEIGHT - 85
         self.scrolled_window.set_size_request(WINDOW_WIDTH, WINDOW_HEIGHT)
 
         win.changeable_content.pack_start(self.scrolled_window, False, False, 0)

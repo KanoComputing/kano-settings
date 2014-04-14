@@ -18,6 +18,7 @@
 @define-color active_writing #323232;
 @define-color active_border #ababab;
 @define-color hover_color #eeeeee;
+@define-color top_bar_color #eeeeee;
 
 /* All */
 * {
@@ -163,11 +164,16 @@ GtkLabel{
 
 /* The bar at the top that mimics the window bar */
 .top_bar_container {
-    background: #eeeeee;
+    background: @top_bar_color;
 }
 .top_bar_button {
-    background: #eeeeee;
+    background: @top_bar_color;
 }
+/* Used for the stripy grid */
+.appgrid_grey {
+    background: @top_bar_color;
+}
+
 /* The title of the current level*/
 .title {
     color: @title_color;
