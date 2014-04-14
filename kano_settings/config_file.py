@@ -158,7 +158,7 @@ def set_defaults(setting_name):
     elif setting_name == "Overclocking":
         setting_prop = "High"
     elif setting_name == "Mouse":
-        setting_prop = "Slow"
+        setting_prop = "Normal"
     else:
         setting_prop = ""
 
