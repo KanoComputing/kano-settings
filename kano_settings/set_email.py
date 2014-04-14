@@ -86,11 +86,11 @@ def activate(_win, changeable_content, _update):
     email_entry.attach(entry2, 0, 1, 1, 1)
     email_entry.attach(success_icon, 1, 0, 1, 1)
 
-    valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
+    align = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
     padding_above = (settings.height - EMAIL_ENTRY_HEIGHT) / 2
-    valign.set_padding(padding_above, 0, 47, 0)
-    valign.add(email_entry)
-    settings.box.pack_start(valign, False, False, 0)
+    align.set_padding(padding_above, 0, 47, 0)
+    align.add(email_entry)
+    settings.box.pack_start(align, False, False, 0)
 
     changeable_content.pack_start(title.container, False, False, 0)
     changeable_content.pack_start(settings.box, False, False, 0)

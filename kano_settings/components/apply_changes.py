@@ -15,7 +15,7 @@ class Apply():
     def __init__(self, name=""):
 
         # Create button
-        self.button = Gtk.EventBox()
+        self.button = Gtk.Button()
         self.text = Gtk.Label(name)
         self.text.get_style_context().add_class("apply_changes_text")
 
