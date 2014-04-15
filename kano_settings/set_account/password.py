@@ -84,9 +84,6 @@ def apply_changes(button=None):
     if text2 == text3:
 
         out, e, cmdvalue = utils.run_cmd("echo $SUDO_USER:%s | sudo chpasswd" % (text2))
-        print "out = " + str(out)
-        print "e = " + str(e)
-        print "cmdvalue = " + str(cmdvalue)
 
         # if password is not changed
         if cmdvalue != 0:
