@@ -10,7 +10,7 @@
 from gi.repository import Gtk
 import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
-import os
+import kano.utils as utils
 #from kano.utils import get_user_unsudoed
 
 win = None
@@ -83,10 +83,10 @@ def apply_changes(button=None):
         # Put correct bash command below
         ###########################################
 
-        change_password = os.system("echo '$SUDO_USER:'%s | sudo chpasswd" % (text2))
+        out, e, cmdvalue = utils.run_cmd("echo $USER:%s | sudo chpasswd" % (text2))
 
-        if change_password != 0:
-
+        # if password is not changed
+        if cmdvalue != 0:
             dialog = Gtk.MessageDialog(win, 0, Gtk.MessageType.ERROR,
                                        Gtk.ButtonsType.OK_CANCEL, "Could not change password")
             dialog.format_secondary_text("Either your old password is incorrect, or your new password is not long enough.  Try again.")
@@ -99,6 +99,7 @@ def apply_changes(button=None):
                 returnvalue = 0
 
             dialog.destroy()
+            clear_text(entry1, entry2, entry3)
             return returnvalue
 
     else:

@@ -15,7 +15,7 @@ import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_mouse as set_mouse
 import kano_settings.set_audio as set_audio
 import kano_settings.set_display as set_display
-import kano_settings.set_wifi_proxy as set_wifi_proxy
+import kano_settings.set_wifi.home as set_wifi_proxy
 import kano_settings.config_file as config_file
 import kano_settings.components.cursor as cursor
 
@@ -140,12 +140,11 @@ def close_window(event="delete-event", button=win):
         response = dialog.run()
 
         if response == Gtk.ResponseType.OK:
-            dialog.destroy()
-            Gtk.main_quit()
-            return
-        else:
-            dialog.destroy()
-            Gtk.main_quit()
-            return
+            # This makes the dislog box wait for the OK to be clicked before progressing
+            print "OK clicked"
+
+        dialog.destroy()
+        Gtk.main_quit()
+
     else:
         Gtk.main_quit()
