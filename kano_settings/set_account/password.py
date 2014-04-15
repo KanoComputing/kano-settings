@@ -73,17 +73,20 @@ def activate(_win, changeable_content, _update):
 def apply_changes(button=None):
     global win
 
+    #text1 = entry1.get_text()
     text2 = entry2.get_text()
     text3 = entry3.get_text()
 
     returnvalue = 0
 
+    # Verify the current password in the first text box
+
     if text2 == text3:
 
-        # Put correct bash command below
-        ###########################################
-
-        out, e, cmdvalue = utils.run_cmd("echo $USER:%s | sudo chpasswd" % (text2))
+        out, e, cmdvalue = utils.run_cmd("echo $SUDO_USER:%s | sudo chpasswd" % (text2))
+        print "out = " + str(out)
+        print "e = " + str(e)
+        print "cmdvalue = " + str(cmdvalue)
 
         # if password is not changed
         if cmdvalue != 0:
