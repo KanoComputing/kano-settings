@@ -12,14 +12,13 @@ import os
 import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 from kano.utils import get_user_unsudoed
-import password
 
 win = None
 update = None
 box = None
 
 
-def activate(_win, changeable_content, _update):
+def activate(_win, changeable_content, _update, pass_button):
     global win, update, box
 
     win = _win
@@ -29,16 +28,6 @@ def activate(_win, changeable_content, _update):
 
     # Settings container
     settings = fixed_size_box.Fixed()
-
-    # Change password button
-    pass_button = Gtk.Button()
-    pass_button.get_style_context().add_class("apply_changes_button")
-    pass_button.get_style_context().add_class("green")
-    pass_label = Gtk.Label("CHANGE PASSWORD")
-    pass_label.get_style_context().add_class("apply_changes_text")
-    pass_button.add(pass_label)
-    pass_button.set_size_request(200, 44)
-    pass_button.connect("button_press_event", set_password)
 
     pass_box = Gtk.Box()
     pass_box.add(pass_button)
@@ -85,16 +74,7 @@ def activate(_win, changeable_content, _update):
     changeable_content.pack_start(title.container, False, False, 0)
     changeable_content.pack_start(settings.box, False, False, 0)
 
-
-def set_password(event=None, button=None):
-    global update
-    # TODO: launch password screen
-    #pass
-    # Remove element in the dynamic box
-    for i in box.get_children():
-        box.remove(i)
-
-    password.activate(win, box, update)
+    win.show_all()
 
 
 def add_account(event=None, button=None):
@@ -124,4 +104,4 @@ def remove_account(event=None, button=None):
 
 def apply_changes(button):
 
-    return 1
+    return

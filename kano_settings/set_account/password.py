@@ -67,24 +67,25 @@ def activate(_win, changeable_content, _update):
     changeable_content.pack_start(settings.box, False, False, 0)
     changeable_content.pack_start(_update.box, False, False, 10)
 
-    _win.show_all()
+    win.show_all()
 
 
 def apply_changes(button=None):
     global win
-    print "Clicked apply changes"
 
     text2 = entry2.get_text()
     text3 = entry3.get_text()
+
+    returnvalue = 0
 
     if text2 == text3:
 
         # Put correct bash command below
         ###########################################
 
-        returnvalue = os.system("echo '$SUDO_USER:'%s | sudo chpasswd" % (text2))
+        change_password = os.system("echo '$SUDO_USER:'%s | sudo chpasswd" % (text2))
 
-        if returnvalue != 0:
+        if change_password != 0:
 
             dialog = Gtk.MessageDialog(win, 0, Gtk.MessageType.ERROR,
                                        Gtk.ButtonsType.OK_CANCEL, "Could not change password")
@@ -92,11 +93,13 @@ def apply_changes(button=None):
             response = dialog.run()
             if response == Gtk.ResponseType.OK:
                 # do nothing
-                print "ok!"
-            elif response == Gtk.ResponseTYpe.CANCEL:
-                # go back to accounts menu
-                print "cancel!"
+                # Returning -1 means we don't use the default_intro.py flow
+                returnvalue = -1
+            elif response == Gtk.ResponseType.CANCEL:
+                returnvalue = 0
+
             dialog.destroy()
+            return returnvalue
 
     else:
         dialog = Gtk.MessageDialog(win, 0, Gtk.MessageType.ERROR,
@@ -105,8 +108,21 @@ def apply_changes(button=None):
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
             # do nothing
-            print "ok!"
+            returnvalue = -1
+        elif response == Gtk.ResponseType.CANCEL:
+            dialog.destroy()
+            # Go back to the accounts screen
+            returnvalue = 0
+
         dialog.destroy()
+        clear_text(entry1, entry2, entry3)
+        return returnvalue
+
+
+def clear_text(entry1, entry2, entry3):
+    entry1.set_text("")
+    entry2.set_text("")
+    entry3.set_text("")
 
 
 def enable_button(widget=None, event=None, apply_changes=None):

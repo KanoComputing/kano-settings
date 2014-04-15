@@ -8,24 +8,71 @@
 # Controls the communication between the account and password screen
 
 
+from gi.repository import Gtk
 import kano_settings.set_account.account as account
 import kano_settings.set_account.password as password
 
 win = None
 box = None
 update = None
-to_wifi_button = None
-to_proxy_button = None
-disable_proxy = None
-in_proxy = False
+in_password = False
 
 
 def activate(_win, changeable_content, _update):
-    global box
+    global box, win, update, in_password
 
+    win = _win
     box = changeable_content
-    account.activate(_win, changeable_content, _update)
+    update = _update
+    pass_button = password_button()
+    account.activate(_win, changeable_content, _update, pass_button)
+    set_in_password(False)
+
+
+def to_account(arg1=None, arg2=None):
+    global win, box, update, in_password
+
+    remove_children(box)
+    pass_button = password_button()
+    account.activate(win, box, update, pass_button)
+    set_in_password(False)
+
+
+def to_password(arg1=None, arg2=None):
+    global win, box, update, in_password
+
+    remove_children(box)
+    password.activate(win, box, update)
+    set_in_password(True)
+
+
+def password_button():
+    pass_button = Gtk.Button()
+    pass_button.get_style_context().add_class("apply_changes_button")
+    pass_button.get_style_context().add_class("green")
+    pass_label = Gtk.Label("CHANGE PASSWORD")
+    pass_label.get_style_context().add_class("apply_changes_text")
+    pass_button.add(pass_label)
+    pass_button.set_size_request(200, 44)
+    pass_button.connect("button_press_event", to_password)
+    return pass_button
+
+
+def remove_children(box):
+    for i in box.get_children():
+        box.remove(i)
 
 
 def apply_changes(widget):
-    password.apply_changes(widget)
+    return password.apply_changes(widget)
+
+
+def set_in_password(boolean):
+    global in_password
+
+    print "in_password status changed to " + str(boolean)
+    in_password = boolean
+
+
+def get_in_password():
+    return in_password

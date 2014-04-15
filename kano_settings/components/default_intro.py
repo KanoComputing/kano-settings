@@ -120,12 +120,19 @@ class Default_Intro():
     # Takes you back to the introduction screen (on pressing prev button)
     def on_prev(self, arg2=None, arg3=None):
         global win
+
         for i in win.changeable_content.get_children():
             win.changeable_content.remove(i)
 
-        # If in set_proxy
+        # If in set_wifi/proxy
         if set_wifi_proxy.in_proxy:
             set_wifi_proxy.to_wifi()
+            return
+
+        # If in set_accounts/password
+        print "set_account.in_password = " + str(set_account.in_password)
+        if set_account.in_password:
+            set_account.to_account()
             return
 
         self.update_intro()
@@ -183,6 +190,9 @@ class Default_Intro():
     def update(self, widget, arg2=None):
 
         returnValue = self.state_to_widget(win.state).apply_changes(widget)
+
+        # Disable the default flow is apply_changes returns -1
+        # This way, can allow files to communicate and decide where they go independently (e.g. set_wifi)
         if returnValue == -1:
             return
 
