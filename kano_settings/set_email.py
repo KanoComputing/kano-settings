@@ -75,12 +75,13 @@ def activate(_win, changeable_content, _update):
     entry2 = Gtk.Entry()
     entry2.set_sensitive(False)
     entry2.set_size_request(250, 44)
+    entry2.props.placeholder_text = "Verify your email"
 
     if current_email is not None:
         text = current_email.replace('\n', '')
         update_config()
 
-    entry1.props.placeholder_text = "Email"
+    entry1.props.placeholder_text = "Type your email"
     entry1.set_text(text)
     check_email(entry1, 1)
 

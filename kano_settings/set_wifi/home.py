@@ -114,4 +114,3 @@ def remove_children(box):
 
 def apply_changes(event=None, button=None):
     set_wifi.apply_changes()
-    return
