@@ -60,6 +60,8 @@ def activate(_win, changeable_content, _update):
 
     # Text entry
     text = ""
+
+    # Entry container
     email_entry = Gtk.Grid(column_homogeneous=False,
                            column_spacing=22,
                            row_spacing=22)

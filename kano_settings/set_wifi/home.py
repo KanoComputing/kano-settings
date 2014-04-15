@@ -1,14 +1,15 @@
 #!/usr/bin/env python
 
-# wifi_proxy_commenuicaton.py
+# home.py
 #
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
+# This controls the interaction between wifi and proxy setting screens
 
 from gi.repository import Gtk
-import kano_settings.set_proxy as set_proxy
-import kano_settings.set_wifi as set_wifi
+import kano_settings.set_wifi.proxy as set_proxy
+import kano_settings.set_wifi.wifi as set_wifi
 import kano_settings.constants as constants
 
 win = None
@@ -34,6 +35,7 @@ def activate(_win, _box, _update):
     set_wifi.activate(win, box, update, to_proxy_button, disable_proxy)
 
 
+# This button in the proxy setting screen that takes you to the wifi screen
 def generate_wifi_button():
     to_wifi_button = Gtk.EventBox()
     to_wifi_button.get_style_context().add_class("apply_changes_button")
@@ -46,6 +48,7 @@ def generate_wifi_button():
     return to_wifi_button
 
 
+# This is the orange button we see in the wifi settings that takes you to the proxy settings
 def generate_proxy_button():
     to_proxy_button = Gtk.EventBox()
     # Very hacky way to centre the Proxy button - put spaces in the label
@@ -56,6 +59,7 @@ def generate_proxy_button():
     return to_proxy_button
 
 
+# This is the orange button in the wifi setting screen that disables the proxy settings
 def generate_disable_proxy():
     disable_proxy_button = Gtk.EventBox()
     disable_proxy_label = Gtk.Label("Disable proxy")

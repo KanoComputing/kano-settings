@@ -14,10 +14,10 @@ import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_mouse as set_mouse
 import kano_settings.set_audio as set_audio
 import kano_settings.set_display as set_display
-import kano_settings.set_wifi_proxy as set_wifi_proxy
-import kano_settings.set_proxy as set_proxy
+import kano_settings.set_wifi.home as set_wifi_proxy
+import kano_settings.set_wifi.proxy as set_proxy
 import kano_settings.set_overclock as set_overclock
-import kano_settings.set_account as set_account
+import kano_settings.set_account.home as set_account
 import kano_settings.config_file as config_file
 import kano_settings.components.menu_button as menu_button
 import kano_settings.components.cursor as cursor

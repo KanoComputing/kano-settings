@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 #
-# set_account.py
+# account.py
 #
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
+# Controls the UI of the account setting
 
 from gi.repository import Gtk
 import os
 import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 from kano.utils import get_user_unsudoed
-import draft_password
+import password
 
 win = None
 update = None
@@ -86,12 +87,14 @@ def activate(_win, changeable_content, _update):
 
 
 def set_password(event=None, button=None):
+    global update
     # TODO: launch password screen
     #pass
     # Remove element in the dynamic box
     for i in box.get_children():
         box.remove(i)
-    draft_password.activate(win, box, update)
+
+    password.activate(win, box, update)
 
 
 def add_account(event=None, button=None):
