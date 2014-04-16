@@ -11,6 +11,7 @@ from gi.repository import Gtk
 import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano.utils as utils
+import pam
 #from kano.utils import get_user_unsudoed
 
 win = None
@@ -73,54 +74,53 @@ def activate(_win, changeable_content, _update):
 def apply_changes(button=None):
     global win
 
-    #text1 = entry1.get_text()
-    text2 = entry2.get_text()
-    text3 = entry3.get_text()
+    old_password = entry1.get_text()
+    new_password1 = entry2.get_text()
+    new_password2 = entry3.get_text()
+
+    # Verify the current password in the first text box
+    # Get current username
+    username, e, num = utils.run_cmd("echo $SUDO_USER")
+    # Remove trailing newline character
+    username = username.rstrip()
+
+    if not pam.authenticate(username, old_password):
+        return create_dialog(message1="Could not change password", message2="Your old password is incorrect!")
+
+    # If the two new passwords match
+    if new_password1 == new_password2:
+        out, e, cmdvalue = utils.run_cmd("echo $SUDO_USER:%s | sudo chpasswd" % (new_password1))
+        # if password is not changed
+        if cmdvalue != 0:
+            return create_dialog("Could not change password", "Your new password is not long enough or contains special characters.  Try again.")
+    else:
+        return create_dialog("Could not change password", "Your new passwords don't match!  Try again")
+
+
+def create_dialog(message1="Could not change password", message2=""):
+    global win
 
     returnvalue = 0
 
-    # Verify the current password in the first text box
-
-    if text2 == text3:
-
-        out, e, cmdvalue = utils.run_cmd("echo $SUDO_USER:%s | sudo chpasswd" % (text2))
-
-        # if password is not changed
-        if cmdvalue != 0:
-            dialog = Gtk.MessageDialog(win, 0, Gtk.MessageType.ERROR,
-                                       Gtk.ButtonsType.OK_CANCEL, "Could not change password")
-            dialog.format_secondary_text("Either your old password is incorrect, or your new password is not long enough.  Try again.")
-            response = dialog.run()
-            if response == Gtk.ResponseType.OK:
-                # do nothing
-                # Returning -1 means we don't use the default_intro.py flow
-                returnvalue = -1
-            elif response == Gtk.ResponseType.CANCEL:
-                returnvalue = 0
-
-            dialog.destroy()
-            clear_text(entry1, entry2, entry3)
-            return returnvalue
-
-    else:
-        dialog = Gtk.MessageDialog(win, 0, Gtk.MessageType.ERROR,
-                                   Gtk.ButtonsType.OK_CANCEL, "Could not change password")
-        dialog.format_secondary_text("Your new passwords don't match!  Try again")
-        response = dialog.run()
-        if response == Gtk.ResponseType.OK:
-            # do nothing
-            returnvalue = -1
-        elif response == Gtk.ResponseType.CANCEL:
-            dialog.destroy()
-            # Go back to the accounts screen
-            returnvalue = 0
-
+    dialog = Gtk.MessageDialog(win, 0, Gtk.MessageType.ERROR,
+                               Gtk.ButtonsType.OK_CANCEL, message1)
+    dialog.format_secondary_text(message2)
+    response = dialog.run()
+    if response == Gtk.ResponseType.OK:
+        # do nothing
+        returnvalue = -1
+    elif response == Gtk.ResponseType.CANCEL:
         dialog.destroy()
-        clear_text(entry1, entry2, entry3)
-        return returnvalue
+        # Go back to the accounts screen
+        returnvalue = 0
+
+    dialog.destroy()
+    clear_text()
+    return returnvalue
 
 
-def clear_text(entry1, entry2, entry3):
+def clear_text():
+    global entry1, entry2, entry3
     entry1.set_text("")
     entry2.set_text("")
     entry3.set_text("")
