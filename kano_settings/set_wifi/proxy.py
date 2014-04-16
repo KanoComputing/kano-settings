@@ -250,7 +250,7 @@ def apply_changes(button=None, arg2=None):
         update_config(proxyip, proxyport, proxy_type, username)
         constants.proxy_enabled = True
 
-    else:
+    elif is_enabled():
         disable()
         constants.proxy_enabled = is_enabled()
 
