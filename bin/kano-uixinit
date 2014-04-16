@@ -11,7 +11,7 @@
 #
 
 # Kano-settings tells us if the user has completed setting up the system
-completed=`cat .kano-settings | awk -F':' '{print $2}'`
+completed=`head -n 1 ~/.kano-settings | awk -F':' '{print $2}'`
 if [ "$completed" -eq "0" ]; then
    # First time we enter Kanux UI we want to go through kano-settings
    # No distracting desktop icons or launchbar, but we want the wallpaper
