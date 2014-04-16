@@ -14,19 +14,22 @@ case "$1" in
 
         # Create custom sudoers file
         echo "%sudo   ALL=(root) NOPASSWD: /usr/bin/kano-settings" > $TMP_FILE
+
         # The owner and group for the sudoers file must both be 0
         chown root:root $TMP_FILE
+
         # The file permissions must be set to 0440
         chmod 0440 $TMP_FILE
+
         # Move the file to the sudoers directory
         mv $TMP_FILE /etc/sudoers.d/
 
         # Provide a libc symbolic link for dante, as it uses a hardcoded libname
         ln -sfv /lib/arm-linux-gnueabihf/libc.so.6 /lib/arm-linux-gnueabihf/libc.so
 
-        # Run kano-settings on first boot by copying into autostart file
-        echo "@ks" >> $LXDE_AUTOSTART
-        echo "@startmouse" >> $LXDE_AUTOSTART
+        # Run kano-uixinit always. It integrates wether to start kano-settings alone,
+        # or all of the Kano UIX components.
+        echo "@kano-uixinit" > $LXDE_AUTOSTART
 
         ;;
 esac

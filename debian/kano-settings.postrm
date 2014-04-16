@@ -18,9 +18,8 @@ case "$1" in
         # Remove dante libc simbolic link
         rm -fv /lib/arm-linux-gnueabihf/libc.so
 
-        # Remove kano-settings from autostart file
-        sed -i "s/@ks//" $LXDE_AUTOSTART
-        sed -i "s/@startmouse//" $LXDE_AUTOSTART
+        # Remove kano-uixinit and replace it with lxpanel previous default
+        sed -i "s/@kano-uixinit/@lxpanel --profile LXDE/" $LXDE_AUTOSTART
         ;;
 esac
 
