@@ -1,5 +1,6 @@
 #!/bin/bash
-# kano-connect
+
+# kano-uixinit
 #
 # Copyright (C) 2014 Kano Computing Ltd.
 # License:   http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
@@ -15,14 +16,14 @@ completed=`head -n 1 ~/.kano-settings | awk -F':' '{print $2}'`
 if [ "$completed" -eq "0" ]; then
    # First time we enter Kanux UI we want to go through kano-settings
    # No distracting desktop icons or launchbar, but we want the wallpaper
-   kdesk -w
-   sudo kano-settings
+   /usr/bin/kdesk -w
+   sudo /usr/bin/kano-settings
 fi
 
 # We enter the Kano UIX interface after kano-settings.
 # It's not important if this stage has not been finalized
 # it will be restarted on next bootup or logoff/logon transition
-lxpanel --profile LXDE &
-kdesk &
+/usr/bin/lxpanel --profile LXDE &
+/usr/bin/kdesk &
 /usr/share/kano-vnc/startvnc &
-startmouse &
+/usr/bin/startmouse &
