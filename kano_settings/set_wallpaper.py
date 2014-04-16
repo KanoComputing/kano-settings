@@ -19,7 +19,7 @@ class Wallpaper():
     def __init__(self):
         NUMBER_OF_ROWS = 2
         NUMBER_OF_COLUMNS = 5
-        COLUMN_PADDING = 0
+        COLUMN_PADDING = 5
         ROW_PADDING = 0
         ICON_WIDTH = 90
         ICON_HEIGHT = 90
