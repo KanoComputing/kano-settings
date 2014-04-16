@@ -1,11 +1,10 @@
 bin/kano-settings /usr/bin
 bin/ks /usr/bin
 bin/startmouse /usr/bin
+bin/pam.py /usr/lib/python2.7/dist-packages/
 
 kano_settings/* /usr/lib/python2.7/dist-packages/kano_settings
 media/* /usr/share/kano-settings/media
 
 icon/Settings /usr/share/kano-extras/extras
 icon/kano-settings.png /usr/share/kano-extras/icons
-
-pam.py /usr/lib/python2.7/dist-packages/
