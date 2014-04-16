@@ -7,7 +7,7 @@
 #
 
 from gi.repository import Gtk, GdkPixbuf
-#import kano_settings.config_file as config_file
+import kano_settings.config_file as config_file
 import kano_settings.components.fixed_size_box as fixed_size_box
 import os
 
@@ -67,23 +67,14 @@ class Wallpaper():
 
     # Add class to wallpaper picture which displays border even when mouse is moved
     def select_wallpaper(self, widget=None, event=None, image_name=""):
-
-        print "self.get_selected() = " + str(self.get_selected())
-
         for x in self.images:
             style = self.images[x].get_style_context()
             style.remove_class("wallpaper_box_active")
             style.add_class("wallpaper_box")
-
         image_style = self.images[image_name].get_style_context()
         image_style.remove_class("wallpaper_box")
         image_style.add_class("wallpaper_box_active")
         self.set_selected(image_name)
-
-        print self.images[image_name]
-        print image_style.list_classes()
-
-        print "self.get_selected() = " + str(self.get_selected())
 
     def add_wallpaper(self, widget=None, event=None):
         print "grey_box"
@@ -91,7 +82,6 @@ class Wallpaper():
     # Get the current selected wallpaper
     # Handles global variable wallpaper_array
     def get_selected(self):
-
         for x in self.dict:
             if self.dict[x]:
                 return x
@@ -99,7 +89,6 @@ class Wallpaper():
     # Set the currents elected wallpaper
     # Handles global variable wallpaper_array
     def set_selected(self, image_name):
-
         for x in self.dict:
             self.dict[x] = False
 
@@ -136,8 +125,14 @@ class Wallpaper():
         # Refresh the wallpaper
         os.system('pkill kdesk && kdesk &')
         # TODO: can we use ksdek -w for previewing the wallpaper?
-
         return 0
+
+    def read_config(self):
+        return config_file.read_from_file("Wallpaper")
+
+    def update_config(self):
+        # Add new configurations to config file.
+        config_file.replace_setting("Wallpaper", self.get_selected())
 
 
 wallpaper = None
@@ -164,3 +159,4 @@ def apply_changes(button):
     global wallpaper
 
     wallpaper.change_wallpaper()
+    wallpaper.update_config()

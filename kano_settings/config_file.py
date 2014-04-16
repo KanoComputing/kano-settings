@@ -159,6 +159,8 @@ def set_defaults(setting_name):
         setting_prop = "High"
     elif setting_name == "Mouse":
         setting_prop = "Normal"
+    elif setting_name == "Wallpaper":
+        setting_prop = "kanux-background"
     else:
         setting_prop = ""
 
