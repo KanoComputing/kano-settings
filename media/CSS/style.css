@@ -253,6 +253,7 @@ GtkLabel{
     background: @button_color;
     border-radius: 10px;
 }
+
 /* grey_box does not contain a wallpaper but will have the option for the user to add a custom wallpaper */
 .grey_box {
     background: @inactive_border;

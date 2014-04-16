@@ -18,7 +18,7 @@ import kano_settings.set_wifi.home as set_wifi_proxy
 import kano_settings.set_wifi.proxy as set_proxy
 import kano_settings.set_overclock as set_overclock
 import kano_settings.set_account.home as set_account
-import kano_settings.ui_drafts.draft_wallpaper as set_wallpaper
+import kano_settings.set_wallpaper as set_wallpaper
 import kano_settings.config_file as config_file
 import kano_settings.components.menu_button as menu_button
 import kano_settings.components.cursor as cursor
