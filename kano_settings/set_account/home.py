@@ -69,8 +69,6 @@ def apply_changes(widget):
 
 def set_in_password(boolean):
     global in_password
-
-    print "in_password status changed to " + str(boolean)
     in_password = boolean
 
 
