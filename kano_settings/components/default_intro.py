@@ -24,6 +24,7 @@ import kano_settings.components.menu_button as menu_button
 import kano_settings.components.cursor as cursor
 import kano_settings.constants as constants
 from kano.network import is_internet
+from kano.utils import get_user_unsudoed
 
 names = ["Keyboard", "Mouse", "Audio", "Display", "Email", "Wifi", "Overclocking", "Account", "Wallpaper"]
 custom_info = ["Keyboard-country-human", "Mouse", "Audio", "Display-mode", "Email", "Wifi", "Overclocking", "Account", "Wallpaper"]
@@ -116,6 +117,10 @@ class Default_Intro():
                     text = "Proxy enabled"
                 else:
                     text = 'Not connected'
+                self.labels[x].set_text(text)
+
+            if custom_info[x] == 'Account':
+                text = get_user_unsudoed()
                 self.labels[x].set_text(text)
 
     # Takes you back to the introduction screen (on pressing prev button)
