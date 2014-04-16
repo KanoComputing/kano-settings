@@ -243,10 +243,15 @@ GtkLabel{
 }
 .wallpaper_box:hover {
     background: @button_color;
+    border-radius: 10px;
     border-style: solid;
     border-width: 3px;
     border-radius: 10px;
     border-color: @button_color;
+}
+.wallpaper_box_active {
+    background: @button_color;
+    border-radius: 10px;
 }
 /* grey_box does not contain a wallpaper but will have the option for the user to add a custom wallpaper */
 .grey_box {

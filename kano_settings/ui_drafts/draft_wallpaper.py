@@ -14,17 +14,19 @@ import kano_settings.constants as constants
 
 selected_button = 0
 initial_button = 0
-NUMBER_OF_COLUMNS = 4
+NUMBER_OF_COLUMNS = 5
 # Calculate this dynamically once we have data about pictures
 NUMBER_OF_ROWS = 2
-COLUMN_PADDING = 10
-ROW_PADDING = 10
+COLUMN_PADDING = 0
+ROW_PADDING = 0
+ICON_WIDTH = 90
+ICON_HEIGHT = 90
 
 
 def activate(_win, box, update):
     global selected_button, initial_button
 
-    wallpaper_array = ["Icon-Audio", "Icon-Display", "Icon-Overclocking", "Icon-Keyboard", "Icon-Email", "Icon-Mouse"]
+    wallpaper_array = ["Icon-Audio", "Icon-Display", "Icon-Overclocking", "Icon-Keyboard", "Icon-Email", "Icon-Mouse", "Icon-Wallpaper", "Icon-Account"]
 
     title = Gtk.Label("Choose your background")
     title.get_style_context().add_class('title')
@@ -32,18 +34,18 @@ def activate(_win, box, update):
     boxes = []
 
     wallpaper_table = Gtk.Table(NUMBER_OF_ROWS, NUMBER_OF_COLUMNS, True)
-    wallpaper_table.set_row_spacings(20)
-    wallpaper_table.set_col_spacings(20)
+    wallpaper_table.set_row_spacings(ROW_PADDING)
+    wallpaper_table.set_col_spacings(COLUMN_PADDING)
 
     for i in range(len(wallpaper_array)):
-        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(constants.media + "/Icons/" + wallpaper_array[i] + ".png", 100, 100)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(constants.media + "/Icons/" + wallpaper_array[i] + ".png", ICON_WIDTH, ICON_HEIGHT)
         image = Gtk.Image()
         image.get_style_context().add_class('wallpaper_box')
         image.set_from_pixbuf(pixbuf)
         images.append(image)
         backgroundbox = Gtk.Button()
         backgroundbox.add(image)
-        backgroundbox.connect('button_press_event', set_wallpaper, wallpaper_array[i])
+        backgroundbox.connect('button_press_event', select_wallpaper, images, image)
         #backgroundbox.get_style_context().add_class('background_box')
         boxes.append(backgroundbox)
 
@@ -61,9 +63,9 @@ def activate(_win, box, update):
                 index += 1
             else:
                 grey_box = Gtk.Button()
-                grey_box.set_size_request(100, 100)
+                grey_box.set_size_request(ICON_WIDTH, ICON_HEIGHT)
                 grey_box.get_style_context().add_class('grey_box')
-                grey_box.connect('button_press_event', set_wallpaper, "grey_box")
+                grey_box.connect('button_press_event', add_wallpaper, wallpaper_array)
                 wallpaper_table.attach(grey_box, j, j + 1, row, row + 1,
                                        Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, 0, 0)
                 index += 1
@@ -78,8 +80,22 @@ def activate(_win, box, update):
     update.enable()
 
 
-def set_wallpaper(widget=None, event=None, name=""):
-    print "name = " + str(name)
+# Add class to wallpaper picture which displays border even when mouse is moved
+def select_wallpaper(widget=None, event=None, images=None, image=None):
+
+    for x in images:
+        style = x.get_style_context()
+        style.remove_class("wallpaper_box_active")
+        style.add_class("wallpaper_box")
+
+    image_style = image.get_style_context()
+    image_style.remove_class("wallpaper_box")
+    image_style.add_class("wallpaper_box_active")
+
+
+# Add new wallpaper option to grey box
+def add_wallpaper(widget=None, event=None, wallpaper_array=None):
+    print "grey_box"
 
 
 def apply_changes(button):

@@ -18,14 +18,15 @@ import kano_settings.set_wifi.home as set_wifi_proxy
 import kano_settings.set_wifi.proxy as set_proxy
 import kano_settings.set_overclock as set_overclock
 import kano_settings.set_account.home as set_account
+import kano_settings.ui_drafts.draft_wallpaper as set_wallpaper
 import kano_settings.config_file as config_file
 import kano_settings.components.menu_button as menu_button
 import kano_settings.components.cursor as cursor
 import kano_settings.constants as constants
 from kano.network import is_internet
 
-names = ["Keyboard", "Mouse", "Audio", "Display", "Email", "Wifi", "Overclocking", "Account"]
-custom_info = ["Keyboard-country-human", "Mouse", "Audio", "Display-mode", "Email", "Wifi", "Overclocking", "Account"]
+names = ["Keyboard", "Mouse", "Audio", "Display", "Email", "Wifi", "Overclocking", "Account", "Wallpaper"]
+custom_info = ["Keyboard-country-human", "Mouse", "Audio", "Display-mode", "Email", "Wifi", "Overclocking", "Account", "Wallpaper"]
 win = None
 NUMBER_OF_COLUMNS = 2
 
@@ -212,4 +213,5 @@ class Default_Intro():
             5: set_wifi_proxy,
             6: set_overclock,
             7: set_account,
+            8: set_wallpaper,
         }[x]
