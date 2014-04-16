@@ -11,6 +11,7 @@ import kano_settings.config_file as config_file
 #import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
+import os
 
 selected_button = 0
 initial_button = 0
@@ -19,6 +20,8 @@ NUMBER_OF_COLUMNS = 4
 NUMBER_OF_ROWS = 2
 COLUMN_PADDING = 10
 ROW_PADDING = 10
+
+wallpaper_path = "/usr/share/kano-desktop/wallpapers/"
 
 
 def activate(_win, box, update):
@@ -106,3 +109,36 @@ def apply_changes(button):
 
     # Update config
     config_file.replace_setting("Mouse", config)
+
+
+def change_wallpaper(image_name):
+    # home directory
+    USER = os.environ['SUDO_USER']
+    deskrc_path = "/home/%s/.kdeskrc" % (USER)
+    if not os.path.isfile(deskrc_path):
+        return 1
+
+     # Change wallpaper in deskrc
+    image_169 = "%s%s-16-9.png" % (wallpaper_path, image_name)
+    image_43 = "%s%s-4-3.png" % (wallpaper_path, image_name)
+    image_1024 = "%s%s-1024.png" % (wallpaper_path, image_name)
+    # Read deskrc config file
+    f = file(deskrc_path)
+    newlines = []
+    for line in f:
+        if "Background.File-medium: " in line:
+            line = "  Background.File-medium: %s\n" % (image_1024)
+        if "Background.File-4-3: " in line:
+            line = "  Background.File-4-3: %s\n" % (image_43)
+        if "Background.File-16-9: " in line:
+            line = "  Background.File-16-9: %s\n" % (image_169)
+        newlines.append(line)
+    # Overwrite config file with new lines
+    outfile = file(deskrc_path, 'w')
+    outfile.writelines(newlines)
+
+    # Refresh the wallpaper
+    os.system('pkill kdesk && kdesk &')
+    # TODO: can we use ksdek -w for previewing the wallpaper?
+
+    return 0
