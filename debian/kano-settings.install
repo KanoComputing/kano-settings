@@ -1,5 +1,5 @@
 bin/kano-settings /usr/bin
-bin/ks /usr/bin
+bin/kano-uixinit /usr/bin
 bin/startmouse /usr/bin
 
 kano_settings/* /usr/lib/python2.7/dist-packages/kano_settings
