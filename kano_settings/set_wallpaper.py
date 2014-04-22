@@ -10,9 +10,11 @@ from gi.repository import Gtk, GdkPixbuf
 import kano_settings.config_file as config_file
 import kano_settings.components.fixed_size_box as fixed_size_box
 import os
+import shutil
 
 wallpaper_path = "/usr/share/kano-desktop/wallpapers/"
-
+kdeskrc_default = "/usr/share/kano-desktop/kdesk/.kdeskrc"
+kdeskrc_home = "/home/%s/.kdeskrc"
 
 class Wallpaper():
 
@@ -99,9 +101,12 @@ class Wallpaper():
 
         # home directory
         USER = os.environ['SUDO_USER']
-        deskrc_path = "/home/%s/.kdeskrc" % (USER)
+        deskrc_path = kdeskrc_home % (USER)
         if not os.path.isfile(deskrc_path):
-            return 1
+            try:
+                rc = shutil.copyfile (kdeskrc_default, deskrc_path)
+            except:
+                return 1
 
          # Change wallpaper in deskrc
         image_169 = "%s%s-16-9.png" % (wallpaper_path, image_name)
