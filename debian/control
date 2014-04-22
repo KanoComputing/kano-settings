@@ -17,4 +17,4 @@ Package: kano-connect
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, python, udhcpc,
          rxvt-unicode-256color, kano-toolset (>= 1.0-61)
-Description: Software to make Kanux connect over Wireless networksautomatically.
+Description: Software to make Kanux connect over Wireless networks automatically.
