@@ -41,20 +41,22 @@ from kano.network import IWList, is_device, is_gateway, connect, disconnect, rem
 pidfile = '/var/run/kanoconnect.py'
 
 
-def attempt_connect(wiface, essid, encryption, enckey):
+def attempt_connect(wiface, essid, encryption, enckey, conf=None):
     online = False
+    if conf:
+        info = conf
+    else:
+        info = essid
 
-    syslog.syslog("Attempting connection to ESSID '%s' through %s" % (essid, wiface))
+    syslog.syslog("Attempting association to %s through interface %s" % (info, wiface))
     try:
-        connect(wiface, essid, encryption, seckey=enckey)
+        connect(wiface, essid, encryption, seckey=enckey, wpa_custom_file=conf)
         online = is_gateway()
     except:
         pass
 
     if online:
-        syslog.syslog("CONNECTED to ESSID '%s' through interface %s" % (essid, wiface))
-    else:
-        syslog.syslog("could not connect to essid '%s'" % (essid))
+        syslog.syslog("Network association result: %s" % online)
 
     return online
 
@@ -125,9 +127,12 @@ if __name__ == '__main__':
                 sys.exit(2)
             else:
                 # If there is a cached network, try to connect straight away
-                fconnected = attempt_connect(
-                    wiface, cached['essid'], cached['encryption'], cached['enckey'])
+                wpaconf=None
+                if cached.has_key('conf'):
+                    wpaconf = cached['conf']
 
+                fconnected = attempt_connect (wiface, cached['essid'], 
+                                              cached['encryption'], cached['enckey'], conf=wpaconf)
                 if fconnected:
                     sys.exit(0)
                 else:
