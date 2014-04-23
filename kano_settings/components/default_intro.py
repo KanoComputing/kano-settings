@@ -136,7 +136,6 @@ class Default_Intro():
             return
 
         # If in set_accounts/password
-        print "set_account.in_password = " + str(set_account.in_password)
         if set_account.in_password:
             set_account.to_account()
             return
