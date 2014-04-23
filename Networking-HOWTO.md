@@ -45,7 +45,7 @@ like this:
  * sudo kano-wifi /path/to/my/wpa_supplicant.conf
 
 Make sure you provide an absolute path filename to avoid problems during
-automatic connect during boot time. As an example here's a small simple example
+automatic connect at boot time. As an example here's a small simple file
 to connect to a WPA2 network:
 
 ```
@@ -59,6 +59,9 @@ network={
   psk="psk-passphrase"
 }
 ```
+
+The wpa supplicant daemon log file is saved under /var/log/kano_wpa.log
+where you can find inner details on the association sequence.
 
 IMPORTANT: Please note that plugging the wireless dongle while the RaspberryPI
 is functioning will almost certainly cause a hardware reset. This is a
