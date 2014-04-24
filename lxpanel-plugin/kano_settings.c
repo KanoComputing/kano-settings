@@ -129,7 +129,7 @@ static gboolean show_menu(GtkWidget *widget, GdkEventButton *event)
     gtk_widget_show(audio_item);
     gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(audio_item), get_resized_icon(AUDIO_ICON));
     /* Display button */
-    GtkWidget* display_item = gtk_image_menu_item_new_with_label("Mouse");
+    GtkWidget* display_item = gtk_image_menu_item_new_with_label("Display");
     g_signal_connect(display_item, "activate", G_CALLBACK(settings_clicked), NULL);
     gtk_menu_append(GTK_MENU(menu), display_item);
     gtk_widget_show(display_item);
