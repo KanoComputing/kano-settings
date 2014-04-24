@@ -116,7 +116,7 @@ class Wallpaper():
         image_43 = "%s%s-4-3.png" % (wallpaper_path, image_name)
         image_1024 = "%s%s-1024.png" % (wallpaper_path, image_name)
         # Read kdeskrc config file
-        f = file(deskrc_path)
+        f = open(deskrc_path, 'r')
         newlines = []
         for line in f:
             if "Background.File-medium:" in line:
@@ -126,6 +126,7 @@ class Wallpaper():
             elif "Background.File-16-9:" in line:
                 line = "  Background.File-16-9: %s\n" % (image_169)
             newlines.append(line)
+        f.close()
         # Overwrite config file with new lines
         outfile = open(deskrc_path, 'w', 0)
         outfile.writelines(newlines)
@@ -133,8 +134,8 @@ class Wallpaper():
         outfile.close()
 
         # Refresh the wallpaper
-        os.system('killall kdesk')
-        os.system('kdesk &')
+        cmd = 'sudo -u %s kdesk -w' % USER
+        os.system(cmd)
         return 0
 
     def read_config(self):
