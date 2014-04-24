@@ -67,16 +67,6 @@ static void plugin_destructor(Plugin *p)
     g_free(p);
 }
 
-static int parse_line(char *line, const char const *key, int *value)
-{
-    if (strncmp(line, key, strlen(key)) == 0) {
-        *value = atoi(line + strlen(key));
-        return 0;
-    }
-
-    return -1;
-}
-
 static void launch_cmd(const char *cmd)
 {
     GAppInfo *appinfo = NULL;
