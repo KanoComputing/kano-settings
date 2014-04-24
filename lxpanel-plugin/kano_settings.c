@@ -103,7 +103,7 @@ void settings_clicked(GtkWidget *widget, gpointer data)
 static gboolean show_menu(GtkWidget *widget, GdkEventButton *event)
 {
     GtkWidget *menu = gtk_menu_new();
-    GtkWidget *header_item, *update_item, *check_item, *no_updates_item;
+    GtkWidget *header_item, *settings_item;
 
     if (event->button != 1)
         return FALSE;
