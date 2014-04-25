@@ -79,7 +79,7 @@ def activate(_win, changeable_content, _update):
 
     if current_email is not None:
         text = current_email.replace('\n', '')
-        update_config()
+        update_config(text)
 
     entry1.props.placeholder_text = "Type your email"
     entry1.set_text(text)
@@ -109,7 +109,7 @@ def read_config():
     return config_file.read_from_file("Email")
 
 
-def update_config(email):
+def update_config(current_email):
     # Add new configurations to config file.
     config_file.replace_setting("Email", current_email)
 
