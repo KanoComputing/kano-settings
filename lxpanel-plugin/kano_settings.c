@@ -26,6 +26,7 @@
 #define DISPLAY_ICON "/usr/share/kano-settings/media/Icons/Icon-Display.png"
 #define WIFI_ICON "/usr/share/kano-settings/media/Icons/Icon-Wifi.png"
 #define SETTINGS_CMD "sudo kano-settings "
+#define PLUGIN_TOOLTIP "Kano Settings"
 
 Panel *panel;
 
@@ -41,6 +42,7 @@ static int plugin_constructor(Plugin *p, char **fp)
     (void)fp;
 
     panel = p->panel;
+
 
     /* need to create a widget to show */
     p->pwid = gtk_event_box_new();
@@ -59,6 +61,11 @@ static int plugin_constructor(Plugin *p, char **fp)
 
     gtk_signal_connect(GTK_OBJECT(p->pwid), "button-press-event",
                GTK_SIGNAL_FUNC(show_menu), p);
+
+    /* Set a tooltip to the icon to show when the mouse sits over the it */
+    GtkTooltips *tooltips; 
+    tooltips = gtk_tooltips_new(); 
+    gtk_tooltips_set_tip(tooltips, GTK_WIDGET(icon), PLUGIN_TOOLTIP, NULL); 
 
     gtk_widget_set_sensitive(icon, TRUE);
 
