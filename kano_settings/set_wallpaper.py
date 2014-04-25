@@ -7,11 +7,16 @@
 #
 
 from gi.repository import Gtk, GdkPixbuf
+import os
+import shutil
+
 import kano_settings.config_file as config_file
 import kano_settings.components.fixed_size_box as fixed_size_box
-import os
 
 wallpaper_path = "/usr/share/kano-desktop/wallpapers/"
+kdeskrc_default = "/usr/share/kano-desktop/kdesk/.kdeskrc"
+kdeskrc_home = "/home/%s/.kdeskrc"
+name_pattern = "-4-3.png"
 
 
 class Wallpaper():
@@ -24,18 +29,18 @@ class Wallpaper():
         ICON_WIDTH = 90
         ICON_HEIGHT = 90
 
-        #self.dict = {"Icon-Audio": False, "Icon-Display": False, "Icon-Overclocking": False, "Icon-Keyboard": False, "Icon-Email": False, "Icon-Mouse": False, "Icon-Wallpaper": False, "Icon-Account": False}
-        self.dict = {"kanux-background": False}
-        self.images = {}
         self.table = Gtk.Table(NUMBER_OF_ROWS, NUMBER_OF_COLUMNS, True)
         self.table.set_row_spacings(ROW_PADDING)
         self.table.set_col_spacings(COLUMN_PADDING)
         buttons = []
-
+        # List of wallpapers
+        self.dict = {}
+        self.create_list_wallpaper()
+        # Create thumbnail images
+        self.images = {}
         for name in self.dict:
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(wallpaper_path + name + "-4-3.png", 120, 90)
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(wallpaper_path + name + name_pattern, 120, 90)
             cropped_pixbuf = pixbuf.new_subpixbuf(15, 0, ICON_WIDTH, ICON_HEIGHT)
-            #pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(constants.media + "/Icons/" + name + ".png", ICON_WIDTH, ICON_HEIGHT)
             image = Gtk.Image()
             image.get_style_context().add_class('wallpaper_box')
             image.set_from_pixbuf(cropped_pixbuf)
@@ -77,7 +82,7 @@ class Wallpaper():
         self.set_selected(image_name)
 
     def add_wallpaper(self, widget=None, event=None):
-        print "grey_box"
+        pass
 
     # Get the current selected wallpaper
     # Handles global variable wallpaper_array
@@ -95,36 +100,42 @@ class Wallpaper():
         self.dict[image_name] = True
 
     def change_wallpaper(self):
-        image_name = self.get_selected
+        image_name = self.get_selected()
 
         # home directory
         USER = os.environ['SUDO_USER']
-        deskrc_path = "/home/%s/.kdeskrc" % (USER)
+        deskrc_path = kdeskrc_home % (USER)
         if not os.path.isfile(deskrc_path):
-            return 1
+            try:
+                shutil.copyfile(kdeskrc_default, deskrc_path)
+            except:
+                return 1
 
          # Change wallpaper in deskrc
         image_169 = "%s%s-16-9.png" % (wallpaper_path, image_name)
         image_43 = "%s%s-4-3.png" % (wallpaper_path, image_name)
         image_1024 = "%s%s-1024.png" % (wallpaper_path, image_name)
-        # Read deskrc config file
-        f = file(deskrc_path)
+        # Read kdeskrc config file
+        f = open(deskrc_path, 'r')
         newlines = []
         for line in f:
-            if "Background.File-medium: " in line:
+            if "Background.File-medium:" in line:
                 line = "  Background.File-medium: %s\n" % (image_1024)
-            if "Background.File-4-3: " in line:
+            elif "Background.File-4-3:" in line:
                 line = "  Background.File-4-3: %s\n" % (image_43)
-            if "Background.File-16-9: " in line:
+            elif "Background.File-16-9:" in line:
                 line = "  Background.File-16-9: %s\n" % (image_169)
             newlines.append(line)
+        f.close()
         # Overwrite config file with new lines
-        outfile = file(deskrc_path, 'w')
+        outfile = open(deskrc_path, 'w', 0)
         outfile.writelines(newlines)
+        outfile.flush()
+        outfile.close()
 
         # Refresh the wallpaper
-        os.system('pkill kdesk && kdesk &')
-        # TODO: can we use ksdek -w for previewing the wallpaper?
+        cmd = 'sudo -u %s kdesk -w' % USER
+        os.system(cmd)
         return 0
 
     def read_config(self):
@@ -134,6 +145,10 @@ class Wallpaper():
         # Add new configurations to config file.
         config_file.replace_setting("Wallpaper", self.get_selected())
 
+    def create_list_wallpaper(self):
+        for file in os.listdir(wallpaper_path):
+            if name_pattern in file:
+                self.dict[file[:-8]] = False
 
 wallpaper = None
 

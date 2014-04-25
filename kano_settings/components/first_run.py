@@ -140,7 +140,7 @@ def close_window(event="delete-event", button=win):
         response = dialog.run()
 
         if response == Gtk.ResponseType.OK:
-            # This makes the dislog box wait for the OK to be clicked before progressing
+            # This makes the dialog box wait for the OK to be clicked before progressing
             print "OK clicked"
 
         dialog.destroy()

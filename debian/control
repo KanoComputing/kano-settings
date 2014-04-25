@@ -3,12 +3,14 @@ Maintainer: Team Kano <dev@kano.me>
 Section: admin
 Priority: optional
 Standards-Version: 3.9.2
-Build-Depends: debhelper (>= 9.0.0)
+Build-Depends: debhelper (>= 9), build-essential, pkg-config, libgtk2.0-dev,
+               libmenu-cache1-dev, lxpanel, libfm-gtk1, libfm-dev
 
 Package: kano-settings
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, python, python-gi, dante-client,
          kano-toolset (>= 1.0-61)
+Recommends: kano-fonts
 Description: Graphical tool to set different system settings
  This application is a GUI frontend to set multiple Kano OS functionalities
  like Wireless, Keyboard layout, Screen options, and Proxy.
@@ -17,4 +19,4 @@ Package: kano-connect
 Architecture: all
 Depends: ${shlibs:Depends}, ${misc:Depends}, python, udhcpc,
          rxvt-unicode-256color, kano-toolset (>= 1.0-61)
-Description: Software to make Kanux connect over Wireless networksautomatically.
+Description: Software to make Kanux connect over Wireless networks automatically.
