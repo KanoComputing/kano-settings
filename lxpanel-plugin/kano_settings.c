@@ -25,7 +25,7 @@
 #define AUDIO_ICON "/usr/share/kano-settings/media/Icons/Icon-Audio.png"
 #define DISPLAY_ICON "/usr/share/kano-settings/media/Icons/Icon-Display.png"
 #define WIFI_ICON "/usr/share/kano-settings/media/Icons/Icon-Wifi.png"
-#define SETTINGS_CMD "sudo kano-settings"
+#define SETTINGS_CMD "sudo kano-settings "
 
 Panel *panel;
 
@@ -91,9 +91,12 @@ static void launch_cmd(const char *cmd)
         perror("Command lanuch failed.");
 }
 
-void settings_clicked(GtkWidget *widget, gpointer data)
+void settings_clicked(GtkWidget* widget, const char* state)
 {
-    launch_cmd(SETTINGS_CMD);
+    char cmd[100];
+    strcpy(cmd, SETTINGS_CMD);
+    strcat(cmd, state);
+    launch_cmd(cmd);
 }
 
 static gboolean show_menu(GtkWidget *widget, GdkEventButton *event)
@@ -112,37 +115,36 @@ static gboolean show_menu(GtkWidget *widget, GdkEventButton *event)
 
     /* Keyboard button */
     GtkWidget* keyboard_item = gtk_image_menu_item_new_with_label("Keyboard");
-    g_signal_connect(keyboard_item, "activate", G_CALLBACK(settings_clicked), NULL);
+    g_signal_connect(keyboard_item, "activate", G_CALLBACK(settings_clicked), "0");
     gtk_menu_append(GTK_MENU(menu), keyboard_item);
     gtk_widget_show(keyboard_item);
     gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(keyboard_item), get_resized_icon(KEYBOARD_ICON));
     /* Mouse button */
     GtkWidget* mouse_item = gtk_image_menu_item_new_with_label("Mouse");
-    g_signal_connect(mouse_item, "activate", G_CALLBACK(settings_clicked), NULL);
+    g_signal_connect(mouse_item, "activate", G_CALLBACK(settings_clicked), "1");
     gtk_menu_append(GTK_MENU(menu), mouse_item);
     gtk_widget_show(mouse_item);
     gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(mouse_item), get_resized_icon(MOUSE_ICON));
     /* Audio button */
     GtkWidget* audio_item = gtk_image_menu_item_new_with_label("Audio");
-    g_signal_connect(audio_item, "activate", G_CALLBACK(settings_clicked), NULL);
+    g_signal_connect(audio_item, "activate", G_CALLBACK(settings_clicked), "2");
     gtk_menu_append(GTK_MENU(menu), audio_item);
     gtk_widget_show(audio_item);
     gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(audio_item), get_resized_icon(AUDIO_ICON));
     /* Display button */
     GtkWidget* display_item = gtk_image_menu_item_new_with_label("Display");
-    g_signal_connect(display_item, "activate", G_CALLBACK(settings_clicked), NULL);
+    g_signal_connect(display_item, "activate", G_CALLBACK(settings_clicked), "3");
     gtk_menu_append(GTK_MENU(menu), display_item);
     gtk_widget_show(display_item);
     gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(display_item), get_resized_icon(DISPLAY_ICON));
     /* WiFi button */
     GtkWidget* wifi_item = gtk_image_menu_item_new_with_label("WiFi");
-    g_signal_connect(wifi_item, "activate", G_CALLBACK(settings_clicked), NULL);
+    g_signal_connect(wifi_item, "activate", G_CALLBACK(settings_clicked), "5");
     gtk_menu_append(GTK_MENU(menu), wifi_item);
     gtk_widget_show(wifi_item);
     gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(wifi_item), get_resized_icon(WIFI_ICON));
 
-    g_signal_connect(menu, "selection-done",
-             G_CALLBACK(selection_done), NULL);
+    g_signal_connect(menu, "selection-done", G_CALLBACK(selection_done), NULL);
 
     /* Show the menu. */
     gtk_menu_popup(GTK_MENU(menu), NULL, NULL,
