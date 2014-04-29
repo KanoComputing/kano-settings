@@ -19,7 +19,7 @@
 #include <ctype.h>
 #include <time.h>
 
-#define ICON_FILE "/usr/share/kano-desktop/images/settings.png"
+#define ICON_FILE "/usr/share/kano-settings/settings-widget.png"
 #define KEYBOARD_ICON "/usr/share/kano-settings/media/Icons/Icon-Keyboard.png"
 #define MOUSE_ICON "/usr/share/kano-settings/media/Icons/Icon-Mouse.png"
 #define AUDIO_ICON "/usr/share/kano-settings/media/Icons/Icon-Audio.png"
@@ -63,9 +63,9 @@ static int plugin_constructor(Plugin *p, char **fp)
                GTK_SIGNAL_FUNC(show_menu), p);
 
     /* Set a tooltip to the icon to show when the mouse sits over the it */
-    GtkTooltips *tooltips; 
-    tooltips = gtk_tooltips_new(); 
-    gtk_tooltips_set_tip(tooltips, GTK_WIDGET(icon), PLUGIN_TOOLTIP, NULL); 
+    GtkTooltips *tooltips;
+    tooltips = gtk_tooltips_new();
+    gtk_tooltips_set_tip(tooltips, GTK_WIDGET(icon), PLUGIN_TOOLTIP, NULL);
 
     gtk_widget_set_sensitive(icon, TRUE);
 

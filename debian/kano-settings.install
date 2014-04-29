@@ -7,5 +7,6 @@ media/* /usr/share/kano-settings/media
 
 icon/Settings /usr/share/kano-extras/extras
 icon/kano-settings.png /usr/share/kano-extras/icons
+icon/settings-widget.png /usr/share/kano-settings
 
 lxpanel-plugin/kano_settings.so usr/lib/arm-linux-gnueabihf/lxpanel/plugins/
