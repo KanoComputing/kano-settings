@@ -77,7 +77,7 @@ static int plugin_constructor(Plugin *p, char **fp)
 
 static void plugin_destructor(Plugin *p)
 {
-    g_free(p);
+    (void)p;
 }
 
 static void launch_cmd(const char *cmd)
