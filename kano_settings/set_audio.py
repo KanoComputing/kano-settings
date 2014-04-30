@@ -23,6 +23,9 @@ IMG_HEIGHT = 130
 
 
 def file_replace(fname, pat, s_after):
+    if not os.path.exists(fname):
+        return
+
     # first, see if the pattern is even in the file.
     with open(fname) as f:
         if not any(re.search(pat, line) for line in f):
