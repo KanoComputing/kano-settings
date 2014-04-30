@@ -13,6 +13,7 @@
 #
 
 import os
+from kano.utils import read_file_contents_as_lines
 
 
 class LibPreload:
@@ -23,6 +24,8 @@ class LibPreload:
     def is_enabled(self):
         # Reads through preload file in search of proxy libraries.
         # Supportes commented lines (# sign)
+        if not os.path.exists(self.filename):
+            return False
         with open(self.filename, "r") as infile:
             for line in infile:
                 if line.strip('\n') in (self.libs):
@@ -60,12 +63,9 @@ class LibPreload:
             return True
 
         # Collect currently preloaded libraries
-        f = open(self.filename, 'r')
-        entries = f.readlines()
-        f.close()
+        entries = read_file_contents_as_lines(self.filename)
 
         # Add or remove proxy libraries
-        f = open(self.filename, 'w')
         if enable:
             for lib in self.libs:
                 entries.append(lib)
@@ -74,6 +74,7 @@ class LibPreload:
                 entries.remove(l + '\n')
 
         # Write back the prelaod file
+        f = open(self.filename, 'w')
         for e in entries:
             if (e != '\n'):
                 f.write("%s\n" % e)
@@ -113,13 +114,12 @@ class ProxySettings:
 
     def get_settings(self):
         saved_settings = None
-        f = open(self.filename, 'r')
-        entries = f.readlines()
+
+        entries = read_file_contents_as_lines(self.filename)
+
         for c, e in enumerate(entries):
             if e.strip('\n') == self.marker:
                 saved_settings = self.parse_out(entries[c + 1:])
-
-        f.close()
         return saved_settings
 
     def set_settings(self, dict_settings):
@@ -130,9 +130,7 @@ class ProxySettings:
             new_settings = self.dante_format_socks % (dict_settings)
 
         # Read Dante's current settings
-        f = open(self.filename, 'r')
-        entries = f.readlines()
-        f.close()
+        entries = read_file_contents_as_lines(self.filename)
 
         # Override kano section with new settings
         f = open(self.filename, 'w')
