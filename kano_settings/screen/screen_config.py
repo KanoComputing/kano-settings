@@ -20,6 +20,8 @@ CONFIG_FILE = "/boot/config.txt"
 # if the value argument is None, the option will be commented out
 def set_config_option(name, value=None):
     lines = read_file_contents_as_lines(CONFIG_FILE)
+    if not lines:
+        return
 
     option_re = r'^\s*#?\s*' + str(name) + r'=(.*)'
 
