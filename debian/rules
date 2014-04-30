@@ -5,5 +5,5 @@
 
 override_dh_auto_build:
 	cd lxpanel-plugin && make
-    cd lxpanel-plugin-internet && make
+	cd lxpanel-plugin-internet && make
 	dh_auto_build
