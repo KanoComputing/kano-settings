@@ -50,7 +50,7 @@ def activate(_win, box, update):
     box.pack_start(settings.box, False, False, 0)
 
     # Analog radio button
-    analog_button = Gtk.RadioButton.new_with_label_from_widget(None, "Speaker/Headphones")
+    analog_button = Gtk.RadioButton.new_with_label_from_widget(None, "Speaker\nHeadphones")
     analog_button.set_can_focus(False)
 
     # HDMI radio button
