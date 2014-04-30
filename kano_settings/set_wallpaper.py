@@ -135,7 +135,7 @@ class Wallpaper():
                 outfile.write("  Background.File-4-3: %s\n" % (image_43))
                 outfile.write("  Background.File-16-9: %s\n" % (image_169))
         # Refresh the wallpaper
-        cmd = 'sudo -u %s kdesk -r' % USER
+        cmd = 'sudo -u %s kdesk -w' % USER
         os.system(cmd)
         return 0
 
