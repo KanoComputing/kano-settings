@@ -147,6 +147,8 @@ class Wallpaper():
         config_file.replace_setting("Wallpaper", self.get_selected())
 
     def create_list_wallpaper(self):
+        if not os.path.exists(wallpaper_path):
+            return
         for file in os.listdir(wallpaper_path):
             if name_pattern in file:
                 self.dict[file[:-8]] = False
