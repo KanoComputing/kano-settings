@@ -8,6 +8,7 @@
 # Change screen resolution and other settings
 #
 
+import os
 import sys
 import re
 import subprocess
@@ -42,6 +43,9 @@ def set_config_option(name, value=None):
 # Group must be either 'DMT' or 'CEA'
 def get_supported_modes(group):
     modes = {}
+
+    if not os.path.exists('/opt/vc/bin/tvservice'):
+        return modes
 
     cea_modes = subprocess.check_output(["/opt/vc/bin/tvservice", "-m", group.upper()])
     cea_modes = cea_modes.decode()
