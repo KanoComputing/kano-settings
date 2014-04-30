@@ -1,10 +1,10 @@
 /*
- * kano_internet.c
- *
- * Copyright (C) 2014 Kano Computing Ltd.
- * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
- *
- */
+* kano_internet.c
+*
+* Copyright (C) 2014 Kano Computing Ltd.
+* License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+*
+*/
 
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
@@ -31,7 +31,6 @@
 Panel *panel;
 
 typedef struct {
-    int last_check;
     int internet_available;
     GtkWidget *icon;
     guint timer;
@@ -52,17 +51,15 @@ static int plugin_constructor(Plugin *p, char **fp)
     /* allocate our private structure instance */
     kano_internet_plugin_t* plugin = g_new0(kano_internet_plugin_t, 1);
     plugin->internet_available = 0;
-    plugin->last_check = 0;
-    /* put it where it belongs */
-    p->priv = plugin;
-
-    /* need to create a widget to show */
-    p->pwid = gtk_event_box_new();
-
     /* create an icon */
-    GtkWidget *icon = gtk_image_new_from_file(WIFI_SETTING_ICON);
+    GtkWidget *icon = gtk_image_new_from_file(WIFI_ICON);
     plugin->icon = icon;
     plugin->timer = g_timeout_add(MINUTE * 1000, (GSourceFunc) internet_status, (gpointer) plugin);
+
+    /* put it where it belongs */
+    p->priv = plugin;
+    /* need to create a widget to show */
+    p->pwid = gtk_event_box_new();
 
     // Check status
     internet_status(plugin);
@@ -76,7 +73,7 @@ static int plugin_constructor(Plugin *p, char **fp)
     /* our widget doesn't have a window... */
     gtk_widget_set_has_window(p->pwid, FALSE);
 
-    gtk_signal_connect(GTK_OBJECT(p->pwid), "button-press-event", GTK_SIGNAL_FUNC(show_menu), p);
+    gtk_signal_connect(GTK_OBJECT(p->pwid), "button-press-event", GTK_SIGNAL_FUNC(show_menu), p->priv);
 
     /* Set a tooltip to the icon to show when the mouse sits over the it */
     GtkTooltips *tooltips;
@@ -196,24 +193,24 @@ void lxpanel_plugin_popup_set_position_helper(Panel * p, GtkWidget * near,
     GtkWidget * popup, GtkRequisition * popup_req, gint * px, gint * py)
 {
     /* Get the origin of the requested-near widget in
-       screen coordinates. */
+screen coordinates. */
     gint x, y;
     gdk_window_get_origin(GDK_WINDOW(near->window), &x, &y);
 
     /* Doesn't seem to be working according to spec; the allocation.x
-       sometimes has the window origin in it */
+sometimes has the window origin in it */
     if (x != near->allocation.x) x += near->allocation.x;
     if (y != near->allocation.y) y += near->allocation.y;
 
     /* Dispatch on edge to lay out the popup menu with respect to
-       the button. Also set "push-in" to avoid any case where it
-       might flow off screen. */
+the button. Also set "push-in" to avoid any case where it
+might flow off screen. */
     switch (p->edge)
     {
-        case EDGE_TOP:    y += near->allocation.height; break;
-        case EDGE_BOTTOM: y -= popup_req->height;       break;
-        case EDGE_LEFT:   x += near->allocation.width;  break;
-        case EDGE_RIGHT:  x -= popup_req->width;        break;
+        case EDGE_TOP: y += near->allocation.height; break;
+        case EDGE_BOTTOM: y -= popup_req->height; break;
+        case EDGE_LEFT: x += near->allocation.width; break;
+        case EDGE_RIGHT: x -= popup_req->width; break;
     }
     *px = x;
     *py = y;
@@ -267,7 +264,7 @@ PluginClass kano_internet_plugin_class = {
 
     // assigning our functions to provided pointers.
     constructor : plugin_constructor,
-    destructor  : plugin_destructor,
+    destructor : plugin_destructor,
     config : plugin_configure,
     save : plugin_save_configuration
 };
