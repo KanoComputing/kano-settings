@@ -18,6 +18,7 @@ import kano_settings.set_display as set_display
 import kano_settings.set_wifi.home as set_wifi_proxy
 import kano_settings.config_file as config_file
 import kano_settings.components.cursor as cursor
+import os
 
 win = None
 MAX_STATE = 7
@@ -144,7 +145,13 @@ def close_window(event="delete-event", button=win):
             print "OK clicked"
 
         dialog.destroy()
+        config_file.replace_setting("Completed", "1")
         Gtk.main_quit()
+        # The second argument names the new process
+        os.execv("/usr/bin/kano-login", ["kano-login"])
 
     else:
+        config_file.replace_setting("Completed", "1")
         Gtk.main_quit()
+         # The second argument names the new process
+        os.execv("/usr/bin/kano-login", ["kano-login"])
