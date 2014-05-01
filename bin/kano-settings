@@ -29,6 +29,7 @@ from kano.network import is_internet
 
 win = None
 MAX_STATE = 6
+init_state = -1
 
 
 # Window class
@@ -38,7 +39,7 @@ class MainWindow(Gtk.Window):
     state = 0
 
     def __init__(self):
-        global grid, box, win
+        global grid, box, win, init_state
 
         self.last_level_visited = 0
 
@@ -69,34 +70,30 @@ class MainWindow(Gtk.Window):
         constants.has_internet = is_internet()
 
         # Init
+        self.update = apply_changes.Apply()
         if config_file.read_from_file('Completed') == "1":
             # we define the main button here so that the text is controlled by which flow we enter
             # ie on the first run, we want the button to say Next until the last screen, in which case it says Finish
             # So we want to control this text in default_intro.py and first_run.py
-            self.update = apply_changes.Apply()
             self.update.text.set_text("APPLY CHANGES")
             self.run_through = default_intro.Default_Intro(self, WINDOW_HEIGHT, WINDOW_WIDTH, self.top_bar.height)
-            self.top_bar.next_button.connect("button_press_event", self.run_through.on_next)
-            self.top_bar.prev_button.connect("button_press_event", self.run_through.on_prev)
-            self.top_bar.disable_prev()
             self.top_bar.disable_next()
-            self.update.button.connect('button_press_event', self.run_through.update)
-
+            if init_state >= 0:
+                self.run_through.go_to_level_given_state(init_state)
+            else:
+                self.top_bar.disable_prev()
         else:
-            self.update = apply_changes.Apply()
             self.update.text.set_text("GET STARTED")
             self.run_through = first_run.First_Run(self)
-            self.update.button.connect('button_press_event', self.run_through.update)
             set_intro.activate(self, self.changeable_content, self.update)
-            self.top_bar.prev_button.connect("button_press_event", self.run_through.on_prev)
-            self.top_bar.next_button.connect("button_press_event", self.run_through.on_next)
-            self.top_bar.disable_prev()
             self.top_bar.next_button.set_image(self.top_bar.dark_next_arrow)
+            self.top_bar.disable_prev()
 
-        self.update.button.connect('enter-notify-event',
-                                   cursor.hand_cursor, self)
-        self.update.button.connect('leave-notify-event',
-                                   cursor.arrow_cursor, self)
+        self.top_bar.next_button.connect("button_press_event", self.run_through.on_next)
+        self.top_bar.prev_button.connect("button_press_event", self.run_through.on_prev)
+        self.update.button.connect('button_press_event', self.run_through.update)
+        self.update.button.connect('enter-notify-event', cursor.hand_cursor, self)
+        self.update.button.connect('leave-notify-event', cursor.arrow_cursor, self)
 
         self.grid.attach(self.top_bar.background, 0, 0, 1, 1)
         self.grid.attach(self.changeable_content, 0, 2, 1, 1)
@@ -125,5 +122,10 @@ if __name__ == "__main__":
     if os.environ['LOGNAME'] != 'root':
         exit("Error: kano-settings must be executed with root privileges")
 
+    if(len(sys.argv) > 1):
+        try:
+            init_state = int(sys.argv[1])
+        except:
+            exit("Error: incorrect argument")
     main()
 

@@ -191,6 +191,31 @@ class Default_Intro():
         # Change cursor to arrow
         cursor.arrow_cursor(None, None, win)
 
+    # On clicking a level button on default intro screen
+    def go_to_level_given_state(self, state):
+        global win
+
+        # Remove element in the dynamic box
+        for i in win.changeable_content.get_children():
+            win.changeable_content.remove(i)
+        # Update current state
+        win.state = state
+        # Record this level so we can go back to it
+        win.last_level_visited = win.state
+
+        # Grey out next arrow and darken prev arrow
+        win.top_bar.enable_prev()
+        win.top_bar.disable_next()
+
+        # Call next state
+        self.state_to_widget(win.state).activate(win, win.changeable_content, win.update)
+
+        # Refresh window
+        win.show_all()
+
+        # Change cursor to arrow
+        cursor.arrow_cursor(None, None, win)
+
     # This updates the current level.
     def update(self, widget, arg2=None):
 

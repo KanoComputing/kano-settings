@@ -1,10 +1,10 @@
 /*
- * kano_settings.c
- *
- * Copyright (C) 2014 Kano Computing Ltd.
- * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
- *
- */
+* kano_internet.c
+*
+* Copyright (C) 2014 Kano Computing Ltd.
+* License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+*
+*/
 
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
@@ -19,23 +19,28 @@
 #include <ctype.h>
 #include <time.h>
 
-#define ICON_FILE "/usr/share/kano-settings/settings-widget.png"
-#define KEYBOARD_ICON "/usr/share/kano-settings/media/Icons/Icon-Keyboard.png"
-#define MOUSE_ICON "/usr/share/kano-settings/media/Icons/Icon-Mouse.png"
-#define AUDIO_ICON "/usr/share/kano-settings/media/Icons/Icon-Audio.png"
-#define DISPLAY_ICON "/usr/share/kano-settings/media/Icons/Icon-Display.png"
-#define WIFI_ICON "/usr/share/kano-settings/media/Icons/Icon-Wifi.png"
-#define SETTINGS_CMD "sudo kano-settings "
-#define PLUGIN_TOOLTIP "Kano Settings"
+#define NO_INTERNET_ICON "/usr/share/kano-settings/icon/widget-no-internet.png"
+#define WIFI_ICON "/usr/share/kano-settings/icon/widget-wifi.png"
+#define WIFI_SETTING_ICON "/usr/share/kano-settings/media/Icons/Icon-Wifi.png"
+
+#define SETTINGS_CMD "/usr/bin/is_internet"
+#define PLUGIN_TOOLTIP "Internet status"
+
+#define MINUTE 60
 
 Panel *panel;
 
+typedef struct {
+    int internet_available;
+    GtkWidget *icon;
+    guint timer;
+} kano_internet_plugin_t;
 
-static gboolean show_menu(GtkWidget *, GdkEventButton *);
+static gboolean show_menu(GtkWidget*, GdkEventButton*, kano_internet_plugin_t*);
 static GtkWidget* get_resized_icon(const char* filename);
 static void selection_done(GtkWidget *);
 static void popup_set_position(GtkWidget *, gint *, gint *, gboolean *, GtkWidget *);
-
+static gboolean internet_status(kano_internet_plugin_t*);
 
 static int plugin_constructor(Plugin *p, char **fp)
 {
@@ -43,12 +48,21 @@ static int plugin_constructor(Plugin *p, char **fp)
 
     panel = p->panel;
 
+    /* allocate our private structure instance */
+    kano_internet_plugin_t* plugin = g_new0(kano_internet_plugin_t, 1);
+    plugin->internet_available = 0;
+    /* create an icon */
+    GtkWidget *icon = gtk_image_new_from_file(WIFI_ICON);
+    plugin->icon = icon;
+    plugin->timer = g_timeout_add(MINUTE * 1000, (GSourceFunc) internet_status, (gpointer) plugin);
 
+    /* put it where it belongs */
+    p->priv = plugin;
     /* need to create a widget to show */
     p->pwid = gtk_event_box_new();
 
-    /* create an icon */
-    GtkWidget *icon = gtk_image_new_from_file(ICON_FILE);
+    // Check status
+    internet_status(plugin);
 
     /* set border width */
     gtk_container_set_border_width(GTK_CONTAINER(p->pwid), 0);
@@ -59,8 +73,7 @@ static int plugin_constructor(Plugin *p, char **fp)
     /* our widget doesn't have a window... */
     gtk_widget_set_has_window(p->pwid, FALSE);
 
-    gtk_signal_connect(GTK_OBJECT(p->pwid), "button-press-event",
-               GTK_SIGNAL_FUNC(show_menu), p);
+    gtk_signal_connect(GTK_OBJECT(p->pwid), "button-press-event", GTK_SIGNAL_FUNC(show_menu), p->priv);
 
     /* Set a tooltip to the icon to show when the mouse sits over the it */
     GtkTooltips *tooltips;
@@ -77,7 +90,26 @@ static int plugin_constructor(Plugin *p, char **fp)
 
 static void plugin_destructor(Plugin *p)
 {
-    (void)p;
+    kano_internet_plugin_t* plugin = (kano_internet_plugin_t*)p->priv;
+    /* Disconnect the timer. */
+    g_source_remove(plugin->timer);
+
+    g_free(plugin);
+}
+
+static gboolean internet_status(kano_internet_plugin_t *plugin)
+{
+    // Execute is_internet command
+    plugin->internet_available = system("/usr/bin/is_internet");
+    // Update widget icon depending on internet status
+    if (plugin->internet_available == 0) {
+        gtk_image_set_from_file(GTK_IMAGE(plugin->icon), WIFI_ICON);
+    }
+    else {
+        gtk_image_set_from_file(GTK_IMAGE(plugin->icon), NO_INTERNET_ICON);
+    }
+
+    return (plugin->internet_available == 0);
 }
 
 static void launch_cmd(const char *cmd)
@@ -85,8 +117,7 @@ static void launch_cmd(const char *cmd)
     GAppInfo *appinfo = NULL;
     gboolean ret = FALSE;
 
-    appinfo = g_app_info_create_from_commandline(cmd, NULL,
-                G_APP_INFO_CREATE_NONE, NULL);
+    appinfo = g_app_info_create_from_commandline(cmd, NULL, G_APP_INFO_CREATE_NONE, NULL);
 
     if (appinfo == NULL) {
         perror("Command lanuch failed.");
@@ -95,18 +126,16 @@ static void launch_cmd(const char *cmd)
 
     ret = g_app_info_launch(appinfo, NULL, NULL, NULL);
     if (!ret)
-        perror("Command lanuch failed.");
+        perror("Command launch failed.");
 }
 
-void settings_clicked(GtkWidget* widget, const char* state)
+void connect_clicked(GtkWidget* widget)
 {
-    char cmd[100];
-    strcpy(cmd, SETTINGS_CMD);
-    strcat(cmd, state);
+    const char* cmd = "sudo kano-settings 5";
     launch_cmd(cmd);
 }
 
-static gboolean show_menu(GtkWidget *widget, GdkEventButton *event)
+static gboolean show_menu(GtkWidget *widget, GdkEventButton *event, kano_internet_plugin_t *plugin)
 {
     GtkWidget *menu = gtk_menu_new();
     GtkWidget *header_item;
@@ -115,41 +144,27 @@ static gboolean show_menu(GtkWidget *widget, GdkEventButton *event)
         return FALSE;
 
     /* Create the menu items */
-    header_item = gtk_menu_item_new_with_label("Kano Settings");
+    header_item = gtk_menu_item_new_with_label("Internet status");
     gtk_widget_set_sensitive(header_item, FALSE);
     gtk_menu_append(GTK_MENU(menu), header_item);
     gtk_widget_show(header_item);
 
-    /* Keyboard button */
-    GtkWidget* keyboard_item = gtk_image_menu_item_new_with_label("Keyboard");
-    g_signal_connect(keyboard_item, "activate", G_CALLBACK(settings_clicked), "0");
-    gtk_menu_append(GTK_MENU(menu), keyboard_item);
-    gtk_widget_show(keyboard_item);
-    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(keyboard_item), get_resized_icon(KEYBOARD_ICON));
-    /* Mouse button */
-    GtkWidget* mouse_item = gtk_image_menu_item_new_with_label("Mouse");
-    g_signal_connect(mouse_item, "activate", G_CALLBACK(settings_clicked), "1");
-    gtk_menu_append(GTK_MENU(menu), mouse_item);
-    gtk_widget_show(mouse_item);
-    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(mouse_item), get_resized_icon(MOUSE_ICON));
-    /* Audio button */
-    GtkWidget* audio_item = gtk_image_menu_item_new_with_label("Audio");
-    g_signal_connect(audio_item, "activate", G_CALLBACK(settings_clicked), "2");
-    gtk_menu_append(GTK_MENU(menu), audio_item);
-    gtk_widget_show(audio_item);
-    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(audio_item), get_resized_icon(AUDIO_ICON));
-    /* Display button */
-    GtkWidget* display_item = gtk_image_menu_item_new_with_label("Display");
-    g_signal_connect(display_item, "activate", G_CALLBACK(settings_clicked), "3");
-    gtk_menu_append(GTK_MENU(menu), display_item);
-    gtk_widget_show(display_item);
-    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(display_item), get_resized_icon(DISPLAY_ICON));
-    /* WiFi button */
-    GtkWidget* wifi_item = gtk_image_menu_item_new_with_label("WiFi");
-    g_signal_connect(wifi_item, "activate", G_CALLBACK(settings_clicked), "5");
-    gtk_menu_append(GTK_MENU(menu), wifi_item);
-    gtk_widget_show(wifi_item);
-    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(wifi_item), get_resized_icon(WIFI_ICON));
+    gboolean internet = internet_status(plugin);
+
+    if (internet) {
+        /* Internet working correctly */
+        GtkWidget* internet_item = gtk_menu_item_new_with_label("You have internet");
+        gtk_menu_append(GTK_MENU(menu), internet_item);
+        gtk_widget_show(internet_item);
+    }
+    else {
+        /* Internet not working */
+        GtkWidget* internet_item = gtk_image_menu_item_new_with_label("Connect to internet");
+        g_signal_connect(internet_item, "activate", G_CALLBACK(connect_clicked), NULL);
+        gtk_menu_append(GTK_MENU(menu), internet_item);
+        gtk_widget_show(internet_item);
+        gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(internet_item), get_resized_icon(WIFI_SETTING_ICON));
+    }
 
     g_signal_connect(menu, "selection-done", G_CALLBACK(selection_done), NULL);
 
@@ -178,24 +193,24 @@ void lxpanel_plugin_popup_set_position_helper(Panel * p, GtkWidget * near,
     GtkWidget * popup, GtkRequisition * popup_req, gint * px, gint * py)
 {
     /* Get the origin of the requested-near widget in
-       screen coordinates. */
+screen coordinates. */
     gint x, y;
     gdk_window_get_origin(GDK_WINDOW(near->window), &x, &y);
 
     /* Doesn't seem to be working according to spec; the allocation.x
-       sometimes has the window origin in it */
+sometimes has the window origin in it */
     if (x != near->allocation.x) x += near->allocation.x;
     if (y != near->allocation.y) y += near->allocation.y;
 
     /* Dispatch on edge to lay out the popup menu with respect to
-       the button. Also set "push-in" to avoid any case where it
-       might flow off screen. */
+the button. Also set "push-in" to avoid any case where it
+might flow off screen. */
     switch (p->edge)
     {
-        case EDGE_TOP:    y += near->allocation.height; break;
-        case EDGE_BOTTOM: y -= popup_req->height;       break;
-        case EDGE_LEFT:   x += near->allocation.width;  break;
-        case EDGE_RIGHT:  x -= popup_req->width;        break;
+        case EDGE_TOP: y += near->allocation.height; break;
+        case EDGE_BOTTOM: y -= popup_req->height; break;
+        case EDGE_LEFT: x += near->allocation.width; break;
+        case EDGE_RIGHT: x -= popup_req->width; break;
     }
     *px = x;
     *py = y;
@@ -231,15 +246,15 @@ static void plugin_save_configuration(Plugin *p, FILE *fp)
 }
 
 /* Plugin descriptor. */
-PluginClass kano_settings_plugin_class = {
+PluginClass kano_internet_plugin_class = {
     // this is a #define taking care of the size/version variables
     PLUGINCLASS_VERSIONING,
 
     // type of this plugin
-    type : "kano_settings",
-    name : N_("Kano Settings"),
+    type : "kano_internet",
+    name : N_("Kano Internet"),
     version: "1.0",
-    description : N_("Control your system."),
+    description : N_("Internet status."),
 
     // we can have many running at the same time
     one_per_system : FALSE,
@@ -249,7 +264,7 @@ PluginClass kano_settings_plugin_class = {
 
     // assigning our functions to provided pointers.
     constructor : plugin_constructor,
-    destructor  : plugin_destructor,
+    destructor : plugin_destructor,
     config : plugin_configure,
     save : plugin_save_configuration
 };

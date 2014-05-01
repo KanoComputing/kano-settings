@@ -3,3 +3,7 @@ bin/kano-wifi usr/bin
 
 icon/WiFi /usr/share/kano-extras/extras
 icon/wifi.png /usr/share/kano-extras/icons
+icon/widget-no-internet.png /usr/share/kano-settings/icon
+icon/widget-wifi.png /usr/share/kano-settings/icon
+
+lxpanel-plugin-internet/kano_internet.so usr/lib/arm-linux-gnueabihf/lxpanel/plugins/

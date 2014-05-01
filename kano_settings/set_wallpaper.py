@@ -8,7 +8,6 @@
 
 from gi.repository import Gtk, GdkPixbuf
 import os
-import shutil
 
 import kano_settings.config_file as config_file
 import kano_settings.components.fixed_size_box as fixed_size_box
@@ -23,7 +22,7 @@ class Wallpaper():
 
     def __init__(self):
         NUMBER_OF_ROWS = 2
-        NUMBER_OF_COLUMNS = 5
+        NUMBER_OF_COLUMNS = 3
         COLUMN_PADDING = 5
         ROW_PADDING = 0
         ICON_WIDTH = 90
@@ -105,34 +104,36 @@ class Wallpaper():
         # home directory
         USER = os.environ['SUDO_USER']
         deskrc_path = kdeskrc_home % (USER)
-        if not os.path.isfile(deskrc_path):
-            try:
-                shutil.copyfile(kdeskrc_default, deskrc_path)
-            except:
-                return 1
-
-         # Change wallpaper in deskrc
+        # Wallpaper selected
         image_169 = "%s%s-16-9.png" % (wallpaper_path, image_name)
         image_43 = "%s%s-4-3.png" % (wallpaper_path, image_name)
         image_1024 = "%s%s-1024.png" % (wallpaper_path, image_name)
-        # Read kdeskrc config file
-        f = open(deskrc_path, 'r')
-        newlines = []
-        for line in f:
-            if "Background.File-medium:" in line:
-                line = "  Background.File-medium: %s\n" % (image_1024)
-            elif "Background.File-4-3:" in line:
-                line = "  Background.File-4-3: %s\n" % (image_43)
-            elif "Background.File-16-9:" in line:
-                line = "  Background.File-16-9: %s\n" % (image_169)
-            newlines.append(line)
-        f.close()
-        # Overwrite config file with new lines
-        outfile = open(deskrc_path, 'w', 0)
-        outfile.writelines(newlines)
-        outfile.flush()
-        outfile.close()
-
+        # Look for the strings
+        found = False
+        if os.path.isfile(deskrc_path):
+            f = open(deskrc_path, 'r')
+            newlines = []
+            for line in f:
+                if "Background.File-medium:" in line:
+                    line = "  Background.File-medium: %s\n" % (image_1024)
+                    found = True
+                elif "Background.File-4-3:" in line:
+                    line = "  Background.File-4-3: %s\n" % (image_43)
+                elif "Background.File-16-9:" in line:
+                    line = "  Background.File-16-9: %s\n" % (image_169)
+                newlines.append(line)
+            f.close()
+        if found:
+            # Overwrite config file with new lines
+            outfile = open(deskrc_path, 'w')
+            outfile.writelines(newlines)
+            outfile.close()
+        # If not found add it
+        else:
+            with open(deskrc_path, "a") as outfile:
+                outfile.write("  Background.File-medium: %s\n" % (image_1024))
+                outfile.write("  Background.File-4-3: %s\n" % (image_43))
+                outfile.write("  Background.File-16-9: %s\n" % (image_169))
         # Refresh the wallpaper
         cmd = 'sudo -u %s kdesk -w' % USER
         os.system(cmd)
@@ -146,6 +147,8 @@ class Wallpaper():
         config_file.replace_setting("Wallpaper", self.get_selected())
 
     def create_list_wallpaper(self):
+        if not os.path.exists(wallpaper_path):
+            return
         for file in os.listdir(wallpaper_path):
             if name_pattern in file:
                 self.dict[file[:-8]] = False
