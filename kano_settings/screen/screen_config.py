@@ -8,17 +8,20 @@
 # Change screen resolution and other settings
 #
 
+import os
 import sys
 import re
 import subprocess
+from kano.utils import read_file_contents_as_lines
 
 CONFIG_FILE = "/boot/config.txt"
 
 
 # if the value argument is None, the option will be commented out
 def set_config_option(name, value=None):
-    with open(CONFIG_FILE, "r") as config_file:
-        lines = config_file.readlines()
+    lines = read_file_contents_as_lines(CONFIG_FILE)
+    if not lines:
+        return
 
     option_re = r'^\s*#?\s*' + str(name) + r'=(.*)'
 
@@ -42,6 +45,9 @@ def set_config_option(name, value=None):
 # Group must be either 'DMT' or 'CEA'
 def get_supported_modes(group):
     modes = {}
+
+    if not os.path.exists('/opt/vc/bin/tvservice'):
+        return modes
 
     cea_modes = subprocess.check_output(["/opt/vc/bin/tvservice", "-m", group.upper()])
     cea_modes = cea_modes.decode()
