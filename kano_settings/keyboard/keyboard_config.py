@@ -15,7 +15,7 @@ import kano_settings.keyboard.keyboard_layouts as keyboard_layouts
 keyboard_conffile = '/etc/default/keyboard'
 
 
-# Given a country name return the keyboard laout code
+# Given a country name return the keyboard layout code
 def find_country_code(country_name, layout):
     for l in layout:
         if l.upper() == country_name.upper():

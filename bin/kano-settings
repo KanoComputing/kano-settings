@@ -25,6 +25,7 @@ import kano_settings.constants as constants
 import kano_settings.components.first_run as first_run
 import kano_settings.components.default_intro as default_intro
 import kano_settings.components.cursor as cursor
+from kano_settings.auto_settings import auto_settings
 from kano.network import is_internet
 
 win = None
@@ -119,10 +120,15 @@ def main():
 
 
 if __name__ == "__main__":
+
     if os.environ['LOGNAME'] != 'root':
         exit("Error: kano-settings must be executed with root privileges")
 
     if(len(sys.argv) > 1):
+        if sys.argv[1] == 'auto':
+            # Apply settings
+            auto_settings()
+            exit()
         try:
             init_state = int(sys.argv[1])
         except:
