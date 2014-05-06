@@ -27,3 +27,9 @@ fi
 /usr/bin/kdesk &
 /usr/share/kano-vnc/startvnc &
 /usr/bin/startmouse &
+
+# Let kdesk breathe and setup the desktop, then update the widget
+# FIXME: Ideally we want something more robust than a sleep
+
+sleep 3
+kdesk -a loginregister
