@@ -10,18 +10,18 @@
 from gi.repository import Gtk
 import kano_settings.constants as constants
 import kano_settings.set_intro as set_intro
-import kano_settings.set_email as set_email
+#import kano_settings.set_email as set_email
 import kano_settings.set_keyboard as set_keyboard
-import kano_settings.set_mouse as set_mouse
+#import kano_settings.set_mouse as set_mouse
 import kano_settings.set_audio as set_audio
-import kano_settings.set_display as set_display
+#import kano_settings.set_display as set_display
 import kano_settings.set_wifi.home as set_wifi_proxy
 import kano_settings.config_file as config_file
 import kano_settings.components.cursor as cursor
 import os
 
 win = None
-MAX_STATE = 7
+MAX_STATE = 4
 
 
 class First_Run():
@@ -77,8 +77,6 @@ class First_Run():
 
         # If finished, needs a separate logic
         if win.state == MAX_STATE - 1:
-            # Write to config file to say we've completed the level.
-            config_file.replace_setting("Completed", "1")
             # Finished, so close window
             close_window()
             return
@@ -121,11 +119,8 @@ class First_Run():
         return {
             0: set_intro,
             1: set_keyboard,
-            2: set_mouse,
-            3: set_audio,
-            4: set_display,
-            5: set_email,
-            6: set_wifi_proxy,
+            2: set_audio,
+            3: set_wifi_proxy,
         }[x]
 
 
