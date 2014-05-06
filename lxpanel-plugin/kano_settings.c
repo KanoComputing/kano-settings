@@ -150,6 +150,12 @@ static gboolean show_menu(GtkWidget *widget, GdkEventButton *event)
     gtk_menu_append(GTK_MENU(menu), wifi_item);
     gtk_widget_show(wifi_item);
     gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(wifi_item), get_resized_icon(WIFI_ICON));
+    /* All button */
+    GtkWidget* all_item = gtk_image_menu_item_new_with_label("All settings");
+    g_signal_connect(all_item, "activate", G_CALLBACK(settings_clicked), "");
+    gtk_menu_append(GTK_MENU(menu), all_item);
+    gtk_widget_show(all_item);
+    gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(all_item), get_resized_icon(ICON_FILE));
 
     g_signal_connect(menu, "selection-done", G_CALLBACK(selection_done), NULL);
 

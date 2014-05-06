@@ -1,42 +1,43 @@
 # kano-settings
 
 
-Graphic tool to setup Kanux: email, keyboard, audio, display, wifi...
+Kano Settings is like a Swiss Army knife: crammed with lots of useful applications, all conveniently packaged together for ease of use and topped off with a lovely UI. It’s a great tool, especially for beginners, to get started quickly without having to tinker with different config files. Set up your wifi, keyboard, mouse, audio, display, account, wallpaper, and overclock your Raspberry Pi, all with one handy utility. 
 
-## kano-connect
+## Settings
 
-This script attempts to find an open wireless network and connect to it.
-Additionally it is capable of reconnecting to secure networks associated to by
-kwifiprompt.
 
-Usage:
-- Case 1: Attempt connection to the strongest wireless non-secure network
-$ sudo kanoconnect.py wlan0
+### Keyboard
 
-- Case 2: Attempt connection to a specified open network
-$ sudo kanoconnect.py wlan0 essidname
+This setting configures the keyboard given a country and a variant.  
 
-- Case 3: If the last cached network is found during scan, try to connect to
-  it (secure / unsecure)
-$ sudo kanoconnect.py -c wlan0
+### Mouse
 
-It might take some time for this script to finalise, depending on the wireless
-networks in range, their signal strenght and response times to acquire a DHCP
-lease.
+Configuration of the mouse speed: low, normal and high.  
 
-Portions of this code are extracted from the project pywilist:
-https://code.google.com/p/pywilist/
+### Audio
 
-The script needs root permissions. It is good to trigger it from
-`/etc/network/interfaces` post-up event.
+Audio output can be set to Analog (speaker or headphones) or HDMI (tv).  
 
-## kano-wifi
+### Display
 
-This script is a guided, interactive step-by-step process to connect to a
-wireless network. Sets return code to 0 if connected, anything else meaning
-an error occured.
+The resolution of the display can be configured from this setting. The list of modes offered depend directly on the screen/monitor used.
 
-Exit codes:
- - 1 need root privileges
- - 2 no wifi dongle connected
- - 3 a connection attempt is already in progress
+### Email
+
+[This setting will be deprecated soon]
+
+### Wifi
+
+Tool to configure your internet connection: ethernet, wifi or smartphone USB tethering.
+
+### Overclocking
+
+Get the most of your RaspberryPi. Choose from None, Modest, Medium or High.
+
+### Account
+
+Change your password, remove your account or add a new one.  
+
+### Wallpaper
+
+Select a wallpaper for your desktop.  
