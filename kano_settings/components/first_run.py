@@ -146,7 +146,12 @@ def close_window(event="delete-event", button=win):
 
         dialog.destroy()
 
+    if config_file.read_from_file("Completed") == "0":
+        config_file.replace_setting("Completed", "1")
+        Gtk.main_quit()
+        # The second argument names the new process
+        os.execv("/usr/bin/kano-login", ["kano-login", "flow", "1"])
+        return
+
     config_file.replace_setting("Completed", "1")
     Gtk.main_quit()
-     # The second argument names the new process
-    os.execv("/usr/bin/kano-login", ["kano-login"])
