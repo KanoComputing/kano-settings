@@ -31,5 +31,5 @@ fi
 # Let kdesk breathe and setup the desktop, then update the widget
 # FIXME: Ideally we want something more robust than a sleep
 
-sleep 3
+sleep 5
 kdesk -a loginregister
