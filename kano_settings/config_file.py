@@ -10,12 +10,12 @@
 
 import os
 import re
-from kano.utils import ensure_dir
+from kano.utils import ensure_dir, get_user_unsudoed
 
 USER = None
 USER_ID = None
 
-username = os.environ['SUDO_USER']
+username = get_user_unsudoed()
 settings_dir = os.path.join('/home', username, '.kano-settings')
 if os.path.exists(settings_dir) and os.path.isfile(settings_dir):
     os.rename(settings_dir, settings_dir + '.bak')
