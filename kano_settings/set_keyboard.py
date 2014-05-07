@@ -27,7 +27,7 @@ selected_country_index = 21
 selected_variant_index = 0
 selected_continent_hr = "America"
 selected_country_hr = "USA"
-selected_variant_hr = "Generic"
+selected_variant_hr = "generic"
 
 variants_combo = None
 countries_combo = None
@@ -141,6 +141,27 @@ def apply_changes(button):
     win.show_all()
 
 
+# This function is used by auto_settings
+def auto_changes(continent, country, variant):
+    variant = variant.lower()
+    # Get layout
+    if continent == 'africa':
+        layout = keyboard_layouts.layouts_africa
+    elif continent == 'america':
+        layout = keyboard_layouts.layouts_america
+    elif continent == 'asia':
+        layout = keyboard_layouts.layouts_asia
+    elif continent == 'australia':
+        layout = keyboard_layouts.layouts_australia
+    elif continent == 'europe':
+        layout = keyboard_layouts.layouts_europe
+    elif continent == 'others':
+        layout = keyboard_layouts.layouts_others
+    # Apply the keyboard changes
+    country_code = keyboard_config.find_country_code(country, layout)
+    keyboard_config.set_keyboard(country_code, variant)
+
+
 def read_config():
     global selected_continent_index, selected_country_index, selected_variant_index, selected_continent_hr, selected_country_hr, selected_variant_hr
 
@@ -222,7 +243,7 @@ def on_country_changed(combo):
     # Refresh variants combo box
     selected_country = keyboard_config.find_country_code(country, selected_layout)
     variants = keyboard_config.find_keyboard_variants(selected_country)
-    variants_combo.append_text("Generic")
+    variants_combo.append_text("generic")
     if variants is not None:
         for v in variants:
             variants_combo.append_text(v[0])
@@ -241,7 +262,7 @@ def on_variants_changed(combo):
         model = combo.get_model()
         variant = model[tree_iter][0]
         update.enable()
-        if variant == "Generic":
+        if variant == "generic":
             selected_variant = selected_variant_hr = str(variant)
             selected_variant_index = 0
             return
