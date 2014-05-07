@@ -153,8 +153,6 @@ def set_defaults(setting_name):
         setting_prop = "0"
     elif setting_name == "Display-overscan":
         setting_prop = "0"
-    elif setting_name == "Completed":
-        setting_prop = "0"
     elif setting_name == "Overclocking":
         setting_prop = "High"
     elif setting_name == "Mouse":
