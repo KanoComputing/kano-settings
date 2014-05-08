@@ -10,17 +10,23 @@
 
 import os
 import re
+from kano.utils import ensure_dir, get_user_unsudoed
 
 USER = None
 USER_ID = None
 
+username = get_user_unsudoed()
+settings_dir = os.path.join('/home', username, '.kano-settings')
+if os.path.exists(settings_dir) and os.path.isfile(settings_dir):
+    os.rename(settings_dir, settings_dir + '.bak')
+ensure_dir(settings_dir)
+settings_file = os.path.join(settings_dir, 'config')
+
 
 def init():
-    USER = os.environ['SUDO_USER']
-    path = "/home/%s/.kano-settings" % (USER)
     # Update .kano-settings with new current_country and current_variant
     try:
-        f = open(path, 'r+')
+        f = open(settings_file, 'r+')
         f.write('finished:0\n')
         f.close()
 
@@ -56,15 +62,10 @@ def compare(setting_name, setting):
 
 
 def replace_setting(setting_name, setting):
-
-    USER = os.environ['SUDO_USER']
-    #USER_ID = getpwnam(USER).pw_uid
-    path = "/home/%s/.kano-settings" % (USER)
-
     setting = str(setting)
     # Update .kano-settings with new current_country and current_variant
     try:
-        f = open(path, 'r')
+        f = open(settings_file, 'r')
         file_content = str(f.read())
         f.close()
         file_index = file_content.index(setting_name + ':')
@@ -72,7 +73,7 @@ def replace_setting(setting_name, setting):
         file_index3 = file_content[file_index:].index('\n')
         old_string = file_content[file_index: file_index3 + file_index]
         new_string = setting_name + ':' + setting
-        replace(path, old_string, new_string)
+        replace(settings_file, old_string, new_string)
         return 0
 
     except Exception:
@@ -82,15 +83,11 @@ def replace_setting(setting_name, setting):
 
 
 def write_to_file(setting_name, setting):
-
-    USER = os.environ.get('SUDO_USER')
-    path = "/home/%s/.kano-settings" % (USER)
-
     setting = str(setting)
 
     # Update .kano-settings with new current_country and current_variant
     try:
-        f = open(path, "a+")
+        f = open(settings_file, "a+")
         new_string = setting_name + ":" + setting + "\n"
         f.write(new_string)
         f.close()
@@ -101,12 +98,8 @@ def write_to_file(setting_name, setting):
 
 
 def read_from_file(setting_name):
-
-    USER = os.environ.get('SUDO_USER')
-    path = "/home/%s/.kano-settings" % (USER)
-
     try:
-        f = open(path, 'r')
+        f = open(settings_file, 'r')
         file_content = str(f.read())
         f.close()
         index1 = file_content.index(setting_name + ':')
@@ -152,8 +145,6 @@ def set_defaults(setting_name):
     elif setting_name == "Display-mode-index":
         setting_prop = "0"
     elif setting_name == "Display-overscan":
-        setting_prop = "0"
-    elif setting_name == "Completed":
         setting_prop = "0"
     elif setting_name == "Overclocking":
         setting_prop = "High"

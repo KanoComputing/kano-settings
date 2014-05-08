@@ -7,6 +7,7 @@
 #
 # This controls the flow of the projects on the first run of Kano-settings
 
+import os
 from gi.repository import Gtk
 import kano_settings.constants as constants
 import kano_settings.set_intro as set_intro
@@ -16,9 +17,11 @@ import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_audio as set_audio
 #import kano_settings.set_display as set_display
 import kano_settings.set_wifi.home as set_wifi_proxy
-import kano_settings.config_file as config_file
 import kano_settings.components.cursor as cursor
-import os
+
+# storing completed in kano-profile
+from kano.profile.apps import load_app_state_variable
+from kano.profile.badges import save_app_state_variable_with_dialog
 
 win = None
 MAX_STATE = 4
@@ -141,12 +144,12 @@ def close_window(event="delete-event", button=win):
 
         dialog.destroy()
 
-    if config_file.read_from_file("Completed") == "0":
-        config_file.replace_setting("Completed", "1")
+    if load_app_state_variable('kano-settings', 'completed') != 1:
+        save_app_state_variable_with_dialog('kano-settings', 'completed', 1)
         Gtk.main_quit()
         # The second argument names the new process
-        os.execv("/usr/bin/kano-login", ["kano-login", "flow", "1"])
+        os.execv("/usr/bin/kano-login", ["kano-login", "run_profile_gui"])
         return
 
-    config_file.replace_setting("Completed", "1")
+    save_app_state_variable_with_dialog('kano-settings', 'completed', 1)
     Gtk.main_quit()

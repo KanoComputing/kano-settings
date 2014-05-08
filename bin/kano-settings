@@ -18,7 +18,6 @@ if __name__ == '__main__' and __package__ is None:
         sys.path.append(dir_path)
 
 import kano_settings.set_intro as set_intro
-import kano_settings.config_file as config_file
 import kano_settings.components.top_bar as top_bar
 import kano_settings.components.apply_changes as apply_changes
 import kano_settings.constants as constants
@@ -27,6 +26,9 @@ import kano_settings.components.default_intro as default_intro
 import kano_settings.components.cursor as cursor
 from kano_settings.auto_settings import auto_settings
 from kano.network import is_internet
+
+# storing completed in kano-profile
+from kano.profile.apps import load_app_state_variable
 
 win = None
 MAX_STATE = 6
@@ -72,7 +74,7 @@ class MainWindow(Gtk.Window):
 
         # Init
         self.update = apply_changes.Apply()
-        if config_file.read_from_file('Completed') == "1":
+        if load_app_state_variable('kano-settings', 'completed') == 1:
             # we define the main button here so that the text is controlled by which flow we enter
             # ie on the first run, we want the button to say Next until the last screen, in which case it says Finish
             # So we want to control this text in default_intro.py and first_run.py
