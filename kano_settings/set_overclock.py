@@ -12,6 +12,7 @@ import kano_settings.components.heading as heading
 import kano_settings.constants as constants
 import kano_settings.components.fixed_size_box as fixed_size_box
 import os
+import os.path
 import re
 
 selected_button = 0
@@ -37,6 +38,10 @@ def file_replace(fname, pat, s_after):
 
 def activate(_win, box, update):
     global selected_button, initial_button
+
+    # This setting requires boot_config_file, return if it doesn't exist
+    if not os.path.isfile(boot_config_file):
+        return
 
     title = heading.Heading("Overclocking", "Let\'s put some power here")
     box.pack_start(title.container, False, False, 0)
