@@ -38,7 +38,7 @@ def set_keyboard(country_code, variant):
     default_backspace = 'guess'
 
     # Apply the new keyboard variant related settings on the system
-    if variant == "Generic":
+    if variant == "generic":
         os.system("sed -i 's/^XKBVARIANT.*$/XKBVARIANT=\"%s\"/' %s" % ('', keyboard_conffile))
     else:
         os.system("sed -i 's/^XKBVARIANT.*$/XKBVARIANT=\"%s\"/' %s" % (variant, keyboard_conffile))
