@@ -36,7 +36,7 @@ def set_config_option(name, value=None):
                 replace_str = r'#' + str(name) + r'=\1'
 
             new_line = re.sub(option_re, replace_str, line)
-            config_file.write(new_line)
+            config_file.write(new_line + "\n")
 
         if not was_found and value is not None:
             config_file.write(str(name) + "=" + str(value) + "\n")
