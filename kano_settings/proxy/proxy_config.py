@@ -55,6 +55,9 @@ class LibPreload:
 
         # Chromium settings go to its config file. Change them now
         p = ProxySettings().get_settings()
+        if not p:
+            print 'error setting chromium proxy'
+            return
         print 'setting chromium'
         self.chromium_proxy(p['proxy-ip'], p['proxy-port'], p['proxy-type'], None, None, enable)
 

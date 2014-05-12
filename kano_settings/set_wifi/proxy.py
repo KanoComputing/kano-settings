@@ -227,7 +227,7 @@ def read_config(radio1, radio2):
     username_text = get_setting("Proxy-username")
     username_entry.set_text(username_text)
 
-    proxy_type = get_setting("Proxy_type")
+    proxy_type = get_setting("Proxy-type")
     set_proxy_type_button(radio1, radio2)
 
 
@@ -236,7 +236,7 @@ def update_config(proxyip, proxyport, proxy_type, username):
     set_setting("Proxy-port", proxyport)
     set_setting("Proxy-ip", proxyip)
     set_setting("Proxy-username", username)
-    set_setting("Proxy_type", proxy_type)
+    set_setting("Proxy-type", proxy_type)
 
 
 def apply_changes(button=None, arg2=None):

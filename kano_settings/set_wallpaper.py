@@ -144,7 +144,9 @@ class Wallpaper():
 
     def update_config(self):
         # Add new configurations to config file.
-        set_setting("Wallpaper", self.get_selected())
+        selected = self.get_selected()
+        if selected:
+            set_setting("Wallpaper", selected)
 
     def create_list_wallpaper(self):
         if not os.path.exists(wallpaper_path):
