@@ -6,13 +6,15 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
+import os
+import re
+
 from gi.repository import Gtk
-import kano_settings.config_file as config_file
 import kano_settings.components.heading as heading
 import kano_settings.constants as constants
 import kano_settings.components.fixed_size_box as fixed_size_box
-import os
-import re
+from .config_file import get_setting, set_setting
+
 
 HDMI = False
 file_name_rc_local = "/etc/rc.local"
@@ -108,7 +110,7 @@ def apply_changes(button):
         config = "Analogue"
 
     # if audio settings haven't changed, don't apply new changes
-    if config_file.compare("Audio", config):
+    if get_setting('Audio') == config:
         return
 
     outcome_rc = file_replace(file_name_rc_local, rc_local, new_rc_local)
@@ -117,7 +119,7 @@ def apply_changes(button):
     if outcome_rc == -1 or outcome_boot == -1:
         return
 
-    config_file.replace_setting("Audio", config)
+    set_setting('Audio', config)
     # Tell user to reboot to see changes
     constants.need_reboot = True
 
