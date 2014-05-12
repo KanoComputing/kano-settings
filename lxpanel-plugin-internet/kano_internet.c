@@ -159,7 +159,7 @@ static gboolean show_menu(GtkWidget *widget, GdkEventButton *event, kano_interne
     }
     else {
         /* Internet not working */
-        GtkWidget* internet_item = gtk_image_menu_item_new_with_label("Connect to internet");
+        GtkWidget* internet_item = gtk_image_menu_item_new_with_label("Connect");
         g_signal_connect(internet_item, "activate", G_CALLBACK(connect_clicked), NULL);
         gtk_menu_append(GTK_MENU(menu), internet_item);
         gtk_widget_show(internet_item);
