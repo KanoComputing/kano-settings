@@ -6,11 +6,11 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk, GdkPixbuf
 import os
-
-import kano_settings.config_file as config_file
+from gi.repository import Gtk, GdkPixbuf
 import kano_settings.components.fixed_size_box as fixed_size_box
+from .config_file import get_setting, set_setting
+
 
 wallpaper_path = "/usr/share/kano-desktop/wallpapers/"
 kdeskrc_default = "/usr/share/kano-desktop/kdesk/.kdeskrc"
@@ -140,11 +140,11 @@ class Wallpaper():
         return 0
 
     def read_config(self):
-        return config_file.read_from_file("Wallpaper")
+        return get_setting("Wallpaper")
 
     def update_config(self):
         # Add new configurations to config file.
-        config_file.replace_setting("Wallpaper", self.get_selected())
+        set_setting("Wallpaper", self.get_selected())
 
     def create_list_wallpaper(self):
         if not os.path.exists(wallpaper_path):

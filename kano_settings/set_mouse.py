@@ -6,12 +6,12 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk
-import kano_settings.config_file as config_file
-import kano_settings.components.heading as heading
-import kano_settings.components.fixed_size_box as fixed_size_box
 import os
 import re
+from gi.repository import Gtk
+import kano_settings.components.heading as heading
+import kano_settings.components.fixed_size_box as fixed_size_box
+from .config_file import get_setting, set_setting
 
 selected_button = 0
 initial_button = 0
@@ -130,7 +130,7 @@ def apply_changes(button):
         config = "Fast"
 
     # Update config
-    config_file.replace_setting("Mouse", config)
+    set_setting("Mouse", config)
 
 
 # This function is used by auto_settings
@@ -170,7 +170,7 @@ def change_mouse_speed():
 def current_setting():
     global initial_button
 
-    mouse = config_file.read_from_file("Mouse")
+    mouse = get_setting("Mouse")
     if mouse == "Slow":
         initial_button = 0
     elif mouse == "Normal":
