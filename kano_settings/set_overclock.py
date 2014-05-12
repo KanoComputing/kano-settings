@@ -6,14 +6,15 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
+import os
+import re
+
 from gi.repository import Gtk
-import kano_settings.config_file as config_file
 import kano_settings.components.heading as heading
 import kano_settings.constants as constants
 import kano_settings.components.fixed_size_box as fixed_size_box
-import os
-import os.path
-import re
+from .config_file import set_setting
+
 
 selected_button = 0
 initial_button = 0
@@ -186,7 +187,7 @@ def apply_changes(button):
     file_replace(boot_config_file, over_voltage_pattern, over_voltage)
 
     # Update config
-    config_file.replace_setting("Overclocking", config)
+    set_setting("Overclocking", config)
 
     # Tell user to reboot to see changes
     constants.need_reboot = True

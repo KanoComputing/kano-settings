@@ -10,10 +10,11 @@ from gi.repository import Gtk
 from pwd import getpwnam
 import os
 import re
-import kano_settings.config_file as config_file
 import kano_settings.components.icons as icons
 import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
+from .config_file import get_setting, set_setting
+
 
 entry1 = None
 entry2 = None
@@ -106,12 +107,12 @@ def activate(_win, changeable_content, _update):
 
 
 def read_config():
-    return config_file.read_from_file("Email")
+    return get_setting("Email")
 
 
 def update_config(current_email):
     # Add new configurations to config file.
-    config_file.replace_setting("Email", current_email)
+    set_setting("Email", current_email)
 
 
 def check_match(entry, event):
@@ -154,6 +155,6 @@ def apply_changes(button):
     elif current_email != email1:
         os.system("echo %s > /home/%s/.useremail" % (email1, USER))
 
-    config_file.replace_setting("Email", email1)
+    set_setting("Email", email1)
 
     return 1

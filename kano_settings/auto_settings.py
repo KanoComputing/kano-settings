@@ -12,25 +12,25 @@ import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_mouse as set_mouse
 import kano_settings.set_audio as set_audio
 import kano_settings.set_overclock as set_overclock
-import kano_settings.config_file as config_file
+from .config_file import get_setting
 
 
 def auto_settings():
     # Keyboard
-    continent = config_file.read_from_file("Keyboard-continent-human")
-    country = config_file.read_from_file("Keyboard-country-human")
-    variant = config_file.read_from_file("Keyboard-variant-human")
+    continent = get_setting('Keyboard-continent-human')
+    country = get_setting('Keyboard-country-human')
+    variant = get_setting('Keyboard-variant-human')
     set_keyboard.auto_changes(continent, country, variant)
 
     # Audio
-    audio = config_file.read_from_file("Audio")
+    audio = get_setting('Audio')
     hdmi = (audio == 'HDMI')
     set_audio.auto_changes(hdmi)
 
     # Mouse
-    mouse = config_file.read_from_file("Mouse")
+    mouse = get_setting('Mouse')
     set_mouse.auto_changes(mouse)
 
     # Overclocking
-    overclock = config_file.read_from_file("Overclocking")
+    overclock = get_setting('Overclocking')
     set_overclock.auto_changes(overclock)
