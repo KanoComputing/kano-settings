@@ -11,7 +11,7 @@ import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.proxy as proxy
 import kano_settings.constants as constants
-from .config_file import get_setting, set_setting
+from ..config_file import get_setting, set_setting
 
 
 win = None
