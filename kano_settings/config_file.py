@@ -62,13 +62,10 @@ def replace(fname, pat, s_after):
 def get_setting(variable):
     try:
         value = read_json(settings_file)[variable]
-        print 'using json'
     except Exception:
         if variable not in defaults:
             print 'Defaults not found for variable: {}'.format(variable)
         value = defaults[variable]
-        print 'using default'
-    print repr(value)
     return value
 
 
