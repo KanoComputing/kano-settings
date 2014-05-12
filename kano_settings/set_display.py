@@ -116,9 +116,9 @@ def read_config():
 def update_config():
     # Add new configurations to config file.
     set_setting("Display-name", display_name)
-    set_setting("Display-mode", str(mode))
-    set_setting("Display-mode-index", str(mode_index))
-    set_setting("Display-overscan", str(overscan))
+    set_setting("Display-mode", mode)
+    set_setting("Display-mode-index", mode_index)
+    set_setting("Display-overscan", overscan)
 
 
 # Returns True if all the entries are the same as the ones stored in the config file.
@@ -132,7 +132,6 @@ def compare():
 
 # setting = "resolution" or "overscan"
 def set_defaults(setting, combo=None, button=None):
-
     # Set the default info on the dropdown lists
     if setting == "overscan":
         # set current state of button to be active or not.

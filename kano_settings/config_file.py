@@ -23,6 +23,7 @@ ensure_dir(settings_dir)
 settings_file = os.path.join(settings_dir, 'config')
 
 defaults = {
+    'Account': '',
     'Email': '',
     'Keyboard-continent-index': 1,
     'Keyboard-country-index': 21,
@@ -59,16 +60,22 @@ def replace(fname, pat, s_after):
 
 
 def get_setting(variable):
-    data = read_json(settings_file)
-    if variable not in data:
+    try:
+        value = read_json(settings_file)[variable]
+        print 'using json'
+    except Exception:
         if variable not in defaults:
             print 'Defaults not found for variable: {}'.format(variable)
-        return defaults[variable]
-    return data[variable]
+        value = defaults[variable]
+        print 'using default'
+    print repr(value)
+    return value
 
 
 def set_setting(variable, value):
     data = read_json(settings_file)
+    if not data:
+        data = dict()
     data[variable] = value
     write_json(settings_file, data)
 
