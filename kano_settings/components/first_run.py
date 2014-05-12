@@ -147,8 +147,6 @@ def close_window(event="delete-event", button=win):
     if load_app_state_variable('kano-settings', 'completed') != 1:
         save_app_state_variable_with_dialog('kano-settings', 'completed', 1)
         Gtk.main_quit()
-        # The second argument names the new process
-        os.execv("/usr/bin/kano-login", ["kano-login"])
         return
 
     save_app_state_variable_with_dialog('kano-settings', 'completed', 1)
