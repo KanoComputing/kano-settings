@@ -7,6 +7,7 @@
 #
 # This controls the flow of the projects on the first run of Kano-settings
 
+import os
 from gi.repository import Gtk
 import kano_settings.constants as constants
 import kano_settings.set_intro as set_intro
@@ -19,6 +20,7 @@ import kano_settings.components.cursor as cursor
 
 # storing completed in kano-profile
 from kano.profile.badges import save_app_state_variable_with_dialog
+from kano.profile.apps import load_app_state_variable
 
 win = None
 MAX_STATE = 4
@@ -140,6 +142,13 @@ def close_window(event="delete-event", button=win):
             print "OK clicked"
 
         dialog.destroy()
+
+    if load_app_state_variable('kano-settings', 'completed') != 1:
+        save_app_state_variable_with_dialog('kano-settings', 'completed', 1)
+        Gtk.main_quit()
+        # The second argument names the new process
+        os.execv("/usr/bin/kano-login", ["kano-login", "first_boot", "1"])
+        return
 
     save_app_state_variable_with_dialog('kano-settings', 'completed', 1)
     Gtk.main_quit()
