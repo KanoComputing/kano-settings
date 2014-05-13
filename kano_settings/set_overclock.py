@@ -195,6 +195,9 @@ def apply_changes(button):
 
 # This function is used by auto_settings
 def auto_changes(mode):
+    if not os.path.exists(boot_config_file):
+        return
+
     arm_freq = "arm_freq="
     core_freq = "core_freq="
     sdram_freq = "sdram_freq="

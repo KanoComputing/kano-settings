@@ -16,6 +16,8 @@ from .config_file import get_setting
 
 
 def auto_settings():
+    print 'setting auto settings'
+
     # Keyboard
     continent = get_setting('Keyboard-continent-human')
     country = get_setting('Keyboard-country-human')
