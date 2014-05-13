@@ -9,7 +9,6 @@
 
 from gi.repository import Gtk
 
-import kano_settings.set_email as set_email
 import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_mouse as set_mouse
 import kano_settings.set_audio as set_audio
@@ -19,15 +18,16 @@ import kano_settings.set_wifi.proxy as set_proxy
 import kano_settings.set_overclock as set_overclock
 import kano_settings.set_account.home as set_account
 import kano_settings.set_wallpaper as set_wallpaper
-import kano_settings.config_file as config_file
 import kano_settings.components.menu_button as menu_button
 import kano_settings.components.cursor as cursor
 import kano_settings.constants as constants
 from kano.network import is_internet
 from kano.utils import get_user_unsudoed
+from ..config_file import get_setting
 
-names = ["Keyboard", "Mouse", "Audio", "Display", "Email", "Wifi", "Overclocking", "Account", "Wallpaper"]
-custom_info = ["Keyboard-country-human", "Mouse", "Audio", "Display-mode", "Email", "Wifi", "Overclocking", "Account", "Wallpaper"]
+
+names = ["Keyboard", "Mouse", "Audio", "Display", "Wifi", "Overclocking", "Account", "Wallpaper"]
+custom_info = ["Keyboard-country-human", "Mouse", "Audio", "Display-mode", "Wifi", "Overclocking", "Account", "Wallpaper"]
 win = None
 NUMBER_OF_COLUMNS = 2
 
@@ -100,8 +100,7 @@ class Default_Intro():
     def update_intro(self):
         for x in range(len(custom_info)):
 
-            config_file.read_from_file(custom_info[x])
-            label_info = str(config_file.read_from_file(custom_info[x]))
+            label_info = get_setting(custom_info[x])
             if len(label_info) > 13:
                 label_info = label_info[:13] + "..."
             self.labels[x].set_text(label_info)
@@ -238,9 +237,8 @@ class Default_Intro():
             1: set_mouse,
             2: set_audio,
             3: set_display,
-            4: set_email,
-            5: set_wifi_proxy,
-            6: set_overclock,
-            7: set_account,
-            8: set_wallpaper,
+            4: set_wifi_proxy,
+            5: set_overclock,
+            6: set_account,
+            7: set_wallpaper,
         }[x]

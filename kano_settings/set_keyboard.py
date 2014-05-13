@@ -12,8 +12,9 @@ import threading
 import kano_settings.keyboard.keyboard_layouts as keyboard_layouts
 import kano_settings.keyboard.keyboard_config as keyboard_config
 import kano_settings.components.heading as heading
-import kano_settings.config_file as config_file
 import kano_settings.components.fixed_size_box as fixed_size_box
+from .config_file import get_setting, set_setting
+
 
 win = None  # TODO: Is it needed?
 update = None
@@ -165,22 +166,22 @@ def auto_changes(continent, country, variant):
 def read_config():
     global selected_continent_index, selected_country_index, selected_variant_index, selected_continent_hr, selected_country_hr, selected_variant_hr
 
-    selected_continent_index = config_file.read_from_file("Keyboard-continent-index")
-    selected_country_index = config_file.read_from_file("Keyboard-country-index")
-    selected_variant_index = config_file.read_from_file("Keyboard-variant-index")
-    selected_continent_hr = config_file.read_from_file("Keyboard-continent-human")
-    selected_country_hr = config_file.read_from_file("Keyboard-country-human")
-    selected_variant_hr = config_file.read_from_file("Keyboard-variant-human")
+    selected_continent_index = get_setting("Keyboard-continent-index")
+    selected_country_index = get_setting("Keyboard-country-index")
+    selected_variant_index = get_setting("Keyboard-variant-index")
+    selected_continent_hr = get_setting("Keyboard-continent-human")
+    selected_country_hr = get_setting("Keyboard-country-human")
+    selected_variant_hr = get_setting("Keyboard-variant-human")
 
 
 def update_config():
     # Add new configurations to config file.
-    config_file.replace_setting("Keyboard-continent-index", str(selected_continent_index))
-    config_file.replace_setting("Keyboard-country-index", str(selected_country_index))
-    config_file.replace_setting("Keyboard-variant-index", str(selected_variant_index))
-    config_file.replace_setting("Keyboard-continent-human", str(selected_continent_hr))
-    config_file.replace_setting("Keyboard-country-human", str(selected_country_hr))
-    config_file.replace_setting("Keyboard-variant-human", str(selected_variant_hr))
+    set_setting("Keyboard-continent-index", selected_continent_index)
+    set_setting("Keyboard-country-index", selected_country_index)
+    set_setting("Keyboard-variant-index", selected_variant_index)
+    set_setting("Keyboard-continent-human", selected_continent_hr)
+    set_setting("Keyboard-country-human", selected_country_hr)
+    set_setting("Keyboard-variant-human", selected_variant_hr)
 
 
 # setting = "variant", "continent" or "country"
@@ -190,7 +191,7 @@ def set_defaults(setting):
     # Set the default info on the dropdown lists
     # "Keyboard-continent":continents_combo, "Keyboard-country", "Keyboard-variant"]:
 
-    active_item = int(config_file.read_from_file("Keyboard-" + setting + "-index"))
+    active_item = get_setting("Keyboard-" + setting + "-index")
 
     if setting == "continent":
         continents_combo.set_active(int(active_item))
@@ -280,7 +281,7 @@ def on_variants_changed(combo):
 
 
 def work_finished_cb():
-    print("Finshed updating keyboard")
+    print("Finished updating keyboard")
 
 
 def fill_countries_combo(continent):

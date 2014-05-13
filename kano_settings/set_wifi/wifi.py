@@ -8,13 +8,14 @@
 
 from gi.repository import Gtk
 import os
+from os.path import isfile
 import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
-import kano_settings.config_file as config_file
 import kano.utils as utils
 from kano.network import is_internet
-from os.path import isfile
+from ..config_file import get_setting
+
 
 network_message = ""
 win = None
@@ -105,9 +106,6 @@ def activate(_win, _box, _update, proxy_button, disable_proxy=None):
 
         configure_container.pack_end(proxy_button, False, False, 0)
 
-        # Send user email through Google doc
-        send_email()
-
     elif constants.proxy_enabled and disable_proxy:
 
         container.pack_start(disable_proxy, False, False, 0)
@@ -153,22 +151,10 @@ def network_info():
 def configure_wifi(event=None, button=None):
     # Call WiFi config
     os.system('rxvt -title \'WiFi\' -e sudo /usr/bin/kano-wifi')
-    config_file.replace_setting("Wifi", network_message)
+    get_setting("Wifi", network_message)
 
 
 def apply_changes(event=None, button=None):
     return
 
 
-def send_email():
-    USER = os.environ['SUDO_USER']
-    emailFile = "/home/%s/.email" % (USER)
-    # Check if the .email file exists
-    if isfile(emailFile):
-        email = config_file.read_from_file("Email")
-        command_id = 'tail -1 /proc/cpuinfo'
-        id, _, _ = utils.run_cmd(command_id)
-        os.system("python /usr/bin/kano-email-register %s %s \"%s\"" % (email, USER, id))
-        # Remove .email file so we don't send it again
-        os.system("rm -f %s > /dev/null 2>&1" % (emailFile))
-    return

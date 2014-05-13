@@ -7,12 +7,13 @@
 #
 
 from gi.repository import Gtk
-import kano_settings.config_file as config_file
 import kano_settings.screen.screen_config as screen_config
 import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
 import kano.utils as utils
+from .config_file import get_setting, set_setting
+
 
 mode = 'auto'
 mode_index = 0
@@ -107,42 +108,39 @@ def apply_changes(button):
 def read_config():
     global mode, mode_index, overscan
 
-    mode = config_file.read_from_file("Display-mode")
-    mode_index = config_file.read_from_file("Display-mode-index")
-    overscan = config_file.read_from_file("Display-overscan")
+    mode = get_setting("Display-mode")
+    mode_index = get_setting("Display-mode-index")
+    overscan = get_setting("Display-overscan")
 
 
 def update_config():
-
     # Add new configurations to config file.
-    config_file.replace_setting("Display-name", display_name)
-    config_file.replace_setting("Display-mode", str(mode))
-    config_file.replace_setting("Display-mode-index", str(mode_index))
-    config_file.replace_setting("Display-overscan", str(overscan))
+    set_setting("Display-name", display_name)
+    set_setting("Display-mode", mode)
+    set_setting("Display-mode-index", mode_index)
+    set_setting("Display-overscan", overscan)
 
 
 # Returns True if all the entries are the same as the ones stored in the config file.
 def compare():
-
     # Compare new entries to old ones already stored.
-    display_mode = config_file.compare("Display-mode", str(mode))
-    display_mode_index = config_file.compare("Display-mode-index", str(mode_index))
-    display_overscan = config_file.compare("Display-overscan", str(overscan))
+    display_mode = get_setting("Display-mode") == mode
+    display_mode_index = get_setting("Display-mode-index") == mode_index
+    display_overscan = get_setting("Display-overscan") == overscan
     return display_mode and display_mode_index and display_overscan
 
 
 # setting = "resolution" or "overscan"
 def set_defaults(setting, combo=None, button=None):
-
     # Set the default info on the dropdown lists
     if setting == "overscan":
         # set current state of button to be active or not.
-        active_item = int(config_file.read_from_file("Display-overscan"))
+        active_item = get_setting("Display-overscan")
         button.set_active(active_item)
 
     elif setting == "resolution":
         # set the active dropdown item to the config.
-        active_item = int(config_file.read_from_file("Display-mode-index"))
+        active_item = get_setting("Display-mode-index")
         combo.set_active(active_item)
 
 

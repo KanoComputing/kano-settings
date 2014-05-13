@@ -11,7 +11,6 @@ import os
 from gi.repository import Gtk
 import kano_settings.constants as constants
 import kano_settings.set_intro as set_intro
-#import kano_settings.set_email as set_email
 import kano_settings.set_keyboard as set_keyboard
 #import kano_settings.set_mouse as set_mouse
 import kano_settings.set_audio as set_audio
@@ -20,8 +19,8 @@ import kano_settings.set_wifi.home as set_wifi_proxy
 import kano_settings.components.cursor as cursor
 
 # storing completed in kano-profile
-from kano.profile.apps import load_app_state_variable
 from kano.profile.badges import save_app_state_variable_with_dialog
+from kano.profile.apps import load_app_state_variable
 
 win = None
 MAX_STATE = 4

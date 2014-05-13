@@ -11,7 +11,8 @@ import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.proxy as proxy
 import kano_settings.constants as constants
-import kano_settings.config_file as config_file
+from ..config_file import get_setting, set_setting
+
 
 win = None
 box = None
@@ -217,25 +218,25 @@ def activate(_win, _box, _update, to_wifi_button):
 def read_config(radio1, radio2):
     global port_entry, username_entry, ip_entry, proxy_type
 
-    port_text = config_file.read_from_file("Proxy-port")
+    port_text = get_setting("Proxy-port")
     port_entry.set_text(port_text)
 
-    ip_text = config_file.read_from_file("Proxy-ip")
+    ip_text = get_setting("Proxy-ip")
     ip_entry.set_text(ip_text)
 
-    username_text = config_file.read_from_file("Proxy-username")
+    username_text = get_setting("Proxy-username")
     username_entry.set_text(username_text)
 
-    proxy_type = config_file.read_from_file("Proxy_type")
+    proxy_type = get_setting("Proxy-type")
     set_proxy_type_button(radio1, radio2)
 
 
 # Update for proxy
 def update_config(proxyip, proxyport, proxy_type, username):
-    config_file.replace_setting("Proxy-port", proxyport)
-    config_file.replace_setting("Proxy-ip", proxyip)
-    config_file.replace_setting("Proxy-username", username)
-    config_file.replace_setting("Proxy_type", proxy_type)
+    set_setting("Proxy-port", proxyport)
+    set_setting("Proxy-ip", proxyip)
+    set_setting("Proxy-username", username)
+    set_setting("Proxy-type", proxy_type)
 
 
 def apply_changes(button=None, arg2=None):
