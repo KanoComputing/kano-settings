@@ -25,7 +25,6 @@ settings_file = os.path.join(settings_dir, 'config')
 
 defaults = {
     'Account': '',
-    'Email': '',
     'Keyboard-continent-index': 1,
     'Keyboard-country-index': 21,
     'Keyboard-variant-index': 0,

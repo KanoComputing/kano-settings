@@ -106,9 +106,6 @@ def activate(_win, _box, _update, proxy_button, disable_proxy=None):
 
         configure_container.pack_end(proxy_button, False, False, 0)
 
-        # Send user email through Google doc
-        send_email()
-
     elif constants.proxy_enabled and disable_proxy:
 
         container.pack_start(disable_proxy, False, False, 0)
@@ -161,15 +158,3 @@ def apply_changes(event=None, button=None):
     return
 
 
-def send_email():
-    USER = os.environ['SUDO_USER']
-    emailFile = "/home/%s/.email" % (USER)
-    # Check if the .email file exists
-    if isfile(emailFile):
-        email = get_setting("Email")
-        command_id = 'tail -1 /proc/cpuinfo'
-        id, _, _ = utils.run_cmd(command_id)
-        os.system("python /usr/bin/kano-email-register %s %s \"%s\"" % (email, USER, id))
-        # Remove .email file so we don't send it again
-        os.system("rm -f %s > /dev/null 2>&1" % (emailFile))
-    return

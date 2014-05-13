@@ -1,30 +1,26 @@
 # kano-settings
 
 
-Kano Settings is like a Swiss Army knife: crammed with lots of useful applications, all conveniently packaged together for ease of use and topped off with a lovely UI. It’s a great tool, especially for beginners, to get started quickly without having to tinker with different config files. Set up your wifi, keyboard, mouse, audio, display, account, wallpaper, and overclock your Raspberry Pi, all with one handy utility. 
+Kano Settings is like a Swiss Army knife: crammed with lots of useful applications, all conveniently packaged together for ease of use and topped off with a lovely UI. It’s a great tool, especially for beginners, to get started quickly without having to tinker with different config files. Set up your wifi, keyboard, mouse, audio, display, account, wallpaper, and overclock your Raspberry Pi, all with one handy utility.
 
 ## Settings
 
 
 ### Keyboard
 
-This setting configures the keyboard given a country and a variant.  
+This setting configures the keyboard given a country and a variant.
 
 ### Mouse
 
-Configuration of the mouse speed: low, normal and high.  
+Configuration of the mouse speed: low, normal and high.
 
 ### Audio
 
-Audio output can be set to Analog (speaker or headphones) or HDMI (tv).  
+Audio output can be set to Analog (speaker or headphones) or HDMI (tv).
 
 ### Display
 
 The resolution of the display can be configured from this setting. The list of modes offered depend directly on the screen/monitor used.
-
-### Email
-
-[This setting will be deprecated soon]
 
 ### Wifi
 
@@ -36,8 +32,8 @@ Get the most of your RaspberryPi. Choose from None, Modest, Medium or High.
 
 ### Account
 
-Change your password, remove your account or add a new one.  
+Change your password, remove your account or add a new one.
 
 ### Wallpaper
 
-Select a wallpaper for your desktop.  
+Select a wallpaper for your desktop.
