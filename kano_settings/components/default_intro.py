@@ -9,7 +9,6 @@
 
 from gi.repository import Gtk
 
-import kano_settings.set_email as set_email
 import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_mouse as set_mouse
 import kano_settings.set_audio as set_audio
@@ -27,8 +26,8 @@ from kano.utils import get_user_unsudoed
 from ..config_file import get_setting
 
 
-names = ["Keyboard", "Mouse", "Audio", "Display", "Email", "Wifi", "Overclocking", "Account", "Wallpaper"]
-custom_info = ["Keyboard-country-human", "Mouse", "Audio", "Display-mode", "Email", "Wifi", "Overclocking", "Account", "Wallpaper"]
+names = ["Keyboard", "Mouse", "Audio", "Display", "Wifi", "Overclocking", "Account", "Wallpaper"]
+custom_info = ["Keyboard-country-human", "Mouse", "Audio", "Display-mode", "Wifi", "Overclocking", "Account", "Wallpaper"]
 win = None
 NUMBER_OF_COLUMNS = 2
 
@@ -238,9 +237,8 @@ class Default_Intro():
             1: set_mouse,
             2: set_audio,
             3: set_display,
-            4: set_email,
-            5: set_wifi_proxy,
-            6: set_overclock,
-            7: set_account,
-            8: set_wallpaper,
+            4: set_wifi_proxy,
+            5: set_overclock,
+            6: set_account,
+            7: set_wallpaper,
         }[x]

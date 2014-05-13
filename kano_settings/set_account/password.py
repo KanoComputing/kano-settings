@@ -58,7 +58,6 @@ def activate(_win, changeable_content, _update):
     #success_icon1 = Gtk.Image()
     #tick = icons.Icons("tick").subpixbuf
     #cross = icons.Icons("cross").subpixbuf
-    #email_entry.attach(success_icon, 1, 1, 1, 1)
 
     _update.disable()
 
