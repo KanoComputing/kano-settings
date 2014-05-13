@@ -281,7 +281,7 @@ def on_variants_changed(combo):
 
 
 def work_finished_cb():
-    print("Finshed updating keyboard")
+    print("Finished updating keyboard")
 
 
 def fill_countries_combo(continent):
