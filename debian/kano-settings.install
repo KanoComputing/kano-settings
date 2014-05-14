@@ -4,8 +4,8 @@ bin/startmouse /usr/bin
 kano_settings/* /usr/lib/python2.7/dist-packages/kano_settings
 media/* /usr/share/kano-settings/media
 
-icon/Settings /usr/share/kano-extras/extras
-icon/kano-settings.png /usr/share/kano-extras/icons
+icon/Settings /usr/share/kano-apps/extras
+icon/kano-settings.png /usr/share/kano-apps/icons
 icon/settings-widget.png /usr/share/kano-settings
 
 lxpanel-plugin/kano_settings.so usr/lib/arm-linux-gnueabihf/lxpanel/plugins/
