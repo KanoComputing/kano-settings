@@ -20,6 +20,7 @@ class LibPreload:
     def __init__(self, filename='/etc/ld.so.preload'):
         self.filename = filename
         self.libs = ['/usr/lib/libdsocksd.so.0', '/lib/arm-linux-gnueabihf/libdl.so.2']
+        self.chromium_cfg = '/etc/chromium/default'
 
     def is_enabled(self):
         # Reads through preload file in search of proxy libraries.
@@ -34,8 +35,7 @@ class LibPreload:
 
     # FIXME: This code shouts for a convenient refactoring
     # It does not work 100% as sometimes Chromium stalls. A restart sometimes solves the problem
-    def chromium_proxy(self, ip, port, ptype, username, password, enable=True):
-        chromium_cfg = '/etc/chromium/default'
+    def set_chromium_proxy(self, ip, port, ptype, username, password, enable=True):
         if enable:
             if 'socks_v5' in ptype:
                 proxy_type = 'socks5'
@@ -47,19 +47,19 @@ class LibPreload:
             strflags = '"--password-store=detect"'
 
         strflags = strflags.replace('/', '\/')
-        cmd = "/bin/sed -i 's/CHROMIUM_FLAGS=.*/CHROMIUM_FLAGS=%s/g' %s" % (strflags, chromium_cfg)
+        cmd = "/bin/sed -i 's/CHROMIUM_FLAGS=.*/CHROMIUM_FLAGS=%s/g' %s" % (strflags, self.chromium_cfg)
         rc = os.system(cmd)
         return rc == 0
-
+        
     def proxify(self, enable=False):
-
-        # Chromium settings go to its config file. Change them now
-        p = ProxySettings().get_settings()
-        if not p:
-            print 'error setting chromium proxy'
-            return
+        
+	# Chromium settings go to its config file. Change them now
+	p = ProxySettings().get_settings()
+	if not p:
+	    print 'error setting chromium proxy'
+	    return
         print 'setting chromium'
-        self.chromium_proxy(p['proxy-ip'], p['proxy-port'], p['proxy-type'], None, None, enable)
+        self.set_chromium_proxy(p['proxy-ip'], p['proxy-port'], p['proxy-type'], None, None, enable)
 
         # If the change is already set, do nothing
         if enable == self.is_enabled():
@@ -89,6 +89,7 @@ class ProxySettings:
     def __init__(self, filename='/etc/dante.conf'):
         self.filename = filename
         self.marker = '# kano-settings - DO NOT TOUCH MANUALLY BELOW THIS LINE'
+        self.chromium_cfg = '/etc/chromium/default'
 
         self.dante_format_socks = \
             'route {\n' \
@@ -123,6 +124,32 @@ class ProxySettings:
         for c, e in enumerate(entries):
             if e.strip('\n') == self.marker:
                 saved_settings = self.parse_out(entries[c + 1:])
+
+        # collect and return Chromium proxy settings
+        # TODO: Refactor code so we centralize set / get chromium settings
+        try:
+            r = open (self.chromium_cfg).readlines()
+            for j in r:
+                p = j.find('--proxy-server')
+                if (p != -1):
+                    # I know... below code hurts my eyes too...
+                    # What we are breaking down is a string in the following form:
+                    # CHROMIUM_FLAGS="--password-store=detect --proxy-server="socks5://10.5.5.5:9999"\n
+                    if saved_settings == None:
+                        saved_settings = {}
+
+                    keys = j[p:].partition(':')
+                    socks_type = keys[0].split('=')[1].strip('"')
+                    socks_ip = keys[2].split(':')[0].strip('//')
+                    socks_port = keys[2].split(':')[1].strip('"\n')
+
+                    saved_settings['chromium_type'] = socks_type
+                    saved_settings['chromium_ip'] = socks_ip
+                    saved_settings['chromium_port'] = socks_port
+        except:
+            # Chromium does not have proxy settings
+            pass
+
         return saved_settings
 
     def set_settings(self, dict_settings):
