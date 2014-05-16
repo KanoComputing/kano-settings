@@ -146,7 +146,7 @@ static gboolean show_menu(GtkWidget *widget, GdkEventButton *event)
     gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(display_item), get_resized_icon(DISPLAY_ICON));
     /* WiFi button */
     GtkWidget* wifi_item = gtk_image_menu_item_new_with_label("WiFi");
-    g_signal_connect(wifi_item, "activate", G_CALLBACK(settings_clicked), "5");
+    g_signal_connect(wifi_item, "activate", G_CALLBACK(settings_clicked), "4");
     gtk_menu_append(GTK_MENU(menu), wifi_item);
     gtk_widget_show(wifi_item);
     gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(wifi_item), get_resized_icon(WIFI_ICON));
