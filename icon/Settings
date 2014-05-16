@@ -6,4 +6,5 @@ Name[en_GB]=Settings
 Icon=/usr/share/kano-apps/icons/kano-settings.png
 Exec=sudo /usr/bin/kano-launcher /usr/bin/kano-settings settings
 Comment[en_GB]=Kanux system settings
+Categories=Extras;
 StartupNotify=true
