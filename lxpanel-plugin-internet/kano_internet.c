@@ -131,7 +131,7 @@ static void launch_cmd(const char *cmd)
 
 void connect_clicked(GtkWidget* widget)
 {
-    const char* cmd = "sudo kano-settings 5";
+    const char* cmd = "sudo kano-settings 4";
     launch_cmd(cmd);
 }
 

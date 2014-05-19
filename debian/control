@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 9), build-essential, pkg-config, libgtk2.0-dev,
                libmenu-cache1-dev, lxpanel, libfm-gtk1, libfm-dev
 
 Package: kano-settings
-Architecture: all
+Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, python, python-gi, dante-client,
          kano-toolset, kano-profile
 Recommends: kano-fonts
@@ -16,7 +16,7 @@ Description: Graphical tool to set different system settings
  like Wireless, Keyboard layout, Screen options, and Proxy.
 
 Package: kano-connect
-Architecture: all
+Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, python, udhcpc,
          rxvt-unicode-256color, kano-toolset
 Description: Software to make Kanux connect over Wireless networks automatically.

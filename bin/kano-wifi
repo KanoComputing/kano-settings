@@ -144,7 +144,7 @@ if __name__ == '__main__':
                 sys.exit (2)
             else:
                 msg = 'Great! You are connected to %s!' % a
-                subprocess.call(['typewriter_echo', msg, '1', '2'])       
+                subprocess.call(['typewriter_echo', msg, '1', '2'])
 
                 # cache this custom network so it is connected during next system boot
                 wificache.save('', None, None, wpaconf)
@@ -260,13 +260,21 @@ if __name__ == '__main__':
             subprocess.call(['typewriter_echo', msg, '0', '2'])
 
             if encryption in ('wep', 'wpa'):
-                msg = 'What\'s the password?'
+                # Ask for hidden password or not
+                msg = 'Do you want the password to be hidden? [y/N]'
                 subprocess.call(['typewriter_echo', msg, '0', '1'])
-                print "(Don't worry if you don't see any text, your secret password has been hidden)"
-                enckey = getpass.getpass()
+                hidden = raw_input(" Option: ")
+                # Ask for password
+                msg = '\nWhat\'s the password?'
+                subprocess.call(['typewriter_echo', msg, '0', '1'])
+                if hidden in ('n', 'N', 'no', 'NO'):
+                    enckey = raw_input(" Password: ")
+                else:
+                    print "(Don't worry if you don't see any text, your secret password has been hidden)"
+                    enckey = getpass.getpass()
 
             # Attempting connection to selected network
-            msg = 'Trying %s, please stand by...' % essid
+            msg = '\nTrying %s, please stand by...' % essid
             subprocess.call(['typewriter_echo', msg, '0', '2'])
             connect(wiface, essid, encryption, enckey)
             online = is_gateway()
