@@ -8,7 +8,7 @@
 
 from gi.repository import Gtk
 import os
-from os.path import isfile
+#from os.path import isfile
 import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
@@ -21,17 +21,21 @@ network_message = ""
 win = None
 box = None
 update = None
+proxy_button = None
+disable_proxy = None
 WIFI_IMG_HEIGHT = 110
+handler = None
 
 
-def activate(_win, _box, _update, proxy_button, disable_proxy=None):
-    global network_message, box, win, update
+def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
+    global network_message, box, win, update, proxy_button
 
     constants.has_internet = is_internet()
 
     win = _win
     box = _box
     update = _update
+    proxy_button = _proxy_button
 
     title = heading.Heading("", "")
     box.pack_start(title.container, False, False, 0)
@@ -104,6 +108,10 @@ def activate(_win, _box, _update, proxy_button, disable_proxy=None):
             divider_label = Gtk.Label("|")
             configure_container.pack_start(divider_label, False, False, 3)
 
+        # Very hacky way to centre the Proxy button - put spaces in the label
+        proxy_label = Gtk.Label("Proxy  ")
+        proxy_label.get_style_context().add_class("orange")
+        proxy_button.add(proxy_label)
         configure_container.pack_end(proxy_button, False, False, 0)
 
     elif constants.proxy_enabled and disable_proxy:
@@ -130,6 +138,7 @@ def activate(_win, _box, _update, proxy_button, disable_proxy=None):
 
     box.pack_start(update.box, False, False, 0)
     update.enable()
+    box.show_all()
 
 
 def network_info():
@@ -149,12 +158,23 @@ def network_info():
 
 
 def configure_wifi(event=None, button=None):
+    global network_message, win, handler
+
+    # Disconnect this handler once the user regains focus to the window
+    handler = win.connect("focus-in-event", refresh)
     # Call WiFi config
     os.system('rxvt -title \'WiFi\' -e sudo /usr/bin/kano-wifi')
-    get_setting("Wifi", network_message)
+    network_message = get_setting("Wifi")
+
+
+def refresh(widget=None, event=None):
+    global box, win, update, proxy_button, handler
+
+    for child in box.get_children():
+        box.remove(child)
+    activate(win, box, update, proxy_button)
+    win.disconnect(handler)
 
 
 def apply_changes(event=None, button=None):
     return
-
-

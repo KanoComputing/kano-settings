@@ -51,10 +51,7 @@ def generate_wifi_button():
 # This is the orange button we see in the wifi settings that takes you to the proxy settings
 def generate_proxy_button():
     to_proxy_button = Gtk.EventBox()
-    # Very hacky way to centre the Proxy button - put spaces in the label
-    to_proxy_label = Gtk.Label("Proxy  ")
-    to_proxy_label.get_style_context().add_class("orange")
-    to_proxy_button.add(to_proxy_label)
+    # The bulk of this function has moved to wifi.py
     to_proxy_button.connect("button_press_event", to_proxy)
     return to_proxy_button
 
