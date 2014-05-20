@@ -16,7 +16,6 @@ import kano.utils as utils
 from kano.network import is_internet
 from ..config_file import get_setting
 
-
 network_message = ""
 win = None
 box = None
@@ -77,7 +76,7 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
     if constants.has_internet:
 
         update.green_background()
-        update.text.set_text("FINISH")
+        update.set_text("FINISH")
 
         status_box.pack_start(internet_status, False, False, 3)
         status_box.pack_start(internet_action, False, False, 3)

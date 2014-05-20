@@ -15,18 +15,10 @@ class Apply():
     def __init__(self, name=""):
 
         # Create button
-        self.button = Gtk.Button()
-        self.text = Gtk.Label(name)
-        self.text.get_style_context().add_class("apply_changes_text")
-
-        # Contains writing of button
-        self.label = Gtk.Box()
-        self.label.add(self.text)
-        self.button.add(self.label)
-        self.label.props.halign = Gtk.Align.CENTER
-        self.button.set_size_request(160, 44)
+        self.button = Gtk.Button(name)
 
         # Get rid of annoying dotted borders around click buttons
+        # TODO: change styling so the focus border is less intrusive
         self.button.set_can_focus(False)
 
         # Allows button to be styled in css
@@ -53,3 +45,6 @@ class Apply():
     def green_background(self):
         self.button_style.add_class("green")
         self.button_style.remove_class("grey")
+
+    def set_text(self, text):
+        self.button.set_label(text)

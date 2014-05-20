@@ -66,7 +66,7 @@ class MainWindow(Gtk.Window):
         self.changeable_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.changeable_content.props.halign = Gtk.Align.CENTER
 
-        self.top_bar = top_bar.Top_bar(WINDOW_WIDTH)
+        self.top_bar = top_bar.Top_bar(WINDOW_WIDTH, self)
         self.top_bar.close_button.connect("clicked", first_run.close_window)
 
         # Check for internet
@@ -78,7 +78,7 @@ class MainWindow(Gtk.Window):
             # we define the main button here so that the text is controlled by which flow we enter
             # ie on the first run, we want the button to say Next until the last screen, in which case it says Finish
             # So we want to control this text in default_intro.py and first_run.py
-            self.update.text.set_text("APPLY CHANGES")
+            self.update.set_text("APPLY CHANGES")
             self.run_through = default_intro.Default_Intro(self, WINDOW_HEIGHT, WINDOW_WIDTH, self.top_bar.height)
             self.top_bar.disable_next()
             if init_state >= 0:
@@ -86,7 +86,7 @@ class MainWindow(Gtk.Window):
             else:
                 self.top_bar.disable_prev()
         else:
-            self.update.text.set_text("GET STARTED")
+            self.update.set_text("GET STARTED")
             self.run_through = first_run.First_Run(self)
             set_intro.activate(self, self.changeable_content, self.update)
             self.top_bar.next_button.set_image(self.top_bar.dark_next_arrow)
@@ -97,6 +97,7 @@ class MainWindow(Gtk.Window):
         self.update.button.connect('button_press_event', self.run_through.update)
         self.update.button.connect('enter-notify-event', cursor.hand_cursor, self)
         self.update.button.connect('leave-notify-event', cursor.arrow_cursor, self)
+        self.update.button.connect('button-press-event', cursor.arrow_cursor, self)
 
         self.grid.attach(self.top_bar.background, 0, 0, 1, 1)
         self.grid.attach(self.changeable_content, 0, 2, 1, 1)
@@ -115,6 +116,7 @@ def main():
     styleContext.add_provider_for_screen(screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
     # Create windown
     win = MainWindow()
+    win.connect("delete-event", Gtk.main_quit)
     # Display window
     win.show_all()
     # start the GTK+ processing loop

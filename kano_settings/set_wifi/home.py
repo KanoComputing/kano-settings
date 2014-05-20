@@ -11,6 +11,8 @@ from gi.repository import Gtk
 import kano_settings.set_wifi.proxy as set_proxy
 import kano_settings.set_wifi.wifi as set_wifi
 import kano_settings.constants as constants
+import kano_settings.components.cursor as cursor
+
 
 win = None
 box = None
@@ -50,9 +52,14 @@ def generate_wifi_button():
 
 # This is the orange button we see in the wifi settings that takes you to the proxy settings
 def generate_proxy_button():
+    global win
+
     to_proxy_button = Gtk.EventBox()
     # The bulk of this function has moved to wifi.py
     to_proxy_button.connect("button_press_event", to_proxy)
+    to_proxy_button.connect('enter-notify-event', cursor.hand_cursor, win)
+    to_proxy_button.connect('leave-notify-event', cursor.arrow_cursor, win)
+    to_proxy_button.connect('button-press-event', cursor.arrow_cursor, win)
     return to_proxy_button
 
 

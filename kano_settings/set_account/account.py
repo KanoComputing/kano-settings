@@ -12,6 +12,7 @@ import os
 import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 from kano.utils import get_user_unsudoed
+import kano_settings.components.cursor as cursor
 
 win = None
 update = None
@@ -40,24 +41,28 @@ def activate(_win, changeable_content, _update, pass_button):
     accounts_header = heading.Heading("Accounts", "Add or remove accounts")
 
     # Add account button
-    add_button = Gtk.Button()
+    add_button = Gtk.Button("ADD ACCOUNT")
     add_button.get_style_context().add_class("apply_changes_button")
     add_button.get_style_context().add_class("green")
-    add_label = Gtk.Label("ADD ACCOUNT")
-    add_label.get_style_context().add_class("apply_changes_text")
-    add_button.add(add_label)
     add_button.set_size_request(200, 44)
     add_button.connect("button_press_event", add_account)
 
     # Remove account button
-    remove_button = Gtk.Button()
+    remove_button = Gtk.Button("REMOVE ACCOUNT")
     remove_button.get_style_context().add_class("apply_changes_button")
     remove_button.get_style_context().add_class("red")
-    remove_label = Gtk.Label("REMOVE ACCOUNT")
-    remove_label.get_style_context().add_class("apply_changes_text")
-    remove_button.add(remove_label)
     remove_button.set_size_request(200, 44)
     remove_button.connect("button_press_event", remove_account)
+
+    remove_button.connect('enter-notify-event', cursor.hand_cursor, win)
+    remove_button.connect('leave-notify-event', cursor.arrow_cursor, win)
+    remove_button.connect('button-press-event', cursor.arrow_cursor, win)
+    add_button.connect('enter-notify-event', cursor.hand_cursor, win)
+    add_button.connect('leave-notify-event', cursor.arrow_cursor, win)
+    add_button.connect('button-press-event', cursor.arrow_cursor, win)
+    pass_button.connect('enter-notify-event', cursor.hand_cursor, win)
+    pass_button.connect('leave-notify-event', cursor.arrow_cursor, win)
+    pass_button.connect('button-press-event', cursor.arrow_cursor, win)
 
     button_container = Gtk.Box()
     button_container.pack_start(add_button, False, False, 10)

@@ -59,10 +59,8 @@ class Default_Intro():
             self.item.button.connect("clicked", self.go_to_level)
             buttons.append(self.item.button)
 
-            self.item.button.connect('enter-notify-event',
-                                     cursor.hand_cursor, win)
-            self.item.button.connect('leave-notify-event',
-                                     cursor.arrow_cursor, win)
+            self.item.button.connect('enter-notify-event', cursor.hand_cursor, win)
+            self.item.button.connect('leave-notify-event', cursor.arrow_cursor, win)
 
         # Fill the tabs with the current information
         self.update_intro()
@@ -163,7 +161,7 @@ class Default_Intro():
     # Apply Changes button needs to be updated depending on which level it's on
     def update_next_button(self, win):
         win.update.green_background()
-        win.update.text.set_text("APPLY CHANGES")
+        win.update.set_text("APPLY CHANGES")
 
     # On clicking a level button on default intro screen
     def go_to_level(self, widget):

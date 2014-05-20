@@ -140,6 +140,7 @@ GtkLabel{
 .apply_changes_button {
     /*background: @button_color;*/
     border-radius:3px;
+    padding: 10px 10px 10px 10px;
 }
 
 .green {
@@ -154,12 +155,12 @@ GtkLabel{
     background: @inactive_border;
 }
 
-.apply_changes_text {
+.apply_changes_button GtkLabel {
     color: #ffffff;
     font: Bariol Bold 13;
 }
 
-.apply_changes_text:insensitive {
+.apply_changes_button GtkLabel:insensitive {
     color: #aaaaaa;
 }
 
