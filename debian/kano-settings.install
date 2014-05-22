@@ -4,7 +4,7 @@ bin/startmouse /usr/bin
 kano_settings/* /usr/lib/python2.7/dist-packages/kano_settings
 media/* /usr/share/kano-settings/media
 
-icon/Settings /usr/share/kano-apps/extras
+icon/settings.desktop /usr/share/kano-apps/extras
 icon/kano-settings.png /usr/share/kano-apps/icons
 icon/settings-widget.png /usr/share/kano-settings
 
