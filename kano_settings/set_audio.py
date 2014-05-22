@@ -98,6 +98,7 @@ def apply_changes(button):
     rc_local = "amixer -c 0 cset numid=3 [0-9]"
     new_rc_local = None
     new_boot_config = None
+    config = ""
 
     # These are the changes we'll apply if they have changed from what they were
     if HDMI is True:

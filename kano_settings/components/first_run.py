@@ -15,6 +15,7 @@ import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_audio as set_audio
 #import kano_settings.set_display as set_display
 import kano_settings.set_wifi.home as set_wifi_proxy
+import kano_settings.components.kano_dialog as kano_dialog
 
 # storing completed in kano-profile
 from kano.profile.badges import save_app_state_variable_with_dialog
@@ -121,21 +122,11 @@ class First_Run():
 
 
 # On closing window, will alert if any of the listed booleans are True
-def close_window(event="delete-event", button=win):
+def close_window(event="delete-event", button=None):
+    print constants.need_reboot
 
     if constants.need_reboot:
-        #Bring in message dialog box
-        dialog = Gtk.MessageDialog(
-            button, 0, Gtk.MessageType.INFO,
-            Gtk.ButtonsType.OK, "So you know...")
-        dialog.format_secondary_text("..you will need to reboot to see all your changes")
-        response = dialog.run()
-
-        if response == Gtk.ResponseType.OK:
-            # This makes the dialog box wait for the OK to be clicked before progressing
-            print "OK clicked"
-
-        dialog.destroy()
+        kano_dialog.KanoDialog("So you know...", "...you will have to reboot to see your changes")
 
     save_app_state_variable_with_dialog('kano-settings', 'completed', 1)
     Gtk.main_quit()

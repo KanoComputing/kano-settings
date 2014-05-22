@@ -136,6 +136,10 @@ GtkLabel{
     color: @active_writing;
 }
 
+GtkDialog {
+    background: #e7e7e7;
+}
+
 /* The main button that updates the changes made in each level */
 .apply_changes_button {
     /*background: @button_color;*/
@@ -289,6 +293,10 @@ GtkLabel{
 .red {
     color: @kano_red;
     background-color:@kano_red;
+}
+.white {
+    background-color: #ffffff;
+    color: #ffffff;
 }
 
 /********************************************************

@@ -13,6 +13,7 @@ import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 from kano.utils import get_user_unsudoed
 import kano_settings.components.cursor as cursor
+import kano_settings.components.kano_dialog as kano_dialog
 
 win = None
 update = None
@@ -76,29 +77,18 @@ def activate(_win, changeable_content, _update, pass_button):
 
 def add_account(event=None, button=None):
     # Bring in message dialog box
-    dialog = Gtk.MessageDialog(
-        win, 0, Gtk.MessageType.INFO,
-        Gtk.ButtonsType.OK, "")
-    dialog.format_secondary_text("New account scheduled. Reboot the system.")
-    response = dialog.run()
-    if response == Gtk.ResponseType.OK:
-        os.system("sudo kano-init newuser")
-    dialog.destroy()
+    kano_dialog.KanoDialog("New account scheduled.", "Reboot the system.", callback=[os.system, "sudo kano-init newuser"])
 
 
 def remove_account(event=None, button=None):
     # Bring in message dialog box
-    dialog = Gtk.MessageDialog(
-        win, 0, Gtk.MessageType.INFO,
-        Gtk.ButtonsType.OK, "")
-    dialog.format_secondary_text("Are you sure you want to delete current user?")
-    response = dialog.run()
-    if response == Gtk.ResponseType.OK:
-        cmd = 'sudo kano-init deleteuser %s' % (get_user_unsudoed())
-        os.system(cmd)
-    dialog.destroy()
+    kano_dialog.KanoDialog("Are you sure you want to delete the current user?", "", callback=[remove_user], second_button=True)
+
+
+def remove_user():
+    cmd = 'sudo kano-init deleteuser %s' % (get_user_unsudoed())
+    os.system(cmd)
 
 
 def apply_changes(button):
-
     return

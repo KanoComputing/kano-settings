@@ -12,6 +12,7 @@ import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano.utils as utils
 import pam
+import kano_settings.components.kano_dialog as kano_dialog
 #from kano.utils import get_user_unsudoed
 
 win = None
@@ -100,21 +101,7 @@ def create_dialog(message1="Could not change password", message2=""):
     global win
 
     returnvalue = 0
-
-    dialog = Gtk.MessageDialog(win, 0, Gtk.MessageType.ERROR,
-                               Gtk.ButtonsType.OK_CANCEL, message1)
-    dialog.format_secondary_text(message2)
-    response = dialog.run()
-    if response == Gtk.ResponseType.OK:
-        # do nothing
-        returnvalue = -1
-    elif response == Gtk.ResponseType.CANCEL:
-        dialog.destroy()
-        # Go back to the accounts screen
-        returnvalue = 0
-
-    dialog.destroy()
-    clear_text()
+    returnvalue = kano_dialog.KanoDialog(message1, message2)
     return returnvalue
 
 
