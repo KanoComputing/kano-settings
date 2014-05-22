@@ -45,6 +45,7 @@ def activate(_win, changeable_content, _update, pass_button):
     add_button.get_style_context().add_class("apply_changes_button")
     add_button.get_style_context().add_class("green")
     add_button.set_size_request(200, 44)
+    cursor.attach_cursor_events(add_button)
     add_button.connect("button_press_event", add_account)
 
     # Remove account button
@@ -52,17 +53,9 @@ def activate(_win, changeable_content, _update, pass_button):
     remove_button.get_style_context().add_class("apply_changes_button")
     remove_button.get_style_context().add_class("red")
     remove_button.set_size_request(200, 44)
+    cursor.attach_cursor_events(remove_button)
+    cursor.attach_cursor_events(pass_button)
     remove_button.connect("button_press_event", remove_account)
-
-    remove_button.connect('enter-notify-event', cursor.hand_cursor, win)
-    remove_button.connect('leave-notify-event', cursor.arrow_cursor, win)
-    remove_button.connect('button-press-event', cursor.arrow_cursor, win)
-    add_button.connect('enter-notify-event', cursor.hand_cursor, win)
-    add_button.connect('leave-notify-event', cursor.arrow_cursor, win)
-    add_button.connect('button-press-event', cursor.arrow_cursor, win)
-    pass_button.connect('enter-notify-event', cursor.hand_cursor, win)
-    pass_button.connect('leave-notify-event', cursor.arrow_cursor, win)
-    pass_button.connect('button-press-event', cursor.arrow_cursor, win)
 
     button_container = Gtk.Box()
     button_container.pack_start(add_button, False, False, 10)

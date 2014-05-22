@@ -39,9 +39,10 @@ def activate(_win, _box, _update):
 
 # This button in the proxy setting screen that takes you to the wifi screen
 def generate_wifi_button():
-    to_wifi_button = Gtk.EventBox()
+    to_wifi_button = Gtk.Button()
     to_wifi_button.get_style_context().add_class("apply_changes_button")
     to_wifi_button.get_style_context().add_class("green")
+    cursor.attach_cursor_events(to_wifi_button)
     to_wifi_label = Gtk.Label("APPLY CHANGES")
     to_wifi_label.get_style_context().add_class("apply_changes_text")
     to_wifi_button.add(to_wifi_label)
@@ -54,12 +55,10 @@ def generate_wifi_button():
 def generate_proxy_button():
     global win
 
-    to_proxy_button = Gtk.EventBox()
+    to_proxy_button = Gtk.Button()
     # The bulk of this function has moved to wifi.py
+    cursor.attach_cursor_events(to_proxy_button)
     to_proxy_button.connect("button_press_event", to_proxy)
-    to_proxy_button.connect('enter-notify-event', cursor.hand_cursor, win)
-    to_proxy_button.connect('leave-notify-event', cursor.arrow_cursor, win)
-    to_proxy_button.connect('button-press-event', cursor.arrow_cursor, win)
     return to_proxy_button
 
 

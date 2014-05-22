@@ -80,21 +80,9 @@ class Top_bar():
         self.container.attach(self.close_button, 3, 0, 1, 1)
         self.container.set_size_request(WINDOW_WIDTH, 44)
 
-        self.close_hand_handler = self.close_button.connect('enter-notify-event',
-                                                            cursor.hand_cursor, win)
-        self.close_arrow_handler = self.close_button.connect('leave-notify-event',
-                                                             cursor.arrow_cursor, win)
-        self.close_button.connect('button-press-event', cursor.arrow_cursor, win)
-        self.next_hand_handler = self.next_button.connect('enter-notify-event',
-                                                          cursor.hand_cursor, win)
-        self.next_arrow_handler = self.next_button.connect('leave-notify-event',
-                                                           cursor.arrow_cursor, win)
-        self.next_button.connect('button-press-event', cursor.arrow_cursor, win)
-        self.prev_hand_handler = self.prev_button.connect('enter-notify-event',
-                                                          cursor.hand_cursor, win)
-        self.prev_arrow_handler = self.prev_button.connect('leave-notify-event',
-                                                           cursor.arrow_cursor, win)
-        self.prev_button.connect('button-press-event', cursor.arrow_cursor, win)
+        cursor.attach_cursor_events(self.close_button)
+        cursor.attach_cursor_events(self.next_button)
+        cursor.attach_cursor_events(self.prev_button)
         self.background.add(self.container)
 
     def disable_prev(self):
@@ -112,11 +100,3 @@ class Top_bar():
     def enable_next(self):
         self.next_button.set_sensitive(True)
         self.next_button.set_image(self.dark_next_arrow)
-
-    def disconnect_handlers(self):
-        self.close_button.disconnect(self.close_hand_handler)
-        self.close_button.disconnect(self.close_arrow_handler)
-        self.next_button.disconnect(self.next_hand_handler)
-        self.next_button.disconnect(self.next_arrow_handler)
-        self.prev_button.disconnect(self.prev_hand_handler)
-        self.prev_button.disconnect(self.prev_arrow_handler)

@@ -11,6 +11,7 @@ import os
 #from os.path import isfile
 import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
+import kano_settings.components.cursor as cursor
 import kano_settings.constants as constants
 import kano.utils as utils
 from kano.network import is_internet
@@ -64,14 +65,11 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
     container.pack_start(status_box, False, False, 2)
     container.pack_start(internet_img, False, False, 2)
 
-    add_connection_button = Gtk.EventBox()
+    add_connection_button = Gtk.Button("ADD CONNECTION")
     add_connection_button.get_style_context().add_class("apply_changes_button")
     add_connection_button.get_style_context().add_class("green")
-    add_connection_label = Gtk.Label("ADD CONNECTION")
-    add_connection_label.get_style_context().add_class("apply_changes_text")
-    add_connection_button.add(add_connection_label)
-    add_connection_button.set_size_request(200, 44)
     add_connection_button.connect("button_press_event", configure_wifi)
+    cursor.attach_cursor_events(add_connection_button)
 
     if constants.has_internet:
 
@@ -125,7 +123,7 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
         internet_status.set_text("No network found")
         configure_container.pack_start(add_connection_button, False, False, 0)
         # Change colour of update button here.
-        update.grey_background()
+        #update.grey_background()
         update.set_text("SKIP THIS STEP")
 
     # So everything is centred even if we change the window height

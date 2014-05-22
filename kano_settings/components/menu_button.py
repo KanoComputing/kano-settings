@@ -9,6 +9,7 @@
 
 from gi.repository import Gtk
 import kano_settings.constants as constants
+import kano_settings.components.cursor as cursor
 
 
 class Menu_button():
@@ -34,6 +35,7 @@ class Menu_button():
 
         self.button = Gtk.Button()
         self.button.set_can_focus(False)
+        cursor.attach_cursor_events(self.button)
         self.img = Gtk.Image()
         self.img.set_from_file(constants.media + "/Icons/Icon-" + name + ".png")
 

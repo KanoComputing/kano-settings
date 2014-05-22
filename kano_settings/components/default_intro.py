@@ -19,7 +19,6 @@ import kano_settings.set_overclock as set_overclock
 import kano_settings.set_account.home as set_account
 import kano_settings.set_wallpaper as set_wallpaper
 import kano_settings.components.menu_button as menu_button
-import kano_settings.components.cursor as cursor
 import kano_settings.constants as constants
 from kano.network import is_internet
 from kano.utils import get_user_unsudoed
@@ -58,9 +57,6 @@ class Default_Intro():
             self.item.button.state = x
             self.item.button.connect("clicked", self.go_to_level)
             buttons.append(self.item.button)
-
-            self.item.button.connect('enter-notify-event', cursor.hand_cursor, win)
-            self.item.button.connect('leave-notify-event', cursor.arrow_cursor, win)
 
         # Fill the tabs with the current information
         self.update_intro()
@@ -185,9 +181,6 @@ class Default_Intro():
         # Refresh window
         win.show_all()
 
-        # Change cursor to arrow
-        cursor.arrow_cursor(None, None, win)
-
     # On clicking a level button on default intro screen
     def go_to_level_given_state(self, state):
         global win
@@ -210,9 +203,6 @@ class Default_Intro():
         # Refresh window
         win.show_all()
 
-        # Change cursor to arrow
-        cursor.arrow_cursor(None, None, win)
-
     # This updates the current level.
     def update(self, widget, arg2=None):
 
@@ -225,9 +215,6 @@ class Default_Intro():
 
         # Go back to intro screen
         self.on_prev()
-
-        # Change cursor to arrow
-        cursor.arrow_cursor(None, None, win)
 
     def state_to_widget(self, x):
         return {

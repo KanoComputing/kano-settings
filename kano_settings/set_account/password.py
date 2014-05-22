@@ -12,7 +12,6 @@ import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano.utils as utils
 import pam
-import kano_settings.components.cursor as cursor
 #from kano.utils import get_user_unsudoed
 
 win = None
@@ -26,8 +25,6 @@ def activate(_win, changeable_content, _update):
 
     win = _win
     settings = fixed_size_box.Fixed()
-
-    cursor.arrow_cursor(None, None, win)
 
     entry1 = Gtk.Entry()
     entry1.set_size_request(300, 44)

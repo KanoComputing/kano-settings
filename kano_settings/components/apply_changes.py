@@ -8,6 +8,7 @@
 # This controls the style of the main button in the projects that applies the changes
 
 from gi.repository import Gtk
+import kano_settings.components.cursor as cursor
 
 
 class Apply():
@@ -25,6 +26,7 @@ class Apply():
         self.button_style = self.button.get_style_context()
         self.button_style.add_class("apply_changes_button")
         self.button_style.add_class("green")
+        cursor.attach_cursor_events(self.button)
 
         # This stops the button resizing to fit the size of it's container
         self.box = Gtk.Box()

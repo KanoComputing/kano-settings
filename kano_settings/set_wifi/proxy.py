@@ -12,7 +12,6 @@ import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.proxy as proxy
 import kano_settings.constants as constants
 from ..config_file import get_setting, set_setting
-import kano_settings.components.cursor as cursor
 
 
 win = None
@@ -149,8 +148,6 @@ def activate(_win, _box, _update, to_wifi_button):
     title = heading.Heading("Proxy", "Connect via a friend")
     settings = fixed_size_box.Fixed()
     grid = Gtk.Grid(column_homogeneous=False, column_spacing=10, row_spacing=10)
-
-    cursor.arrow_cursor(None, None, win)
 
     ip_entry = Gtk.Entry()
     ip_entry.props.placeholder_text = "IP address"

@@ -15,7 +15,6 @@ import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_audio as set_audio
 #import kano_settings.set_display as set_display
 import kano_settings.set_wifi.home as set_wifi_proxy
-import kano_settings.components.cursor as cursor
 
 # storing completed in kano-profile
 from kano.profile.badges import save_app_state_variable_with_dialog
@@ -39,9 +38,6 @@ class First_Run():
             return
 
         self.on_next()
-
-        # Change cursor to arrow
-        cursor.arrow_cursor(None, None, win)
 
     # When clicking previous arrow on first run through
     def on_prev(self, widget=None, arg2=None):
