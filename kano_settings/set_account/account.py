@@ -54,7 +54,6 @@ def activate(_win, changeable_content, _update, pass_button):
     remove_button.get_style_context().add_class("red")
     remove_button.set_size_request(200, 44)
     cursor.attach_cursor_events(remove_button)
-    cursor.attach_cursor_events(pass_button)
     remove_button.connect("button_press_event", remove_account)
 
     button_container = Gtk.Box()
