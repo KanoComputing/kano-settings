@@ -126,7 +126,7 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
         configure_container.pack_start(add_connection_button, False, False, 0)
         # Change colour of update button here.
         update.grey_background()
-        update.text.set_text("SKIP THIS STEP")
+        update.set_text("SKIP THIS STEP")
 
     # So everything is centred even if we change the window height
     valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
