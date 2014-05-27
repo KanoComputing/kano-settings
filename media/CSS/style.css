@@ -50,21 +50,6 @@ GtkButton {
     border-color: transparent;
 }
 
-/*GtkEventBox {
-    background:transparent;
-    border-style: none;*/ /* Remove grey border on outside */
-    /*border-width:0px;
-    border-color: transparent;
-    border-radius: 3px;
-}
-GtkEventBox:hover {
-    background:#ff00ff;
-    border-style: solid;*/ /* Remove grey border on outside */
-    /*border-width:0px;
-    border-color: #ffff00;
-    border-radius: 3px;
-}*/
-
 GtkComboBox {
     /* font effect arrow size */
     font: Bariol 5;
@@ -74,9 +59,6 @@ GtkComboBox .menu {
     border-width: 2px;
     border-radius: 3px;
     border-color: @active_border;
-    /* font and color properties have no effect here */
-    /*font: Bariol 20;
-    color: @kano_orange;*/
 }
 
 GtkComboBox .button {
@@ -134,10 +116,6 @@ GtkRadioButton:active {
 GtkRadioButton
 GtkLabel{
     color: @active_writing;
-}
-
-GtkDialog {
-    background: #e7e7e7;
 }
 
 /* The main button that updates the changes made in each level */

@@ -12,8 +12,7 @@ import kano_settings.components.heading as heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano.utils as utils
 import pam
-import kano.gtk3.dialog.kano_dialog as kano_dialog
-#from kano.utils import get_user_unsudoed
+import kano.gtk3.kano_dialog as kano_dialog
 
 win = None
 entry1 = None

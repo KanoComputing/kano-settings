@@ -13,7 +13,7 @@ import kano_settings.set_intro as set_intro
 import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_audio as set_audio
 import kano_settings.set_wifi.home as set_wifi_proxy
-import kano.gtk3.dialog.kano_dialog as kano_dialog
+import kano.gtk3.kano_dialog as kano_dialog
 
 # storing completed in kano-profile
 from kano.profile.badges import save_app_state_variable_with_dialog
