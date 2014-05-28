@@ -156,8 +156,7 @@ class Default_Intro():
 
     # Apply Changes button needs to be updated depending on which level it's on
     def update_next_button(self, win):
-        win.update.green_background()
-        win.update.set_text("APPLY CHANGES")
+        win.update.set_label("APPLY CHANGES")
 
     # On clicking a level button on default intro screen
     def go_to_level(self, widget):

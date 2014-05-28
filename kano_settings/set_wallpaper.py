@@ -171,8 +171,8 @@ def activate(_win, box, update):
     # Add apply changes button under the main settings content
     box.pack_start(title, False, False, 0)
     box.pack_start(settings.box, False, False, 0)
-    box.pack_start(update.box, False, False, 0)
-    update.enable()
+    box.pack_start(update.align, False, False, 0)
+    update.set_sensitive(True)
 
 
 def apply_changes(button):

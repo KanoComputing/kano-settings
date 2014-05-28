@@ -19,12 +19,13 @@ if __name__ == '__main__' and __package__ is None:
 
 import kano_settings.set_intro as set_intro
 import kano_settings.components.top_bar as top_bar
-import kano_settings.components.apply_changes as apply_changes
 import kano_settings.constants as constants
 import kano_settings.components.first_run as first_run
 import kano_settings.components.default_intro as default_intro
 from kano_settings.auto_settings import auto_settings
 from kano.network import is_internet
+from kano.paths import common_css_dir
+from kano.gtk3.green_button import GreenButton
 
 # storing completed in kano-profile
 from kano.profile.apps import load_app_state_variable
@@ -72,13 +73,13 @@ class MainWindow(Gtk.Window):
         constants.has_internet = is_internet()
 
         # Init
-        self.update = apply_changes.Apply()
+        self.update = GreenButton()
 
         if load_app_state_variable('kano-settings', 'completed') == 1:
             # we define the main button here so that the text is controlled by which flow we enter
             # ie on the first run, we want the button to say Next until the last screen, in which case it says Finish
             # So we want to control this text in default_intro.py and first_run.py
-            self.update.set_text("APPLY CHANGES")
+            self.update.set_label("APPLY CHANGES")
             self.run_through = default_intro.Default_Intro(self, WINDOW_HEIGHT, WINDOW_WIDTH, self.top_bar.height)
             self.top_bar.disable_next()
             if init_state >= 0:
@@ -86,7 +87,7 @@ class MainWindow(Gtk.Window):
             else:
                 self.top_bar.disable_prev()
         else:
-            self.update.set_text("GET STARTED")
+            self.update.set_label("GET STARTED")
             self.run_through = first_run.First_Run(self)
             set_intro.activate(self, self.changeable_content, self.update)
             self.top_bar.next_button.set_image(self.top_bar.dark_next_arrow)
@@ -94,7 +95,7 @@ class MainWindow(Gtk.Window):
 
         self.top_bar.next_button.connect("button_press_event", self.run_through.on_next)
         self.top_bar.prev_button.connect("button_press_event", self.run_through.on_prev)
-        self.update.button.connect('button_press_event', self.run_through.update)
+        self.update.connect('button_press_event', self.run_through.update)
 
         self.grid.attach(self.top_bar.background, 0, 0, 1, 1)
         self.grid.attach(self.changeable_content, 0, 2, 1, 1)
@@ -106,11 +107,15 @@ def main():
     global win
 
     # Create style sheet
-    cssProvider = Gtk.CssProvider()
-    cssProvider.load_from_path(constants.media + '/CSS/style.css')
+    specific_css = Gtk.CssProvider()
+    specific_css.load_from_path(constants.media + '/CSS/style.css')
+    common_css = Gtk.CssProvider()
+    common_css_file = os.path.join(common_css_dir, 'common.css')
+    common_css.load_from_path(common_css_file)
     screen = Gdk.Screen.get_default()
     styleContext = Gtk.StyleContext()
-    styleContext.add_provider_for_screen(screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+    styleContext.add_provider_for_screen(screen, specific_css, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+    styleContext.add_provider_for_screen(screen, common_css, Gtk.STYLE_PROVIDER_PRIORITY_USER)
     # Create windown
     win = MainWindow()
     win.connect("delete-event", Gtk.main_quit)

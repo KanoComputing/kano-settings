@@ -27,7 +27,7 @@ def activate(_win, box, _update):
     global update, display_name
 
     update = _update
-    update.disable()
+    update.set_sensitive(False)
 
     read_config()
 
@@ -81,7 +81,7 @@ def activate(_win, box, _update):
     settings.box.pack_start(valign, False, False, 0)
 
     # Add apply changes button under the main settings content
-    box.pack_start(update.box, False, False, 0)
+    box.pack_start(update.align, False, False, 0)
 
 
 def apply_changes(button):
@@ -161,4 +161,4 @@ def on_mode_changed(combo):
 
     mode_index = combo.get_active()
 
-    update.enable()
+    update.set_sensitive(True)

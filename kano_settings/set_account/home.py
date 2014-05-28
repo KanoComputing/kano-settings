@@ -48,12 +48,8 @@ def to_password(arg1=None, arg2=None):
 
 
 def password_button():
-    pass_button = Gtk.Button()
-    pass_button.get_style_context().add_class("apply_changes_button")
-    pass_button.get_style_context().add_class("green")
-    pass_label = Gtk.Label("CHANGE PASSWORD")
-    pass_label.get_style_context().add_class("apply_changes_text")
-    pass_button.add(pass_label)
+    pass_button = Gtk.Button("CHANGE PASSWORD")
+    pass_button.get_style_context().add_class("green_button")
     pass_button.set_size_request(200, 44)
     cursor.attach_cursor_events(pass_button)
     pass_button.connect("button_press_event", to_password)

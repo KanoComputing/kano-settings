@@ -31,7 +31,7 @@ class Top_bar():
 
         # Main title of the window bar.
         self.header = Gtk.Label("Kano Settings")
-        self.header.get_style_context().add_class("header")
+        self.header.get_style_context().add_class("top_bar_title")
 
         self.align_header = Gtk.Alignment(xalign=1, yalign=0, xscale=0, yscale=0)
         self.align_header.add(self.header)

@@ -43,15 +43,14 @@ def activate(_win, changeable_content, _update, pass_button):
 
     # Add account button
     add_button = Gtk.Button("ADD ACCOUNT")
-    add_button.get_style_context().add_class("apply_changes_button")
-    add_button.get_style_context().add_class("green")
+    add_button.get_style_context().add_class("green_button")
     add_button.set_size_request(200, 44)
     cursor.attach_cursor_events(add_button)
     add_button.connect("button_press_event", add_account)
 
     # Remove account button
     remove_button = Gtk.Button("REMOVE ACCOUNT")
-    remove_button.get_style_context().add_class("apply_changes_button")
+    remove_button.get_style_context().add_class("green_button")
     remove_button.get_style_context().add_class("red")
     remove_button.set_size_request(200, 44)
     cursor.attach_cursor_events(remove_button)

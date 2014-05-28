@@ -126,8 +126,8 @@ def activate(_win, box, update):
         high_button.set_active(True)
 
     # Add apply changes button under the main settings content
-    box.pack_start(update.box, False, False, 0)
-    update.enable()
+    box.pack_start(update.align, False, False, 0)
+    update.set_sensitive(True)
 
 
 def apply_changes(button):

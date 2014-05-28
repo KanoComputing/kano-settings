@@ -1,194 +1,6 @@
-/*
+/* */
 
-# Copyright (C) 2014 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
-#
-# This controls the styles
-
-*/
-
-/* Define colours */
-
-@define-color button_color #7cc640;
-@define-color kano_orange #ff842A;
-@define-color title_color #323232;
-@define-color subheading_color #6e6e6e;
-@define-color inactive_writing #cdcdcd;
-@define-color inactive_border #e1e1e1;
-@define-color active_writing #323232;
-@define-color active_border #ababab;
-@define-color hover_color #eeeeee;
-@define-color top_bar_color #e1e1e1;
-@define-color kano_red #f37677;
-
-/* All */
-* {
-    -GtkButton-inner-border: 0;
-    -GtkEntry-inner-border: 0;
-    -GtkComboBox-inner-border: 0;
-    -GtkMenuToolButton-inner-border: 0;
-    -GtkTreeMenu-inner-border: 0;
-    -unico-focus-border-color: transparent; /* Removes the annoying red outline on active buttons*/
-    engine: none; /* Turns off annoying borders */
-    border-width: 0px;
-    -GtkWidget-focus-line-width: 0px;
-    -GtkTreeView-vertical-separator: 0;
-    -GtkWidget-separator-width: 0;
-    -GtkWidget-separator-height: 0;
-}
-
-GtkWindow {
-    color: #ffffff;
-    background: #ffffff;
-    background-color: #ffffff;
-}
-
-GtkButton {
-    background:transparent;
-    border-style: none; /* Remove grey border on outside */
-    border-width:0px;
-    border-color: transparent;
-}
-
-GtkComboBox {
-    /* font effect arrow size */
-    font: Bariol 5;
-}
-GtkComboBox .menu {
-    border-style: solid;
-    border-width: 2px;
-    border-radius: 3px;
-    border-color: @active_border;
-}
-
-GtkComboBox .button {
-    border-color: @active_border;
-    border-style: solid;
-    border-width: 2px;
-    border-radius:3px;
-}
-
-GtkComboBox .separator {
-    /* This removes lines in combotextbox*/
-    -GtkWidget-wide-separators: true;
-}
-
-GtkEntry {
-    border-color: @active_border;
-    color: @active_writing;
-    border-style: solid;
-    border-width: 2px;
-    border-radius:3px;
-    padding: 10px;
-    font: Bariol 13;
-}
-GtkEntry:insensitive {
-    border-color: @inactive_border;
-    color: @inactive_writing;
-    border-style: solid;
-    border-width: 2px;
-    border-radius:3px;
-}
-
-GtkImage {
-    border-style:none;
-    background: transparent;
-}
-
-GtkImage:hover {
-    border-style: none;
-    background: transparent;
-}
-
-GtkCheckButton,
-GtkRadioButton {
-    border-style: solid;
-    border-color: @active_border;
-    border-width: 2px;
-    font: Bariol 13;
-}
-
-GtkCheckButton:active,
-GtkRadioButton:active {
-    color: #9ed874;
-}
-
-GtkRadioButton
-GtkLabel{
-    color: @active_writing;
-}
-
-/* The main button that updates the changes made in each level */
-.apply_changes_button {
-    /*background: @button_color;*/
-    border-radius:3px;
-    padding: 10px 10px 10px 10px;
-}
-
-.green {
-    background: @button_color;
-}
-
-.grey {
-    background: #dddddd;
-}
-
-.apply_changes_button:insensitive {
-    background: @inactive_border;
-}
-
-.apply_changes_button GtkLabel {
-    color: #ffffff;
-    font: Bariol Bold 13;
-}
-
-.apply_changes_button GtkLabel:insensitive {
-    color: #aaaaaa;
-}
-
-/* The bar at the top that mimics the window bar */
-.top_bar_container {
-    background: @top_bar_color;
-}
-.top_bar_button {
-    background: @top_bar_color;
-}
-/* Used for the stripy grid */
-.appgrid_grey {
-    background: @top_bar_color;
-}
-
-/* The title of the current level*/
-.title {
-    color: @title_color;
-    padding-top:25px;
-    font: Bariol Bold 16;
-}
-/* Description of current project */
-.description {
-    color: @subheading_color;
-    padding-bottom: 18px;
-    font: Bariol 14;
-}
-
-/* Title of menu button on default intro screen (Keyboard, Wfi etc) */
-.menu_intro_label {
-    color: @title_color;
-    font: Bariol Bold 18;
-}
-/* Info about the settings of the curet project */
-.menu_custom_label {
-    color: @subheading_color;
-    font: Bariol 12;
-}
-/* Header in top bar (title of window) */
-.header {
-    color: #222222;
-    font: Bariol Bold 13;
-}
-.configure_label {
-    font: Bariol 13;
-}
+/* Specific to kano-settings */
 
 /* Top wiriting in internet status box */
 .internet_status_top {
@@ -205,7 +17,7 @@ GtkLabel{
 }
 
 .connected {
-    background: @button_color;
+    background: @kano_green;
     font-weight:bold;
     margin:10px;
 }
@@ -225,15 +37,15 @@ GtkLabel{
     border-color: transparent;
 }
 .wallpaper_box:hover {
-    background: @button_color;
+    background: @kano_green;
     border-radius: 10px;
     border-style: solid;
     border-width: 3px;
     border-radius: 10px;
-    border-color: @button_color;
+    border-color: @kano_green;
 }
 .wallpaper_box_active {
-    background: @button_color;
+    background: @kano_green;
     border-radius: 10px;
 }
 
@@ -249,6 +61,7 @@ GtkLabel{
     border-radius:10px;
 }
 /* Styling used on labels in set_overclock and set_mouse */
+/* */
 .bold_toggle GtkLabel {
     font: Bariol Bold 13;
 }
@@ -257,25 +70,6 @@ GtkLabel{
     color: @subheading_color;
 }
 
-.dark_green {
-    color: #0A5200;
-}
-.dark_red {
-    color: #520000;
-}
-.orange {
-    color: @kano_orange;
-    background-color:@kano_orange;
-    font-weight:bold;
-}
-.red {
-    color: @kano_red;
-    background-color:@kano_red;
-}
-.white {
-    background-color: #ffffff;
-    color: #ffffff;
-}
 
 /********************************************************
  * Scrollbars                                           *

@@ -66,14 +66,12 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
     container.pack_start(internet_img, False, False, 2)
 
     add_connection_button = Gtk.Button("ADD CONNECTION")
-    add_connection_button.get_style_context().add_class("apply_changes_button")
-    add_connection_button.get_style_context().add_class("green")
+    add_connection_button.get_style_context().add_class("green_button")
     add_connection_button.connect("button_press_event", configure_wifi)
     cursor.attach_cursor_events(add_connection_button)
 
     if constants.has_internet:
 
-        update.green_background()
         update.set_text("FINISH")
 
         status_box.pack_start(internet_status, False, False, 3)
@@ -95,20 +93,15 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
             internet_img.set_from_file(constants.media + "/Graphics/Internet-ethernetConnection.png")
 
         else:
-            configure_button = Gtk.EventBox()
-            configure_label = Gtk.Label("Configure")
-            configure_label.get_style_context().add_class("orange")
-            configure_label.get_style_context().add_class("configure_label")
-            configure_button.add(configure_label)
+            configure_button = Gtk.Button("Configure")
+            configure_button.get_style_context().add_class("orange_button")
             configure_button.connect("button_press_event", configure_wifi)
             configure_container.pack_start(configure_button, False, False, 0)
             divider_label = Gtk.Label("|")
             configure_container.pack_start(divider_label, False, False, 3)
 
         # Very hacky way to centre the Proxy button - put spaces in the label
-        proxy_label = Gtk.Label("Proxy  ")
-        proxy_label.get_style_context().add_class("orange")
-        proxy_button.add(proxy_label)
+        proxy_button.set_label("Proxy  ")
         configure_container.pack_end(proxy_button, False, False, 0)
 
     elif constants.proxy_enabled and disable_proxy:
@@ -134,7 +127,7 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
     settings.box.pack_start(valign, False, False, 0)
 
     box.pack_start(update.box, False, False, 0)
-    update.enable()
+    update.set_sensitive(True)
     box.show_all()
 
 

@@ -183,13 +183,10 @@ def activate(_win, _box, _update, to_wifi_button):
     read_config(radio1, radio2)
     next_button = to_wifi_button
 
-    apply_changes_alignment = Gtk.Alignment(xalign=0, yalign=0, xscale=0, yscale=0)
-    apply_changes_alignment.add(next_button)
-
     bottom_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
     bottom_row.pack_start(checkbutton, False, False, 0)
-    bottom_row.pack_start(apply_changes_alignment, False, False, 0)
-    apply_changes_alignment.set_padding(2, 2, 60, 2)
+    bottom_row.pack_start(next_button.align, False, False, 0)
+    next_button.set_padding(2, 2, 60, 2)
 
     grid.attach(ip_entry, 0, 0, 2, 2)
     grid.attach(username_entry, 0, 2, 2, 2)

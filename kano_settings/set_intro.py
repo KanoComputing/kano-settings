@@ -33,9 +33,9 @@ def activate(win, box, update):
 
     box.pack_start(settings.box, False, False, 0)
     box.pack_start(title.container, False, False, 0)
-    box.pack_start(update.box, False, False, 0)
+    box.pack_start(update.align, False, False, 0)
 
-    update.enable()
+    update.set_sensitive(True)
 
 
 def apply_changes(button):

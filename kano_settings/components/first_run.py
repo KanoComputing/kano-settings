@@ -95,18 +95,15 @@ class First_Run():
 
         # Change label on Apply Changes button
         if win.state == MAX_STATE - 1:
-            win.update.green_background()
-            win.update.set_text("FINISH")
+            win.update.set_label("FINISH")
             win.top_bar.enable_prev()
             win.top_bar.disable_next()
         elif win.state == 0:
-            win.update.green_background()
-            win.update.set_text("GET STARTED")
+            win.update.set_label("GET STARTED")
             win.top_bar.disable_prev()
             win.top_bar.enable_next()
         else:
-            win.update.green_background()
-            win.update.set_text("NEXT")
+            win.update.set_label("NEXT")
             win.top_bar.enable_prev()
             win.top_bar.enable_next()
 
