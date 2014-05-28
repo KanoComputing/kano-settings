@@ -10,7 +10,7 @@ import os
 import re
 
 from gi.repository import Gtk
-import kano_settings.components.heading as heading
+from kano.gtk3.heading import Heading
 import kano_settings.constants as constants
 import kano_settings.components.fixed_size_box as fixed_size_box
 from .config_file import set_setting
@@ -44,7 +44,7 @@ def activate(_win, box, update):
     if not os.path.isfile(boot_config_file):
         return
 
-    title = heading.Heading("Overclocking", "Let\'s put some power here")
+    title = Heading("Overclocking", "Let\'s put some power here")
     box.pack_start(title.container, False, False, 0)
 
     # Settings container

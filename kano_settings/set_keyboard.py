@@ -11,7 +11,7 @@ GObject.threads_init()
 import threading
 import kano_settings.keyboard.keyboard_layouts as keyboard_layouts
 import kano_settings.keyboard.keyboard_config as keyboard_config
-import kano_settings.components.heading as heading
+from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 from .config_file import get_setting, set_setting
 
@@ -66,7 +66,7 @@ def activate(_win, box, _update):
     settings = fixed_size_box.Fixed()
 
     # Title
-    title = heading.Heading("Keyboard", "Which country do you live in?")
+    title = Heading("Keyboard", "Which country do you live in?")
 
     # Create Continents Combo box
     continents_combo = Gtk.ComboBoxText.new()

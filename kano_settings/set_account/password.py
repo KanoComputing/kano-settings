@@ -8,7 +8,7 @@
 # Controls the UI of the change password screen
 
 from gi.repository import Gtk
-import kano_settings.components.heading as heading
+from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano.utils as utils
 import pam
@@ -54,7 +54,7 @@ def activate(_win, changeable_content, _update):
     align.add(entry_container)
     settings.box.pack_start(align, False, False, 0)
     _update.disable()
-    title = heading.Heading("Change your password", "Keep out the baddies!")
+    title = Heading("Change your password", "Keep out the baddies!")
 
     changeable_content.pack_start(title.container, False, False, 0)
     changeable_content.pack_start(settings.box, False, False, 0)

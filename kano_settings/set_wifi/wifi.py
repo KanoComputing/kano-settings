@@ -9,9 +9,9 @@
 from gi.repository import Gtk
 import os
 #from os.path import isfile
-import kano_settings.components.heading as heading
+from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
-import kano_settings.components.cursor as cursor
+import kano.gtk3.cursor as cursor
 import kano_settings.constants as constants
 import kano.utils as utils
 from kano.network import is_internet
@@ -37,7 +37,7 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
     update = _update
     proxy_button = _proxy_button
 
-    title = heading.Heading("", "")
+    title = Heading("", "")
     box.pack_start(title.container, False, False, 0)
 
     # Table

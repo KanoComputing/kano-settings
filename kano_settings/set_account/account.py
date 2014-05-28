@@ -9,10 +9,10 @@
 
 from gi.repository import Gtk
 import os
-import kano_settings.components.heading as heading
+from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 from kano.utils import get_user_unsudoed
-import kano_settings.components.cursor as cursor
+import kano.gtk3.cursor as cursor
 import kano.gtk3.kano_dialog as kano_dialog
 
 win = None
@@ -26,7 +26,7 @@ def activate(_win, changeable_content, _update, pass_button):
     win = _win
     update = _update
     box = changeable_content
-    title = heading.Heading("System account settings", "Set your account")
+    title = Heading("System account settings", "Set your account")
 
     # Settings container
     settings = fixed_size_box.Fixed()
@@ -39,7 +39,7 @@ def activate(_win, changeable_content, _update, pass_button):
     pass_align.add(pass_box)
 
     # Accounts label
-    accounts_header = heading.Heading("Accounts", "Add or remove accounts")
+    accounts_header = Heading("Accounts", "Add or remove accounts")
 
     # Add account button
     add_button = Gtk.Button("ADD ACCOUNT")

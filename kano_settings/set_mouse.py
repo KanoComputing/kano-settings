@@ -9,7 +9,7 @@
 import os
 import re
 from gi.repository import Gtk
-import kano_settings.components.heading as heading
+from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 from .config_file import get_setting, set_setting
 
@@ -36,7 +36,7 @@ def file_replace(fname, pat, s_after):
 def activate(_win, box, update):
     global selected_button, initial_button
 
-    title = heading.Heading("Mouse", "Pick your speed")
+    title = Heading("Mouse", "Pick your speed")
     box.pack_start(title.container, False, False, 0)
 
     # Settings container

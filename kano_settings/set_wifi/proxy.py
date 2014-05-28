@@ -7,7 +7,7 @@
 #
 
 from gi.repository import Gtk
-import kano_settings.components.heading as heading
+from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.proxy as proxy
 import kano_settings.constants as constants
@@ -145,7 +145,7 @@ def activate(_win, _box, _update, to_wifi_button):
 
     win = _win
     box = _box
-    title = heading.Heading("Proxy", "Connect via a friend")
+    title = Heading("Proxy", "Connect via a friend")
     settings = fixed_size_box.Fixed()
     grid = Gtk.Grid(column_homogeneous=False, column_spacing=10, row_spacing=10)
 

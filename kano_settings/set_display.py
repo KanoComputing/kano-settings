@@ -8,7 +8,7 @@
 
 from gi.repository import Gtk
 import kano_settings.screen.screen_config as screen_config
-import kano_settings.components.heading as heading
+from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
 import kano.utils as utils
@@ -36,7 +36,7 @@ def activate(_win, box, _update):
     display_name, _, _ = utils.run_cmd(cmd)
     display_name = display_name[12:].rstrip()
 
-    title = heading.Heading("Display", display_name)
+    title = Heading("Display", display_name)
     box.pack_start(title.container, False, False, 0)
 
     # Contains main buttons
