@@ -31,7 +31,7 @@ class First_Run():
     def update(self, widget=None, arg2=None):
         global win
 
-        returnValue = self.state_to_widget(win.state).apply_changes(win.update.button)
+        returnValue = self.state_to_widget(win.state).apply_changes(win.update.align)
 
         if returnValue == -1:
             return

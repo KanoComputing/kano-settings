@@ -53,7 +53,7 @@ def activate(_win, changeable_content, _update):
     align = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
     align.add(entry_container)
     settings.box.pack_start(align, False, False, 0)
-    _update.disable()
+    _update.set_sensitive(False)
     title = Heading("Change your password", "Keep out the baddies!")
 
     changeable_content.pack_start(title.container, False, False, 0)
