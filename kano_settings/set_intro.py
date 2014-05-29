@@ -15,8 +15,7 @@ IMG_HEIGHT = 96
 
 def activate(win, box, update):
 
-    title = Heading("You just made a computer", "Now I just need to ask a few questions, so I'll work out the way")
-
+    title = Heading("We made it!", "Now let's get set up…")
     settings = fixed_size_box.Fixed()
 
     image = Gtk.Image()
