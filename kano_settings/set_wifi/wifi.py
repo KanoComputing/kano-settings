@@ -112,7 +112,7 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
         status_box.pack_start(configure_container, False, False, 0)
         internet_img.set_from_file(constants.media + "/Graphics/Internet-noConnection.png")
         title.title.set_text("Get connected")
-        title.description.set_text("Let’s set up Internet")
+        title.description.set_text("Let's set up Internet")
         internet_status.set_text("No network found")
         configure_container.pack_start(add_connection_button, False, False, 0)
         # Change colour of update button here.
