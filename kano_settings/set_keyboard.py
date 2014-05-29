@@ -66,7 +66,7 @@ def activate(_win, box, _update):
     settings = fixed_size_box.Fixed()
 
     # Title
-    title = heading.Heading("Keyboard", "Which country do you live in?")
+    title = heading.Heading("Keyboard", "Where do you live? So I can set your keyboard")
 
     # Create Continents Combo box
     continents_combo = Gtk.ComboBoxText.new()

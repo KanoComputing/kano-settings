@@ -46,7 +46,7 @@ def file_replace(fname, pat, s_after):
 def activate(_win, box, update):
     global current_img
 
-    title = heading.Heading("Audio", "Which way should I go?")
+    title = heading.Heading("Audio", "Get sound")
     box.pack_start(title.container, False, False, 0)
 
     # Settings container
@@ -55,12 +55,12 @@ def activate(_win, box, update):
     box.pack_start(settings.box, False, False, 0)
 
     # Analog radio button
-    analog_button = Gtk.RadioButton.new_with_label_from_widget(None, "Speaker\nHeadphones")
+    analog_button = Gtk.RadioButton.new_with_label_from_widget(None, "Speaker")
     analog_button.set_can_focus(False)
 
     # HDMI radio button
     hdmi_button = Gtk.RadioButton.new_from_widget(analog_button)
-    hdmi_button.set_label("TV (hdmi)")
+    hdmi_button.set_label("TV     ")
     hdmi_button.connect("toggled", on_button_toggled)
     hdmi_button.set_can_focus(False)
 

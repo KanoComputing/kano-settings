@@ -65,7 +65,7 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
     container.pack_start(status_box, False, False, 2)
     container.pack_start(internet_img, False, False, 2)
 
-    add_connection_button = Gtk.Button("ADD CONNECTION")
+    add_connection_button = Gtk.Button("WIFI")
     add_connection_button.get_style_context().add_class("apply_changes_button")
     add_connection_button.get_style_context().add_class("green")
     add_connection_button.connect("button_press_event", configure_wifi)
@@ -118,8 +118,8 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
     else:
         status_box.pack_start(configure_container, False, False, 0)
         internet_img.set_from_file(constants.media + "/Graphics/Internet-noConnection.png")
-        title.title.set_text("No network found")
-        title.description.set_text("Aw, man.")
+        title.title.set_text("Get connected")
+        title.description.set_text("Let’s set up Internet")
         internet_status.set_text("No network found")
         configure_container.pack_start(add_connection_button, False, False, 0)
         # Change colour of update button here.
