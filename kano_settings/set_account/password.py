@@ -8,12 +8,11 @@
 # Controls the UI of the change password screen
 
 from gi.repository import Gtk
-import kano_settings.components.heading as heading
+from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano.utils as utils
 import pam
-import kano_settings.components.kano_dialog as kano_dialog
-#from kano.utils import get_user_unsudoed
+import kano.gtk3.kano_dialog as kano_dialog
 
 win = None
 entry1 = None
@@ -54,19 +53,12 @@ def activate(_win, changeable_content, _update):
     align = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
     align.add(entry_container)
     settings.box.pack_start(align, False, False, 0)
-
-    # Potentially add icons next to Entries for instant verification.
-    #success_icon1 = Gtk.Image()
-    #tick = icons.Icons("tick").subpixbuf
-    #cross = icons.Icons("cross").subpixbuf
-
     _update.disable()
-
-    title = heading.Heading("Change your password", "Keep out the baddies!")
+    title = Heading("Change your password", "Keep out the baddies!")
 
     changeable_content.pack_start(title.container, False, False, 0)
     changeable_content.pack_start(settings.box, False, False, 0)
-    changeable_content.pack_start(_update.box, False, False, 10)
+    changeable_content.pack_start(_update.align, False, False, 10)
 
     win.show_all()
 
@@ -100,9 +92,9 @@ def apply_changes(button=None):
 def create_dialog(message1="Could not change password", message2=""):
     global win
 
-    returnvalue = 0
-    returnvalue = kano_dialog.KanoDialog(message1, message2)
-    return returnvalue
+    kdialog = kano_dialog.KanoDialog(message1, message2, {"TRY AGAIN": -1, "GO BACK": 0})
+    response = kdialog.run()
+    return response
 
 
 def clear_text():

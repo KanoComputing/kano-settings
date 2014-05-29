@@ -9,9 +9,9 @@
 from gi.repository import Gtk
 import os
 #from os.path import isfile
-import kano_settings.components.heading as heading
+from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
-import kano_settings.components.cursor as cursor
+import kano.gtk3.cursor as cursor
 import kano_settings.constants as constants
 import kano.utils as utils
 from kano.network import is_internet
@@ -37,7 +37,7 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
     update = _update
     proxy_button = _proxy_button
 
-    title = heading.Heading("", "")
+    title = Heading("", "")
     box.pack_start(title.container, False, False, 0)
 
     # Table
@@ -66,15 +66,13 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
     container.pack_start(internet_img, False, False, 2)
 
     add_connection_button = Gtk.Button("WIFI")
-    add_connection_button.get_style_context().add_class("apply_changes_button")
-    add_connection_button.get_style_context().add_class("green")
+    add_connection_button.get_style_context().add_class("green_button")
     add_connection_button.connect("button_press_event", configure_wifi)
     cursor.attach_cursor_events(add_connection_button)
 
     if constants.has_internet:
 
-        update.green_background()
-        update.set_text("FINISH")
+        update.set_label("FINISH")
 
         status_box.pack_start(internet_status, False, False, 3)
         status_box.pack_start(internet_action, False, False, 3)
@@ -95,20 +93,15 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
             internet_img.set_from_file(constants.media + "/Graphics/Internet-ethernetConnection.png")
 
         else:
-            configure_button = Gtk.EventBox()
-            configure_label = Gtk.Label("Configure")
-            configure_label.get_style_context().add_class("orange")
-            configure_label.get_style_context().add_class("configure_label")
-            configure_button.add(configure_label)
+            configure_button = Gtk.Button("Configure")
+            configure_button.get_style_context().add_class("orange_button")
             configure_button.connect("button_press_event", configure_wifi)
             configure_container.pack_start(configure_button, False, False, 0)
             divider_label = Gtk.Label("|")
             configure_container.pack_start(divider_label, False, False, 3)
 
         # Very hacky way to centre the Proxy button - put spaces in the label
-        proxy_label = Gtk.Label("Proxy  ")
-        proxy_label.get_style_context().add_class("orange")
-        proxy_button.add(proxy_label)
+        proxy_button.set_label("Proxy  ")
         configure_container.pack_end(proxy_button, False, False, 0)
 
     elif constants.proxy_enabled and disable_proxy:
@@ -124,7 +117,7 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
         configure_container.pack_start(add_connection_button, False, False, 0)
         # Change colour of update button here.
         #update.grey_background()
-        update.set_text("SKIP THIS STEP")
+        update.set_label("SKIP THIS STEP")
 
     # So everything is centred even if we change the window height
     valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
@@ -133,8 +126,8 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
     valign.add(container)
     settings.box.pack_start(valign, False, False, 0)
 
-    box.pack_start(update.box, False, False, 0)
-    update.enable()
+    box.pack_start(update.align, False, False, 0)
+    update.set_sensitive(True)
     box.show_all()
 
 

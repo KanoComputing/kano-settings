@@ -11,7 +11,8 @@ from gi.repository import Gtk
 import kano_settings.set_wifi.proxy as set_proxy
 import kano_settings.set_wifi.wifi as set_wifi
 import kano_settings.constants as constants
-import kano_settings.components.cursor as cursor
+import kano.gtk3.cursor as cursor
+from kano.gtk3.green_button import GreenButton
 
 
 win = None
@@ -39,14 +40,8 @@ def activate(_win, _box, _update):
 
 # This button in the proxy setting screen that takes you to the wifi screen
 def generate_wifi_button():
-    to_wifi_button = Gtk.Button()
-    to_wifi_button.get_style_context().add_class("apply_changes_button")
-    to_wifi_button.get_style_context().add_class("green")
-    cursor.attach_cursor_events(to_wifi_button)
-    to_wifi_label = Gtk.Label("APPLY CHANGES")
-    to_wifi_label.get_style_context().add_class("apply_changes_text")
-    to_wifi_button.add(to_wifi_label)
-    to_wifi_button.set_size_request(150, 44)
+    to_wifi_button = GreenButton("APPLY CHANGES")
+    to_wifi_button.pack_and_align()
     to_wifi_button.connect("button_press_event", to_wifi_apply_changes)
     return to_wifi_button
 
@@ -56,6 +51,7 @@ def generate_proxy_button():
     global win
 
     to_proxy_button = Gtk.Button()
+    to_proxy_button.get_style_context().add_class("orange_button")
     # The bulk of this function has moved to wifi.py
     cursor.attach_cursor_events(to_proxy_button)
     to_proxy_button.connect("button_press_event", to_proxy)
@@ -64,10 +60,8 @@ def generate_proxy_button():
 
 # This is the orange button in the wifi setting screen that disables the proxy settings
 def generate_disable_proxy():
-    disable_proxy_button = Gtk.EventBox()
-    disable_proxy_label = Gtk.Label("Disable proxy")
-    disable_proxy_label.get_style_context().add_class("orange")
-    disable_proxy_button.add(disable_proxy_label)
+    disable_proxy_button = Gtk.Button("Disable proxy")
+    disable_proxy_button.get_style_context().add_class("orange_button")
     disable_proxy_button.connect("button_press_event", disable_proxy_function)
     return disable_proxy_button
 
@@ -75,7 +69,7 @@ def generate_disable_proxy():
 # Reached when orange disable proxy button is clicked
 def disable_proxy_function(arg1=None, arg2=None):
 
-    set_proxy.disable()
+    set_proxy.set_sensitive(False)
     # Go to set_wifi without calling set_proxy.apply_changes()
     to_wifi()
     constants.proxy_enabled = set_proxy.is_enabled()

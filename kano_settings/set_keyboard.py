@@ -11,7 +11,7 @@ GObject.threads_init()
 import threading
 import kano_settings.keyboard.keyboard_layouts as keyboard_layouts
 import kano_settings.keyboard.keyboard_config as keyboard_config
-import kano_settings.components.heading as heading
+from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 from .config_file import get_setting, set_setting
 
@@ -56,7 +56,7 @@ def activate(_win, box, _update):
     global win, continents_combo, variants_combo, countries_combo, continents, update
 
     update = _update
-    update.disable()
+    update.set_sensitive(False)
 
     read_config()
 
@@ -66,7 +66,7 @@ def activate(_win, box, _update):
     settings = fixed_size_box.Fixed()
 
     # Title
-    title = heading.Heading("Keyboard", "Where do you live? So I can set your keyboard")
+    title = Heading("Keyboard", "Where do you live? So I can set your keyboard")
 
     # Create Continents Combo box
     continents_combo = Gtk.ComboBoxText.new()
@@ -122,7 +122,7 @@ def activate(_win, box, _update):
 
     box.pack_start(title.container, False, False, 0)
     box.pack_start(settings.box, False, False, 0)
-    box.pack_start(update.box, False, False, 0)
+    box.pack_start(update.align, False, False, 0)
 
     # Refresh window
     win.show_all()
@@ -217,7 +217,7 @@ def on_continent_changed(combo):
     selected_continent_hr = str(continent)
     selected_continent_index = str(combo.get_active())
 
-    update.disable()
+    update.set_sensitive(False)
 
     fill_countries_combo(selected_continent_hr)
     win.show_all()
@@ -249,7 +249,7 @@ def on_country_changed(combo):
         for v in variants:
             variants_combo.append_text(v[0])
 
-    update.disable()
+    update.set_sensitive(False)
 
     # Refresh window
     win.show_all()
@@ -262,7 +262,7 @@ def on_variants_changed(combo):
     if tree_iter is not None:
         model = combo.get_model()
         variant = model[tree_iter][0]
-        update.enable()
+        update.set_sensitive(True)
         if variant == "generic":
             selected_variant = selected_variant_hr = str(variant)
             selected_variant_index = 0

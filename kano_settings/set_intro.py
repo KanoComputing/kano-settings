@@ -7,7 +7,7 @@
 #
 
 from gi.repository import Gtk
-import kano_settings.components.heading as heading
+from kano.gtk3.heading import Heading
 import kano_settings.constants as constants
 import kano_settings.components.fixed_size_box as fixed_size_box
 IMG_HEIGHT = 96
@@ -15,8 +15,7 @@ IMG_HEIGHT = 96
 
 def activate(win, box, update):
 
-    title = heading.Heading("We made it!", "Now let's get set up…")
-
+    title = Heading("We made it!", "Now let's get set up…")
     settings = fixed_size_box.Fixed()
 
     image = Gtk.Image()
@@ -33,9 +32,9 @@ def activate(win, box, update):
 
     box.pack_start(settings.box, False, False, 0)
     box.pack_start(title.container, False, False, 0)
-    box.pack_start(update.box, False, False, 0)
+    box.pack_start(update.align, False, False, 0)
 
-    update.enable()
+    update.set_sensitive(True)
 
 
 def apply_changes(button):

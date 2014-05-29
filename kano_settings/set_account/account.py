@@ -9,11 +9,11 @@
 
 from gi.repository import Gtk
 import os
-import kano_settings.components.heading as heading
+from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 from kano.utils import get_user_unsudoed
-import kano_settings.components.cursor as cursor
-import kano_settings.components.kano_dialog as kano_dialog
+import kano.gtk3.cursor as cursor
+import kano.gtk3.kano_dialog as kano_dialog
 
 win = None
 update = None
@@ -26,7 +26,7 @@ def activate(_win, changeable_content, _update, pass_button):
     win = _win
     update = _update
     box = changeable_content
-    title = heading.Heading("System account settings", "Set your account")
+    title = Heading("System account settings", "Set your account")
 
     # Settings container
     settings = fixed_size_box.Fixed()
@@ -39,23 +39,22 @@ def activate(_win, changeable_content, _update, pass_button):
     pass_align.add(pass_box)
 
     # Accounts label
-    accounts_header = heading.Heading("Accounts", "Add or remove accounts")
+    accounts_header = Heading("Accounts", "Add or remove accounts")
 
     # Add account button
     add_button = Gtk.Button("ADD ACCOUNT")
-    add_button.get_style_context().add_class("apply_changes_button")
-    add_button.get_style_context().add_class("green")
+    add_button.get_style_context().add_class("green_button")
     add_button.set_size_request(200, 44)
     cursor.attach_cursor_events(add_button)
     add_button.connect("button_press_event", add_account)
 
     # Remove account button
     remove_button = Gtk.Button("REMOVE ACCOUNT")
-    remove_button.get_style_context().add_class("apply_changes_button")
+    remove_button.get_style_context().add_class("green_button")
     remove_button.get_style_context().add_class("red")
     remove_button.set_size_request(200, 44)
     cursor.attach_cursor_events(remove_button)
-    remove_button.connect("button_press_event", remove_account)
+    remove_button.connect("button_press_event", remove_account_dialog)
 
     button_container = Gtk.Box()
     button_container.pack_start(add_button, False, False, 10)
@@ -77,12 +76,17 @@ def activate(_win, changeable_content, _update, pass_button):
 
 def add_account(event=None, button=None):
     # Bring in message dialog box
-    kano_dialog.KanoDialog("New account scheduled.", "Reboot the system.", callback=[os.system, "sudo kano-init newuser"])
+    kdialog = kano_dialog.KanoDialog("New account scheduled.", "Reboot the system.")
+    kdialog.run()
+    os.system("sudo kano-init newuser")
 
 
-def remove_account(event=None, button=None):
+def remove_account_dialog(event=None, button=None):
     # Bring in message dialog box
-    kano_dialog.KanoDialog("Are you sure you want to delete the current user?", "", callback=[remove_user], second_button=True)
+    kdialog = kano_dialog.KanoDialog("Are you sure you want to delete the current user?", "", {"OK": -1, "CANCEL": 0})
+    response = kdialog.run()
+    if response == -1:
+        remove_user()
 
 
 def remove_user():

@@ -8,7 +8,7 @@
 
 from gi.repository import Gtk
 import kano_settings.screen.screen_config as screen_config
-import kano_settings.components.heading as heading
+from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
 import kano.utils as utils
@@ -27,7 +27,7 @@ def activate(_win, box, _update):
     global update, display_name
 
     update = _update
-    update.disable()
+    update.set_sensitive(False)
 
     read_config()
 
@@ -36,7 +36,7 @@ def activate(_win, box, _update):
     display_name, _, _ = utils.run_cmd(cmd)
     display_name = display_name[12:].rstrip()
 
-    title = heading.Heading("Display", display_name)
+    title = Heading("Display", display_name)
     box.pack_start(title.container, False, False, 0)
 
     # Contains main buttons
@@ -81,7 +81,7 @@ def activate(_win, box, _update):
     settings.box.pack_start(valign, False, False, 0)
 
     # Add apply changes button under the main settings content
-    box.pack_start(update.box, False, False, 0)
+    box.pack_start(update.align, False, False, 0)
 
 
 def apply_changes(button):
@@ -161,4 +161,4 @@ def on_mode_changed(combo):
 
     mode_index = combo.get_active()
 
-    update.enable()
+    update.set_sensitive(True)

@@ -10,7 +10,7 @@ import os
 import re
 
 from gi.repository import Gtk
-import kano_settings.components.heading as heading
+from kano.gtk3.heading import Heading
 import kano_settings.constants as constants
 import kano_settings.components.fixed_size_box as fixed_size_box
 from .config_file import get_setting, set_setting
@@ -46,12 +46,12 @@ def file_replace(fname, pat, s_after):
 def activate(_win, box, update):
     global current_img
 
-    title = heading.Heading("Audio", "Get sound")
-    box.pack_start(title.container, False, False, 0)
+    title = Heading("Audio", "Get sound")
 
     # Settings container
     settings = fixed_size_box.Fixed()
 
+    box.pack_start(title.container, False, False, 0)
     box.pack_start(settings.box, False, False, 0)
 
     # Analog radio button
@@ -83,8 +83,8 @@ def activate(_win, box, update):
     current_setting(analog_button, hdmi_button)
 
     # Add apply changes button under the main settings content
-    box.pack_start(update.box, False, False, 0)
-    update.enable()
+    box.pack_start(update.align, False, False, 0)
+    update.set_sensitive(True)
 
 
 def apply_changes(button):
