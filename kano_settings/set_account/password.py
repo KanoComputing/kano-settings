@@ -108,4 +108,4 @@ def enable_button(widget=None, event=None, apply_changes=None):
     text1 = entry1.get_text()
     text2 = entry2.get_text()
     text3 = entry3.get_text()
-    apply_changes.button.set_sensitive(text1 != "" and text2 != "" and text3 != "")
+    apply_changes.set_sensitive(text1 != "" and text2 != "" and text3 != "")
