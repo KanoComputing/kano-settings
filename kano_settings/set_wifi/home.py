@@ -12,7 +12,7 @@ import kano_settings.set_wifi.proxy as set_proxy
 import kano_settings.set_wifi.wifi as set_wifi
 import kano_settings.constants as constants
 import kano_settings.components.cursor as cursor
-import kano.gtk3.green_button as GreenButton
+from kano.gtk3.green_button import GreenButton
 
 
 win = None
@@ -41,6 +41,7 @@ def activate(_win, _box, _update):
 # This button in the proxy setting screen that takes you to the wifi screen
 def generate_wifi_button():
     to_wifi_button = GreenButton("APPLY CHANGES")
+    to_wifi_button.pack_and_align()
     to_wifi_button.connect("button_press_event", to_wifi_apply_changes)
     return to_wifi_button
 
@@ -50,7 +51,7 @@ def generate_proxy_button():
     global win
 
     to_proxy_button = Gtk.Button()
-    to_proxy_button.get_style_conext().add_class("orange_button")
+    to_proxy_button.get_style_context().add_class("orange_button")
     # The bulk of this function has moved to wifi.py
     cursor.attach_cursor_events(to_proxy_button)
     to_proxy_button.connect("button_press_event", to_proxy)

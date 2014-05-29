@@ -72,7 +72,7 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
 
     if constants.has_internet:
 
-        update.set_text("FINISH")
+        update.set_label("FINISH")
 
         status_box.pack_start(internet_status, False, False, 3)
         status_box.pack_start(internet_action, False, False, 3)
@@ -117,7 +117,7 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
         configure_container.pack_start(add_connection_button, False, False, 0)
         # Change colour of update button here.
         #update.grey_background()
-        update.set_text("SKIP THIS STEP")
+        update.set_label("SKIP THIS STEP")
 
     # So everything is centred even if we change the window height
     valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
@@ -126,7 +126,7 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
     valign.add(container)
     settings.box.pack_start(valign, False, False, 0)
 
-    box.pack_start(update.box, False, False, 0)
+    box.pack_start(update.align, False, False, 0)
     update.set_sensitive(True)
     box.show_all()
 

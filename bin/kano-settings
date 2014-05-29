@@ -74,6 +74,7 @@ class MainWindow(Gtk.Window):
 
         # Init
         self.update = GreenButton()
+        self.update.pack_and_align()
 
         if load_app_state_variable('kano-settings', 'completed') == 1:
             # we define the main button here so that the text is controlled by which flow we enter
@@ -107,6 +108,9 @@ def main():
     global win
 
     # Create style sheet
+    colours_css = Gtk.CssProvider()
+    colour_css_file = os.path.join(common_css_dir, 'colours.css')
+    colours_css.load_from_path(colour_css_file)
     specific_css = Gtk.CssProvider()
     specific_css.load_from_path(constants.media + '/CSS/style.css')
     common_css = Gtk.CssProvider()
@@ -114,6 +118,7 @@ def main():
     common_css.load_from_path(common_css_file)
     screen = Gdk.Screen.get_default()
     styleContext = Gtk.StyleContext()
+    styleContext.add_provider_for_screen(screen, colours_css, Gtk.STYLE_PROVIDER_PRIORITY_USER)
     styleContext.add_provider_for_screen(screen, specific_css, Gtk.STYLE_PROVIDER_PRIORITY_USER)
     styleContext.add_provider_for_screen(screen, common_css, Gtk.STYLE_PROVIDER_PRIORITY_USER)
     # Create windown

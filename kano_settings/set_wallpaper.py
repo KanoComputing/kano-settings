@@ -46,6 +46,7 @@ class Wallpaper():
             self.images[name] = image
             backgroundbox = Gtk.Button()
             backgroundbox.add(image)
+            image.set_padding(3, 3)
             backgroundbox.connect('button_press_event', self.select_wallpaper, name)
             buttons.append(backgroundbox)
 

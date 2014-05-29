@@ -58,7 +58,7 @@ def activate(_win, changeable_content, _update):
 
     changeable_content.pack_start(title.container, False, False, 0)
     changeable_content.pack_start(settings.box, False, False, 0)
-    changeable_content.pack_start(_update.box, False, False, 10)
+    changeable_content.pack_start(_update.align, False, False, 10)
 
     win.show_all()
 
