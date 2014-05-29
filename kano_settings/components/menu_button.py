@@ -9,7 +9,7 @@
 
 from gi.repository import Gtk
 import kano_settings.constants as constants
-import kano_settings.components.cursor as cursor
+import kano.gtk3.cursor as cursor
 
 
 class Menu_button():

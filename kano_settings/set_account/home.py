@@ -11,7 +11,7 @@
 from gi.repository import Gtk
 import kano_settings.set_account.account as account
 import kano_settings.set_account.password as password
-import kano_settings.components.cursor as cursor
+import kano.gtk3.cursor as cursor
 
 win = None
 box = None

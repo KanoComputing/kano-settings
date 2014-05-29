@@ -11,7 +11,7 @@ from gi.repository import Gtk
 import kano_settings.set_wifi.proxy as set_proxy
 import kano_settings.set_wifi.wifi as set_wifi
 import kano_settings.constants as constants
-import kano_settings.components.cursor as cursor
+import kano.gtk3.cursor as cursor
 from kano.gtk3.green_button import GreenButton
 
 
