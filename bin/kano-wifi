@@ -24,6 +24,45 @@ from kano.network import IWList, is_device, is_connected, connect, is_gateway, i
 
 NETWORKS_PER_PAGE = 5
 
+class GetPasswordHideAsYouType:
+
+    def __init__(self, enter_key=0x0d, delay=.5, hide_char='*', max_length=64):
+        self.password = ''
+        self.enter_key = enter_key
+        self.delay = delay
+        self.hide_char = hide_char
+        self.max_length = max_length
+
+    def __call__(self):
+        import sys, tty, termios, time
+        from termios import tcflush, TCIOFLUSH
+
+        # setup stdin to read unbuffered so we get 1 key reads
+        fd = sys.stdin.fileno()
+        old_settings = termios.tcgetattr(fd)
+
+        # empty possibly typeahead keyboard entries
+        tcflush(sys.stdin, TCIOFLUSH)
+
+        try:
+            tty.setraw(sys.stdin.fileno())
+            while True:
+                typed_char = sys.stdin.read(1)
+                if ord(typed_char) != self.enter_key and len(self.password) < self.max_length:
+                    sys.stdout.write (typed_char)
+                    sys.stdout.flush()
+                    time.sleep(self.delay)
+                    sys.stdout.write ('\b%c' % self.hide_char)
+                    sys.stdout.flush()
+                    self.password += typed_char
+                else:
+                    break
+        finally:
+            # restore terminal if we can't setup
+            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+
+        return self.password
+
 
 def print_header():
     subprocess.call(['clear'])
@@ -56,7 +95,7 @@ def display_networks(iwl, page=0, perpage=NETWORKS_PER_PAGE):
 
 def prompt_hidden():
 
-    protection = essid = encryption = enckey = None
+    protection = essid = encryption = None
 
     print_header()
 
@@ -83,17 +122,48 @@ def prompt_hidden():
     elif protection.upper() == 'P':
         encryption = 'wpa'
 
-    if encryption != 'off':
-        msg = 'What\'s the network passphrase?'
-        subprocess.call(['typewriter_echo', msg, '0', '1'])
-        enckey = getpass.getpass()
-        while not len(enckey):
-            msg = 'Please enter a valid network passphrase'
+    return (essid, encryption)
+
+def connect_with_retry (wiface, essid, encryption):
+    '''
+    Connects to a wireless network, either open or protected.
+    If it's protected, it promptd for the password
+    with a retry option in case the connection fails.
+    Returns true if online.
+    '''
+    online = False
+    enckey = None
+
+    if encryption == 'off':
+        # for open networks, attempt a connection and return online status
+        connect(wiface, essid, encryption, enckey)
+        online = is_gateway()
+    else:
+        # for protected networks, prompt for password, try connection
+        # and give option to re-enter password in case it fails
+        passprompt = GetPasswordHideAsYouType()
+        retry_pass = 'Y'
+        while retry_pass in ('Y', 'y', ''):
+            msg = 'What\'s the network passphrase?'
             subprocess.call(['typewriter_echo', msg, '0', '1'])
-            enckey = getpass.getpass()
+            enckey = passprompt()
+            while not len(enckey):
+                msg = 'Please enter a valid network passphrase'
+                subprocess.call(['typewriter_echo', msg, '0', '1'])
+                enckey = passprompt()
 
-    return (essid, encryption, enckey)
+            msg = '\nTrying %s, please stand by...' % essid
+            subprocess.call(['typewriter_echo', msg, '0', '2'])
+            connect(wiface, essid, encryption, enckey)
+            online = is_gateway()
+            if not online:
+                msg = 'Couldn\'t connect to %s. Do you want to re-enter the passphrase? [Y/n] ' % essid
+                subprocess.call(['typewriter_echo', msg, '1', '0'])
+                retry_pass = raw_input()
+            else:
+                break
 
+    return (online, enckey)
 
 if __name__ == '__main__':
 
@@ -229,17 +299,14 @@ if __name__ == '__main__':
             displayed = display_networks(iwl, page)
         elif var in ('h', 'H'):
             # Prompt the user which hidden network we should connect to
-            (essid, encryption, enckey) = prompt_hidden()
+            (essid, encryption) = prompt_hidden()
 
-            # Attempting connection to hidden network
-            msg = 'Trying %s, please stand by...' % essid
-            subprocess.call(['typewriter_echo', msg, '0', '2'])
-            connect(wiface, essid, encryption, enckey)
-            online = is_gateway()
+            # Request password and try to connect with password retry option
+            (online, enckey) = connect_with_retry (wiface, essid, encryption)
             if not online:
-                msg = 'Couldn\'t connect to hidden network %s' % essid
-                subprocess.call(['typewriter_echo', msg, '1', '2'])
                 selected = None
+                page = 0
+                displayed = display_networks(iwl, page)
             else:
                 wificache.save(essid, encryption, enckey)
 
@@ -259,28 +326,9 @@ if __name__ == '__main__':
             msg = 'Let\'s connect to %s' % essid
             subprocess.call(['typewriter_echo', msg, '0', '2'])
 
-            if encryption in ('wep', 'wpa'):
-                # Ask for hidden password or not
-                msg = 'Do you want the password to be hidden? [y/N]'
-                subprocess.call(['typewriter_echo', msg, '0', '1'])
-                hidden = raw_input(" Option: ")
-                # Ask for password
-                msg = '\nWhat\'s the password?'
-                subprocess.call(['typewriter_echo', msg, '0', '1'])
-                if hidden in ('n', 'N', 'no', 'NO'):
-                    enckey = raw_input(" Password: ")
-                else:
-                    print "(Don't worry if you don't see any text, your secret password has been hidden)"
-                    enckey = getpass.getpass()
-
-            # Attempting connection to selected network
-            msg = '\nTrying %s, please stand by...' % essid
-            subprocess.call(['typewriter_echo', msg, '0', '2'])
-            connect(wiface, essid, encryption, enckey)
-            online = is_gateway()
+            # Request password and try to connect with password retry option
+            (online, enckey) = connect_with_retry (wiface, essid, encryption)
             if not online:
-                msg = 'Couldn\'t connect to %s. Was the password correct?' % essid
-                subprocess.call(['typewriter_echo', msg, '1', '2'])
                 selected = None
                 page = 0
                 displayed = display_networks(iwl, page)
