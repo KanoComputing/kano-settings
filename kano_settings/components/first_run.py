@@ -8,6 +8,7 @@
 # This controls the flow of the projects on the first run of Kano-settings
 
 from gi.repository import Gtk
+import os
 import kano_settings.constants as constants
 import kano_settings.set_intro as set_intro
 import kano_settings.set_keyboard as set_keyboard
@@ -118,11 +119,13 @@ class First_Run():
 
 # On closing window, will alert if any of the listed booleans are True
 def close_window(event="delete-event", button=None):
-    print constants.need_reboot
-
-    if constants.need_reboot:
-        kdialog = kano_dialog.KanoDialog("So you know...", "...you will have to reboot to see your changes")
-        kdialog.run()
 
     save_app_state_variable_with_dialog('kano-settings', 'completed', 1)
+
+    if constants.need_reboot:
+        kdialog = kano_dialog.KanoDialog("Reboot?", "Your Kano needs to reboot for changes to apply", {"REBOOT NOW": 1, "LATER": 0})
+        response = kdialog.run()
+        if response == 1:
+            os.system("sudo reboot")
+
     Gtk.main_quit()
