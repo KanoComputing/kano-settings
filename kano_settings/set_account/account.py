@@ -12,8 +12,8 @@ import os
 from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 from kano.utils import get_user_unsudoed
-import kano.gtk3.cursor as cursor
 import kano.gtk3.kano_dialog as kano_dialog
+from kano.gtk3.green_button import GreenButton
 
 win = None
 update = None
@@ -42,18 +42,14 @@ def activate(_win, changeable_content, _update, pass_button):
     accounts_header = Heading("Accounts", "Add or remove accounts")
 
     # Add account button
-    add_button = Gtk.Button("ADD ACCOUNT")
-    add_button.get_style_context().add_class("green_button")
+    add_button = GreenButton("ADD ACCOUNT")
     add_button.set_size_request(200, 44)
-    cursor.attach_cursor_events(add_button)
     add_button.connect("button_press_event", add_account)
 
     # Remove account button
-    remove_button = Gtk.Button("REMOVE ACCOUNT")
-    remove_button.get_style_context().add_class("green_button")
-    remove_button.get_style_context().add_class("red")
+    remove_button = GreenButton("REMOVE ACCOUNT")
+    remove_button.set_red(True)
     remove_button.set_size_request(200, 44)
-    cursor.attach_cursor_events(remove_button)
     remove_button.connect("button_press_event", remove_account_dialog)
 
     button_container = Gtk.Box()
