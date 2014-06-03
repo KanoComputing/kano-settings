@@ -17,7 +17,7 @@ from .config_file import get_setting, set_setting
 
 
 win = None  # TODO: Is it needed?
-update = None
+button = None
 
 selected_layout = None
 selected_country = None
@@ -52,11 +52,11 @@ class WorkerThread(threading.Thread):
         GObject.idle_add(self.callback)
 
 
-def activate(_win, box, _update):
-    global win, continents_combo, variants_combo, countries_combo, continents, update
+def activate(_win, box, _button):
+    global win, continents_combo, variants_combo, countries_combo, continents, button
 
-    update = _update
-    update.set_sensitive(False)
+    button = _button
+    button.set_sensitive(False)
 
     read_config()
 
@@ -122,14 +122,14 @@ def activate(_win, box, _update):
 
     box.pack_start(title.container, False, False, 0)
     box.pack_start(settings.box, False, False, 0)
-    box.pack_start(update.align, False, False, 0)
+    box.pack_start(button.align, False, False, 0)
 
     # Refresh window
     win.show_all()
 
 
 def apply_changes(button):
-    global win, update
+    global win
 
     # Apply changes
     thread = WorkerThread(work_finished_cb)
@@ -205,7 +205,7 @@ def set_defaults(setting):
 
 
 def on_continent_changed(combo):
-    global selected_continent_hr, selected_continent_index, update
+    global selected_continent_hr, selected_continent_index, button
 
     continent = selected_continent_hr
     tree_iter = combo.get_active_iter()
@@ -217,14 +217,14 @@ def on_continent_changed(combo):
     selected_continent_hr = str(continent)
     selected_continent_index = str(combo.get_active())
 
-    update.set_sensitive(False)
+    button.set_sensitive(False)
 
     fill_countries_combo(selected_continent_hr)
     win.show_all()
 
 
 def on_country_changed(combo):
-    global win, selected_country, selected_country_index, selected_country_hr, selected_layout, variants_combo, update
+    global win, selected_country, selected_country_index, selected_country_hr, selected_layout, variants_combo, button
 
     country = None
     tree_iter = combo.get_active_iter()
@@ -249,20 +249,20 @@ def on_country_changed(combo):
         for v in variants:
             variants_combo.append_text(v[0])
 
-    update.set_sensitive(False)
+    button.set_sensitive(False)
 
     # Refresh window
     win.show_all()
 
 
 def on_variants_changed(combo):
-    global win, selected_variant, selected_variant_hr, selected_variant_index, update
+    global win, selected_variant, selected_variant_hr, selected_variant_index, button
 
     tree_iter = combo.get_active_iter()
     if tree_iter is not None:
         model = combo.get_model()
         variant = model[tree_iter][0]
-        update.set_sensitive(True)
+        button.set_sensitive(True)
         if variant == "generic":
             selected_variant = selected_variant_hr = str(variant)
             selected_variant_index = 0

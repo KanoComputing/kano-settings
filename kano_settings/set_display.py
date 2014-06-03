@@ -18,16 +18,16 @@ from .config_file import get_setting, set_setting
 mode = 'auto'
 mode_index = 0
 overscan = False
-update = None
+button = None
 display_name = None
 CONTAINER_HEIGHT = 70
 
 
-def activate(_win, box, _update):
-    global update, display_name
+def activate(_win, box, _button):
+    global button, display_name
 
-    update = _update
-    update.set_sensitive(False)
+    button = _button
+    button.set_sensitive(False)
 
     read_config()
 
@@ -81,7 +81,7 @@ def activate(_win, box, _update):
     settings.box.pack_start(valign, False, False, 0)
 
     # Add apply changes button under the main settings content
-    box.pack_start(update.align, False, False, 0)
+    box.pack_start(button.align, False, False, 0)
 
 
 def apply_changes(button):
@@ -151,7 +151,7 @@ def on_button_toggled(button):
 
 
 def on_mode_changed(combo):
-    global mode, mode_index, update
+    global mode, mode_index, button
 
     #  Get the selected mode
     tree_iter = combo.get_active_iter()
@@ -161,4 +161,4 @@ def on_mode_changed(combo):
 
     mode_index = combo.get_active()
 
-    update.set_sensitive(True)
+    button.set_sensitive(True)

@@ -20,7 +20,7 @@ entry2 = None
 entry3 = None
 
 
-def activate(_win, changeable_content, _update):
+def activate(_win, changeable_content, _button):
     global win, entry1, entry2, entry3
 
     win = _win
@@ -37,9 +37,9 @@ def activate(_win, changeable_content, _update):
     entry3.props.placeholder_text = "Repeat new password"
     entry3.set_visibility(False)
 
-    entry1.connect("key_release_event", enable_button, _update)
-    entry2.connect("key_release_event", enable_button, _update)
-    entry3.connect("key_release_event", enable_button, _update)
+    entry1.connect("key_release_event", enable_button, _button)
+    entry2.connect("key_release_event", enable_button, _button)
+    entry3.connect("key_release_event", enable_button, _button)
 
     # Entry container
     entry_container = Gtk.Grid(column_homogeneous=False,
@@ -53,12 +53,12 @@ def activate(_win, changeable_content, _update):
     align = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
     align.add(entry_container)
     settings.box.pack_start(align, False, False, 0)
-    _update.set_sensitive(False)
+    _button.set_sensitive(False)
     title = Heading("Change your password", "Keep out the baddies!")
 
     changeable_content.pack_start(title.container, False, False, 0)
     changeable_content.pack_start(settings.box, False, False, 0)
-    changeable_content.pack_start(_update.align, False, False, 10)
+    changeable_content.pack_start(_button.align, False, False, 10)
 
     win.show_all()
 

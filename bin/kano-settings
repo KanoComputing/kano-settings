@@ -66,21 +66,21 @@ class MainWindow(Gtk.Window):
         self.changeable_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.changeable_content.props.halign = Gtk.Align.CENTER
 
-        self.top_bar = TopBar(WINDOW_WIDTH)
+        self.top_bar = TopBar(title="Kano-Settings", window_width=680)
         self.top_bar.close_button.connect("clicked", first_run.close_window)
 
         # Check for internet
         constants.has_internet = is_internet()
 
         # Init
-        self.update = GreenButton()
-        self.update.pack_and_align()
+        self.button = GreenButton()
+        self.button.pack_and_align()
 
         if load_app_state_variable('kano-settings', 'completed') == 1:
             # we define the main button here so that the text is controlled by which flow we enter
             # ie on the first run, we want the button to say Next until the last screen, in which case it says Finish
             # So we want to control this text in default_intro.py and first_run.py
-            self.update.set_label("APPLY CHANGES")
+            self.button.set_label("APPLY CHANGES")
             self.run_through = default_intro.Default_Intro(self, WINDOW_HEIGHT, WINDOW_WIDTH, self.top_bar.height)
             self.top_bar.disable_next()
             if init_state >= 0:
@@ -88,17 +88,17 @@ class MainWindow(Gtk.Window):
             else:
                 self.top_bar.disable_prev()
         else:
-            self.update.set_label("GET STARTED")
+            self.button.set_label("GET STARTED")
             self.run_through = first_run.First_Run(self)
-            set_intro.activate(self, self.changeable_content, self.update)
+            set_intro.activate(self, self.changeable_content, self.button)
             self.top_bar.next_button.set_image(self.top_bar.dark_next_arrow)
             self.top_bar.disable_prev()
 
         self.top_bar.next_button.connect("button_press_event", self.run_through.on_next)
         self.top_bar.prev_button.connect("button_press_event", self.run_through.on_prev)
-        self.update.connect('button_press_event', self.run_through.update)
+        self.button.connect('button_press_event', self.run_through.update)
 
-        self.grid.attach(self.top_bar.background, 0, 0, 1, 1)
+        self.grid.attach(self.top_bar, 0, 0, 1, 1)
         self.grid.attach(self.changeable_content, 0, 2, 1, 1)
         self.grid.set_row_spacing(0)
         self.add(self.grid)

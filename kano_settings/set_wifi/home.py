@@ -17,25 +17,25 @@ from kano.gtk3.green_button import GreenButton
 
 win = None
 box = None
-update = None
+button = None
 to_wifi_button = None
 to_proxy_button = None
 disable_proxy = None
 in_proxy = False
 
 
-def activate(_win, _box, _update):
-    global win, box, update, to_proxy_button, to_wifi_button
+def activate(_win, _box, _button):
+    global win, box, button, to_proxy_button, to_wifi_button
 
     win = _win
     box = _box
-    update = _update
+    button = _button
 
     to_proxy_button = generate_proxy_button()
     to_wifi_button = generate_wifi_button()
     disable_proxy = generate_disable_proxy()
     constants.proxy_enabled = set_proxy.is_enabled()
-    set_wifi.activate(win, box, update, to_proxy_button, disable_proxy)
+    set_wifi.activate(win, box, button, to_proxy_button, disable_proxy)
 
 
 # This button in the proxy setting screen that takes you to the wifi screen
@@ -76,7 +76,7 @@ def disable_proxy_function(arg1=None, arg2=None):
 
 
 def to_wifi_apply_changes(event=None, arg=None):
-    global win, box, update, to_proxy_button
+    global win, box, button, to_proxy_button
 
     # Apply changes from set_proxy
     set_proxy.apply_changes()
@@ -89,17 +89,17 @@ def to_wifi(arg1=None, arg2=None):
     to_proxy_button = generate_proxy_button()
     disable_proxy = generate_disable_proxy()
     remove_children(box)
-    set_wifi.activate(win, box, update, to_proxy_button, disable_proxy)
+    set_wifi.activate(win, box, button, to_proxy_button, disable_proxy)
     in_proxy = False
     win.show_all()
 
 
 def to_proxy(event=None, arg=None):
-    global win, box, update, in_proxy
+    global win, box, button, in_proxy
 
     to_wifi_button = generate_wifi_button()
     remove_children(box)
-    set_proxy.activate(win, box, update, to_wifi_button)
+    set_proxy.activate(win, box, button, to_wifi_button)
     in_proxy = True
     win.show_all()
 

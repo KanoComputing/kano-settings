@@ -43,7 +43,7 @@ def file_replace(fname, pat, s_after):
         os.rename(out_fname, fname)
 
 
-def activate(_win, box, update):
+def activate(_win, box, button):
     global current_img
 
     title = Heading("Audio", "Get sound")
@@ -83,8 +83,8 @@ def activate(_win, box, update):
     current_setting(analog_button, hdmi_button)
 
     # Add apply changes button under the main settings content
-    box.pack_start(update.align, False, False, 0)
-    update.set_sensitive(True)
+    box.pack_start(button.align, False, False, 0)
+    button.set_sensitive(True)
 
 
 def apply_changes(button):

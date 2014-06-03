@@ -15,35 +15,35 @@ import kano.gtk3.cursor as cursor
 
 win = None
 box = None
-update = None
+button = None
 in_password = False
 
 
-def activate(_win, changeable_content, _update):
-    global box, win, update, in_password
+def activate(_win, changeable_content, _button):
+    global box, win, button, in_password
 
     win = _win
     box = changeable_content
-    update = _update
+    button = _button
     pass_button = password_button()
-    account.activate(_win, changeable_content, _update, pass_button)
+    account.activate(_win, changeable_content, _button, pass_button)
     set_in_password(False)
 
 
 def to_account(arg1=None, arg2=None):
-    global win, box, update, in_password
+    global win, box, button, in_password
 
     remove_children(box)
     pass_button = password_button()
-    account.activate(win, box, update, pass_button)
+    account.activate(win, box, button, pass_button)
     set_in_password(False)
 
 
 def to_password(arg1=None, arg2=None):
-    global win, box, update, in_password
+    global win, box, button, in_password
 
     remove_children(box)
-    password.activate(win, box, update)
+    password.activate(win, box, button)
     set_in_password(True)
 
 

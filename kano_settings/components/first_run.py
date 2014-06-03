@@ -32,7 +32,7 @@ class First_Run():
     def update(self, widget=None, arg2=None):
         global win
 
-        returnValue = self.state_to_widget(win.state).apply_changes(win.update.align)
+        returnValue = self.state_to_widget(win.state).apply_changes(win.button.align)
 
         if returnValue == -1:
             return
@@ -61,7 +61,7 @@ class First_Run():
             win.changeable_content.remove(i)
 
         # Call next state
-        self.state_to_widget(win.state).activate(win, win.changeable_content, win.update)
+        self.state_to_widget(win.state).activate(win, win.changeable_content, win.button)
         self.update_next_button(win)
 
         # Refresh window
@@ -85,7 +85,7 @@ class First_Run():
             win.changeable_content.remove(i)
 
         # Call next state
-        self.state_to_widget(win.state).activate(win, win.changeable_content, win.update)
+        self.state_to_widget(win.state).activate(win, win.changeable_content, win.button)
         self.update_next_button(win)
 
         # Refresh window
@@ -96,15 +96,15 @@ class First_Run():
 
         # Change label on Apply Changes button
         if win.state == MAX_STATE - 1:
-            win.update.set_label("FINISH")
+            win.button.set_label("FINISH")
             win.top_bar.enable_prev()
             win.top_bar.disable_next()
         elif win.state == 0:
-            win.update.set_label("GET STARTED")
+            win.button.set_label("GET STARTED")
             win.top_bar.disable_prev()
             win.top_bar.enable_next()
         else:
-            win.update.set_label("NEXT")
+            win.button.set_label("NEXT")
             win.top_bar.enable_prev()
             win.top_bar.enable_next()
 

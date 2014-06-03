@@ -23,7 +23,7 @@ password_entry = None
 proxy_type = None
 enable_proxy = False
 next_button = None
-update = None
+button = None
 
 GRID_HEIGHT = 150
 

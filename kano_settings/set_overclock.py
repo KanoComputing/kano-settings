@@ -37,7 +37,7 @@ def file_replace(fname, pat, s_after):
         os.rename(out_fname, fname)
 
 
-def activate(_win, box, update):
+def activate(_win, box, button):
     global selected_button, initial_button
 
     # This setting requires boot_config_file, return if it doesn't exist
@@ -126,8 +126,8 @@ def activate(_win, box, update):
         high_button.set_active(True)
 
     # Add apply changes button under the main settings content
-    box.pack_start(update.align, False, False, 0)
-    update.set_sensitive(True)
+    box.pack_start(button.align, False, False, 0)
+    button.set_sensitive(True)
 
 
 def apply_changes(button):

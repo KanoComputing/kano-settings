@@ -16,15 +16,15 @@ import kano.gtk3.kano_dialog as kano_dialog
 from kano.gtk3.green_button import GreenButton
 
 win = None
-update = None
+button = None
 box = None
 
 
-def activate(_win, changeable_content, _update, pass_button):
-    global win, update, box
+def activate(_win, changeable_content, _button, pass_button):
+    global win, button, box
 
     win = _win
-    update = _update
+    button = _button
     box = changeable_content
     title = Heading("System account settings", "Set your account")
 

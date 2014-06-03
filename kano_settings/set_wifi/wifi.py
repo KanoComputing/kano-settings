@@ -20,21 +20,21 @@ from ..config_file import get_setting
 network_message = ""
 win = None
 box = None
-update = None
+button = None
 proxy_button = None
 disable_proxy = None
 WIFI_IMG_HEIGHT = 110
 handler = None
 
 
-def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
-    global network_message, box, win, update, proxy_button
+def activate(_win, _box, _button, _proxy_button, _disable_proxy=None):
+    global network_message, box, win, button, proxy_button
 
     constants.has_internet = is_internet()
 
     win = _win
     box = _box
-    update = _update
+    button = _button
     proxy_button = _proxy_button
 
     title = Heading("", "")
@@ -72,7 +72,7 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
 
     if constants.has_internet:
 
-        update.set_label("FINISH")
+        button.set_label("FINISH")
 
         status_box.pack_start(internet_status, False, False, 3)
         status_box.pack_start(internet_action, False, False, 3)
@@ -117,7 +117,7 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
         configure_container.pack_start(add_connection_button, False, False, 0)
         # Change colour of update button here.
         #update.grey_background()
-        update.set_label("SKIP THIS STEP")
+        button.set_label("SKIP THIS STEP")
 
     # So everything is centred even if we change the window height
     valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
@@ -126,8 +126,8 @@ def activate(_win, _box, _update, _proxy_button, _disable_proxy=None):
     valign.add(container)
     settings.box.pack_start(valign, False, False, 0)
 
-    box.pack_start(update.align, False, False, 0)
-    update.set_sensitive(True)
+    box.pack_start(button.align, False, False, 0)
+    button.set_sensitive(True)
     box.show_all()
 
 
@@ -158,11 +158,11 @@ def configure_wifi(event=None, button=None):
 
 
 def refresh(widget=None, event=None):
-    global box, win, update, proxy_button, handler
+    global box, win, button, proxy_button, handler
 
     for child in box.get_children():
         box.remove(child)
-    activate(win, box, update, proxy_button)
+    activate(win, box, button, proxy_button)
     win.disconnect(handler)
 
 
