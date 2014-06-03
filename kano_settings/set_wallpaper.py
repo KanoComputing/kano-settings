@@ -31,7 +31,7 @@ class Wallpaper():
         self.table = Gtk.Table(NUMBER_OF_ROWS, NUMBER_OF_COLUMNS, True)
         self.table.set_row_spacings(ROW_PADDING)
         self.table.set_col_spacings(COLUMN_PADDING)
-        buttons = []
+        self.buttons = {}
         # List of wallpapers
         self.dict = {}
         self.create_list_wallpaper()
@@ -41,44 +41,36 @@ class Wallpaper():
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(wallpaper_path + name + name_pattern, 120, 90)
             cropped_pixbuf = pixbuf.new_subpixbuf(15, 0, ICON_WIDTH, ICON_HEIGHT)
             image = Gtk.Image()
-            image.get_style_context().add_class('wallpaper_box')
             image.set_from_pixbuf(cropped_pixbuf)
             self.images[name] = image
             backgroundbox = Gtk.Button()
+            backgroundbox.get_style_context().add_class('wallpaper_box')
             backgroundbox.add(image)
             image.set_padding(3, 3)
             backgroundbox.connect('button_press_event', self.select_wallpaper, name)
-            buttons.append(backgroundbox)
+            self.buttons[name] = backgroundbox
 
         # Attach to table
-        index = 0
         row = 0
+        j = 0
 
-        while index < len(self.dict):
-            for j in range(NUMBER_OF_COLUMNS):
-                if index < len(self.dict):
-                    self.table.attach(buttons[index], j, j + 1, row, row + 1,
-                                      Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, 0, 0)
-                    index += 1
-                else:
-                    grey_box = Gtk.Button()
-                    grey_box.set_size_request(ICON_WIDTH, ICON_HEIGHT)
-                    grey_box.get_style_context().add_class('grey_box')
-                    grey_box.connect('button_press_event', self.add_wallpaper)
-                    self.table.attach(grey_box, j, j + 1, row, row + 1,
-                                      Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, 0, 0)
-                    index += 1
-            row += 1
+        for name, button in self.buttons.iteritems():
+            self.table.attach(button, j, j + 1, row, row + 1,
+                              Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, 0, 0)
+
+            j = (j + 1) % NUMBER_OF_COLUMNS
+            if j == 0:
+                row += 1
 
     # Add class to wallpaper picture which displays border even when mouse is moved
     def select_wallpaper(self, widget=None, event=None, image_name=""):
-        for x in self.images:
-            style = self.images[x].get_style_context()
+        for name, button in self.buttons.iteritems():
+            style = button.get_style_context()
             style.remove_class("wallpaper_box_active")
             style.add_class("wallpaper_box")
-        image_style = self.images[image_name].get_style_context()
-        image_style.remove_class("wallpaper_box")
-        image_style.add_class("wallpaper_box_active")
+        style = self.buttons[image_name].get_style_context()
+        style.remove_class("wallpaper_box")
+        style.add_class("wallpaper_box_active")
         self.set_selected(image_name)
 
     def add_wallpaper(self, widget=None, event=None):

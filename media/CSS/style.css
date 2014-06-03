@@ -34,24 +34,27 @@
 }
 
 /* Wallpaper icons */
-/* wallpaper_box is the button that shows the wallpaper teh user can choose */
+/* wallpaper_box is the image that shows the wallpaper the user can choose */
 .wallpaper_box {
     border-style: solid;
     border-width: 3px;
     border-radius: 10px;
     border-color: transparent;
+    background: transparent;
 }
 .wallpaper_box:hover {
     background: @kano_green;
     border-radius: 10px;
     border-style: solid;
     border-width: 3px;
-    border-radius: 10px;
     border-color: @kano_green;
 }
 .wallpaper_box_active {
     background: @kano_green;
     border-radius: 10px;
+    border-style: solid;
+    border-width: 3px;
+    border-color: @kano_green;
 }
 
 /* grey_box does not contain a wallpaper but will have the option for the user to add a custom wallpaper */

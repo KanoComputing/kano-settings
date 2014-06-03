@@ -77,6 +77,8 @@ class Default_Intro():
                                       Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL, 0, 0)
                     if row % 2:
                         buttons[index].get_style_context().add_class('appgrid_grey')
+                    else:
+                        buttons[index].get_style_context().add_class('appgrid_white')
                     index += 1
                 else:
                     break
