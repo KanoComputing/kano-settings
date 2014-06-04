@@ -79,7 +79,7 @@ def add_account(event=None, button=None):
 
 def remove_account_dialog(event=None, button=None):
     # Bring in message dialog box
-    kdialog = kano_dialog.KanoDialog("Are you sure you want to delete the current user?", "", {"OK": -1, "CANCEL": 0})
+    kdialog = kano_dialog.KanoDialog("Are you sure you want to delete the current user?", "", {"OK": {"return_value": -1}, "CANCEL": {"return_value": 0}})
     response = kdialog.run()
     if response == -1:
         remove_user()

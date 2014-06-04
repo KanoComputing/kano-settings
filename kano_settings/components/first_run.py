@@ -16,8 +16,6 @@ import kano_settings.set_audio as set_audio
 import kano_settings.set_wifi.home as set_wifi_proxy
 import kano.gtk3.kano_dialog as kano_dialog
 
-# storing completed in kano-profile
-from kano.profile.badges import save_app_state_variable_with_dialog
 
 win = None
 MAX_STATE = 4
@@ -121,7 +119,9 @@ class First_Run():
 def close_window(event="delete-event", button=None):
 
     if constants.need_reboot:
-        kdialog = kano_dialog.KanoDialog("Reboot?", "Your Kano needs to reboot for changes to apply", {"REBOOT NOW": 1, "LATER": 0})
+        kdialog = kano_dialog.KanoDialog("Reboot?",
+                                         "Your Kano needs to reboot for changes to apply",
+                                         {"REBOOT NOW": {"return_value": 1}, "LATER": {"return_value": 0}})
         response = kdialog.run()
         if response == 1:
             os.system("sudo reboot")

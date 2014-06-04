@@ -92,7 +92,8 @@ def apply_changes(button=None):
 def create_dialog(message1="Could not change password", message2=""):
     global win
 
-    kdialog = kano_dialog.KanoDialog(message1, message2, {"TRY AGAIN": -1, "GO BACK": 0})
+    kdialog = kano_dialog.KanoDialog(message1, message2,
+                                     {"TRY AGAIN": {"return_value": -1}, "GO BACK": {"return_value": 0}})
     response = kdialog.run()
     return response
 
