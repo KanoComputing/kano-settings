@@ -21,6 +21,7 @@ import kano_settings.set_wallpaper as set_wallpaper
 import kano_settings.components.menu_button as menu_button
 import kano_settings.constants as constants
 from kano.network import is_internet
+from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.utils import get_user_unsudoed
 from ..config_file import get_setting
 
@@ -85,7 +86,9 @@ class Default_Intro():
             row += 1
 
         # for scroll bar
-        self.scrolled_window = Gtk.ScrolledWindow(hexpand=True, vexpand=True)
+        self.scrolled_window = ScrolledWindow()
+        self.scrolled_window.set_hexpand(True)
+        self.scrolled_window.set_vexpand(True)
         self.scrolled_window.add_with_viewport(self.table)
         self.scrolled_window.set_size_request(WINDOW_WIDTH, WINDOW_HEIGHT)
 
