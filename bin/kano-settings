@@ -24,7 +24,7 @@ import kano_settings.components.default_intro as default_intro
 from kano_settings.auto_settings import auto_settings
 from kano.network import is_internet
 from kano.paths import common_css_dir
-from kano.gtk3.green_button import GreenButton
+from kano.gtk3.buttons import KanoButton
 from kano.gtk3.top_bar import TopBar
 
 # storing completed in kano-profile
@@ -73,7 +73,7 @@ class MainWindow(Gtk.Window):
         constants.has_internet = is_internet()
 
         # Init
-        self.button = GreenButton()
+        self.button = KanoButton()
         self.button.pack_and_align()
 
         if load_app_state_variable('kano-settings', 'completed') == 1:

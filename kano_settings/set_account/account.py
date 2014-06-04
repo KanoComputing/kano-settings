@@ -13,7 +13,7 @@ from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 from kano.utils import get_user_unsudoed
 import kano.gtk3.kano_dialog as kano_dialog
-from kano.gtk3.green_button import GreenButton
+from kano.gtk3.buttons import KanoButton
 
 win = None
 button = None
@@ -42,13 +42,13 @@ def activate(_win, changeable_content, _button, pass_button):
     accounts_header = Heading("Accounts", "Add or remove accounts")
 
     # Add account button
-    add_button = GreenButton("ADD ACCOUNT")
+    add_button = KanoButton("ADD ACCOUNT")
     add_button.set_size_request(200, 44)
     add_button.connect("button_press_event", add_account)
 
     # Remove account button
-    remove_button = GreenButton("REMOVE ACCOUNT")
-    remove_button.set_red(True)
+    remove_button = KanoButton("REMOVE ACCOUNT")
+    remove_button.set_color("red")
     remove_button.set_size_request(200, 44)
     remove_button.connect("button_press_event", remove_account_dialog)
 

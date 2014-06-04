@@ -8,10 +8,9 @@
 # Controls the communication between the account and password screen
 
 
-from gi.repository import Gtk
 import kano_settings.set_account.account as account
 import kano_settings.set_account.password as password
-import kano.gtk3.cursor as cursor
+from kano.gtk3.buttons import KanoButton
 
 win = None
 box = None
@@ -48,10 +47,8 @@ def to_password(arg1=None, arg2=None):
 
 
 def password_button():
-    pass_button = Gtk.Button("CHANGE PASSWORD")
-    pass_button.get_style_context().add_class("green_button")
+    pass_button = KanoButton("CHANGE PASSWORD")
     pass_button.set_size_request(200, 44)
-    cursor.attach_cursor_events(pass_button)
     pass_button.connect("button_press_event", to_password)
     return pass_button
 
