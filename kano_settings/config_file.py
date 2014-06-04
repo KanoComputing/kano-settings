@@ -43,6 +43,8 @@ defaults = {
     'Proxy-ip': '',
     'Proxy-username': '',
     'Proxy-type': '',
+    'Parental-lock': False,
+    'Debug-mode': False,
 }
 
 
