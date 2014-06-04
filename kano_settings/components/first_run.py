@@ -120,8 +120,6 @@ class First_Run():
 # On closing window, will alert if any of the listed booleans are True
 def close_window(event="delete-event", button=None):
 
-    save_app_state_variable_with_dialog('kano-settings', 'completed', 1)
-
     if constants.need_reboot:
         kdialog = kano_dialog.KanoDialog("Reboot?", "Your Kano needs to reboot for changes to apply", {"REBOOT NOW": 1, "LATER": 0})
         response = kdialog.run()
