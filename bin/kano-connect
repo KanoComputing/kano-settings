@@ -32,7 +32,7 @@
 
 import os
 import sys
-import syslog
+from kano.logging import logger
 import atexit
 
 from kano.network import IWList, is_device, is_gateway, connect, disconnect, remove_pid, is_ethernet_plugged, KwifiCache
@@ -48,7 +48,7 @@ def attempt_connect(wiface, essid, encryption, enckey, conf=None):
     else:
         info = essid
 
-    syslog.syslog("Attempting association to %s through interface %s" % (info, wiface))
+    logger.info("Attempting association to %s through interface %s" % (info, wiface))
     try:
         connect(wiface, essid, encryption, seckey=enckey, wpa_custom_file=conf)
         online = is_gateway()
@@ -56,7 +56,7 @@ def attempt_connect(wiface, essid, encryption, enckey, conf=None):
         pass
 
     if online:
-        syslog.syslog("Network association result: %s" % online)
+        logger.info("Network association result: %s" % online)
 
     return online
 
@@ -67,11 +67,9 @@ if __name__ == '__main__':
     cached_connect = False
     fconnected = False
 
-    syslog.openlog(logoption=syslog.LOG_PID)
-    syslog.syslog('autoconnect is starting')
-
+    logger.info('kano-connect is starting')
     if not os.getuid() == 0:
-        syslog.syslog('you need root privileges')
+        logger.error('you need root privileges')
         print 'You need root privileges to start this app. Please try sudo'
         sys.exit(1)
 
@@ -82,7 +80,7 @@ if __name__ == '__main__':
         sys.exit(1)
     else:
         if os.access(pidfile, os.R_OK):
-            syslog.syslog('you need root privileges')
+            logger.error('An instance of kano-connect is already running')
             print 'An instance of Kanoconnet.py is already running.'
             sys.exit(1)
         else:
@@ -99,7 +97,7 @@ if __name__ == '__main__':
     else:
         if sys.argv[1] == '-c':
             if len(sys.argv) < 3:
-                syslog.syslog('need a wireless device name')
+                logger.error('I need a wireless device name (wlanX)')
                 print 'need wireless interface device'
                 sys.exit(1)
             else:
@@ -112,18 +110,18 @@ if __name__ == '__main__':
 
         # check if wireless dongle is plugged in, and that ethernet cable is not plugged in
         if not is_device(wiface):
-            syslog.syslog('wireless device %s is not plugged in' % (wiface))
+            loggre.error('wireless device %s is not plugged in' % (wiface))
             sys.exit(2)
         else:
             if is_ethernet_plugged():
-                syslog.syslog('ethernet cable is plugged in, exiting')
+                logger.error('ethernet cable is plugged in, exiting')
                 sys.exit(2)
 
         # if cache connect mode, and there is no cached network, stop wasting time.
         if cached_connect:
             cached = wcache.get_latest()
             if not cached:
-                syslog.syslog('cache mode requested but no cached network found - exiting')
+                logger.error('cache mode requested but no cached network found - exiting')
                 sys.exit(2)
             else:
                 # If there is a cached network, try to connect straight away
@@ -162,5 +160,5 @@ if __name__ == '__main__':
                 if fconnected:
                     sys.exit(0)
 
-    syslog.syslog('Could not connect to any open wireless networks through iface %s - Exiting.' % (wiface))
+    logger.error('Could not connect to any open/cached wireless networks through iface %s - Exiting.' % (wiface))
     sys.exit(1)
