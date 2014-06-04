@@ -13,11 +13,14 @@ import kano_settings.keyboard.keyboard_layouts as keyboard_layouts
 import kano_settings.keyboard.keyboard_config as keyboard_config
 from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
+import kano_settings.constants as constants
 from .config_file import get_setting, set_setting
+from kano.gtk3.buttons import OrangeButton
 
 
-win = None  # TODO: Is it needed?
+win = None
 button = None
+box = None
 
 selected_layout = None
 selected_country = None
@@ -38,6 +41,8 @@ continents = ['Africa', 'America', 'Asia', 'Australia', 'Europe', 'Others']
 
 DROPDOWN_CONTAINER_HEIGHT = 118
 
+kano_keyboard = True
+IMG_HEIGHT = 100
 
 class WorkerThread(threading.Thread):
     def __init__(self, callback):
@@ -52,15 +57,59 @@ class WorkerThread(threading.Thread):
         GObject.idle_add(self.callback)
 
 
-def activate(_win, box, _button):
-    global win, continents_combo, variants_combo, countries_combo, continents, button
+def activate(_win, _box, _button):
+    global win, button, kano_keyboard
 
+    win = _win
+    box = _box
     button = _button
     button.set_sensitive(False)
 
     read_config()
 
-    win = _win
+    # Check for kano-keyboard
+    if kano_keyboard:
+        kano_keyboard_ui(box)
+    else:
+        other_keyboard_ui(box)
+
+
+def kano_keyboard_ui(box):
+
+    # Settings container
+    settings = fixed_size_box.Fixed()
+
+    # Title
+    title = Heading("Keyboard", "Kano keyboard detected!")
+
+    # height is 106px
+    img = Gtk.Image()
+    img.set_from_file(constants.media + "/Graphics/keyboard.png")
+
+    # Link to advance options
+    to_advance_button = OrangeButton("Layout options")
+    to_advance_button.connect("button_press_event", to_advance, box)
+
+    container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+    container.pack_start(img, False, False, 10)
+    container.pack_start(to_advance_button, False, False, 10)
+
+    valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
+    padding_above = (settings.height - IMG_HEIGHT) / 2
+    valign.set_padding(padding_above, 0, 0, 0)
+    valign.add(container)
+    settings.box.pack_start(valign, False, False, 0)
+
+    box.pack_start(title.container, False, False, 0)
+    box.pack_start(settings.box, False, False, 0)
+    box.pack_start(button.align, False, False, 0)
+
+    # Refresh window
+    win.show_all()
+
+
+def other_keyboard_ui(box):
+    global continents_combo, variants_combo, countries_combo
 
     # Contains all the settings
     settings = fixed_size_box.Fixed()
@@ -79,10 +128,19 @@ def activate(_win, box, _button):
     countries_combo.connect("changed", on_country_changed)
     countries_combo.props.valign = Gtk.Align.CENTER
 
+    # Create Advance mode checkbox
+    advance_button = Gtk.CheckButton("Advance options")
+    advance_button.set_can_focus(False)
+    advance_button.props.valign = Gtk.Align.CENTER
+    advance_button.connect("clicked", on_advance_mode)
+    advance_button.set_active(False)
+
     # Create Variants Combo box
     variants_combo = Gtk.ComboBoxText.new()
     variants_combo.connect("changed", on_variants_changed)
     variants_combo.props.valign = Gtk.Align.CENTER
+    variants_combo.hide()
+    variants_combo.set_visible(True)
 
     # Set up default values in dropdown lists
     set_defaults("continent")
@@ -94,11 +152,10 @@ def activate(_win, box, _button):
 
     #   dropdown_box_countries     dropdown_box_keys
     # |                        |                        |
-    # |-------continents-------|                        |
+    # |-------continents-------|   Advance option       |
     # |                        |                        |
-    # |                        |---------variants-------|
     # |                        |                        |
-    # |-------countries -------|                        |
+    # |-------countries -------|--------variants--------|
     # |                        |                        |
 
     dropdown_box_countries = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
@@ -106,9 +163,9 @@ def activate(_win, box, _button):
     dropdown_box_countries.props.valign = Gtk.Align.CENTER
     dropdown_box_keys = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
     dropdown_box_keys.set_size_request(230, 30)
-    dropdown_box_keys.props.valign = Gtk.Align.CENTER
     dropdown_box_countries.pack_start(continents_combo, False, False, 0)
     dropdown_box_countries.pack_start(countries_combo, False, False, 0)
+    dropdown_box_keys.pack_start(advance_button, False, False, 0)
     dropdown_box_keys.pack_start(variants_combo, False, False, 0)
     dropdown_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=20)
     dropdown_container.pack_start(dropdown_box_countries, False, False, 0)
@@ -278,6 +335,24 @@ def on_variants_changed(combo):
 
     # Refresh window
     win.show_all()
+
+
+def on_advance_mode(button):
+    if int(button.get_active()):
+        # show combox
+        pass
+    else:
+        # Hide combobox
+        pass
+
+
+def to_advance(arg1=None, arg2=None, box=None):
+
+    # Remove children
+    for i in box.get_children():
+        box.remove(i)
+    #
+    other_keyboard_ui(box)
 
 
 def work_finished_cb():
