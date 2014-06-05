@@ -14,6 +14,7 @@ import kano_settings.components.fixed_size_box as fixed_size_box
 from ..config_file import get_setting, set_setting
 from kano.utils import run_cmd
 from kano.logging import set_system_log_level
+import crypt
 
 win = None
 update = None
@@ -122,8 +123,16 @@ def read_config():
 
 def update_config():
     # Add new configurations to config file.
-    set_setting("Parental-lock", parental)
     set_setting("Debug-mode", debug)
+
+    # FIXME: I am using a fake fixed password momentarily until the UI flow is complete
+    if parental:
+        fake_password = 'Fake123Password'
+        set_setting("Parental-password", fake_password)
+        set_setting("Parental-lock", crypt.crypt ('True', fake_password))
+    else:
+        set_setting("Parental-password", "")
+        set_setting("Parental-lock", 'False')
 
 
 # Returns True if all the entries are the same as the ones stored in the config file.
@@ -139,11 +148,13 @@ def on_parental_toggled(button):
 
     parental = int(button.get_active())
     update.set_sensitive(True)
-    to_password()
+
+    # TODO: Momentarily disable password request on startup
+    #       Currently there's no way to get back to disabling the parental flag.
+    #to_password()
 
 def on_debug_toggled(button):
     global debug, update
 
     debug = int(button.get_active())
     update.set_sensitive(True)
-
