@@ -14,6 +14,7 @@ import kano_settings.components.fixed_size_box as fixed_size_box
 from ..config_file import get_setting, set_setting
 from kano.utils import run_cmd
 from kano.logging import set_system_log_level
+import os, crypt, shutil
 
 win = None
 update = None
@@ -122,9 +123,48 @@ def read_config():
 
 def update_config():
     # Add new configurations to config file.
-    set_setting("Parental-lock", parental)
     set_setting("Debug-mode", debug)
 
+    # FIXME: I am using a fake fixed password momentarily until the UI flow is complete
+    if parental:
+        fake_password = 'Fake123Password'
+        set_setting("Parental-password", fake_password)
+        set_setting("Parental-lock", crypt.crypt ('True', fake_password))
+        set_hosts_blacklist (enable=True)
+    else:
+        set_setting("Parental-password", "")
+        set_setting("Parental-lock", 'False')
+        set_hosts_blacklist (enable=False)
+
+
+def set_hosts_blacklist(enable=True, blacklist_file='/usr/share/kano-settings/media/Parental/parental-hosts-blacklist.gz'):
+    blacklisted = False
+    hosts_file = '/etc/hosts'
+    hosts_file_backup = '/etc/kano-hosts-parental-backup'
+    bare_hosts = [ '127.0.0.1 kano', '127.0.0.1 localhost' ]
+
+    if enable:
+        # Populate a list of hosts which should not be reached (Parental browser protection)
+        if os.stat(hosts_file).st_size > 1024*10:
+            # sanity check: this is a big file, looks like the blacklist is already in place!
+            pass
+        else:
+            # make a copy of hosts file and APPEND it with a list of blacklisted internet hostnames
+            shutil.copyfile (hosts_file, hosts_file_backup)
+            rc = os.system ('zcat %s >> %s' % (blacklist_file, hosts_file))
+            blacklisted = True
+    else:
+        # Restore the original list of hosts
+        try:
+            os.stat (hosts_file_backup)
+            shutil.copy (hosts_file_backup, hosts_file)
+        except:
+            # the backup is gone, recreate it simply by the bare minimum needed
+            with open (hosts_file, 'wt') as hhh:
+                for host in bare_hosts:
+                    hhh.write (host + '\n\r')
+
+    return blacklisted
 
 # Returns True if all the entries are the same as the ones stored in the config file.
 def compare():
@@ -139,11 +179,13 @@ def on_parental_toggled(button):
 
     parental = int(button.get_active())
     update.set_sensitive(True)
-    to_password()
+
+    # TODO: Momentarily disable password request on startup
+    #       Currently there's no way to get back to disabling the parental flag.
+    #to_password()
 
 def on_debug_toggled(button):
     global debug, update
 
     debug = int(button.get_active())
     update.set_sensitive(True)
-
