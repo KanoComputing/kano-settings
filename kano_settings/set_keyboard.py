@@ -63,21 +63,23 @@ def activate(_win, _box, _button):
     win = _win
     box = _box
     button = _button
-    button.set_sensitive(False)
 
     read_config()
 
     # Check for kano-keyboard
     if kano_keyboard:
-        kano_keyboard_ui(box)
+        kano_keyboard_ui(box, button)
     else:
-        other_keyboard_ui(box)
+        other_keyboard_ui(box, button)
 
 
-def kano_keyboard_ui(box):
+def kano_keyboard_ui(box, button):
 
     # Settings container
     settings = fixed_size_box.Fixed()
+
+    # Make sure continue button is enabled
+    button.set_sensitive(True)
 
     # Title
     title = Heading("Keyboard", "Kano keyboard detected!")
@@ -88,7 +90,7 @@ def kano_keyboard_ui(box):
 
     # Link to advance options
     to_advance_button = OrangeButton("Layout options")
-    to_advance_button.connect("button_press_event", to_advance, box)
+    to_advance_button.connect("button_press_event", to_advance, box, button)
 
     container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
     container.pack_start(img, False, False, 10)
@@ -108,11 +110,14 @@ def kano_keyboard_ui(box):
     win.show_all()
 
 
-def other_keyboard_ui(box):
+def other_keyboard_ui(box, button):
     global continents_combo, variants_combo, countries_combo
 
     # Contains all the settings
     settings = fixed_size_box.Fixed()
+
+    # Make sure continue button is enabled
+    button.set_sensitive(False)
 
     # Title
     title = Heading("Keyboard", "Where do you live? So I can set your keyboard")
@@ -188,12 +193,13 @@ def other_keyboard_ui(box):
 def apply_changes(button):
     global win
 
-    # Apply changes
-    thread = WorkerThread(work_finished_cb)
-    thread.start()
+    if not kano_keyboard:
+        # Apply changes
+        thread = WorkerThread(work_finished_cb)
+        thread.start()
 
-    # Save the changes in the config
-    update_config()
+        # Save the changes in the config
+        update_config()
 
     # Refresh window
     win.show_all()
@@ -346,13 +352,13 @@ def on_advance_mode(button):
         pass
 
 
-def to_advance(arg1=None, arg2=None, box=None):
+def to_advance(arg1=None, arg2=None, box=None, button=None):
 
     # Remove children
     for i in box.get_children():
         box.remove(i)
     #
-    other_keyboard_ui(box)
+    other_keyboard_ui(box, button)
 
 
 def work_finished_cb():
