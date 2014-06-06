@@ -8,3 +8,4 @@ Exec=sudo /usr/bin/kano-launcher /usr/bin/kano-settings settings
 Comment[en_GB]=Kanux system settings
 Categories=Extras;
 StartupNotify=true
+Help=Crank up the volume, change your screen size and more in settings: the one-stop shop for setting up your Kano!
