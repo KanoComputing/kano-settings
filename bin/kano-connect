@@ -55,9 +55,7 @@ def attempt_connect(wiface, essid, encryption, enckey, conf=None):
     except:
         pass
 
-    if online:
-        logger.info("Network association result: %s" % online)
-
+    logger.info("Network association result: %s" % online)
     return online
 
 if __name__ == '__main__':
