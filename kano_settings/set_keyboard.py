@@ -44,6 +44,7 @@ DROPDOWN_CONTAINER_HEIGHT = 118
 kano_keyboard = True
 IMG_HEIGHT = 100
 
+
 class WorkerThread(threading.Thread):
     def __init__(self, callback):
         threading.Thread.__init__(self)
@@ -144,8 +145,6 @@ def other_keyboard_ui(box, button):
     variants_combo = Gtk.ComboBoxText.new()
     variants_combo.connect("changed", on_variants_changed)
     variants_combo.props.valign = Gtk.Align.CENTER
-    variants_combo.hide()
-    variants_combo.set_visible(True)
 
     # Set up default values in dropdown lists
     set_defaults("continent")
@@ -189,9 +188,11 @@ def other_keyboard_ui(box, button):
     # Refresh window
     win.show_all()
 
+    variants_combo.hide()
+
 
 def apply_changes(button):
-    global win
+    global win, variants_combo
 
     if not kano_keyboard:
         # Apply changes
@@ -345,11 +346,9 @@ def on_variants_changed(combo):
 
 def on_advance_mode(button):
     if int(button.get_active()):
-        # show combox
-        pass
+        variants_combo.show()
     else:
-        # Hide combobox
-        pass
+        variants_combo.hide()
 
 
 def to_advance(arg1=None, arg2=None, box=None, button=None):
