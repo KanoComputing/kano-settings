@@ -110,7 +110,7 @@ if __name__ == '__main__':
 
         # check if wireless dongle is plugged in, and that ethernet cable is not plugged in
         if not is_device(wiface):
-            loggre.error('wireless device %s is not plugged in' % (wiface))
+            logger.error('wireless device %s is not plugged in' % (wiface))
             sys.exit(2)
         else:
             if is_ethernet_plugged():
