@@ -69,10 +69,9 @@ def activate(_win, _box, _update):
 
     vertical_container.pack_start(debug_button, False, False, 0)
 
-    valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
-    padding_above = (settings.height - CONTAINER_HEIGHT) / 2
-    valign.set_padding(padding_above, 0, 0, 0)
+    valign = Gtk.Alignment(xalign=0.5, yalign=0.5, xscale=0, yscale=0)
     valign.add(vertical_container)
+    valign.set_padding(20, 0, 0, 0)
     settings.box.pack_start(valign, False, False, 0)
 
     # Add apply changes button under the main settings content
