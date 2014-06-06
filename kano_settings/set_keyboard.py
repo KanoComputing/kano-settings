@@ -16,6 +16,7 @@ import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
 from .config_file import get_setting, set_setting
 from kano.gtk3.buttons import OrangeButton
+from kano.profile.apps import load_app_state_variable
 
 
 win = None
@@ -81,6 +82,8 @@ def kano_keyboard_ui(box, button):
 
     # Make sure continue button is enabled
     button.set_sensitive(True)
+    if load_app_state_variable('kano-settings', 'completed') == 1:
+        button.set_label("BACK")
 
     # Title
     title = Heading("Keyboard", "Kano keyboard detected!")
@@ -98,8 +101,6 @@ def kano_keyboard_ui(box, button):
     container.pack_start(to_advance_button, False, False, 10)
 
     valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
-    padding_above = (settings.height - IMG_HEIGHT) / 2
-    valign.set_padding(padding_above, 0, 0, 0)
     valign.add(container)
     settings.box.pack_start(valign, False, False, 0)
 
