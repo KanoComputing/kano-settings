@@ -28,7 +28,7 @@ from kano.gtk3.buttons import KanoButton
 from kano.gtk3.top_bar import TopBar
 
 # storing completed in kano-profile
-from kano.profile.apps import load_app_state_variable
+from kano_profile.apps import load_app_state_variable
 
 win = None
 MAX_STATE = 6
