@@ -9,7 +9,6 @@
 from gi.repository import Gtk
 from kano.gtk3.heading import Heading
 import kano.gtk3.kano_dialog as kano_dialog
-#import kano_settings.set_advance.password as password
 import kano_settings.components.fixed_size_box as fixed_size_box
 from ..config_file import get_setting, set_setting
 from kano.logging import set_system_log_level

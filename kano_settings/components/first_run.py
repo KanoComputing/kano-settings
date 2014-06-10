@@ -16,6 +16,8 @@ import kano_settings.set_audio as set_audio
 import kano_settings.set_wifi.home as set_wifi_proxy
 import kano.gtk3.kano_dialog as kano_dialog
 
+from kano_profile.apps import load_app_state_variable
+
 
 win = None
 MAX_STATE = 4
@@ -119,9 +121,14 @@ class First_Run():
 def close_window(event="delete-event", button=None):
 
     if constants.need_reboot:
-        kdialog = kano_dialog.KanoDialog("Reboot?",
-                                         "Your Kano needs to reboot for changes to apply",
-                                         {"REBOOT NOW": {"return_value": 1, "color": "orange"}, "LATER": {"return_value": 0, "color": "grey"}})
+        if load_app_state_variable('kano-settings', 'completed') == 1:
+            kdialog = kano_dialog.KanoDialog("Reboot?",
+                                             "Your Kano needs to reboot for changes to apply",
+                                             {"REBOOT NOW": {"return_value": 1, "color": "orange"}, "LATER": {"return_value": 0, "color": "grey"}})
+        else:
+            kdialog = kano_dialog.KanoDialog("Reboot later",
+                                             "Your Kano needs to reboot for changes to apply",
+                                             {"OK": {"return_value": 0, "color": "orange"}})
         kdialog.set_action_background("grey")
         response = kdialog.run()
         if response == 1:
