@@ -34,6 +34,7 @@ defaults = {
     'Keyboard-variant-human': 'Generic',
     'Audio': 'Analogue',
     'Wifi': '',
+    'Wifi-connection-attempted': False,
     'Display-mode': 'auto',
     'Display-mode-index': 0,
     'Display-overscan': 0,
