@@ -26,6 +26,9 @@ case "$1" in
         # Provide a libc symbolic link for dante, as it uses a hardcoded libname
         ln -sfv /lib/arm-linux-gnueabihf/libc.so.6 /lib/arm-linux-gnueabihf/libc.so
 
+        # Tighten security to the blacklist file for parental protection
+        chmod 400 /usr/share/kano-settings/media/Parental/parental-hosts-blacklist.gz
+
         ;;
 esac
 

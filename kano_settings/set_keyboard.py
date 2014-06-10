@@ -16,7 +16,7 @@ import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
 from .config_file import get_setting, set_setting
 from kano.gtk3.buttons import OrangeButton
-from kano.profile.apps import load_app_state_variable
+from kano_profile.apps import load_app_state_variable
 
 
 win = None

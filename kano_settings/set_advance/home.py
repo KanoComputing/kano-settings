@@ -148,9 +148,11 @@ def set_hosts_blacklist(enable=True, blacklist_file='/usr/share/kano-settings/me
             # sanity check: this is a big file, looks like the blacklist is already in place!
             pass
         else:
-            # make a copy of hosts file and APPEND it with a list of blacklisted internet hostnames
+            # make a copy of hosts file and APPEND it with a list of blacklisted internet hostnames.
+            # tighten security to the file so regular users can't peek at these host names.
             shutil.copyfile (hosts_file, hosts_file_backup)
             rc = os.system ('zcat %s >> %s' % (blacklist_file, hosts_file))
+            rc = os.system ('chmod 400 %s' % (hosts_file))
             blacklisted = True
     else:
         # Restore the original list of hosts
