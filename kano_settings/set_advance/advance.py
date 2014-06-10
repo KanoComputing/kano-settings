@@ -123,18 +123,6 @@ def compare():
     return display_debug  # and display_parental
 
 
-#def on_parental_toggled(checkbutton):
-#    global parental, button
-
-    #parental = checkbutton.get_active()
-    #button.set_sensitive(True)
-
-    # TODO: Momentarily disable password request on startup
-    #       Currently there's no way to get back to disabling the parental flag.
-    # Handled by home.py
-    #to_password()
-
-
 def on_debug_toggled(checkbutton):
     global debug, button
 
