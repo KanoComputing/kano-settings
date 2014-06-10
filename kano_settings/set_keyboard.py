@@ -115,6 +115,9 @@ def kano_keyboard_ui(box, button):
 def other_keyboard_ui(box, button):
     global continents_combo, variants_combo, countries_combo
 
+    # change text on button
+    button.set_label("APPLY CHANGES")
+
     # Contains all the settings
     settings = fixed_size_box.Fixed()
 
@@ -186,9 +189,13 @@ def other_keyboard_ui(box, button):
     box.pack_start(settings.box, False, False, 0)
     box.pack_start(button.align, False, False, 0)
 
-    # Refresh window
-    win.show_all()
+    # show all elements except the advanced mode
+    refresh_window()
 
+
+def refresh_window():
+    global win, variants_combo
+    win.show_all()
     variants_combo.hide()
 
 
@@ -269,6 +276,11 @@ def set_defaults(setting):
         return
 
 
+def set_variants_to_generic():
+    global variants_combo
+    variants_combo.set_active(0)
+
+
 def on_continent_changed(combo):
     global selected_continent_hr, selected_continent_index, button
 
@@ -285,7 +297,6 @@ def on_continent_changed(combo):
     button.set_sensitive(False)
 
     fill_countries_combo(selected_continent_hr)
-    win.show_all()
 
 
 def on_country_changed(combo):
@@ -314,10 +325,7 @@ def on_country_changed(combo):
         for v in variants:
             variants_combo.append_text(v[0])
 
-    button.set_sensitive(False)
-
-    # Refresh window
-    win.show_all()
+    set_variants_to_generic()
 
 
 def on_variants_changed(combo):
@@ -341,9 +349,6 @@ def on_variants_changed(combo):
                     selected_variant_index = combo.get_active()
                     selected_variant_hr = str(variant)
 
-    # Refresh window
-    win.show_all()
-
 
 def on_advance_mode(button):
     if int(button.get_active()):
@@ -357,12 +362,13 @@ def to_advance(arg1=None, arg2=None, box=None, button=None):
     # Remove children
     for i in box.get_children():
         box.remove(i)
-    #
+
     other_keyboard_ui(box, button)
 
 
 def work_finished_cb():
-    print("Finished updating keyboard")
+    # Finished updating keyboard
+    pass
 
 
 def fill_countries_combo(continent):
@@ -394,5 +400,3 @@ def fill_countries_combo(continent):
     # Refresh countries combo box
     for country in sorted_countries:
         countries_combo.append_text(country)
-
-    win.show_all()
