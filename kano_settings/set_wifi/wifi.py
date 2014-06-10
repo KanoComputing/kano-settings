@@ -113,7 +113,6 @@ def activate(_win, _box, _button, _proxy_button, _disable_proxy=None):
         internet_status.set_text("No network found")
         configure_container.pack_start(add_connection_button, False, False, 0)
         # Change colour of update button here.
-        #update.grey_background()
         button.set_label("SKIP THIS STEP")
 
     # So everything is centred even if we change the window height

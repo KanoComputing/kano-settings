@@ -18,14 +18,14 @@ button = None
 in_password = False
 
 
-def activate(_win, changeable_content, _button):
+def activate(_win, _box, _button):
     global box, win, button, in_password
 
     win = _win
-    box = changeable_content
+    box = _box
     button = _button
     pass_button = password_button()
-    account.activate(_win, changeable_content, _button, pass_button)
+    account.activate(_win, _box, _button, pass_button)
     set_in_password(False)
 
 

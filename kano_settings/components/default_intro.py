@@ -9,7 +9,6 @@
 
 from gi.repository import Gtk
 
-import kano_settings.set_advance.home as set_advance
 import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_mouse as set_mouse
 import kano_settings.set_audio as set_audio
@@ -18,6 +17,7 @@ import kano_settings.set_wifi.home as set_wifi_proxy
 import kano_settings.set_wifi.proxy as set_proxy
 import kano_settings.set_overclock as set_overclock
 import kano_settings.set_account.home as set_account
+import kano_settings.set_advance.home as set_advance
 import kano_settings.set_wallpaper as set_wallpaper
 import kano_settings.components.menu_button as menu_button
 import kano_settings.constants as constants
@@ -138,6 +138,14 @@ class Default_Intro():
         # If in set_accounts/password
         if set_account.in_password:
             set_account.to_account()
+            return
+
+        # If in set_advance/password
+        if set_advance.get_in_password():
+            for i in win.changeable_content.get_children():
+                win.changeable_content.remove(i)
+            set_advance.set_in_password(False)
+            set_advance.activate(win, win.changeable_content, win.button)
             return
 
         self.update_intro()

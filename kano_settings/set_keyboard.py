@@ -139,7 +139,7 @@ def other_keyboard_ui(box, button):
     countries_combo.props.valign = Gtk.Align.CENTER
 
     # Create Advance mode checkbox
-    advance_button = Gtk.CheckButton("Advance options")
+    advance_button = Gtk.CheckButton("Advanced options")
     advance_button.set_can_focus(False)
     advance_button.props.valign = Gtk.Align.CENTER
     advance_button.connect("clicked", on_advance_mode)
