@@ -8,3 +8,4 @@ Exec=/usr/bin/kano-launcher "rxvt -title 'WiFi' -e sudo /usr/bin/kano-wifi"
 Comment[en_GB]=WiFi configuration program
 Categories=Extras;
 StartupNotify=true
+Help=Connect to those invisible wireless waves and enter the secret codes to connect to your wireless router. In only a few keypresses you’ll be surfing the web and downloading cool projects from Kano World.
