@@ -17,7 +17,7 @@ import kano_settings.constants as constants
 from .config_file import get_setting, set_setting
 from kano.gtk3.buttons import OrangeButton
 from kano_profile.apps import load_app_state_variable
-
+from kano.utils import detect_kano_keyboard
 
 win = None
 button = None
@@ -69,6 +69,7 @@ def activate(_win, _box, _button):
     read_config()
 
     # Check for kano-keyboard
+    kano_keyboard = detect_kano_keyboard()
     if kano_keyboard:
         kano_keyboard_ui(box, button)
     else:
