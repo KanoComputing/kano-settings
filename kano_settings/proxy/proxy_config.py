@@ -50,14 +50,15 @@ class LibPreload:
         cmd = "/bin/sed -i 's/CHROMIUM_FLAGS=.*/CHROMIUM_FLAGS=%s/g' %s" % (strflags, self.chromium_cfg)
         rc = os.system(cmd)
         return rc == 0
-        
+
     def proxify(self, enable=False):
-        
-	# Chromium settings go to its config file. Change them now
-	p = ProxySettings().get_settings()
-	if not p:
-	    print 'error setting chromium proxy'
-	    return
+
+        # Chromium settings go to its config file. Change them now
+        p = ProxySettings().get_settings()
+        if not p:
+            print 'error setting chromium proxy'
+            return
+
         print 'setting chromium'
         self.set_chromium_proxy(p['proxy-ip'], p['proxy-port'], p['proxy-type'], None, None, enable)
 
@@ -128,14 +129,14 @@ class ProxySettings:
         # collect and return Chromium proxy settings
         # TODO: Refactor code so we centralize set / get chromium settings
         try:
-            r = open (self.chromium_cfg).readlines()
+            r = open(self.chromium_cfg).readlines()
             for j in r:
                 p = j.find('--proxy-server')
                 if (p != -1):
                     # I know... below code hurts my eyes too...
                     # What we are breaking down is a string in the following form:
                     # CHROMIUM_FLAGS="--password-store=detect --proxy-server="socks5://10.5.5.5:9999"\n
-                    if saved_settings == None:
+                    if saved_settings is None:
                         saved_settings = {}
 
                     keys = j[p:].partition(':')
