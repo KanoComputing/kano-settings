@@ -6,14 +6,12 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-import os
-import re
-
 from gi.repository import Gtk
 from kano.gtk3.heading import Heading
 import kano_settings.constants as constants
 import kano_settings.components.fixed_size_box as fixed_size_box
-from .config_file import get_setting, set_setting
+from kano.logging import logger
+from .config_file import get_setting, set_setting, file_replace
 
 
 HDMI = False
@@ -22,25 +20,6 @@ file_name_boot_config = "/boot/config.txt"
 current_img = None
 # Change this value (IMG_HEIGHT) to move the image up or down.
 IMG_HEIGHT = 130
-
-
-def file_replace(fname, pat, s_after):
-    if not os.path.exists(fname):
-        return
-
-    # first, see if the pattern is even in the file.
-    with open(fname) as f:
-        if not any(re.search(pat, line) for line in f):
-            return -1  # pattern does not occur in file so we are done.
-
-    # pattern is in the file, so perform replace operation.
-    with open(fname) as f:
-        out_fname = fname + ".tmp"
-        out = open(out_fname, "w")
-        for line in f:
-            out.write(re.sub(pat, s_after, line))
-        out.close()
-        os.rename(out_fname, fname)
 
 
 def activate(_win, box, button):
@@ -114,12 +93,14 @@ def apply_changes(button):
 
     # if audio settings haven't changed, don't apply new changes
     if get_setting('Audio') == config:
+        logger.debug("set_audio / apply_changes: audio settings haven't changed, don't apply new changes")
         return
 
     outcome_rc = file_replace(file_name_rc_local, rc_local, new_rc_local)
     outcome_boot = file_replace(file_name_boot_config, boot_config, new_boot_config)
     # Don't continue if we don't manage to change the audio settings in the file.
     if outcome_rc == -1 or outcome_boot == -1:
+        logger.debug("set_audio / apply_changes: we couldn't manage to change both files")
         return
 
     set_setting('Audio', config)
@@ -129,6 +110,8 @@ def apply_changes(button):
 
 # This function is used by auto_settings
 def auto_changes(hdmi):
+    logger.info('set_audio/auto_changes: hdmi:{}'.format(hdmi))
+
     # Uncomment/comment out the line  in /boot/config.txt
     boot_config = "#?hdmi_ignore_edid_audio=1"
     rc_local = "amixer -c 0 cset numid=3 [0-9]"

@@ -12,6 +12,7 @@ from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
 import kano.utils as utils
+from kano.logging import logger
 from .config_file import get_setting, set_setting
 
 
@@ -86,7 +87,6 @@ def activate(_win, box, _button):
 
 
 def apply_changes(button):
-
     # Set HDMI mode
     # Get mode:group string
     # Of the form "auto" or "cea:1" or "dmt:1" etc.
@@ -115,6 +115,8 @@ def read_config():
 
 
 def update_config():
+    logger.debug('set_display / update_config: {} {} {} {}'.format(display_name, mode, mode_index, overscan))
+
     # Add new configurations to config file.
     set_setting("Display-name", display_name)
     set_setting("Display-mode", mode)

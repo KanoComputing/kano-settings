@@ -7,34 +7,18 @@
 #
 
 import os
-import re
 
 from gi.repository import Gtk
 from kano.gtk3.heading import Heading
 import kano_settings.constants as constants
 import kano_settings.components.fixed_size_box as fixed_size_box
-from .config_file import set_setting
+from kano.logging import logger
+from .config_file import set_setting, file_replace
 
 
 selected_button = 0
 initial_button = 0
 boot_config_file = "/boot/config.txt"
-
-
-def file_replace(fname, pat, s_after):
-    # first, see if the pattern is even in the file.
-    with open(fname) as f:
-        if not any(re.search(pat, line) for line in f):
-            return -1  # pattern does not occur in file so we are done.
-
-    # pattern is in the file, so perform replace operation.
-    with open(fname) as f:
-        out_fname = fname + ".tmp"
-        out = open(out_fname, "w")
-        for line in f:
-            out.write(re.sub(pat, s_after, line))
-        out.close()
-        os.rename(out_fname, fname)
 
 
 def activate(_win, box, button):
@@ -182,6 +166,9 @@ def apply_changes(button):
         sdram_freq += "450"
         over_voltage += "6"
 
+    logger.info('set_overclock / apply_changes: config:{} arm_freq:{} core_freq:{} sdram_freq:{} over_voltage:{}'.format(
+        config, arm_freq, core_freq, sdram_freq, over_voltage))
+
     # Apply changes
     file_replace(boot_config_file, arm_freq_pattern, arm_freq)
     file_replace(boot_config_file, core_freq_pattern, core_freq)
@@ -229,6 +216,9 @@ def auto_changes(mode):
         core_freq += "450"
         sdram_freq += "450"
         over_voltage += "6"
+
+    logger.info('set_overclock / auto_changes: arm_freq:{} core_freq:{} sdram_freq:{} over_voltage:{}'.format(
+        arm_freq, core_freq, sdram_freq, over_voltage))
 
     # Apply changes
     file_replace(boot_config_file, arm_freq_pattern, arm_freq)

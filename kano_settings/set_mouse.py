@@ -7,30 +7,14 @@
 #
 
 import os
-import re
 from gi.repository import Gtk
 from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
+from kano.logging import logger
 from .config_file import get_setting, set_setting
 
 selected_button = 0
 initial_button = 0
-
-
-def file_replace(fname, pat, s_after):
-    # first, see if the pattern is even in the file.
-    with open(fname) as f:
-        if not any(re.search(pat, line) for line in f):
-            return -1  # pattern does not occur in file so we are done.
-
-    # pattern is in the file, so perform replace operation.
-    with open(fname) as f:
-        out_fname = fname + ".tmp"
-        out = open(out_fname, "w")
-        for line in f:
-            out.write(re.sub(pat, s_after, line))
-        out.close()
-        os.rename(out_fname, fname)
 
 
 def activate(_win, box, button):
@@ -137,6 +121,7 @@ def apply_changes(button):
 
 # This function is used by auto_settings
 def auto_changes(mode):
+    logger.debug('set_mouse / auto_changes: mode:{}'.format(mode))
     command = "xset m "
     # Slow configuration
     if mode == "Slow":
@@ -164,6 +149,8 @@ def change_mouse_speed():
     # Medium configuration
     elif selected_button == 2:
         command += "10"
+
+    logger.debug('set_mouse / change_mouse_speed: selected_button:{}'.format(selected_button))
 
     # Apply changes
     os.system(command)
