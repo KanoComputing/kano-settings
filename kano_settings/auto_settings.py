@@ -12,11 +12,12 @@ import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_mouse as set_mouse
 import kano_settings.set_audio as set_audio
 import kano_settings.set_overclock as set_overclock
+from kano.logging import logger
 from .config_file import get_setting
 
 
 def auto_settings():
-    print 'setting auto settings'
+    logger.info('setting auto settings')
 
     # Keyboard
     continent = get_setting('Keyboard-continent-human')
