@@ -27,7 +27,7 @@ from kano.utils import get_user_unsudoed
 from ..config_file import get_setting
 
 
-names = ["Keyboard", "Mouse", "Audio", "Display", "Wifi", "Overclocking", "Account", "Wallpaper", "Advance"]
+names = ["Keyboard", "Mouse", "Audio", "Display", "Wifi", "Overclocking", "Account", "Wallpaper", "Advanced"]
 custom_info = ["Keyboard-country-human", "Mouse", "Audio", "Display-mode", "Wifi", "Overclocking", "Account",
                "Wallpaper"]
 win = None
