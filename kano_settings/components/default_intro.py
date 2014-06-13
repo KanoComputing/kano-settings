@@ -216,17 +216,18 @@ class Default_Intro():
         win.show_all()
 
     # This updates the current level.
-    def update(self, widget, arg2=None):
+    def update(self, widget, event=None):
+        print "entered update"
+        if not hasattr(event, 'keyval') or event.keyval == 65293:
+            returnValue = self.state_to_widget(win.state).apply_changes(widget)
 
-        returnValue = self.state_to_widget(win.state).apply_changes(widget)
+            # Disable the default flow is apply_changes returns -1
+            # This way, can allow files to communicate and decide where they go independently (e.g. set_wifi)
+            if returnValue == -1:
+                return
 
-        # Disable the default flow is apply_changes returns -1
-        # This way, can allow files to communicate and decide where they go independently (e.g. set_wifi)
-        if returnValue == -1:
-            return
-
-        # Go back to intro screen
-        self.on_prev()
+            # Go back to intro screen
+            self.on_prev()
 
     def state_to_widget(self, x):
         return {
