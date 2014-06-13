@@ -29,18 +29,18 @@ class First_Run():
 
         win = _win
 
-    def update(self, widget=None, arg2=None):
+    def update(self, widget=None, event=None):
         global win
+        if not hasattr(event, 'keyval') or event.keyval == 65293:
+            returnValue = self.state_to_widget(win.state).apply_changes(win.button.align)
 
-        returnValue = self.state_to_widget(win.state).apply_changes(win.button.align)
+            if returnValue == -1:
+                return
 
-        if returnValue == -1:
-            return
-
-        self.on_next()
+            self.on_next()
 
     # When clicking previous arrow on first run through
-    def on_prev(self, widget=None, arg2=None):
+    def on_prev(self, widget=None, event=None):
         global win
 
         # Check if we're in set_proxy screen

@@ -38,18 +38,20 @@ def to_account(arg1=None, arg2=None):
     set_in_password(False)
 
 
-def to_password(arg1=None, arg2=None):
+def to_password(widget=None, event=None):
     global win, box, button, in_password
 
-    remove_children(box)
-    password.activate(win, box, button)
-    set_in_password(True)
+    if not hasattr(event, 'keyval') or event.keyval == 65293:
+        remove_children(box)
+        password.activate(win, box, button)
+        set_in_password(True)
 
 
 def password_button():
     pass_button = KanoButton("CHANGE PASSWORD")
     pass_button.set_size_request(200, 44)
     pass_button.connect("button_press_event", to_password)
+    pass_button.connect("key_press_event", to_password)
     return pass_button
 
 
