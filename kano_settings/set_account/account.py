@@ -18,6 +18,8 @@ from kano.gtk3.buttons import KanoButton
 win = None
 button = None
 box = None
+added_account = False
+removed_account = False
 
 
 def activate(_win, changeable_content, _button, pass_button):
@@ -45,12 +47,16 @@ def activate(_win, changeable_content, _button, pass_button):
     add_button = KanoButton("ADD ACCOUNT")
     add_button.set_size_request(200, 44)
     add_button.connect("button_press_event", add_account)
+    if added_account:
+        add_button.set_sensitive(False)
 
     # Remove account button
     remove_button = KanoButton("REMOVE ACCOUNT")
     remove_button.set_color("red")
     remove_button.set_size_request(200, 44)
     remove_button.connect("button_press_event", remove_account_dialog)
+    if removed_account:
+        remove_button.set_sensitive(False)
 
     button_container = Gtk.Box()
     button_container.pack_start(add_button, False, False, 10)
@@ -70,19 +76,38 @@ def activate(_win, changeable_content, _button, pass_button):
     win.show_all()
 
 
-def add_account(event=None, button=None):
-    # Bring in message dialog box
-    kdialog = kano_dialog.KanoDialog("New account scheduled.", "Reboot the system.")
-    kdialog.run()
-    os.system("sudo kano-init newuser")
+def add_account(widget=None, event=None):
+    global added_account
+
+    print widget
+
+    if not added_account:
+        widget.set_sensitive(False)
+
+        # Bring in message dialog box
+        kdialog = kano_dialog.KanoDialog("New account scheduled.", "Reboot the system.")
+        kdialog.run()
+        os.system("sudo kano-init newuser")
+
+        # So we know account has been added
+        added_account = True
 
 
-def remove_account_dialog(event=None, button=None):
-    # Bring in message dialog box
-    kdialog = kano_dialog.KanoDialog("Are you sure you want to delete the current user?", "", {"OK": {"return_value": -1}, "CANCEL": {"return_value": 0}})
-    response = kdialog.run()
-    if response == -1:
-        remove_user()
+def remove_account_dialog(widget=None, event=None):
+    global removed_account
+
+    print widget
+
+    if not removed_account:
+        # Bring in message dialog box
+        kdialog = kano_dialog.KanoDialog("Are you sure you want to delete the current user?", "", {"OK": {"return_value": -1}, "CANCEL": {"return_value": 0}})
+        response = kdialog.run()
+        if response == -1:
+            widget.set_sensitive(False)
+            remove_user()
+
+            # So we know account has been removed
+            removed_account = True
 
 
 def remove_user():
