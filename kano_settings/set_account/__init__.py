@@ -7,4 +7,4 @@
 #
 
 __author__ = 'Kano Computing Ltd.'
-__email__ = 'dev@kano.me'https://github.com/KanoComputing/peldins/issues/937
+__email__ = 'dev@kano.me'
