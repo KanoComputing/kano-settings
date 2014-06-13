@@ -10,6 +10,7 @@
 
 import os
 import re
+import shutil
 import crypt
 from kano.utils import ensure_dir, get_user_unsudoed, read_json, write_json, chown_path
 from kano.logging import logger
@@ -74,6 +75,11 @@ def file_replace(fname, pat, s_after, escape=False):
         for line in f:
             out.write(re.sub(pat, s_after, line))
         out.close()
+
+        # preserving permissions from the old file
+        shutil.copystat(fname, out_fname)
+
+        # overwriting the old file with the new one
         os.rename(out_fname, fname)
 
     logger.debug('config_file / file_replace file replaced')
