@@ -51,13 +51,15 @@ defaults = {
 }
 
 
-def file_replace(fname, pat, s_after):
-    logger.debug('config_file / file_replace {} {} {}'.format(fname, pat, s_after))
+def file_replace(fname, pat, s_after, escape=False):
+    logger.debug('config_file / file_replace {} "{}" "{}"'.format(fname, pat, s_after))
     if not os.path.exists(fname):
         logger.debug('config_file / file_replace file doesn\'t exists')
         return -1
 
-    pat = re.escape(pat)
+    if escape:
+        pat = re.escape(pat)
+        logger.debug('config_file / file_replace replacing pattern, new pattern: "{}"'.format(pat))
 
     # See if the pattern is even in the file.
     with open(fname) as f:
