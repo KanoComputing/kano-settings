@@ -14,6 +14,7 @@
 
 import os
 from kano.utils import read_file_contents_as_lines
+from kano.logging import logger
 
 
 class LibPreload:
@@ -56,10 +57,10 @@ class LibPreload:
         # Chromium settings go to its config file. Change them now
         p = ProxySettings().get_settings()
         if not p:
-            print 'error setting chromium proxy'
+            logger.error('error setting chromium proxy')
             return
 
-        print 'setting chromium'
+        logger.info('setting chromium')
         self.set_chromium_proxy(p['proxy-ip'], p['proxy-port'], p['proxy-type'], None, None, enable)
 
         # If the change is already set, do nothing

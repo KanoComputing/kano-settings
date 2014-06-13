@@ -285,7 +285,7 @@ def set_defaults(setting):
     elif setting == "variant":
         variants_combo.set_active(int(active_item))
     else:
-        print("Bad argument in set_defaults - should be 'continent', 'country' or 'variant'")
+        logger.error("Bad argument in set_defaults - should be 'continent', 'country' or 'variant'")
         return
 
 
