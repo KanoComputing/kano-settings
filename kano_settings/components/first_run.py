@@ -64,9 +64,6 @@ class First_Run():
         self.state_to_widget(win.state).activate(win, win.changeable_content, win.button)
         self.update_next_button(win)
 
-        # Refresh window
-        win.show_all()
-
     # When clicking next arrow button on first run through
     def on_next(self, widget=None, arg2=None):
         global grid, box, state, win
@@ -87,9 +84,6 @@ class First_Run():
         # Call next state
         self.state_to_widget(win.state).activate(win, win.changeable_content, win.button)
         self.update_next_button(win)
-
-        # Refresh window
-        win.show_all()
 
     # Apply Changes button needs to be updated depending on which level it's on
     def update_next_button(self, win):

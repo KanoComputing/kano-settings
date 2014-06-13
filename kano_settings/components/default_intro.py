@@ -153,6 +153,7 @@ class Default_Intro():
         win.top_bar.enable_next()
         win.changeable_content.pack_start(self.scrolled_window, False, False, 0)
         self.update_next_button(win)
+        # Showing main menu
         win.show_all()
 
     # When clicking next in the default intro screen - takes you to the last level you visited
@@ -167,7 +168,7 @@ class Default_Intro():
 
         self.state_to_widget(win.last_level_visited).activate(win, win.changeable_content, win.button)
         win.last_level_visited = win.state
-        win.show_all()
+        # Do not do win.show_all() as will stop the combotextbox in set_keyboard being hidden properly
 
     # Apply Changes button needs to be updated depending on which level it's on
     def update_next_button(self, win):
@@ -191,9 +192,6 @@ class Default_Intro():
 
         # Call next state
         self.state_to_widget(win.state).activate(win, win.changeable_content, win.button)
-
-        # Refresh window
-        win.show_all()
 
     # On clicking a level button on default intro screen
     def go_to_level_given_state(self, state):

@@ -82,6 +82,7 @@ def activate(_win, box, _button):
 
     # Add apply changes button under the main settings content
     box.pack_start(button.align, False, False, 0)
+    _win.show_all()
 
 
 def apply_changes(button):

@@ -86,6 +86,8 @@ def activate(_win, box, button):
     box.pack_start(button.align, False, False, 0)
     button.set_sensitive(True)
 
+    _win.show_all()
+
 
 def apply_changes(button):
     global HDMI, hdmi_img

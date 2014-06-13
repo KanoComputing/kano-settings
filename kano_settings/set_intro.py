@@ -35,6 +35,7 @@ def activate(win, box, button):
     box.pack_start(button.align, False, False, 0)
 
     button.set_sensitive(True)
+    win.show_all()
 
 
 def apply_changes(button):
