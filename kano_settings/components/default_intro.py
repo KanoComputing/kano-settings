@@ -217,7 +217,6 @@ class Default_Intro():
 
     # This updates the current level.
     def update(self, widget, event=None):
-        print "entered update"
         if not hasattr(event, 'keyval') or event.keyval == 65293:
             returnValue = self.state_to_widget(win.state).apply_changes(widget)
 
