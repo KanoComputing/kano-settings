@@ -130,7 +130,7 @@ def prompt_hidden():
         subprocess.call(['typewriter_echo', msg, '0', '1'])
         protection = raw_input()
 
-    if protection.upper() == 'O':
+    if protection.upper() == 'N':
         encryption = 'off'
     elif protection.upper() == 'W':
         encryption = 'wep'
