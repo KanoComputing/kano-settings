@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 
+
 # kano-wifi
 #
 # Copyright (C) 2013 Kano Computing Ltd.
@@ -26,9 +27,10 @@ NETWORKS_PER_PAGE = 5
 
 class GetPasswordHideAsYouType:
 
-    def __init__(self, enter_key=0x0d, delay=.5, hide_char='*', max_length=64):
+    def __init__(self, enter_key=0x0d, backspace_key=0x7f, delay=.5, hide_char='*', max_length=64):
         self.password = ''
         self.enter_key = enter_key
+        self.backspace_key = backspace_key
         self.delay = delay
         self.hide_char = hide_char
         self.max_length = max_length
@@ -36,6 +38,9 @@ class GetPasswordHideAsYouType:
     def __call__(self):
         import sys, tty, termios, time
         from termios import tcflush, TCIOFLUSH
+
+        # reset password so you don't need to reinstantiate
+        self.password = ''
 
         # setup stdin to read unbuffered so we get 1 key reads
         fd = sys.stdin.fileno()
@@ -48,15 +53,25 @@ class GetPasswordHideAsYouType:
             tty.setraw(sys.stdin.fileno())
             while True:
                 typed_char = sys.stdin.read(1)
-                if ord(typed_char) != self.enter_key and len(self.password) < self.max_length:
+                if ord(typed_char) == self.enter_key:
+                    break
+                elif ord(typed_char) == self.backspace_key:
+                    # that's the backspace
+                    sys.stdout.write ('\b \b')
+                    sys.stdout.flush()
+                    self.password = self.password[:len(self.password)-1]
+                elif ord(typed_char) > 132 or ord(typed_char) < 32:
+                    # Terminal bell
+                    pass
+                elif len(self.password) == self.max_length:
+                    break
+                else:
                     sys.stdout.write (typed_char)
                     sys.stdout.flush()
                     time.sleep(self.delay)
                     sys.stdout.write ('\b%c' % self.hide_char)
                     sys.stdout.flush()
                     self.password += typed_char
-                else:
-                    break
         finally:
             # restore terminal if we can't setup
             termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
