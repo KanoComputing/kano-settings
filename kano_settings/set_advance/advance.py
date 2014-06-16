@@ -10,27 +10,30 @@ from gi.repository import Gtk
 from kano.gtk3.heading import Heading
 import kano.gtk3.kano_dialog as kano_dialog
 import kano_settings.components.fixed_size_box as fixed_size_box
-from ..config_file import get_setting, set_setting
-from kano.logging import set_system_log_level
+import kano.logging as logging
 
 win = None
 button = None
 box = None
 
-parental = None
-debug = None
+parental_mode = None
+debug_mode = None
 CONTAINER_HEIGHT = 70
 
 
 def activate(_win, _box, _button, parental_button):
-    global button, box, win
+    global button, box, win, parental_mode
 
     win = _win
     box = _box
     button = _button
     button.set_sensitive(False)
 
-    read_config()
+    # read debug mode
+    debug_mode = get_stored_debug_mode()
+
+    # read parental mode ...
+    # parental_mode = get_setting("Parental-lock")
 
     title = Heading("Advanced options", "Toggle parental lock and debug mode")
     box.pack_start(title.container, False, False, 0)
@@ -60,7 +63,7 @@ def activate(_win, _box, _button, parental_button):
     debug_button = Gtk.CheckButton("Debug mode")
     debug_button.set_can_focus(False)
     debug_button.props.valign = Gtk.Align.CENTER
-    debug_button.set_active(debug)
+    debug_button.set_active(debug_mode)
     debug_button.connect("clicked", on_debug_toggled)
     debug_button.get_style_context().add_class("bold_toggle")
     debug_info = Gtk.Label("ENABLE DEBUGGING")
@@ -83,49 +86,42 @@ def activate(_win, _box, _button, parental_button):
 
 
 def apply_changes(button):
+    global debug_mode
 
-    # Change on debug mode
-    new_debug = get_setting("Debug-mode")
-    if new_debug != debug:
-        # Activate debug mode
-        if new_debug == 0:
-            set_system_log_level("debug")
-            msg = "Activated"
-        # De-activate debug mode
-        else:
-            set_system_log_level("error")
-            msg = "De-activated"
+    old_debug_mode = get_stored_debug_mode()
+    if debug_mode == old_debug_mode:
+        logging.Logger().debug('skipping debug mode change')
+        return
 
-        kdialog = kano_dialog.KanoDialog("Debug mode", msg)
-        kdialog.run()
+    if debug_mode:
+        # set debug on:
+        logging.set_system_log_level('debug')
+        logging.Logger().info('setting logging to debug')
+        msg = "Activated"
+    else:
+        # set debug off:
+        logging.set_system_log_level('error')
+        logging.Logger().info('setting logging to error')
+        msg = "De-activated"
 
-    update_config()
+    kdialog = kano_dialog.KanoDialog("Debug mode", msg)
+    kdialog.run()
+
+    # update new debug mode
+    debug_mode = get_stored_debug_mode()
+
     button.set_sensitive(False)
 
 
-def read_config():
-    global mode, mode_index, parental, debug
-
-    parental = get_setting("Parental-lock")
-    debug = get_setting("Debug-mode")
-
-
-def update_config():
-    # Add new configurations to config file.
-    set_setting("Debug-mode", debug)
-
-
-# Returns True if all the entries are the same as the ones stored in the config file.
-def compare():
-    # Compare new entries to old ones already stored.
-    #display_parental = (get_setting("Parental-lock") == parental)
-    display_debug = (get_setting("Debug-mode") == debug)
-    return display_debug  # and display_parental
-
-
 def on_debug_toggled(checkbutton):
-    global debug, button
+    global debug_mode, button
 
-    debug = checkbutton.get_active()
+    debug_mode = checkbutton.get_active()
     button.set_sensitive(True)
 
+
+def get_stored_debug_mode():
+    ll = logging.Logger().get_log_level()
+    debug_mode = ll == 'debug'
+    logging.Logger().debug('stored debug-mode: {}'.format(debug_mode))
+    return ll == 'debug'
