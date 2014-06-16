@@ -14,7 +14,7 @@ import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
 import kano.utils as utils
 from kano.network import is_internet
-from ..config_file import get_setting, set_setting
+from ..config_file import get_setting
 
 from kano_profile.apps import load_app_state_variable
 
@@ -26,6 +26,7 @@ proxy_button = None
 disable_proxy = None
 WIFI_IMG_HEIGHT = 110
 handler = None
+wifi_connection_attempted = False
 
 
 def activate(_win, _box, _button, _proxy_button, _disable_proxy=None):
@@ -106,10 +107,8 @@ def activate(_win, _box, _button, _proxy_button, _disable_proxy=None):
         container.pack_start(disable_proxy, False, False, 0)
 
     else:
-        completed = load_app_state_variable('kano-settings', 'completed') == 0
-        wifi_connection_attempted = get_setting("Wifi-connection-attempted")
-        if completed and not wifi_connection_attempted:
-            button.set_sensitive(False)
+        completed = (load_app_state_variable('kano-settings', 'completed') == 1)
+        button.set_sensitive(completed or wifi_connection_attempted)
 
         status_box.pack_start(configure_container, False, False, 0)
         internet_img.set_from_file(constants.media + "/Graphics/Internet-noConnection.png")
@@ -117,7 +116,6 @@ def activate(_win, _box, _button, _proxy_button, _disable_proxy=None):
         title.description.set_text("Let's set up Internet")
         internet_status.set_text("No network found")
         configure_container.pack_start(add_connection_button, False, False, 0)
-        # Change colour of update button here.
         button.set_label("SKIP THIS STEP")
 
     # So everything is centred even if we change the window height
@@ -148,10 +146,10 @@ def network_info():
 
 
 def configure_wifi(event=None, widget=None):
-    global network_message, win, handler, button
+    global network_message, win, handler, button, wifi_connection_attempted
 
     button.set_sensitive(True)
-    set_setting("Wifi-connection-attempted", True)
+    wifi_connection_attempted = True
 
     # Disconnect this handler once the user regains focus to the window
     handler = win.connect("focus-in-event", refresh)
