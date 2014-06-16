@@ -86,24 +86,29 @@ def activate(_win, _box, _button, parental_button):
 
 
 def apply_changes(button):
+    global debug_mode
+
     old_debug_mode = get_stored_debug_mode()
     if debug_mode == old_debug_mode:
-        logging.logger.debug('skipping debug mode change')
+        logging.Logger().debug('skipping debug mode change')
         return
 
     if debug_mode:
         # set debug on:
         logging.set_system_log_level('debug')
-        logging.logger.info('setting logging to debug')
+        logging.Logger().info('setting logging to debug')
         msg = "Activated"
     else:
         # set debug off:
         logging.set_system_log_level('error')
-        logging.logger.info('setting logging to error')
+        logging.Logger().info('setting logging to error')
         msg = "De-activated"
 
     kdialog = kano_dialog.KanoDialog("Debug mode", msg)
     kdialog.run()
+
+    # update new debug mode
+    debug_mode = get_stored_debug_mode()
 
     button.set_sensitive(False)
 
@@ -116,7 +121,7 @@ def on_debug_toggled(checkbutton):
 
 
 def get_stored_debug_mode():
-    ll = logging.logger.get_log_level()
+    ll = logging.Logger().get_log_level()
     debug_mode = ll == 'debug'
-    logging.logger.debug('stored debug-mode: {}'.format(debug_mode))
+    logging.Logger().debug('stored debug-mode: {}'.format(debug_mode))
     return ll == 'debug'
