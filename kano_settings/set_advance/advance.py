@@ -17,13 +17,12 @@ win = None
 button = None
 box = None
 
-parental_mode = None
 debug_mode = None
 CONTAINER_HEIGHT = 70
 
 
 def activate(_win, _box, _button, parental_button):
-    global button, box, win, parental_mode
+    global button, box, win
 
     win = _win
     box = _box
@@ -32,9 +31,6 @@ def activate(_win, _box, _button, parental_button):
 
     # read debug mode
     debug_mode = get_stored_debug_mode()
-
-    # read parental mode ...
-    # parental_mode = get_setting("Parental-lock")
 
     title = Heading("Advanced options", "Toggle parental lock and debug mode")
     box.pack_start(title.container, False, False, 0)
