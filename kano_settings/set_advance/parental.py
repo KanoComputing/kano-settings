@@ -22,6 +22,9 @@ def set_parental_enabled(setting, _password):
         logger.debug('setting password')
         write_file_contents(password_file, encrypt_password(_password))
 
+        logger.debug('making the file root read-only')
+        os.chmod(password_file, 0400)
+
         logger.debug('enabling hosts file')
         set_hosts_blacklist(True)
 
@@ -60,32 +63,38 @@ def encrypt_password(str):
 def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/Parental/parental-hosts-blacklist.gz'):
     logger.debug('set_hosts_blacklist: {}'.format(enable))
 
-    blacklisted = False
     hosts_file = '/etc/hosts'
     hosts_file_backup = '/etc/kano-hosts-parental-backup'
-    bare_hosts = ['127.0.0.1 kano', '127.0.0.1 localhost']
+    # bare_hosts = ['127.0.0.1 kano', '127.0.0.1 localhost']
 
     if enable:
+        logger.debug('enabling blacklist')
+
         # Populate a list of hosts which should not be reached (Parental browser protection)
         if os.stat(hosts_file).st_size > 1024 * 10:
             # sanity check: this is a big file, looks like the blacklist is already in place!
-            pass
+            logger.debug('skipping, as file is too big')
         else:
-            # make a copy of hosts file and APPEND it with a list of blacklisted internet hostnames.
-            # tighten security to the file so regular users can't peek at these host names.
+            logger.debug('making a backup of the original hosts file')
             shutil.copyfile(hosts_file, hosts_file_backup)
-            os.system('zcat %s >> %s' % (blacklist_file, hosts_file))
-            os.system('chmod 400 %s' % (hosts_file))
-            blacklisted = True
-    else:
-        # Restore the original list of hosts
-        try:
-            os.stat(hosts_file_backup)
-            shutil.copy(hosts_file_backup, hosts_file)
-        except:
-            # the backup is gone, recreate it simply by the bare minimum needed
-            with open(hosts_file, 'wt') as hhh:
-                for host in bare_hosts:
-                    hhh.write(host + '\n\r')
 
-    return blacklisted
+            logger.debug('appending the blacklist`')
+            os.system('zcat %s >> %s' % (blacklist_file, hosts_file))
+
+            logger.debug('making the file root read-only')
+            os.chmod(hosts_file, 0400)
+
+    else:
+        logger.debug('disabling blacklist')
+
+        if os.path.exists(hosts_file_backup):
+            logger.debug('restoring original backup file')
+            shutil.copy(hosts_file_backup, hosts_file)
+
+        else:
+            logger.debug('cannot restore original backup file')
+
+            # with open(hosts_file, 'wt') as hhh:
+                # for host in bare_hosts:
+                    # hhh.write(host + '\n\r')
+
