@@ -47,7 +47,7 @@ def activate(_win, _box, _button, parental_button):
     parental_button.set_can_focus(False)
     parental_button.props.valign = Gtk.Align.CENTER
     parental_button.get_style_context().add_class("bold_toggle")
-    parental_info = Gtk.Label("ENABLE PARENTAL MODE")
+    parental_info = Gtk.Label("Restrict online content")
     parental_info.get_style_context().add_class("normal_label")
 
     parental_box = Gtk.Box()
@@ -63,7 +63,7 @@ def activate(_win, _box, _button, parental_button):
     debug_button.set_active(debug_mode)
     debug_button.connect("clicked", on_debug_toggled)
     debug_button.get_style_context().add_class("bold_toggle")
-    debug_info = Gtk.Label("ENABLE DEBUGGING")
+    debug_info = Gtk.Label("Having problems? Enable this mode and report a bug")
     debug_info.get_style_context().add_class("normal_label")
 
     debug_box = Gtk.Box()
