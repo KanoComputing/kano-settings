@@ -28,7 +28,7 @@ from kano.gtk3.top_bar import TopBar
 from kano.gtk3.apply_styles import apply_styles
 
 # storing completed in kano-profile
-from kano_profile.apps import load_app_state_variable, save_app_state_variable
+from kano_profile.apps import load_app_state_variable
 
 win = None
 MAX_STATE = 6
@@ -88,7 +88,6 @@ class MainWindow(Gtk.Window):
             else:
                 self.top_bar.disable_prev()
         else:
-            save_app_state_variable('kano-settings', 'completed', 0)
             self.button.set_label("GET STARTED")
             self.run_through = first_run.First_Run(self)
             set_intro.activate(self, self.changeable_content, self.button)
