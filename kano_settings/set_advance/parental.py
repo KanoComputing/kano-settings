@@ -70,10 +70,9 @@ def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/P
     if enable:
         logger.debug('enabling blacklist')
 
-        # Populate a list of hosts which should not be reached (Parental browser protection)
-        if os.stat(hosts_file).st_size > 1024 * 10:
-            # sanity check: this is a big file, looks like the blacklist is already in place!
-            logger.debug('skipping, as file is too big')
+        # sanity check: this is a big file, looks like the blacklist is already in place
+        if os.path.getsize(hosts_file) > 10000:
+            logger.debug('skipping, hosts file is already too big')
         else:
             logger.debug('making a backup of the original hosts file')
             shutil.copyfile(hosts_file, hosts_file_backup)
