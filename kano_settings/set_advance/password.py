@@ -13,7 +13,7 @@ from kano.gtk3.heading import Heading
 from kano.gtk3.kano_dialog import KanoDialog
 
 from kano_settings.components import fixed_size_box
-from .parental import set_parental_enabled, set_hosts_blacklist
+from .parental import set_parental_enabled
 
 win = None
 entry = None
@@ -92,11 +92,8 @@ def apply_changes(button=None):
 
     # if enabled, turning off
     else:
-        # TODO: Verify entered password is correct
         password = entry.get_text()
         passed_test = True
-        error_heading = "The password you entered is incorrect"
-        error_description = "Have another go?"
 
     # if test passed, update parental configuration
     if passed_test:
@@ -138,11 +135,17 @@ def enable_button(widget=None, event=None, apply_changes=None):
 def update_config(password=None):
     # if disabled, turning on
     if parental_disabled:
-        set_parental_enabled(True)
-        set_hosts_blacklist(enable=True)
+        success, msg = set_parental_enabled(True, password)
 
     # if enabled, turning off
     else:
-        set_parental_enabled(False)
-        set_hosts_blacklist(enable=False)
+        success, msg = set_parental_enabled(False, password)
+
+    if success:
+        heading = "Succes"
+    else:
+        heading = "Error"
+
+    kdialog = KanoDialog(heading, msg)
+    kdialog.run()
 

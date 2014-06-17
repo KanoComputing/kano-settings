@@ -1,19 +1,60 @@
 import os
 import shutil
+from kano.logging import logger
 
-enabled = False
+password = ""
 
 
 def get_parental_enabled():
+    enabled = password != ""
+    logger.debug('get_parental_enabled: {}'.format(enabled))
     return enabled
 
 
-def set_parental_enabled(setting):
-    global enabled
-    enabled = setting
+def set_parental_enabled(setting, _password):
+    global password
+
+    logger.debug('set_parental_enabled: {}'.format(setting))
+
+    # turning on
+    if setting:
+        logger.debug('setting password')
+        password = _password
+
+        logger.debug('enabling hosts file')
+        set_hosts_blacklist(True)
+
+        msg = "Parental lock enabled!"
+        logger.debug(msg)
+
+        return True, msg
+
+    # turning off
+    else:
+        # password matches
+        if password == _password:
+            logger.debug('clearing password')
+            password = ""
+
+            logger.debug('disabling hosts file')
+            set_hosts_blacklist(False)
+
+            msg = "Parental lock disabled!"
+            logger.debug(msg)
+
+            return True, msg
+
+        # password doesn't match
+        else:
+            msg = "Password doesn't match\nleaving parental lock enabled!"
+            logger.debug(msg)
+
+            return False, msg
 
 
-def set_hosts_blacklist(enable=True, blacklist_file='/usr/share/kano-settings/media/Parental/parental-hosts-blacklist.gz'):
+def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/Parental/parental-hosts-blacklist.gz'):
+    logger.debug('set_hosts_blacklist: {}'.format(enable))
+
     blacklisted = False
     hosts_file = '/etc/hosts'
     hosts_file_backup = '/etc/kano-hosts-parental-backup'
