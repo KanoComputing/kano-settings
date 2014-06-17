@@ -73,7 +73,7 @@ def create_empty_hosts():
     logger.debug('writing new hosts file')
     write_file_contents(hosts_file, new_hosts)
 
-    logger.debug('restoring original hosts permission to 644s')
+    logger.debug('restoring original hosts permission')
     os.chmod(hosts_file, 0644)
 
 
