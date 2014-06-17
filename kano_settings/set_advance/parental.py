@@ -19,6 +19,8 @@ def set_parental_enabled(setting, _password):
 
     # turning on
     if setting:
+        logger.debug('enabling')
+
         logger.debug('setting password')
         write_file_contents(password_file, encrypt_password(_password))
 
@@ -37,6 +39,8 @@ def set_parental_enabled(setting, _password):
     else:
         # password matches
         if read_file_contents(password_file) == encrypt_password(_password):
+            logger.debug('password accepted, disabling')
+
             logger.debug('clearing password')
             os.remove(password_file)
 
