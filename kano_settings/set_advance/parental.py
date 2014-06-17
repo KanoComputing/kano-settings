@@ -99,7 +99,7 @@ def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/P
             os.system('zcat %s >> %s' % (blacklist_file, hosts_file))
 
             logger.debug('making the file root read-only')
-            os.chmod(hosts_file, 0400)
+            os.chmod(hosts_file, 0644)
 
     else:
         logger.debug('disabling blacklist')
