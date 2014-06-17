@@ -88,7 +88,7 @@ def add_account(widget=None, event=None):
             # Bring in message dialog box
             kdialog = kano_dialog.KanoDialog("New account scheduled.", "Reboot the system.")
             kdialog.run()
-            os.system("sudo kano-init newuser")
+            os.system("kano-init newuser")
 
             # So we know account has been added
             added_account = True
@@ -111,7 +111,7 @@ def remove_account_dialog(widget=None, event=None):
 
 
 def remove_user():
-    cmd = 'sudo kano-init deleteuser %s' % (get_user_unsudoed())
+    cmd = 'kano-init deleteuser %s' % (get_user_unsudoed())
     os.system(cmd)
 
 

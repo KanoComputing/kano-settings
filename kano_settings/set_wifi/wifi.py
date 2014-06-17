@@ -156,7 +156,7 @@ def configure_wifi(event=None, widget=None):
     # Disconnect this handler once the user regains focus to the window
     handler = win.connect("focus-in-event", refresh)
     # Call WiFi config
-    os.system('rxvt -title \'WiFi\' -e sudo /usr/bin/kano-wifi')
+    os.system('rxvt -title \'WiFi\' -e /usr/bin/kano-wifi')
     network_message = get_setting("Wifi")
 
 
