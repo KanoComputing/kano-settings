@@ -9,9 +9,10 @@
 
 
 from gi.repository import Gtk
-import kano_settings.set_advance.advance as advance
-import kano_settings.set_advance.password as password
-from ..config_file import get_setting
+
+from . import advance
+from . import password
+from .parental import get_parental_enabled
 
 
 in_password = False
@@ -53,7 +54,7 @@ def create_parental_button():
     global parental
 
     button = Gtk.CheckButton("Parental lock")
-    parental = get_setting("Parental-lock")
+    parental = get_parental_enabled()
     button.set_active(parental)
     button.connect("clicked", to_password)
     return button
@@ -72,8 +73,7 @@ def to_password(arg1=None, arg2=None):
     global win, box, button, parental
 
     remove_children(box)
-    parental = (not get_setting("Parental-lock"))
-    password.activate(win, box, button, parental)
+    password.activate(win, box, button, not get_parental_enabled())
     set_in_password(True)
 
 

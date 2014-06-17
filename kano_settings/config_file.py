@@ -11,7 +11,6 @@
 import os
 import re
 import shutil
-import crypt
 from kano.utils import ensure_dir, get_user_unsudoed, read_json, write_json, chown_path
 from kano.logging import logger
 
@@ -47,7 +46,6 @@ defaults = {
     'Proxy-ip': '',
     'Proxy-username': '',
     'Proxy-type': '',
-    'Parental-lock': False,
 }
 
 
@@ -87,15 +85,6 @@ def file_replace(fname, pat, s_after):
 def get_setting(variable):
     try:
         value = read_json(settings_file)[variable]
-
-        # If parental lock is requested, decrypt using the password
-        if variable == 'Parental-lock':
-            try:
-                # This assignment will return True if "True" encrypts correctly using the parental password
-                value = crypt.crypt('True', read_json(settings_file)['Parental-password']) == value
-            except:
-                value = False
-
         # print 'getting {} from json'.format(variable)
     except Exception:
         if variable not in defaults:
