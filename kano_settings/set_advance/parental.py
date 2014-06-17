@@ -1,25 +1,26 @@
 import os
 import shutil
+import hashlib
+
+from kano.utils import read_file_contents, write_file_contents
 from kano.logging import logger
 
-password = ""
+password_file = "/etc/kano-parental-lock"
 
 
 def get_parental_enabled():
-    enabled = password != ""
+    enabled = os.path.exists(password_file)
     logger.debug('get_parental_enabled: {}'.format(enabled))
     return enabled
 
 
 def set_parental_enabled(setting, _password):
-    global password
-
     logger.debug('set_parental_enabled: {}'.format(setting))
 
     # turning on
     if setting:
         logger.debug('setting password')
-        password = _password
+        write_file_contents(password_file, encrypt_password(_password))
 
         logger.debug('enabling hosts file')
         set_hosts_blacklist(True)
@@ -32,9 +33,9 @@ def set_parental_enabled(setting, _password):
     # turning off
     else:
         # password matches
-        if password == _password:
+        if read_file_contents(password_file) == encrypt_password(_password):
             logger.debug('clearing password')
-            password = ""
+            os.remove(password_file)
 
             logger.debug('disabling hosts file')
             set_hosts_blacklist(False)
@@ -50,6 +51,10 @@ def set_parental_enabled(setting, _password):
             logger.debug(msg)
 
             return False, msg
+
+
+def encrypt_password(str):
+    return hashlib.sha1(str).hexdigest()
 
 
 def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/Parental/parental-hosts-blacklist.gz'):
