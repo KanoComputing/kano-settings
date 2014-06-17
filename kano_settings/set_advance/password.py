@@ -7,14 +7,16 @@
 #
 # Controls the UI of the change password screen
 
-from gi.repository import Gtk
-from kano.gtk3.heading import Heading
-import kano_settings.components.fixed_size_box as fixed_size_box
-from kano.gtk3.kano_dialog import KanoDialog
-from ..config_file import set_setting
+import os
 import crypt
 import shutil
-import os
+from gi.repository import Gtk
+
+from kano.gtk3.heading import Heading
+from kano.gtk3.kano_dialog import KanoDialog
+
+from kano_settings.components import fixed_size_box
+from ..config_file import set_setting
 
 win = None
 entry = None

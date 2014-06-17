@@ -8,9 +8,10 @@
 
 from gi.repository import Gtk
 from kano.gtk3.heading import Heading
-import kano.gtk3.kano_dialog as kano_dialog
-import kano_settings.components.fixed_size_box as fixed_size_box
-import kano.logging as logging
+from kano.gtk3 import kano_dialog
+from kano import logging
+
+from kano_settings.components import fixed_size_box
 
 win = None
 button = None
