@@ -21,7 +21,7 @@ import sys
 import subprocess
 import getpass
 
-from kano.network import IWList, is_device, is_connected, connect, is_gateway, is_internet, KwifiCache
+from kano.network import IWList, is_device, is_connected, connect, is_gateway, is_internet, KwifiCache, reload_kernel_module
 
 NETWORKS_PER_PAGE = 5
 
@@ -169,6 +169,10 @@ def connect_with_retry (wiface, essid, encryption):
 
             msg = '\nTrying %s, please stand by...' % essid
             subprocess.call(['typewriter_echo', msg, '0', '2'])
+
+            # FIXME: Reload until linux kernel module is fixed
+            reload_kernel_module()
+
             connect(wiface, essid, encryption, enckey)
             online = is_gateway()
             if not online:
@@ -251,6 +255,7 @@ if __name__ == '__main__':
 
     # Step 3: check for WiFi dongle
     if not is_device(wiface):
+        subprocess.call(['/bin/sync']) # Flush system IO buffers to disk to avoid corruption
         subprocess.call(['typewriter_echo', 'First, plug in your wifi piece.', '0', '1'])
         subprocess.call(['typewriter_echo', 'Please take into account that the system will automatically reboot.', '0', '2'])
         subprocess.call(['typewriter_echo', 'If you don\'t want to use WiFi, press [ENTER].', '2', '1'])
@@ -267,6 +272,8 @@ if __name__ == '__main__':
             subprocess.call(['typewriter_echo', msg, '1', '0'])
             var = raw_input()
             if var and var.upper() == 'Y':
+                # FIXME: Reload until linux kernel module is fixed
+                reload_kernel_module()
                 wificache.empty()
             else:
                 sys.exit(0)
