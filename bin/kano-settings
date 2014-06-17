@@ -23,9 +23,9 @@ import kano_settings.components.first_run as first_run
 import kano_settings.components.default_intro as default_intro
 from kano_settings.auto_settings import auto_settings
 from kano.network import is_internet
-from kano.paths import common_css_dir
 from kano.gtk3.buttons import KanoButton
 from kano.gtk3.top_bar import TopBar
+from kano.gtk3.apply_styles import apply_styles
 
 # storing completed in kano-profile
 from kano_profile.apps import load_app_state_variable
@@ -109,19 +109,12 @@ def main():
     global win
 
     # Create style sheet
-    colours_css = Gtk.CssProvider()
-    colour_css_file = os.path.join(common_css_dir, 'colours.css')
-    colours_css.load_from_path(colour_css_file)
+    apply_styles()
     specific_css = Gtk.CssProvider()
     specific_css.load_from_path(constants.media + '/CSS/style.css')
-    common_css = Gtk.CssProvider()
-    common_css_file = os.path.join(common_css_dir, 'common.css')
-    common_css.load_from_path(common_css_file)
     screen = Gdk.Screen.get_default()
     styleContext = Gtk.StyleContext()
-    styleContext.add_provider_for_screen(screen, colours_css, Gtk.STYLE_PROVIDER_PRIORITY_USER)
     styleContext.add_provider_for_screen(screen, specific_css, Gtk.STYLE_PROVIDER_PRIORITY_USER)
-    styleContext.add_provider_for_screen(screen, common_css, Gtk.STYLE_PROVIDER_PRIORITY_USER)
     # Create windown
     win = MainWindow()
     win.connect("delete-event", Gtk.main_quit)
