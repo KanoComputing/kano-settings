@@ -6,6 +6,7 @@ from kano.utils import read_file_contents, write_file_contents
 from kano.logging import logger
 
 password_file = "/etc/kano-parental-lock"
+hosts_file = '/etc/hosts'
 
 
 def get_parental_enabled():
@@ -64,11 +65,25 @@ def encrypt_password(str):
     return hashlib.sha1(str).hexdigest()
 
 
+def create_empty_hosts():
+    import platform
+    hostname = platform.node()
+    new_hosts = '127.0.0.1   localhost\n127.0.1.1   {}\n'.format(hostname)
+
+    logger.debug('writing new hosts file')
+    write_file_contents(hosts_file, new_hosts)
+
+    logger.debug('restoring original hosts permission to 644s')
+    os.chmod(hosts_file, 0644)
+
+
 def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/Parental/parental-hosts-blacklist.gz'):
     logger.debug('set_hosts_blacklist: {}'.format(enable))
 
-    hosts_file = '/etc/hosts'
     hosts_file_backup = '/etc/kano-hosts-parental-backup'
+
+    if not os.path.exists(hosts_file):
+        create_empty_hosts()
 
     if enable:
         logger.debug('enabling blacklist')
@@ -95,16 +110,10 @@ def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/P
 
         else:
             logger.debug('cannot restore original backup file, creating new file')
+            create_empty_hosts()
 
-            import platform
-            hostname = platform.node()
-            new_hosts = '127.0.0.1   localhost\n127.0.1.1   {}\n'.format(hostname)
 
-            logger.debug('writing new hosts file')
-            write_file_contents(hosts_file, new_hosts)
 
-            logger.debug('restoring original hosts permission to 644s')
-            os.chmod(hosts_file, 0644)
 
 
 
