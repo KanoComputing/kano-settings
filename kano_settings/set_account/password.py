@@ -81,7 +81,7 @@ def apply_changes(button=None):
 
     # If the two new passwords match
     if new_password1 == new_password2:
-        out, e, cmdvalue = utils.run_cmd("echo $SUDO_USER:%s | sudo chpasswd" % (new_password1))
+        out, e, cmdvalue = utils.run_cmd("echo $SUDO_USER:%s | chpasswd" % (new_password1))
         # if password is not changed
         if cmdvalue != 0:
             return create_dialog("Could not change password", "Your new password is not long enough or contains special characters.  Try again.")

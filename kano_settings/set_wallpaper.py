@@ -9,6 +9,7 @@
 import os
 from gi.repository import Gtk, GdkPixbuf
 import kano_settings.components.fixed_size_box as fixed_size_box
+from kano.logging import logger
 from .config_file import get_setting, set_setting
 
 
@@ -93,6 +94,8 @@ class Wallpaper():
 
     def change_wallpaper(self):
         image_name = self.get_selected()
+
+        logger.info('set_wallpaper / change_wallpaper image_name:{}'.format(image_name))
 
         # home directory
         USER = os.environ['SUDO_USER']

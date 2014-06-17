@@ -73,26 +73,24 @@ def activate(_win, _box, _button, _parental):
 
 
 def apply_changes(button=None):
+    password = None
     if parental:
-        password1 = entry1.get_text()
+        password = entry1.get_text()
         password2 = entry2.get_text()
-        passed_test = (password1 == password2)
+        passed_test = (password == password2)
         error_heading = "Careful"
         error_description = "The passwords don't match! Try again"
     else:
         # TODO: Verify entered password is correct
-        entered_password = entry.get_text()
+        password = entry.get_text()
         passed_test = True
         error_heading = "The password you entered is incorrect"
         error_description = "Have another go?"
 
     # If the two new passwords match
     if passed_test:
-        if parental:
-            # TODO: create encrypted password
-            pass
-        # pass setting of checkbutton to here
-        update_config()
+        # Update password
+        update_config(password)
     else:
         response = create_dialog(error_heading, error_description)
         if response == -1:
@@ -127,12 +125,10 @@ def enable_button(widget=None, event=None, apply_changes=None):
         apply_changes.set_sensitive(text != "")
 
 
-def update_config():
-    # FIXME: I am using a fake fixed password momentarily until the UI flow is complete
+def update_config(password=None):
     if parental:
-        fake_password = 'Fake123Password'
-        set_setting("Parental-password", fake_password)
-        set_setting("Parental-lock", crypt.crypt('True', fake_password))
+        set_setting("Parental-password", password)
+        set_setting("Parental-lock", crypt.crypt('True', password))
         set_hosts_blacklist(enable=True)
     else:
         set_setting("Parental-password", "")

@@ -18,6 +18,7 @@ from .config_file import get_setting, set_setting
 from kano.gtk3.buttons import OrangeButton
 from kano_profile.apps import load_app_state_variable
 from kano.utils import detect_kano_keyboard
+from kano.logging import logger
 
 win = None
 button = None
@@ -217,6 +218,8 @@ def apply_changes(button):
 
 # This function is used by auto_settings
 def auto_changes(continent, country, variant):
+    logger.info('set_keyboard.auto_changes {} {} {}'.format(continent, country, variant))
+
     variant = variant.lower()
     # Get layout
     if continent == 'africa':
@@ -248,6 +251,15 @@ def read_config():
 
 
 def update_config():
+    logger.info('set_keyboard.update_config {} {} {} {} {} {}'.format(
+        selected_continent_index,
+        selected_country_index,
+        selected_variant_index,
+        selected_continent_hr,
+        selected_country_hr,
+        selected_variant_hr
+    ))
+
     # Add new configurations to config file.
     set_setting("Keyboard-continent-index", selected_continent_index)
     set_setting("Keyboard-country-index", selected_country_index)
@@ -273,7 +285,7 @@ def set_defaults(setting):
     elif setting == "variant":
         variants_combo.set_active(int(active_item))
     else:
-        print("Bad argument in set_defaults - should be 'continent', 'country' or 'variant'")
+        logger.error("Bad argument in set_defaults - should be 'continent', 'country' or 'variant'")
         return
 
 
