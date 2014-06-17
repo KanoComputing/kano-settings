@@ -69,7 +69,6 @@ def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/P
 
     hosts_file = '/etc/hosts'
     hosts_file_backup = '/etc/kano-hosts-parental-backup'
-    # bare_hosts = ['127.0.0.1 kano', '127.0.0.1 localhost']
 
     if enable:
         logger.debug('enabling blacklist')
@@ -95,9 +94,17 @@ def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/P
             shutil.copy(hosts_file_backup, hosts_file)
 
         else:
-            logger.debug('cannot restore original backup file')
+            logger.debug('cannot restore original backup file, creating new file')
 
-            # with open(hosts_file, 'wt') as hhh:
-                # for host in bare_hosts:
-                    # hhh.write(host + '\n\r')
+            import platform
+            hostname = platform.node()
+            new_hosts = '127.0.0.1   localhost\n127.0.1.1   {}\n'.format(hostname)
+
+            logger.debug('writing new hosts file')
+            write_file_contents(hosts_file, new_hosts)
+
+            logger.debug('restoring original hosts permission to 644s')
+            os.chmod(hosts_file, 0644)
+
+
 
