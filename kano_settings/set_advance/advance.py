@@ -8,21 +8,21 @@
 
 from gi.repository import Gtk
 from kano.gtk3.heading import Heading
-import kano.gtk3.kano_dialog as kano_dialog
-import kano_settings.components.fixed_size_box as fixed_size_box
-import kano.logging as logging
+from kano.gtk3 import kano_dialog
+from kano import logging
+
+from kano_settings.components import fixed_size_box
 
 win = None
 button = None
 box = None
 
-parental_mode = None
 debug_mode = None
 CONTAINER_HEIGHT = 70
 
 
 def activate(_win, _box, _button, parental_button):
-    global button, box, win, parental_mode
+    global button, box, win
 
     win = _win
     box = _box
@@ -31,9 +31,6 @@ def activate(_win, _box, _button, parental_button):
 
     # read debug mode
     debug_mode = get_stored_debug_mode()
-
-    # read parental mode ...
-    # parental_mode = get_setting("Parental-lock")
 
     title = Heading("Advanced options", "Toggle parental lock and debug mode")
     box.pack_start(title.container, False, False, 0)
