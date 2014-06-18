@@ -146,7 +146,7 @@ def network_info():
     return [network.rstrip(), ip.rstrip()]
 
 
-def configure_wifi(event=None, widget=None):
+def configure_wifi(widget=None, event=None):
     global network_message, win, handler, button, wifi_connection_attempted
     # If is a mouse click event or key pressed is ENTER
     if not hasattr(event, 'keyval') or event.keyval == 65293:
