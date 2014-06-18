@@ -69,6 +69,7 @@ def activate(_win, _box, _button, _proxy_button, _disable_proxy=None):
 
     add_connection_button = KanoButton("WIFI")
     add_connection_button.connect("button_press_event", configure_wifi)
+    add_connection_button.connect("key_press_event", configure_wifi)
 
     if constants.has_internet:
         button.set_label("FINISH")
@@ -147,15 +148,16 @@ def network_info():
 
 def configure_wifi(event=None, widget=None):
     global network_message, win, handler, button, wifi_connection_attempted
+    # If is a mouse click event or key pressed is ENTER
+    if not hasattr(event, 'keyval') or event.keyval == 65293:
+        button.set_sensitive(True)
+        wifi_connection_attempted = True
 
-    button.set_sensitive(True)
-    wifi_connection_attempted = True
-
-    # Disconnect this handler once the user regains focus to the window
-    handler = win.connect("focus-in-event", refresh)
-    # Call WiFi config
-    os.system('rxvt -title \'WiFi\' -e /usr/bin/kano-wifi')
-    network_message = get_setting("Wifi")
+        # Disconnect this handler once the user regains focus to the window
+        handler = win.connect("focus-in-event", refresh)
+        # Call WiFi config
+        os.system('rxvt -title \'WiFi\' -e /usr/bin/kano-wifi')
+        network_message = get_setting("Wifi")
 
 
 def refresh(widget=None, event=None):
