@@ -15,6 +15,7 @@ import kano_settings.constants as constants
 import kano.utils as utils
 from kano.network import is_internet
 from ..config_file import get_setting
+from kano.utils import get_user_unsudoed
 
 from kano_profile.apps import load_app_state_variable
 
@@ -88,6 +89,12 @@ def activate(_win, _box, _button, _proxy_button, _disable_proxy=None):
         internet_status.set_text(network)
         internet_action.set_text(ip)
 
+        go_to_portal_button = OrangeButton("Go to portal log in")
+        go_to_portal_button.connect("button-press-event", launch_chromium)
+        configure_container.pack_start(go_to_portal_button, False, False, 0)
+        divider_label = Gtk.Label("|")
+        configure_container.pack_start(divider_label, False, False, 3)
+
         if network == "Ethernet":
             # Change to ethernet image here
             internet_img.set_from_file(constants.media + "/Graphics/Internet-ethernetConnection.png")
@@ -128,6 +135,11 @@ def activate(_win, _box, _button, _proxy_button, _disable_proxy=None):
 
     box.pack_start(button.align, False, False, 0)
     box.show_all()
+
+
+def launch_chromium(widget=None, event=None):
+    user_name = get_user_unsudoed()
+    os.system('su ' + user_name + ' -c chromium')
 
 
 def network_info():
