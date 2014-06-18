@@ -50,7 +50,7 @@ class MainWindow(Gtk.Window):
         WINDOW_HEIGHT = 405
 
         # Create main window
-        Gtk.Window.__init__(self, title="Kano-Settings")
+        Gtk.Window.__init__(self, title="Kano Settings")
 
         # Remove decoration
         self.set_decorated(False)
