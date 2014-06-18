@@ -311,6 +311,7 @@ if __name__ == '__main__':
             msg = 'Scanning...'
             subprocess.call(['typewriter_echo', msg, '0', '2'])
             iwl = IWList(wiface).getList(unsecure=False, first=False)
+            totalNetworks = len(iwl)
             page = 0
             displayed = display_networks(iwl, page)
         elif (totalNetworks > (page + 1) * NETWORKS_PER_PAGE) and var in ('n', 'N'):
