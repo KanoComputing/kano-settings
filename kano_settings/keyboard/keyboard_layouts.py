@@ -22,7 +22,7 @@ layouts_europe = {
     'Herzegovina': 'ba',
     'Bulgaria': 'bg',
     'Croatia': 'hr',
-    'Czechia': 'cz',
+    'Czech Republic': 'cz',
     'Denmark': 'dk',
     'Estonia': 'ee',
     'Faroe Islands': 'fo',
