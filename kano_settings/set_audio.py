@@ -15,8 +15,8 @@ from .config_file import get_setting, set_setting, file_replace
 
 
 HDMI = False
-file_name_amixer_from = "/etc/rc.local"
-file_name_edid_from = "/boot/config.txt"
+rc_local_path = "/etc/rc.local"
+config_txt_path = "/boot/config.txt"
 current_img = None
 # Change this value (IMG_HEIGHT) to move the image up or down.
 IMG_HEIGHT = 130
@@ -73,17 +73,20 @@ def apply_changes(button):
     # 2 hdmi
 
     # Uncomment/comment out the line  in /boot/config.txt
-    edid_from = "#?hdmi_ignore_edid_audio=1"
     amixer_from = "amixer -c 0 cset numid=3 [0-9]"
+    edid_from = "#?hdmi_ignore_edid_audio=1"
+    drive_from = "#?hdmi_drive=2"
 
     # These are the changes we'll apply if they have changed from what they were
     if HDMI is True:
         amixer_to = "amixer -c 0 cset numid=3 2"
         edid_to = "#hdmi_ignore_edid_audio=1"
+        drive_to = "hdmi_drive=2"
         config = "HDMI"
     else:
         amixer_to = "amixer -c 0 cset numid=3 1"
         edid_to = "hdmi_ignore_edid_audio=1"
+        drive_to = "#hdmi_drive=2"
         config = "Analogue"
 
     # if audio settings haven't changed, don't apply new changes
@@ -91,11 +94,13 @@ def apply_changes(button):
         logger.debug("set_audio / apply_changes: audio settings haven't changed, don't apply new changes")
         return
 
-    amixer_rc = file_replace(file_name_amixer_from, amixer_from, amixer_to)
-    edid_rc = file_replace(file_name_edid_from, edid_from, edid_to)
+    amixer_rc = file_replace(rc_local_path, amixer_from, amixer_to)
+    edid_rc = file_replace(config_txt_path, edid_from, edid_to)
+    drive_rc = file_replace(config_txt_path, drive_from, drive_to)
+
     # Don't continue if we don't manage to change the audio settings in the file.
-    if amixer_rc == -1 or edid_rc == -1:
-        logger.debug("set_audio / apply_changes: we couldn't manage to change both files")
+    if amixer_rc == -1 or edid_rc == -1 or drive_rc == -1:
+        logger.debug("set_audio / apply_changes: we couldn't manage to change all files")
         return
 
     set_setting('Audio', config)
@@ -120,13 +125,13 @@ def auto_changes(hdmi):
         amixer_to = "amixer -c 0 cset numid=3 1"
         edid_to = "hdmi_ignore_edid_audio=1"
 
-    file_replace(file_name_amixer_from, amixer_from, amixer_to)
-    file_replace(file_name_edid_from, edid_from, edid_to)
+    file_replace(rc_local_path, amixer_from, amixer_to)
+    file_replace(config_txt_path, edid_from, edid_to)
 
 
 def current_setting(analogue_button, hdmi_button):
 
-    f = open(file_name_amixer_from, 'r')
+    f = open(rc_local_path, 'r')
     file_string = str(f.read())
     analogue_string = "amixer -c 0 cset numid=3 1"
     hdmi_string = "amixer -c 0 cset numid=3 2"
