@@ -123,12 +123,12 @@ if __name__ == '__main__':
                 sys.exit(2)
             else:
                 # If there is a cached network, try to connect straight away
-                wpaconf=None
-                if cached.has_key('conf'):
+                wpaconf = None
+                if 'conf' in cached:
                     wpaconf = cached['conf']
 
-                fconnected = attempt_connect (wiface, cached['essid'], 
-                                              cached['encryption'], cached['enckey'], conf=wpaconf)
+                fconnected = attempt_connect(wiface, cached['essid'],
+                                             cached['encryption'], cached['enckey'], conf=wpaconf)
                 if fconnected:
                     sys.exit(0)
                 else:
