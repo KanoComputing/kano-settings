@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-
 # kano-wifi
 #
 # Copyright (C) 2013 Kano Computing Ltd.
@@ -19,11 +18,11 @@
 import os
 import sys
 import subprocess
-import getpass
 
 from kano.network import IWList, is_device, is_connected, connect, is_gateway, is_internet, KwifiCache, reload_kernel_module
 
 NETWORKS_PER_PAGE = 5
+
 
 class GetPasswordHideAsYouType:
 
@@ -57,19 +56,19 @@ class GetPasswordHideAsYouType:
                     break
                 elif ord(typed_char) == self.backspace_key:
                     # that's the backspace
-                    sys.stdout.write ('\b \b')
+                    sys.stdout.write('\b \b')
                     sys.stdout.flush()
-                    self.password = self.password[:len(self.password)-1]
+                    self.password = self.password[:len(self.password) - 1]
                 elif ord(typed_char) > 132 or ord(typed_char) < 32:
                     # Terminal bell
                     pass
                 elif len(self.password) == self.max_length:
                     break
                 else:
-                    sys.stdout.write (typed_char)
+                    sys.stdout.write(typed_char)
                     sys.stdout.flush()
                     time.sleep(self.delay)
-                    sys.stdout.write ('\b%c' % self.hide_char)
+                    sys.stdout.write('\b%c' % self.hide_char)
                     sys.stdout.flush()
                     self.password += typed_char
         finally:
@@ -139,7 +138,8 @@ def prompt_hidden():
 
     return (essid, encryption)
 
-def connect_with_retry (wiface, essid, encryption):
+
+def connect_with_retry(wiface, essid, encryption):
     '''
     Connects to a wireless network, either open or protected.
     If it's protected, it promptd for the password
@@ -211,7 +211,7 @@ if __name__ == '__main__':
 
         # -s is a status request for the user to know if connected or not
         #
-        if  sys.argv[1] == '-s':
+        if sys.argv[1] == '-s':
             a, _, _ = is_connected(wiface)
             if not a:
                 subprocess.call(['typewriter_echo', 'wireless network is not connected', '1', '2'])
@@ -230,15 +230,14 @@ if __name__ == '__main__':
             if not a:
                 msg = 'Couldn\'t connect using configuration %s.' % wpaconf
                 subprocess.call(['typewriter_echo', msg, '1', '2'])
-                sys.exit (2)
+                sys.exit(2)
             else:
                 msg = 'Great! You are connected to %s!' % a
                 subprocess.call(['typewriter_echo', msg, '1', '2'])
 
                 # cache this custom network so it is connected during next system boot
                 wificache.save('', None, None, wpaconf)
-                sys.exit (0)
-
+                sys.exit(0)
 
     #
     #  Start the walkthrough process to get connected
@@ -246,7 +245,6 @@ if __name__ == '__main__':
 
     # Step 1: intro
     print_header()
-
     # Step 2: check for internet connection over Ethernet or usb
     if is_internet() and not is_device(wiface):
         msg = 'Good news! It looks like you already have internet'
@@ -255,7 +253,7 @@ if __name__ == '__main__':
 
     # Step 3: check for WiFi dongle
     if not is_device(wiface):
-        subprocess.call(['/bin/sync']) # Flush system IO buffers to disk to avoid corruption
+        subprocess.call(['/bin/sync'])  # Flush system IO buffers to disk to avoid corruption
         subprocess.call(['typewriter_echo', 'First, plug in your wifi piece.', '0', '1'])
         subprocess.call(['typewriter_echo', 'Please take into account that the system will automatically reboot.', '0', '2'])
         subprocess.call(['typewriter_echo', 'If you don\'t want to use WiFi, press [ENTER].', '2', '1'])
@@ -325,7 +323,7 @@ if __name__ == '__main__':
             (essid, encryption) = prompt_hidden()
 
             # Request password and try to connect with password retry option
-            (online, enckey) = connect_with_retry (wiface, essid, encryption)
+            (online, enckey) = connect_with_retry(wiface, essid, encryption)
             if not online:
                 selected = None
                 page = 0
@@ -350,7 +348,7 @@ if __name__ == '__main__':
             subprocess.call(['typewriter_echo', msg, '0', '2'])
 
             # Request password and try to connect with password retry option
-            (online, enckey) = connect_with_retry (wiface, essid, encryption)
+            (online, enckey) = connect_with_retry(wiface, essid, encryption)
             if not online:
                 selected = None
                 page = 0
@@ -361,7 +359,7 @@ if __name__ == '__main__':
     # Step 5: ping exercise
     print_header()
     subprocess.call(['typewriter_echo', 'Excellent! let\'s check if internet is working.', '0', '2'])
-    subprocess.call(['typewriter_echo', 'Type: ping www.google.com', '1', '2'])
+    subprocess.call(['typewriter_echo', 'Type {{1ping www.google.com}}', '1', '2'])
     while True:
         var = raw_input()
         if var == 'ping www.google.com' or var == 'ping google.com':
