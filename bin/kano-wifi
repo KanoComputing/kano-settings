@@ -19,7 +19,8 @@ import os
 import sys
 import subprocess
 
-from kano.network import IWList, is_device, is_connected, connect, is_gateway, is_internet, KwifiCache, reload_kernel_module
+from kano.network import IWList, is_device, is_connected, connect, is_gateway, is_internet, KwifiCache, \
+    reload_kernel_module, is_redirected
 
 NETWORKS_PER_PAGE = 5
 
@@ -343,21 +344,29 @@ if __name__ == '__main__':
                 wificache.save(essid, encryption, enckey)
 
     # Step 5: ping exercise
-    var = raw_input("Do you want to test your connection? [y/n]")
-    if var and (var.upper() != 'Y' or var.upper() != 'YES'):
-        subprocess.call(['typewriter_echo', 'Type {{1ping www.google.com}}', '1', '2'])
-        while True:
-            var = raw_input()
-            if var == 'ping www.google.com' or var == 'ping google.com':
-                rc = subprocess.call(['ping', 'google.com', '-c', '1'])
-                break
-            else:
-                subprocess.call(['typewriter_echo', 'Not the correct command, try again: {{1ping www.google.com}}', '0', '2'])
+    # Check for redirection
+    if not is_redirected():
+        # Ask for ping
+        var = raw_input("Do you want to test your connection? [y/n]")
+        if var and (var.upper() == 'Y' or var.upper() == 'YES'):
+            subprocess.call(['typewriter_echo', 'Type {{1ping www.google.com}}', '1', '2'])
+            while True:
+                var = raw_input()
+                if var == 'ping www.google.com' or var == 'ping google.com':
+                    rc = subprocess.call(['ping', 'google.com', '-c', '1'])
+                    break
+                else:
+                    subprocess.call(['typewriter_echo', 'Not the correct command, try again: {{1ping www.google.com}}', '0', '2'])
 
-        if not rc == 0:
-            subprocess.call(['typewriter_echo', 'Oops! It seems the Internet is not reachable... Don\'t worry, we can still play!', '2', '2'])
-        else:
-            subprocess.call(['typewriter_echo', '\nGreat! Internet is working', '2', '2'])
+            if not rc == 0:
+                subprocess.call(['typewriter_echo', 'Oops! It seems the Internet is not reachable... Don\'t worry, we can still play!', '2', '2'])
+            else:
+                subprocess.call(['typewriter_echo', '\nGreat! Internet is working', '2', '2'])
+    else:
+        # Launch browser
+        subprocess.call(['typewriter_echo', '\nLaunching the browser so you can log in', '2', '2'])
+        os.system('/usr/bin/chromium &')
+        raw_input('Press ENTER to continue')
 
     # Step 6: exit
     sys.exit(0)
