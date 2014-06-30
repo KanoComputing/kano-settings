@@ -343,20 +343,21 @@ if __name__ == '__main__':
                 wificache.save(essid, encryption, enckey)
 
     # Step 5: ping exercise
-    subprocess.call(['typewriter_echo', 'Excellent! let\'s check if internet is working.', '0', '2'])
-    subprocess.call(['typewriter_echo', 'Type {{1ping www.google.com}}', '1', '2'])
-    while True:
-        var = raw_input()
-        if var == 'ping www.google.com' or var == 'ping google.com':
-            rc = subprocess.call(['ping', 'google.com', '-c', '1'])
-            break
+    var = raw_input("Do you want to test your connection? [y/n]")
+    if var and (var.upper() != 'Y' or var.upper() != 'YES'):
+        subprocess.call(['typewriter_echo', 'Type {{1ping www.google.com}}', '1', '2'])
+        while True:
+            var = raw_input()
+            if var == 'ping www.google.com' or var == 'ping google.com':
+                rc = subprocess.call(['ping', 'google.com', '-c', '1'])
+                break
+            else:
+                subprocess.call(['typewriter_echo', 'Not the correct command, try again: {{1ping www.google.com}}', '0', '2'])
+
+        if not rc == 0:
+            subprocess.call(['typewriter_echo', 'Oops! It seems the Internet is not reachable... Don\'t worry, we can still play!', '2', '2'])
         else:
-            subprocess.call(['typewriter_echo', 'Not the correct command, try again', '0', '2'])
+            subprocess.call(['typewriter_echo', '\nGreat! Internet is working', '2', '2'])
 
     # Step 6: exit
-    if not rc == 0:
-        subprocess.call(['typewriter_echo', 'oops! It seems the Internet is not reachable... Don\'t worry, we can still play!', '2', '2'])
-    else:
-        subprocess.call(['typewriter_echo', '\nGreat! Internet is working', '2', '2'])
-
     sys.exit(0)
