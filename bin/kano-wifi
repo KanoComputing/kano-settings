@@ -80,23 +80,11 @@ class GetPasswordHideAsYouType:
         return self.password
 
 
-def print_header():
-    subprocess.call(['clear'])
-    print " __      __._____________.__                          _____.__"
-    print "/  \    /  \__\_   _____/|__|      ____  ____   _____/ ____\__| ____"
-    print "\   \/\/   /  ||    __)  |  |    _/ ___\/  _ \ /    \   __\|  |/ ___\ "
-    print " \        /|  ||     \   |  |    \  \__(  <_> )   |  \  |  |  / /_/  >"
-    print "  \__/\  / |__|\___  /   |__|     \___  >____/|___|  /__|  |__\___  /"
-    print "       \/          \/                 \/           \/        /_____/ \n\n"
-
-
 def display_networks(iwl, page=0, perpage=NETWORKS_PER_PAGE):
 
     start = page * perpage
     end = page * perpage + perpage
     displayed = 0
-
-    print_header()
 
     for idx, netw in enumerate(iwl[start:end]):
         enctxt = 'Open'
@@ -112,8 +100,6 @@ def display_networks(iwl, page=0, perpage=NETWORKS_PER_PAGE):
 def prompt_hidden():
 
     protection = essid = encryption = None
-
-    print_header()
 
     msg = 'Enter the name of the hidden network'
     subprocess.call(['typewriter_echo', msg, '0', '1'])
@@ -246,7 +232,6 @@ if __name__ == '__main__':
     #
 
     # Step 1: intro
-    print_header()
     # Step 2: check for internet connection over Ethernet or usb
     if is_internet() and not is_device(wiface):
         msg = 'Good news! It looks like you already have internet'
@@ -345,7 +330,6 @@ if __name__ == '__main__':
             encryption = (iwl[selected]['encryption'])
             enckey = None
 
-            print_header()
             msg = 'Let\'s connect to %s' % essid
             subprocess.call(['typewriter_echo', msg, '0', '2'])
 
@@ -359,7 +343,6 @@ if __name__ == '__main__':
                 wificache.save(essid, encryption, enckey)
 
     # Step 5: ping exercise
-    print_header()
     subprocess.call(['typewriter_echo', 'Excellent! let\'s check if internet is working.', '0', '2'])
     subprocess.call(['typewriter_echo', 'Type {{1ping www.google.com}}', '1', '2'])
     while True:
