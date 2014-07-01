@@ -30,7 +30,7 @@ case "$1" in
             cp /usr/share/kano-network/rt2800usb.conf /etc/modprobe.d/
 
             # rebuilding initrd image
-            update-initramfs -u
+            # update-initramfs -u
 
             # For those who upgrade from previous kanux versions, the "interfaces" file has to be migrated
             # to account for ethernet post-up udhcpc new script. This also fixes tzupdate/rdate reliability

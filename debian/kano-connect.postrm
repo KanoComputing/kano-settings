@@ -11,6 +11,15 @@ case "$1" in
         # Remove config file
         rm /etc/sudoers.d/kano-connect_conf
 
+        if [ -e /etc/kanux_version ]; then
+
+            # Remove modprobe conf files
+            rm /etc/modprobe.d/8192cu.conf
+            rm /etc/modprobe.d/rt2800usb.conf
+
+        fi
+
+
         ;;
 esac
 
