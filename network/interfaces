@@ -1,0 +1,24 @@
+
+# interfaces
+#
+# Copyright (C) 2013 Kano Computing Ltd. 
+# License:   http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+# Sample /etc/network/interfaces file to work with Kanux and wireless auto-connect feature
+#
+
+auto lo
+iface lo inet loopback
+
+allow-hotplug eth0
+iface eth0 inet manual
+ post-up /sbin/udhcpc -p /var/run/udhcpc-eth0.pid --script=/etc/udhcpc/kano.script -S -i eth0
+ pre-down pkill -F /var/run/udhcpc-eth0.pid 2>/dev/null || /bin/true
+
+allow-hotplug wlan0
+iface wlan0 inet manual
+
+allow-hotplug usb0
+iface usb0 inet dhcp
+
+iface default inet dhcp
