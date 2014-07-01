@@ -120,9 +120,9 @@ def close_window(event="delete-event", button=None):
                                              "Your Kano needs to reboot for changes to apply",
                                              {"REBOOT NOW": {"return_value": 1, "color": "orange"}, "LATER": {"return_value": 0, "color": "grey"}})
 
-        kdialog.set_action_background("grey")
-        response = kdialog.run()
-        if response == 1:
-            os.system("sudo reboot")
+            kdialog.set_action_background("grey")
+            response = kdialog.run()
+            if response == 1:
+                os.system("sudo reboot")
 
     Gtk.main_quit()
