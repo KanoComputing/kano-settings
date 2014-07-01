@@ -89,7 +89,7 @@ def activate(_win, _box, _button, _proxy_button, _disable_proxy=None):
         internet_status.set_text(network)
         internet_action.set_text(ip)
 
-        go_to_portal_button = OrangeButton("Go to portal log in")
+        go_to_portal_button = OrangeButton("Browser Login")
         go_to_portal_button.connect("button-press-event", launch_chromium)
         configure_container.pack_start(go_to_portal_button, False, False, 0)
         divider_label = Gtk.Label("|")
