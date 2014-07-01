@@ -25,15 +25,12 @@ case "$1" in
 
         if [ -e /etc/kanux_version ]; then
 
-            # For those who upgrade, we improve Realtek 8192 wireless chipsets
-            # reliability by disabling the power safe and sleep modes
-            #
-            if [ ! -e /etc/modprobe.d/8192cu.conf ]; then
-                echo "Disabling 8182CU USB Wireless Power safe and Suspend modes"
-                printf "# Disable 8192CU power safe and suspend mode\n" > /etc/modprobe.d/8192cu.conf
-                printf "options 8192cu rtw_power_mgnt=0 rtw_enusbss=0\n" >> /etc/modprobe.d/8192cu.conf
-                echo "A system restart is suggested but not mandatory"
-    	    fi
+            # setting wireless module parameters
+            cp /usr/share/kano-network/8192cu.conf /etc/modprobe.d/
+            cp /usr/share/kano-network/rt2800usb.conf /etc/modprobe.d/
+
+            # rebuilding initrd image
+            update-initramfs -u
 
             # For those who upgrade from previous kanux versions, the "interfaces" file has to be migrated
             # to account for ethernet post-up udhcpc new script. This also fixes tzupdate/rdate reliability
