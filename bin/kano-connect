@@ -35,10 +35,17 @@ import sys
 from kano.logging import logger
 import atexit
 
-from kano.network import IWList, is_device, is_gateway, connect, disconnect, remove_pid, is_ethernet_plugged, KwifiCache
+from kano.network import IWList, is_device, is_gateway, connect, disconnect, is_ethernet_plugged, KwifiCache
 
 # filename to keep our process semaphore
 pidfile = '/var/run/kanoconnect.py'
+
+
+def remove_pid(filename):
+    try:
+        os.unlink(filename)
+    except:
+        pass
 
 
 def attempt_connect(wiface, essid, encryption, enckey, conf=None):
