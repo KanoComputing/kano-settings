@@ -13,6 +13,8 @@ from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.logging import logger
 from .config_file import get_setting, set_setting
 
+from kano_profile.badges import calculate_badges
+
 
 wallpaper_path = "/usr/share/kano-desktop/wallpapers/"
 kdeskrc_default = "/usr/share/kano-desktop/kdesk/.kdeskrc"
@@ -35,11 +37,11 @@ class Wallpaper():
         self.table.set_col_spacings(COLUMN_PADDING)
         self.buttons = {}
         # List of wallpapers
-        self.dict = {}
-        self.create_list_wallpaper()
+        self.wallpapers = {}
+        locked, unlocked = self.create_list_wallpaper()
         # Create thumbnail images
         self.images = {}
-        for name in self.dict:
+        for name in unlocked:
             pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(wallpaper_path + name + name_pattern, 120, 90)
             cropped_pixbuf = pixbuf.new_subpixbuf(15, 0, ICON_WIDTH, ICON_HEIGHT)
             image = Gtk.Image()
@@ -68,8 +70,6 @@ class Wallpaper():
         self.scrolled_window.add_with_viewport(self.table)
         self.scrolled_window.set_size_request(520, 220)
 
-        #win.changeable_content.pack_start(self.scrolled_window, False, False, 0)
-
     # Add class to wallpaper picture which displays border even when mouse is moved
     def select_wallpaper(self, widget=None, event=None, image_name=""):
         for name, button in self.buttons.iteritems():
@@ -87,17 +87,17 @@ class Wallpaper():
     # Get the current selected wallpaper
     # Handles global variable wallpaper_array
     def get_selected(self):
-        for x in self.dict:
-            if self.dict[x]:
+        for x in self.wallpapers:
+            if self.wallpapers[x]['selected']:
                 return x
 
     # Set the currents elected wallpaper
     # Handles global variable wallpaper_array
     def set_selected(self, image_name):
-        for x in self.dict:
-            self.dict[x] = False
+        for x in self.wallpapers:
+            self.wallpapers[x]['selected'] = False
 
-        self.dict[image_name] = True
+        self.wallpapers[image_name]['selected'] = True
 
     def change_wallpaper(self):
         image_name = self.get_selected()
@@ -152,11 +152,31 @@ class Wallpaper():
             set_setting("Wallpaper", selected)
 
     def create_list_wallpaper(self):
+        self.get_wallpapers()
+
+        environments = calculate_badges()['environments']['all']
+        for environment, attributes in environments.iteritems():
+            self.wallpapers[environment + '-background']['unlocked'] = attributes['achieved']
+
+        locked = []
+        unlocked = []
+        for wallpaper, attributes in self.wallpapers.iteritems():
+            if attributes['unlocked']:
+                unlocked.append(wallpaper)
+            else:
+                locked.append(wallpaper)
+
+        return locked, unlocked
+
+    def get_wallpapers(self):
         if not os.path.exists(wallpaper_path):
             return
         for file in os.listdir(wallpaper_path):
             if name_pattern in file:
-                self.dict[file[:-8]] = False
+                self.wallpapers[file[:-8]] = {
+                    'selected': False,
+                    'unlocked': True
+                }
 
 wallpaper = None
 
