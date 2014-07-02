@@ -347,7 +347,7 @@ if __name__ == '__main__':
     # Check for redirection
     if not is_redirected():
         # Ask for ping
-        var = raw_input("Do you want to test your connection? [y/n]").strip()
+        var = raw_input("Do you want to test your connection? [y/N]").strip()
         if var and (var.upper() == 'Y' or var.upper() == 'YES'):
             subprocess.call(['typewriter_echo', 'Type {{1ping www.google.com}}', '1', '2'])
             while True:
