@@ -9,6 +9,7 @@
 import os
 from gi.repository import Gtk, GdkPixbuf
 import kano_settings.components.fixed_size_box as fixed_size_box
+from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.logging import logger
 from .config_file import get_setting, set_setting
 
@@ -23,7 +24,7 @@ class Wallpaper():
 
     def __init__(self):
         NUMBER_OF_ROWS = 2
-        NUMBER_OF_COLUMNS = 3
+        NUMBER_OF_COLUMNS = 4
         COLUMN_PADDING = 5
         ROW_PADDING = 0
         ICON_WIDTH = 90
@@ -62,6 +63,12 @@ class Wallpaper():
             j = (j + 1) % NUMBER_OF_COLUMNS
             if j == 0:
                 row += 1
+
+        self.scrolled_window = ScrolledWindow()
+        self.scrolled_window.add_with_viewport(self.table)
+        self.scrolled_window.set_size_request(520, 220)
+
+        #win.changeable_content.pack_start(self.scrolled_window, False, False, 0)
 
     # Add class to wallpaper picture which displays border even when mouse is moved
     def select_wallpaper(self, widget=None, event=None, image_name=""):
@@ -162,7 +169,7 @@ def activate(_win, box, button):
 
     wallpaper = Wallpaper()
     settings = fixed_size_box.Fixed()
-    settings.box.pack_start(wallpaper.table, False, False, 10)
+    settings.box.pack_start(wallpaper.scrolled_window, False, False, 10)
 
     # Add apply changes button under the main settings content
     box.pack_start(title, False, False, 0)
