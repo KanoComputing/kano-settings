@@ -90,16 +90,15 @@ def add_account(widget=None, event=None):
     global added_account
 
     if not hasattr(event, 'keyval') or event.keyval == 65293:
-        if not added_account:
-            widget.set_sensitive(False)
+        widget.set_sensitive(False)
 
-            # Bring in message dialog box
-            kdialog = kano_dialog.KanoDialog("New account scheduled.", "Reboot the system.")
-            kdialog.run()
-            add_user()
+        # Bring in message dialog box
+        kdialog = kano_dialog.KanoDialog("New account scheduled.", "Reboot the system.")
+        kdialog.run()
+        add_user()
 
-            # So we know account has been added
-            added_account = True
+        # So we know account has been added
+        added_account = True
 
 
 def add_user():
@@ -111,16 +110,15 @@ def remove_account_dialog(widget=None, event=None):
     global removed_account
 
     if not hasattr(event, 'keyval') or event.keyval == 65293:
-        if not removed_account:
-            # Bring in message dialog box
-            kdialog = kano_dialog.KanoDialog("Are you sure you want to delete the current user?", "", {"OK": {"return_value": -1}, "CANCEL": {"return_value": 0}})
-            response = kdialog.run()
-            if response == -1:
-                widget.set_sensitive(False)
-                remove_user()
+        # Bring in message dialog box
+        kdialog = kano_dialog.KanoDialog("Are you sure you want to delete the current user?", "", {"OK": {"return_value": -1}, "CANCEL": {"return_value": 0}})
+        response = kdialog.run()
+        if response == -1:
+            widget.set_sensitive(False)
+            remove_user()
 
-                # So we know account has been removed
-                removed_account = True
+            # So we know account has been removed
+            removed_account = True
 
 
 def remove_user():
