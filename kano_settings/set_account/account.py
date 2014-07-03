@@ -11,15 +11,19 @@ from gi.repository import Gtk
 import os
 from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
-from kano.utils import get_user_unsudoed
+from kano.utils import get_user_unsudoed, ensure_dir
 import kano.gtk3.kano_dialog as kano_dialog
 from kano.gtk3.buttons import KanoButton
+
 
 win = None
 button = None
 box = None
 added_account = False
 removed_account = False
+
+ADD_USER_PATH = '/tmp/kano-init/add/'
+REMOVE_USER_PATH = '/tmp/kano-init/remove/'
 
 
 def activate(_win, changeable_content, _button, pass_button):
@@ -42,6 +46,10 @@ def activate(_win, changeable_content, _button, pass_button):
 
     # Accounts label
     accounts_header = Heading("Accounts", "Add or remove accounts")
+
+    # Check if we already scheduled an account add or remove by checking the file
+    added_account = os.path.exists(ADD_USER_PATH)
+    removed_account = os.path.exists(REMOVE_USER_PATH)
 
     # Add account button
     add_button = KanoButton("ADD ACCOUNT")
@@ -78,41 +86,43 @@ def activate(_win, changeable_content, _button, pass_button):
     win.show_all()
 
 
+# Gets executed when ADD button is clicked
 def add_account(widget=None, event=None):
+    if not hasattr(event, 'keyval') or event.keyval == 65293:
+        widget.set_sensitive(False)
+
+        # Bring in message dialog box
+        kdialog = kano_dialog.KanoDialog("New account scheduled.", "Reboot the system.")
+        kdialog.run()
+        add_user()
+
+
+def add_user():
     global added_account
 
-    if not hasattr(event, 'keyval') or event.keyval == 65293:
-        if not added_account:
-            widget.set_sensitive(False)
-
-            # Bring in message dialog box
-            kdialog = kano_dialog.KanoDialog("New account scheduled.", "Reboot the system.")
-            kdialog.run()
-            os.system("kano-init newuser")
-
-            # So we know account has been added
-            added_account = True
+    os.system("kano-init newuser")
+    ensure_dir(ADD_USER_PATH)
+    added_account = True
 
 
+# Gets executed when REMOVE button is clicked
 def remove_account_dialog(widget=None, event=None):
-    global removed_account
-
     if not hasattr(event, 'keyval') or event.keyval == 65293:
-        if not removed_account:
-            # Bring in message dialog box
-            kdialog = kano_dialog.KanoDialog("Are you sure you want to delete the current user?", "", {"OK": {"return_value": -1}, "CANCEL": {"return_value": 0}})
-            response = kdialog.run()
-            if response == -1:
-                widget.set_sensitive(False)
-                remove_user()
-
-                # So we know account has been removed
-                removed_account = True
+        # Bring in message dialog box
+        kdialog = kano_dialog.KanoDialog("Are you sure you want to delete the current user?", "", {"OK": {"return_value": -1}, "CANCEL": {"return_value": 0}})
+        response = kdialog.run()
+        if response == -1:
+            widget.set_sensitive(False)
+            remove_user()
 
 
 def remove_user():
+    global removed_account
+
     cmd = 'kano-init deleteuser %s' % (get_user_unsudoed())
     os.system(cmd)
+    ensure_dir(REMOVE_USER_PATH)
+    removed_account = True
 
 
 def apply_changes(button):
