@@ -15,11 +15,16 @@ from kano.utils import get_user_unsudoed
 import kano.gtk3.kano_dialog as kano_dialog
 from kano.gtk3.buttons import KanoButton
 
+
 win = None
 button = None
 box = None
 added_account = False
 removed_account = False
+
+ADD_USER_PATH = '/tmp/kano-init/add/'
+REMOVE_USER_PATH = '/tmp/kano-init/remove/'
+EMPTY_FILE = 'schedule'
 
 
 def activate(_win, changeable_content, _button, pass_button):
@@ -42,6 +47,10 @@ def activate(_win, changeable_content, _button, pass_button):
 
     # Accounts label
     accounts_header = Heading("Accounts", "Add or remove accounts")
+
+    # Check if we already scheduled an account add or remove by checking the file
+    added_account = os.path.exists(ADD_USER_PATH + EMPTY_FILE)
+    removed_account = os.path.exists(REMOVE_USER_PATH + EMPTY_FILE)
 
     # Add account button
     add_button = KanoButton("ADD ACCOUNT")
@@ -88,10 +97,15 @@ def add_account(widget=None, event=None):
             # Bring in message dialog box
             kdialog = kano_dialog.KanoDialog("New account scheduled.", "Reboot the system.")
             kdialog.run()
-            os.system("kano-init newuser")
+            add_user()
 
             # So we know account has been added
             added_account = True
+
+
+def add_user():
+    os.system("kano-init newuser")
+    make_file_in_directory(ADD_USER_PATH, EMPTY_FILE)
 
 
 def remove_account_dialog(widget=None, event=None):
@@ -113,6 +127,16 @@ def remove_account_dialog(widget=None, event=None):
 def remove_user():
     cmd = 'kano-init deleteuser %s' % (get_user_unsudoed())
     os.system(cmd)
+    make_file_in_directory(REMOVE_USER_PATH, EMPTY_FILE)
+
+
+# This function create folders corresponding to the directory path
+# and a file inside - flag to ensure persistency for add/remove buttons
+def make_file_in_directory(directory, file_name):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
+        file_path = os.path.join(directory, file_name)
+        open(file_path, 'a').close()
 
 
 def apply_changes(button):
