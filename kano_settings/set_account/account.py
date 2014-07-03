@@ -11,7 +11,7 @@ from gi.repository import Gtk
 import os
 from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
-from kano.utils import get_user_unsudoed
+from kano.utils import get_user_unsudoed, ensure_dir
 import kano.gtk3.kano_dialog as kano_dialog
 from kano.gtk3.buttons import KanoButton
 
@@ -24,7 +24,6 @@ removed_account = False
 
 ADD_USER_PATH = '/tmp/kano-init/add/'
 REMOVE_USER_PATH = '/tmp/kano-init/remove/'
-EMPTY_FILE = 'schedule'
 
 
 def activate(_win, changeable_content, _button, pass_button):
@@ -49,8 +48,8 @@ def activate(_win, changeable_content, _button, pass_button):
     accounts_header = Heading("Accounts", "Add or remove accounts")
 
     # Check if we already scheduled an account add or remove by checking the file
-    added_account = os.path.exists(ADD_USER_PATH + EMPTY_FILE)
-    removed_account = os.path.exists(REMOVE_USER_PATH + EMPTY_FILE)
+    added_account = os.path.exists(ADD_USER_PATH)
+    removed_account = os.path.exists(REMOVE_USER_PATH)
 
     # Add account button
     add_button = KanoButton("ADD ACCOUNT")
@@ -105,7 +104,7 @@ def add_account(widget=None, event=None):
 
 def add_user():
     os.system("kano-init newuser")
-    make_file_in_directory(ADD_USER_PATH, EMPTY_FILE)
+    ensure_dir(ADD_USER_PATH)
 
 
 def remove_account_dialog(widget=None, event=None):
@@ -127,16 +126,7 @@ def remove_account_dialog(widget=None, event=None):
 def remove_user():
     cmd = 'kano-init deleteuser %s' % (get_user_unsudoed())
     os.system(cmd)
-    make_file_in_directory(REMOVE_USER_PATH, EMPTY_FILE)
-
-
-# This function create folders corresponding to the directory path
-# and a file inside - flag to ensure persistency for add/remove buttons
-def make_file_in_directory(directory, file_name):
-    if not os.path.exists(directory):
-        os.makedirs(directory)
-        file_path = os.path.join(directory, file_name)
-        open(file_path, 'a').close()
+    ensure_dir(REMOVE_USER_PATH)
 
 
 def apply_changes(button):
