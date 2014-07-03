@@ -206,7 +206,10 @@ class Wallpaper():
         #         e.g. [arcade_hall]-background[-4-3.png]
         environments = calculate_badges()['environments']['all']
         for environment, attributes in environments.iteritems():
-            self.wallpapers[environment + '-background']['unlocked'] = attributes['achieved']
+            try:
+                self.wallpapers[environment]['unlocked'] = attributes['achieved']
+            except:
+                pass
 
     def get_wallpapers(self):
         if not os.path.exists(wallpaper_path):
