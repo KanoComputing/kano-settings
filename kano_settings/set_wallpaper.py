@@ -49,11 +49,11 @@ class Wallpaper():
         # in turn, add the default, unlocked, and finally locked wallpapers
         # using a separate list to account for ordering
         for name, attributes in self.wallpapers.iteritems():
-            if 'kano' in name:
+            if 'background' in name:
                 self.add_wallpaper_to_table(name, ICON_WIDTH, ICON_HEIGHT, True)
 
         for name, attributes in self.wallpapers.iteritems():
-            if attributes['unlocked'] and 'kano' not in name:
+            if attributes['unlocked'] and 'background' not in name:
                 self.add_wallpaper_to_table(name, ICON_WIDTH, ICON_HEIGHT, True)
 
         for name, attributes in self.wallpapers.iteritems():
