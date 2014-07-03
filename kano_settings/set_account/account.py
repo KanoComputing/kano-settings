@@ -86,9 +86,8 @@ def activate(_win, changeable_content, _button, pass_button):
     win.show_all()
 
 
+# Gets executed when ADD button is clicked
 def add_account(widget=None, event=None):
-    global added_account
-
     if not hasattr(event, 'keyval') or event.keyval == 65293:
         widget.set_sensitive(False)
 
@@ -97,18 +96,17 @@ def add_account(widget=None, event=None):
         kdialog.run()
         add_user()
 
-        # So we know account has been added
-        added_account = True
-
 
 def add_user():
+    global added_account
+
     os.system("kano-init newuser")
     ensure_dir(ADD_USER_PATH)
+    added_account = True
 
 
+# Gets executed when REMOVE button is clicked
 def remove_account_dialog(widget=None, event=None):
-    global removed_account
-
     if not hasattr(event, 'keyval') or event.keyval == 65293:
         # Bring in message dialog box
         kdialog = kano_dialog.KanoDialog("Are you sure you want to delete the current user?", "", {"OK": {"return_value": -1}, "CANCEL": {"return_value": 0}})
@@ -117,14 +115,14 @@ def remove_account_dialog(widget=None, event=None):
             widget.set_sensitive(False)
             remove_user()
 
-            # So we know account has been removed
-            removed_account = True
-
 
 def remove_user():
+    global removed_account
+
     cmd = 'kano-init deleteuser %s' % (get_user_unsudoed())
     os.system(cmd)
     ensure_dir(REMOVE_USER_PATH)
+    removed_account = True
 
 
 def apply_changes(button):
