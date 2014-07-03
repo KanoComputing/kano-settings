@@ -9,21 +9,27 @@
 import os
 from gi.repository import Gtk, GdkPixbuf
 import kano_settings.components.fixed_size_box as fixed_size_box
+from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.logging import logger
 from .config_file import get_setting, set_setting
+from kano_profile.badges import calculate_badges
 
 
 wallpaper_path = "/usr/share/kano-desktop/wallpapers/"
+padlock_path = "/usr/share/kano-settings/media/Icons/padlock.png"  # needs to be 95x95
 kdeskrc_default = "/usr/share/kano-desktop/kdesk/.kdeskrc"
 kdeskrc_home = "/home/%s/.kdeskrc"
+
 name_pattern = "-4-3.png"
 
 
 class Wallpaper():
 
-    def __init__(self):
+    def __init__(self, button):
+        self.apply_button = button
+
         NUMBER_OF_ROWS = 2
-        NUMBER_OF_COLUMNS = 3
+        NUMBER_OF_COLUMNS = 4
         COLUMN_PADDING = 5
         ROW_PADDING = 0
         ICON_WIDTH = 90
@@ -33,35 +39,73 @@ class Wallpaper():
         self.table.set_row_spacings(ROW_PADDING)
         self.table.set_col_spacings(COLUMN_PADDING)
         self.buttons = {}
+        self.buttons_list = []
         # List of wallpapers
-        self.dict = {}
+        self.wallpapers = {}
         self.create_list_wallpaper()
         # Create thumbnail images
         self.images = {}
-        for name in self.dict:
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(wallpaper_path + name + name_pattern, 120, 90)
-            cropped_pixbuf = pixbuf.new_subpixbuf(15, 0, ICON_WIDTH, ICON_HEIGHT)
-            image = Gtk.Image()
-            image.set_from_pixbuf(cropped_pixbuf)
-            self.images[name] = image
-            backgroundbox = Gtk.Button()
-            backgroundbox.get_style_context().add_class('wallpaper_box')
-            backgroundbox.add(image)
-            image.set_padding(3, 3)
-            backgroundbox.connect('button_press_event', self.select_wallpaper, name)
-            self.buttons[name] = backgroundbox
+
+        # in turn, add the default, unlocked, and finally locked wallpapers
+        # using a separate list to account for ordering
+        for name, attributes in self.wallpapers.iteritems():
+            if 'kano' in name:
+                self.add_wallpaper_to_table(name, ICON_WIDTH, ICON_HEIGHT, True)
+
+        for name, attributes in self.wallpapers.iteritems():
+            if attributes['unlocked'] and 'kano' not in name:
+                self.add_wallpaper_to_table(name, ICON_WIDTH, ICON_HEIGHT, True)
+
+        for name, attributes in self.wallpapers.iteritems():
+            if not attributes['unlocked']:
+                self.add_wallpaper_to_table(name, ICON_WIDTH, ICON_HEIGHT, False)
 
         # Attach to table
         row = 0
         j = 0
 
-        for name, button in self.buttons.iteritems():
+        for button in self.buttons_list:
             self.table.attach(button, j, j + 1, row, row + 1,
                               Gtk.AttachOptions.EXPAND, Gtk.AttachOptions.EXPAND, 0, 0)
 
             j = (j + 1) % NUMBER_OF_COLUMNS
             if j == 0:
                 row += 1
+
+        # the wallpaper thumbnails will be inside a table which we put
+        # into a scrollable window
+        self.scrolled_window = ScrolledWindow()
+        self.scrolled_window.add_with_viewport(self.table)
+        self.scrolled_window.set_size_request(520, 220)
+
+    def add_wallpaper_to_table(self, name, width, height, unlocked):
+        # recreate padlock overlay here becuase otherwise it's parent gets set by the class
+        padlock_pixbuf = GdkPixbuf.Pixbuf.new_from_file(padlock_path)
+        padlock_overlay = Gtk.Image()
+        padlock_overlay.set_from_pixbuf(padlock_pixbuf)
+
+        # create the wallpaper thumbnail
+        wallpaper_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(wallpaper_path + name + name_pattern, 120, 90)
+        cropped_wallpaper = wallpaper_pixbuf.new_subpixbuf(15, 0, width, height)
+        image = Gtk.Image()
+        image.set_from_pixbuf(cropped_wallpaper)
+
+        # create the container for the thumbnails
+        container = Gtk.Fixed()
+        container.put(image, 0, 0)
+
+        # add the padlock overlay on the thumbnail if it is locked
+        if not unlocked:
+            container.put(padlock_overlay, 0, 0)
+
+        self.images[name] = image
+        backgroundbox = Gtk.Button()
+        backgroundbox.get_style_context().add_class('wallpaper_box')
+        backgroundbox.add(container)
+        image.set_padding(3, 3)
+        backgroundbox.connect('button_press_event', self.select_wallpaper, name)
+        self.buttons[name] = backgroundbox
+        self.buttons_list.append(backgroundbox)
 
     # Add class to wallpaper picture which displays border even when mouse is moved
     def select_wallpaper(self, widget=None, event=None, image_name=""):
@@ -80,17 +124,21 @@ class Wallpaper():
     # Get the current selected wallpaper
     # Handles global variable wallpaper_array
     def get_selected(self):
-        for x in self.dict:
-            if self.dict[x]:
+        for x in self.wallpapers:
+            if self.wallpapers[x]['selected']:
                 return x
 
     # Set the currents elected wallpaper
     # Handles global variable wallpaper_array
     def set_selected(self, image_name):
-        for x in self.dict:
-            self.dict[x] = False
+        for x in self.wallpapers:
+            self.wallpapers[x]['selected'] = False
 
-        self.dict[image_name] = True
+        if self.wallpapers[image_name]['unlocked']:
+            self.wallpapers[image_name]['selected'] = True
+            self.apply_button.set_sensitive(True)
+        else:
+            self.apply_button.set_sensitive(False)
 
     def change_wallpaper(self):
         image_name = self.get_selected()
@@ -145,11 +193,30 @@ class Wallpaper():
             set_setting("Wallpaper", selected)
 
     def create_list_wallpaper(self):
+        self.get_wallpapers()
+
+        # To get info about which environments are unlocked we first calculate badges
+        # then we take the 'achieved' attribute of an environment and add it to
+        # the attribute of our local list of wallpapers
+        #
+        #   NOTE: it realies on the wallpapers in kano-desktop to me named as their
+        #         respective rule in kano-profile with the following pattern:
+        #
+        #         [rule_name]-background[name_pattern]
+        #         e.g. [arcade_hall]-background[-4-3.png]
+        environments = calculate_badges()['environments']['all']
+        for environment, attributes in environments.iteritems():
+            self.wallpapers[environment + '-background']['unlocked'] = attributes['achieved']
+
+    def get_wallpapers(self):
         if not os.path.exists(wallpaper_path):
             return
         for file in os.listdir(wallpaper_path):
             if name_pattern in file:
-                self.dict[file[:-8]] = False
+                self.wallpapers[file[:-8]] = {
+                    'selected': False,
+                    'unlocked': True
+                }
 
 wallpaper = None
 
@@ -160,9 +227,9 @@ def activate(_win, box, button):
     title = Gtk.Label("Choose your background")
     title.get_style_context().add_class('title')
 
-    wallpaper = Wallpaper()
+    wallpaper = Wallpaper(button)
     settings = fixed_size_box.Fixed()
-    settings.box.pack_start(wallpaper.table, False, False, 10)
+    settings.box.pack_start(wallpaper.scrolled_window, False, False, 10)
 
     # Add apply changes button under the main settings content
     box.pack_start(title, False, False, 0)
