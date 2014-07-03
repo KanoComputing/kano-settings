@@ -115,7 +115,7 @@ static gboolean show_menu(GtkWidget *widget, GdkEventButton *event)
         return FALSE;
 
     /* Create the menu items */
-    header_item = gtk_menu_item_new_with_label("Kano Settings");
+    header_item = gtk_menu_item_new_with_label("Settings");
     gtk_widget_set_sensitive(header_item, FALSE);
     gtk_menu_append(GTK_MENU(menu), header_item);
     gtk_widget_show(header_item);

@@ -66,7 +66,7 @@ class MainWindow(Gtk.Window):
         self.changeable_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.changeable_content.props.halign = Gtk.Align.CENTER
 
-        self.top_bar = TopBar(title="Kano-Settings", window_width=680)
+        self.top_bar = TopBar(title="Settings", window_width=680)
         self.top_bar.close_button.connect("clicked", first_run.close_window)
 
         # Check for internet
@@ -127,7 +127,7 @@ def main():
 if __name__ == "__main__":
 
     if os.environ['LOGNAME'] != 'root':
-        exit("Error: kano-settings must be executed with root privileges")
+        exit("Error: Settings must be executed with root privileges")
 
     if(len(sys.argv) > 1):
         if sys.argv[1] == 'auto':
