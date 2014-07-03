@@ -49,11 +49,11 @@ class Wallpaper():
         # in turn, add the default, unlocked, and finally locked wallpapers
         # using a separate list to account for ordering
         for name, attributes in self.wallpapers.iteritems():
-            if 'kano' in name:
+            if 'background' in name:
                 self.add_wallpaper_to_table(name, ICON_WIDTH, ICON_HEIGHT, True)
 
         for name, attributes in self.wallpapers.iteritems():
-            if attributes['unlocked'] and 'kano' not in name:
+            if attributes['unlocked'] and 'background' not in name:
                 self.add_wallpaper_to_table(name, ICON_WIDTH, ICON_HEIGHT, True)
 
         for name, attributes in self.wallpapers.iteritems():
@@ -206,7 +206,10 @@ class Wallpaper():
         #         e.g. [arcade_hall]-background[-4-3.png]
         environments = calculate_badges()['environments']['all']
         for environment, attributes in environments.iteritems():
-            self.wallpapers[environment + '-background']['unlocked'] = attributes['achieved']
+            try:
+                self.wallpapers[environment]['unlocked'] = attributes['achieved']
+            except:
+                pass
 
     def get_wallpapers(self):
         if not os.path.exists(wallpaper_path):
