@@ -92,7 +92,8 @@ def display_networks(iwl, page=0, perpage=NETWORKS_PER_PAGE):
         if netw['encryption'] != 'off':
             enctxt = 'Protected'
 
-        print '%2d - %s - %s' % (start + idx + 1, netw['essid'], enctxt)
+        string_network = '{{1 %2d }} - {{2 %s }} - %s' % (start + idx + 1, netw['essid'], enctxt)
+        subprocess.call(['colour_echo', string_network])
         displayed += 1
 
     return displayed
@@ -231,7 +232,7 @@ if __name__ == '__main__':
     #
     #  Start the walkthrough process to get connected
     #
-
+    subprocess.call(['clear'])
     # Step 1: intro
     # Step 2: check for internet connection over Ethernet or usb
     if is_internet() and not is_device(wiface):
