@@ -11,6 +11,7 @@ from gi.repository import Gtk
 
 import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_mouse as set_mouse
+import kano_settings.set_font as set_font
 import kano_settings.set_audio as set_audio
 import kano_settings.set_display as set_display
 import kano_settings.set_wifi.home as set_wifi_proxy
@@ -27,7 +28,7 @@ from kano.utils import get_user_unsudoed
 from ..config_file import get_setting
 
 
-names = ["Keyboard", "Mouse", "Audio", "Display", "Wifi", "Overclocking", "Account", "Wallpaper", "Advanced"]
+names = ["Keyboard", "Mouse", "Audio", "Display", "Wifi", "Overclocking", "Account", "Wallpaper", "Advanced", "Font"]
 custom_info = ["Keyboard-country-human", "Mouse", "Audio", "Display-mode", "Wifi", "Overclocking", "Account",
                "Wallpaper"]
 win = None
@@ -239,4 +240,5 @@ class Default_Intro():
             6: set_account,
             7: set_wallpaper,
             8: set_advance,
+            9: set_font,
         }[x]

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# set_mouse.py
+# set_font.py
 #
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
@@ -9,18 +9,26 @@
 import os
 from gi.repository import Gtk
 from kano.gtk3.heading import Heading
+from kano.utils import get_user_unsudoed
 import kano_settings.components.fixed_size_box as fixed_size_box
 from kano.logging import logger
-from .config_file import get_setting, set_setting
+from .config_file import get_setting, set_setting, file_replace
 
 selected_button = 0
 initial_button = 0
+
+SIZE_SMALL = 10
+SIZE_NORMAL = 14
+SIZE_BIG = 18
+
+username = get_user_unsudoed()
+config_file = os.path.join('/home', username, '.config/lxsession/LXDE/desktop.conf')
 
 
 def activate(_win, box, button):
     global selected_button, initial_button
 
-    title = Heading("Mouse", "Pick your speed")
+    title = Heading("Font", "Pick text size")
     box.pack_start(title.container, False, False, 0)
 
     # Settings container
@@ -29,11 +37,11 @@ def activate(_win, box, button):
     box.pack_start(settings.box, False, False, 0)
 
     # Slow radio button
-    slow_button = Gtk.RadioButton.new_with_label_from_widget(None, "Slow")
+    slow_button = Gtk.RadioButton.new_with_label_from_widget(None, "Small")
     slow_button.connect("toggled", on_button_toggled)
     slow_button.set_can_focus(True)
     slow_button.get_style_context().add_class("bold_toggle")
-    slow_info = Gtk.Label("REQUIRES LESS MOVE PRECISION")
+    slow_info = Gtk.Label("IDEAL FOR SMALL SCREENS")
     slow_info.get_style_context().add_class("normal_label")
 
     slow_box = Gtk.Box()
@@ -55,11 +63,11 @@ def activate(_win, box, button):
 
     # Fast radio button
     fast_button = Gtk.RadioButton.new_from_widget(slow_button)
-    fast_button.set_label("Fast")
+    fast_button.set_label("Big")
     fast_button.connect("toggled", on_button_toggled)
     fast_button.set_can_focus(False)
     fast_button.get_style_context().add_class("bold_toggle")
-    fast_info = Gtk.Label("BETTER FOR WIDE SCREENS")
+    fast_info = Gtk.Label("BETTER FOR BIG SCREENS")
     fast_info.get_style_context().add_class("normal_label")
 
     fast_box = Gtk.Box()
@@ -95,76 +103,84 @@ def activate(_win, box, button):
 
 def apply_changes(button):
 
-    #  Mode   speed
-    # Slow     1
-    # Normal  default
-    # High     10
+    #  Mode   size
+    # Small    SIZE_SMALL
+    # Normal   SIZE_NORMAL
+    # Big      SIZE_BIG
 
     # Mode has no changed
     if initial_button == selected_button:
         return
 
-    config = "Slow"
+    config = "Small"
     # Slow configuration
     if selected_button == 0:
-        config = "Slow"
+        config = "Small"
     # Modest configuration
     elif selected_button == 1:
         config = "Normal"
     # Medium configuration
     elif selected_button == 2:
-        config = "Fast"
+        config = "Big"
 
     # Update config
-    set_setting("Mouse", config)
+    set_setting("Font", config)
 
 
 # This function is used by auto_settings
 def auto_changes(mode):
-    logger.debug('set_mouse / auto_changes: mode:{}'.format(mode))
-    command = "xset m "
-    # Slow configuration
-    if mode == "Slow":
-        command += "1"
-    # Modest configuration
+    logger.debug('set_font / auto_changes: mode:{}'.format(mode))
+    font = "sGtk/FontName=Bariol "
+    font_pattern = font + "[0-9][0-9]"
+
+    # Small configuration
+    if mode == "Small":
+        font += str(SIZE_SMALL)
+    # Normal configuration
     elif mode == "Normal":
-        command += "default"
-    # Medium configuration
-    elif mode == "Fast":
-        command += "10"
+        font += str(SIZE_NORMAL)
+    # Big configuration
+    elif mode == "Big":
+        font += str(SIZE_BIG)
 
     # Apply changes
-    os.system(command)
+    file_replace(config_file, font_pattern, font)
+    # Reload lxsession
+    os.system("lxsession -r")
 
 
-def change_mouse_speed():
+def change_font_size():
 
-    command = "xset m "
-    # Slow configuration
+    font = "sGtk/FontName=Bariol "
+    font_pattern = font + "[0-9][0-9]"
+
+    # Small configuration
     if selected_button == 0:
-        command += "1"
-    # Modest configuration
+        font += str(SIZE_SMALL)
+    # Normal configuration
     elif selected_button == 1:
-        command += "default"
-    # Medium configuration
+        font += str(SIZE_NORMAL)
+    # Big configurations
     elif selected_button == 2:
-        command += "10"
+        font += str(SIZE_BIG)
 
-    logger.debug('set_mouse / change_mouse_speed: selected_button:{}'.format(selected_button))
+    logger.debug('set_font / change_font_size: selected_button:{}'.format(selected_button))
 
     # Apply changes
-    os.system(command)
+    file_replace(config_file, font_pattern, font)
+    # Reload lxsession
+    os.system("lxsession -r")
 
 
 def current_setting():
     global initial_button
 
-    mouse = get_setting("Mouse")
-    if mouse == "Slow":
+    font = get_setting("Font")
+    if font == "Small":
         initial_button = 0
-    elif mouse == "Normal":
+    elif font == "Normal":
         initial_button = 1
-    elif mouse == "Fast":
+    elif font == "Big":
         initial_button = 2
 
 
@@ -173,11 +189,11 @@ def on_button_toggled(button):
 
     if button.get_active():
         label = button.get_label()
-        if label == "Slow":
+        if label == "Small":
             selected_button = 0
         elif label == "Normal":
             selected_button = 1
-        elif label == "Fast":
+        elif label == "Big":
             selected_button = 2
         # Apply changes so speed can be tested
-        change_mouse_speed()
+        change_font_size()
