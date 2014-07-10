@@ -41,6 +41,7 @@ defaults = {
     'Display-overscan': 0,
     'Overclocking': 'High',
     'Mouse': 'Normal',
+    'Font': 'Normal',
     'Wallpaper': 'kanux-background',
     'Proxy-port': '',
     'Proxy-ip': '',
