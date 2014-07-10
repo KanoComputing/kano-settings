@@ -1,0 +1,202 @@
+#!/usr/bin/env python
+
+import os
+import sys
+from kano.utils import read_file_contents_as_lines, run_cmd, delete_file, write_file_contents, \
+    enforce_root
+
+tvservice_path = '/usr/bin/tvservice'
+config_txt_path = '/boot/config.txt'
+edid_dat_path = '/tmp/edid.dat'
+
+pi_detected = os.path.exists(tvservice_path) and os.path.exists(config_txt_path)
+
+if pi_detected:
+    status_str, _, _ = run_cmd(tvservice_path + ' -s')
+    if 'DMT' in status_str:
+        status_group = 'DMT'
+    elif 'CEA' in status_str:
+        status_group = 'CEA'
+    else:
+        sys.exit('status parsing error')
+    status_mode = status_str.split('(')[1].split(')')[0].strip()
+    status_full_range = 'RGB full' in status_str
+
+if len(sys.argv) > 1:
+    file_path = sys.argv[1]
+    if not os.path.exists(file_path):
+        sys.exit('file doesn\'t exist')
+    edid_data = read_file_contents_as_lines(file_path)
+else:
+    if not pi_detected:
+        sys.exit('specify edid.txt file or run on the Pi')
+    delete_file(edid_dat_path)
+    edid_data, _, rc = run_cmd('tvservice -d {0} && edidparser {0}'.format(edid_dat_path))
+    edid_data = edid_data.splitlines()
+    if rc != 0:
+        sys.exit('error getting edid dat')
+    delete_file(edid_dat_path)
+
+preferred_res = None
+screen_size = None
+model = None
+found = False
+
+for l in edid_data:
+    if 'screen size' in l:
+        screen_size = int(l.split('screen size')[1].split('x')[0].strip())
+
+    elif 'monitor name is' in l:
+        model = l.split('monitor name is')[1].strip()
+
+    elif 'found preferred' in l:
+        if 'DMT' in l:
+            preferred_group = 'DMT'
+        elif 'CEA' in l:
+            preferred_group = 'CEA'
+        else:
+            sys.exit('parsing error')
+
+        res, mode = l.split(':')[2].split('@')
+        preferred_res = res.strip()
+        hz, mode = mode.split(' Hz (')
+        preferred_hz = hz.strip()
+        preferred_mode = mode[:-1]
+
+    elif 'moving support for' in l:
+        found_group, found_mode = l.split(' to ')[1].split(' because sink')[0].split('mode')
+        found_group = found_group.strip()
+        found_mode = found_mode.strip()
+        found = True
+
+    # elif not found and preferred_res and preferred_res in l and 'remained' not in l:
+    #     # print l
+    #     found_res = preferred_res
+
+    #     if 'DMT' in l:
+    #         found_group = 'DMT'
+    #     elif 'CEA' in l:
+    #         found_group = 'CEA'
+    #     else:
+    #         sys.exit('parsing error')
+
+    #     if found_group == preferred_group:
+    #         continue
+
+    #     if 'code' in l:
+    #         found_mode = l.split('code')[1].split(',')[0].strip()
+    #     else:
+    #         found_mode = l.split('(')[1].split(')')[0]
+
+    #     found_hz = l.split('@')[1].split('Hz')[0].strip()
+    #     if found_hz != preferred_hz:
+    #         continue
+
+    #     found = True
+    #     # print ' f', found_res, found_hz, found_group, found_mode
+
+target_full_range = screen_size < 60
+
+if model == '32V3H-H6A':
+    found = True
+    # found_res = '1024x768p'
+    # found_hz = '60'
+    found_group = 'DMT'
+    found_mode = '16'
+    target_full_range = True
+
+if model == 'BMD_HDMI':
+    found = True
+    # found_res = '1920x1080p'
+    # found_hz = '25'
+    found_group = 'CEA'
+    found_mode = '33'
+    target_full_range = True
+
+
+print model, 'size: {} cm'.format(screen_size)
+
+if pi_detected:
+    print 'status\t\t', status_group, status_mode, status_full_range
+
+print 'preferred\t', preferred_group, preferred_mode
+
+if found:
+    print 'found\t\t', found_group, found_mode
+
+if found:
+    target_group = found_group
+    target_mode = found_mode
+else:
+    target_group = preferred_group
+    target_mode = preferred_mode
+
+print 'target\t\t', target_group, target_mode, target_full_range
+
+if not pi_detected:
+    sys.exit()
+
+config_change_needed = False
+config_hdmi_group = None
+config_hdmi_mode = None
+config_hdmi_pixel_encoding = None
+
+if status_group == target_group and status_mode == target_mode:
+    print 'mode change not needed'
+else:
+    config_change_needed = True
+
+    print 'mode change needed'
+    print '\tsetting mode: {} {}'.format(target_group, target_mode)
+    if target_group == 'CEA':
+        config_hdmi_group = '1'
+    else:
+        config_hdmi_group = '2'
+
+    config_hdmi_mode = target_mode
+
+if status_full_range == target_full_range:
+    print 'fullrange change not needed'
+else:
+    config_change_needed = True
+
+    print 'fullrange change needed'
+    print 'setting fullrange to: {}'.format(target_full_range)
+    if target_full_range:
+        config_hdmi_pixel_encoding = '2'
+    else:
+        config_hdmi_pixel_encoding = '0'
+
+if not config_change_needed:
+    print 'no config needed, not modifying config.txt'
+    sys.exit()
+
+enforce_root('Need to be root!')
+
+config_txt = read_file_contents_as_lines(config_txt_path)
+
+kano_screen_saved_comment = '### kano_screen_used: {}'.format(model)
+if config_txt[0] == kano_screen_saved_comment:
+    sys.exit('screen already set in config.txt, skipping screen override')
+
+config_txt_new = list()
+config_txt_new.append(kano_screen_saved_comment)
+for l in config_txt:
+    if config_hdmi_group and 'hdmi_group' in l:
+        line = 'hdmi_group={}'.format(config_hdmi_group)
+        print 'changing hdmi_group'
+    elif config_hdmi_mode and 'hdmi_mode' in l:
+        line = 'hdmi_mode={}'.format(config_hdmi_mode)
+        print 'changing hdmi_mode'
+    elif config_hdmi_pixel_encoding and 'hdmi_pixel_encoding' in l:
+        line = 'hdmi_pixel_encoding={}'.format(config_hdmi_pixel_encoding)
+        print 'changing hdmi_pixel_encoding'
+    elif 'kano_screen_used' in l:
+        continue
+    else:
+        line = l
+    config_txt_new.append(line)
+config_txt_new = '\n'.join(config_txt_new)
+
+write_file_contents(config_txt_path, config_txt_new)
+run_cmd('reboot')
