@@ -13,7 +13,6 @@ from kano.utils import get_user_unsudoed
 import kano_settings.components.fixed_size_box as fixed_size_box
 from kano.logging import logger
 from .config_file import get_setting, set_setting, file_replace
-import kano_settings.constants as constants
 
 selected_button = 0
 initial_button = 0
@@ -146,6 +145,8 @@ def auto_changes(mode):
 
     # Apply changes
     file_replace(config_file, font_pattern, font)
+    # Reload lxsession
+    os.system("lxsession -r")
 
 
 def change_font_size():
@@ -167,8 +168,8 @@ def change_font_size():
 
     # Apply changes
     file_replace(config_file, font_pattern, font)
-    # Tell user to reboot to see changes
-    constants.need_reboot = True
+    # Reload lxsession
+    os.system("lxsession -r")
 
 
 def current_setting():
