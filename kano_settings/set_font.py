@@ -130,7 +130,7 @@ def apply_changes(button):
 # This function is used by auto_settings
 def auto_changes(mode):
     logger.debug('set_font / auto_changes: mode:{}'.format(mode))
-    font = "sGTK/FontName=Bariol "
+    font = "sGtk/FontName=Bariol "
     font_pattern = font + "[0-9][0-9]"
 
     # Small configuration
@@ -151,7 +151,7 @@ def auto_changes(mode):
 
 def change_font_size():
 
-    font = "sGTK/FontName=Bariol "
+    font = "sGtk/FontName=Bariol "
     font_pattern = font + "[0-9][0-9]"
 
     # Small configuration
