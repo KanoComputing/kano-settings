@@ -9,6 +9,7 @@
 #
 
 import kano_settings.set_keyboard as set_keyboard
+import kano_settings.set_font as set_font
 import kano_settings.set_mouse as set_mouse
 import kano_settings.set_audio as set_audio
 import kano_settings.set_overclock as set_overclock
@@ -24,6 +25,10 @@ def auto_settings():
     country = get_setting('Keyboard-country-human')
     variant = get_setting('Keyboard-variant-human')
     set_keyboard.auto_changes(continent, country, variant)
+
+    # Font
+    font = get_setting('Font')
+    set_font.auto_changes(font)
 
     # Audio
     audio = get_setting('Audio')
