@@ -1,0 +1,11 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:         kano-hdmi
+# Required-Start:   mountkernfs
+# Required-Stop:
+# Default-Start:    S
+# Default-Stop:
+### END INIT INFO
+
+touch /tmp/kano-hdmi.txt
