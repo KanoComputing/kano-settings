@@ -4,8 +4,8 @@
 # Provides:         kano-hdmi
 # Required-Start:   mountkernfs
 # Required-Stop:
-# Default-Start:    S
+# Default-Start:    2
 # Default-Stop:
 ### END INIT INFO
 
-touch /tmp/kano-hdmi.txt
+/usr/bin/set-kano-hdmi
