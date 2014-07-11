@@ -1,0 +1,26 @@
+#!/bin/bash
+
+# rclocal.postrm
+#
+# Copyright (C) 2014 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+
+rclocal_backup="/etc/rc.local.backup"
+
+case "$1" in
+    remove)
+
+        # Restore original rc.lcaol and remove Kano version
+        mv -fv $rclocal_backup /etc/rc.local
+        rm -fv /etc/kano-rc.local
+        ;;
+
+    upgrade)
+        cp -fv /etc/kano-rc.local /etc/rc.local
+        ;;
+esac
+
+#DEBHELPER#
+
+exit 0

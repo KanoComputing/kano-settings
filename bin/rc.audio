@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#
+# Copyright (C) 2014 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+
+# Audio signal settings. This files gets updated by kano-settings
+amixer -c 0 cset numid=3 1
+amixer -c 0 -- sset PCM playback 100%
+
