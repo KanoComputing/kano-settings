@@ -1,20 +1,31 @@
 #!/bin/bash
 
-# postrm
+# kano-settings.postrm
 #
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
+rclocal_backup="/etc/rc.local.backup"
+
 case "$1" in
-    remove|upgrade)
+
+    remove)
+
+        # Restore original rc.local and remove Kano version
+        mv -fv $rclocal_backup /etc/rc.local
+
+    upgrade)
         # Remove config file
         rm /etc/sudoers.d/kano-settings_conf
 
         # TODO: Disable the proxy if enabled
 
-        # Remove dante libc simbolic link
+        # Remove dante libc symbolic link
         rm -fv /lib/arm-linux-gnueabihf/libc.so
+
+        # Upgrade rc.local provided by Kano
+        cp -fv /etc/kano-rc.local /etc/rc.local
         ;;
 esac
 

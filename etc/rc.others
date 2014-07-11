@@ -1,0 +1,13 @@
+#!/bin/bash
+
+#
+# Copyright (C) 2014 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+# rc.others - additional system settings
+#
+
+# Disable the Kernel Magig System Request hotkey
+# http://en.wikipedia.org/wiki/Magic_SysRq_key
+
+echo 0 > /proc/sys/kernel/sysrq

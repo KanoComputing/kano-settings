@@ -15,7 +15,7 @@ from .config_file import get_setting, set_setting, file_replace
 
 
 HDMI = False
-rc_local_path = "/etc/rc.local"
+rc_local_path = "/etc/rc.audio"
 config_txt_path = "/boot/config.txt"
 current_img = None
 # Change this value (IMG_HEIGHT) to move the image up or down.

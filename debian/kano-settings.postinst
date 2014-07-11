@@ -7,6 +7,7 @@
 #
 
 TMP_FILE=/tmp/kano-settings_conf
+rclocal_backup="/etc/rc.local.backup"
 
 case "$1" in
     configure)
@@ -29,6 +30,13 @@ case "$1" in
         # Tighten security to the blacklist file for parental protection
         chmod 400 /usr/share/kano-settings/media/Parental/parental-hosts-blacklist.gz
 
+        # Save a backup copy of the original rc.local
+        if [ ! -f "$rclocal_backup" ]; then
+            mv -fv /etc/rc.local /etc/rc.local.backup
+        fi
+
+        # Replace rc.local with Kano rc.local
+        cp -fv /etc/kano-rc.local /etc/rc.local
         ;;
 esac
 
