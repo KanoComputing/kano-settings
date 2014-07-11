@@ -14,7 +14,6 @@ case "$1" in
 
         # Restore original rc.local and remove Kano version
         mv -fv $rclocal_backup /etc/rc.local
-        rm -fv /etc/kano-rc.local
 
     upgrade)
         # Remove config file
