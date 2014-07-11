@@ -239,6 +239,6 @@ class Default_Intro():
             5: set_overclock,
             6: set_account,
             7: set_wallpaper,
-            8: set_advance,
-            9: set_font,
+            8: set_font,
+            9: set_advance,
         }[x]
