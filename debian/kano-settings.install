@@ -9,3 +9,10 @@ icon/kano-settings.png /usr/share/kano-apps/icons
 icon/settings-widget.png /usr/share/kano-settings
 
 lxpanel-plugin/kano_settings.so usr/lib/arm-linux-gnueabihf/lxpanel/plugins/
+
+etc/rc.audio /etc
+etc/rc.network /etc
+etc/rc.overclock /etc
+etc/rc.others /etc
+
+etc/kano-rc.local /etc

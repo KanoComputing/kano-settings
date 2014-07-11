@@ -7,7 +7,14 @@
 #
 
 case "$1" in
-    remove|upgrade)
+
+    remove)
+
+        # Restore original rc.lcaol and remove Kano version
+        mv -fv $rclocal_backup /etc/rc.local
+        rm -fv /etc/kano-rc.local
+
+    upgrade)
         # Remove config file
         rm /etc/sudoers.d/kano-settings_conf
 
@@ -15,6 +22,9 @@ case "$1" in
 
         # Remove dante libc simbolic link
         rm -fv /lib/arm-linux-gnueabihf/libc.so
+
+        # Upgrade rc.local provided by Kano
+        cp -fv /etc/kano-rc.local /etc/rc.local
         ;;
 esac
 

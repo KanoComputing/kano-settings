@@ -1,6 +1,0 @@
-bin/rc.audio /etc
-bin/rc.network /etc
-bin/rc.overclock /etc
-bin/rc.others /etc
-
-bin/rc.local /etc/kano-rc.local
