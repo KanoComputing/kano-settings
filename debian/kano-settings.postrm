@@ -12,7 +12,7 @@ case "$1" in
 
     remove)
         # Restore the original rc.local script
-        mv -fv $rclocal_backup /etc/rc.local
+        mv -f $rclocal_backup /etc/rc.local
 
         # Remove sudoers config file
         rm /etc/sudoers.d/kano-settings_conf
@@ -20,12 +20,12 @@ case "$1" in
         # TODO: Disable the proxy if enabled
 
         # Remove dante libc symbolic link
-        rm -fv /lib/arm-linux-gnueabihf/libc.so
+        rm -f /lib/arm-linux-gnueabihf/libc.so
         ;;
 
     upgrade)
         # Upgrade the new version of rc.local provided by Kano
-        cp -fv /etc/kano-rc.local /etc/rc.local
+        cp -f /etc/kano-rc.local /etc/rc.local
         ;;
 esac
 
