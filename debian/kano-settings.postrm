@@ -10,7 +10,7 @@ rclocal_backup="/etc/rc.local.backup"
 
 case "$1" in
 
-    remove)
+    remove|upgrade)
         # Restore the original rc.local script
         mv -f $rclocal_backup /etc/rc.local
 
@@ -21,11 +21,6 @@ case "$1" in
 
         # Remove dante libc symbolic link
         rm -f /lib/arm-linux-gnueabihf/libc.so
-        ;;
-
-    upgrade)
-        # Upgrade the new version of rc.local provided by Kano
-        cp -f /etc/kano-rc.local /etc/rc.local
         ;;
 esac
 
