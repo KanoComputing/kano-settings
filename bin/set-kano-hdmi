@@ -128,7 +128,6 @@ else:
 # hard coded overwrites
 
 if model == '32V3H-H6A':
-    found = True
     # found_res = '1024x768p'
     # found_hz = '60'
     target_group = 'DMT'
@@ -136,7 +135,6 @@ if model == '32V3H-H6A':
     is_monitor = True
 
 if model == 'BMD_HDMI':
-    found = True
     # found_res = '1920x1080p'
     # found_hz = '25'
     target_group = 'CEA'
