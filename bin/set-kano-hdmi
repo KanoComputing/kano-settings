@@ -16,6 +16,9 @@ pi_detected = os.path.exists(tvservice_path) and os.path.exists(config_txt_path)
 # acquiring edid
 
 if pi_detected:
+    # loading config_txt
+    config_txt = read_file_contents_as_lines(config_txt_path)
+
     status_str, _, _ = run_cmd(tvservice_path + ' -s')
     if 'DMT' in status_str:
         status_group = 'DMT'
@@ -25,6 +28,8 @@ if pi_detected:
         sys.exit('status parsing error')
     status_mode = status_str.split('(')[1].split(')')[0].strip()
     status_full_range = 'RGB full' in status_str
+    status_overscan = 'disable_overscan=1' not in config_txt
+
 
 if len(sys.argv) > 1:
     file_path = sys.argv[1]
@@ -138,10 +143,10 @@ if model == 'BMD_HDMI':
 
 if is_monitor:
     target_full_range = True
-    overscan = False
+    target_overscan = False
 else:
     target_full_range = False
-    overscan = True
+    target_overscan = True
 
 
 # printing to screen
@@ -149,14 +154,14 @@ else:
 logger.error('{} size: {} cm'.format(model, screen_size))
 
 if pi_detected:
-    logger.error('status\t{} {} {}'.format(status_group, status_mode, status_full_range))
+    logger.error('status\t{} {} full_range: {} overscan: {}'.format(status_group, status_mode, status_full_range, status_overscan))
 
 logger.error('preferred\t{} {}'.format(preferred_group, preferred_mode))
 
 if found:
     logger.error('found\t{} {}'.format(found_group, found_mode))
 
-logger.error('target\t{} {} {}'.format(target_group, target_mode, target_full_range))
+logger.error('target\t{} {} full_range: {} overscan: {}'.format(target_group, target_mode, target_full_range, target_overscan))
 logger.error('is_monitor: \t{}'.format(is_monitor))
 
 
@@ -169,6 +174,7 @@ config_change_needed = False
 config_hdmi_group = None
 config_hdmi_mode = None
 config_hdmi_pixel_encoding = None
+config_disable_overscan = None
 
 if status_group == target_group and status_mode == target_mode:
     logger.error('mode change not needed')
@@ -196,19 +202,31 @@ else:
     else:
         config_hdmi_pixel_encoding = '0'
 
+if status_overscan == target_overscan:
+    logger.error('overscan change not needed')
+else:
+    config_change_needed = True
+
+    logger.error('overscan change needed')
+    logger.error('setting overscan to: {}'.format(target_overscan))
+    if target_overscan:
+        config_disable_overscan = '0'
+    else:
+        config_disable_overscan = '1'
+
 if not config_change_needed:
     logger.error('no config needed, not modifying config.txt')
     sys.exit()
+else:
+    logger.error('modifying config.txt')
 
 
-# writing to config.txt
+# modifying config.txt
 
 # checking root
 enforce_root('Need to be root!')
 
 # checking if already set
-config_txt = read_file_contents_as_lines(config_txt_path)
-
 kano_screen_saved_comment = '### kano_screen_used: {}'.format(model)
 if config_txt[0] == kano_screen_saved_comment:
     sys.exit('screen already set in config.txt, skipping screen override')
@@ -221,17 +239,22 @@ for l in config_txt:
     # hdmi_group
     if config_hdmi_group and 'hdmi_group' in l:
         line = 'hdmi_group={}'.format(config_hdmi_group)
-        logger.error('changing hdmi_group')
+        logger.error('writing hdmi_group')
 
     # hdmi_mode
     elif config_hdmi_mode and 'hdmi_mode' in l:
         line = 'hdmi_mode={}'.format(config_hdmi_mode)
-        logger.error('changing hdmi_mode')
+        logger.error('writing hdmi_mode')
 
     # hdmi_pixel_encoding
     elif config_hdmi_pixel_encoding and 'hdmi_pixel_encoding' in l:
         line = 'hdmi_pixel_encoding={}'.format(config_hdmi_pixel_encoding)
-        logger.error('changing hdmi_pixel_encoding')
+        logger.error('writing hdmi_pixel_encoding')
+
+    # disable_overscan
+    elif config_disable_overscan and 'disable_overscan' in l:
+        line = 'disable_overscan={}'.format(config_disable_overscan)
+        logger.error('writing disable_overscan')
 
     # deleting kano_screen_used
     elif 'kano_screen_used' in l:
