@@ -237,24 +237,36 @@ config_txt_new.append(kano_screen_saved_comment)
 for l in config_txt:
 
     # hdmi_group
-    if config_hdmi_group and 'hdmi_group' in l:
+    if 'hdmi_group' in l and config_hdmi_group:
         line = 'hdmi_group={}'.format(config_hdmi_group)
         logger.error('writing hdmi_group')
 
     # hdmi_mode
-    elif config_hdmi_mode and 'hdmi_mode' in l:
+    elif 'hdmi_mode' in l and config_hdmi_mode:
         line = 'hdmi_mode={}'.format(config_hdmi_mode)
         logger.error('writing hdmi_mode')
 
     # hdmi_pixel_encoding
-    elif config_hdmi_pixel_encoding and 'hdmi_pixel_encoding' in l:
+    elif 'hdmi_pixel_encoding' in l and config_hdmi_pixel_encoding:
         line = 'hdmi_pixel_encoding={}'.format(config_hdmi_pixel_encoding)
         logger.error('writing hdmi_pixel_encoding')
 
     # disable_overscan
-    elif config_disable_overscan and 'disable_overscan' in l:
+    elif 'disable_overscan' in l and config_disable_overscan:
         line = 'disable_overscan={}'.format(config_disable_overscan)
         logger.error('writing disable_overscan')
+
+    elif 'overscan_left' in l and config_disable_overscan:
+        line = 'overscan_left=0'
+
+    elif 'overscan_right' in l and config_disable_overscan:
+        line = 'overscan_right=0'
+
+    elif 'overscan_top' in l and config_disable_overscan:
+        line = 'overscan_top=0'
+
+    elif 'overscan_bottom' in l and config_disable_overscan:
+        line = 'overscan_bottom=0'
 
     # deleting kano_screen_used
     elif 'kano_screen_used' in l:
