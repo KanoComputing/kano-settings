@@ -131,16 +131,16 @@ if model == '32V3H-H6A':
     found = True
     # found_res = '1024x768p'
     # found_hz = '60'
-    found_group = 'DMT'
-    found_mode = '16'
+    target_group = 'DMT'
+    target_mode = '16'
     is_monitor = True
 
 if model == 'BMD_HDMI':
     found = True
     # found_res = '1920x1080p'
     # found_hz = '25'
-    found_group = 'CEA'
-    found_mode = '33'
+    target_group = 'CEA'
+    target_mode = '33'
     is_monitor = True
 
 
