@@ -8,4 +8,8 @@ icon/widget-wifi.png /usr/share/kano-settings/icon
 
 lxpanel-plugin-internet/kano_internet.so usr/lib/arm-linux-gnueabihf/lxpanel/plugins/
 
-network/* /usr/share/kano-network
+etc/modprobe.d /usr/share/kano-network/etc
+etc/network /usr/share/kano-network/etc
+
+
+

@@ -26,14 +26,10 @@ case "$1" in
         if [ -e /etc/kanux_version ]; then
 
             # setting wireless module parameters
-            cp /usr/share/kano-network/8192cu.conf /etc/modprobe.d/
-            cp /usr/share/kano-network/rt2800usb.conf /etc/modprobe.d/
-
-            # rebuilding initrd image
-            # update-initramfs -u
+            cp /usr/share/kano-network/etc/modprobe.d/* /etc/modprobe.d/
 
             # updating the /etc/network/interfaces
-            cp /usr/share/kano-network/interfaces /etc/network/
+            cp /usr/share/kano-network/etc/network/* /etc/network/
 
         fi
 	;;
