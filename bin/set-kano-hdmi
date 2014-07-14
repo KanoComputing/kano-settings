@@ -25,25 +25,29 @@ if pi_detected:
     elif 'CEA' in status_str:
         status_group = 'CEA'
     else:
-        sys.exit('status parsing error')
+        logger.error('status parsing error')
+        sys.exit()
     status_mode = status_str.split('(')[1].split(')')[0].strip()
     status_full_range = 'RGB full' in status_str
     status_overscan = 'disable_overscan=1' not in config_txt
 
 
-if len(sys.argv) > 1:
+if len(sys.argv) > 1 and '--force' not in sys.argv:
     file_path = sys.argv[1]
     if not os.path.exists(file_path):
-        sys.exit('file doesn\'t exist')
+        logger.error('file doesn\'t exist')
+        sys.exit()
     edid_data = read_file_contents_as_lines(file_path)
 else:
     if not pi_detected:
-        sys.exit('specify edid.txt file or run on the Pi')
+        logger.error('specify edid.txt file or run on the Pi')
+        sys.exit()
     delete_file(edid_dat_path)
     edid_data, _, rc = run_cmd('tvservice -d {0} && edidparser {0}'.format(edid_dat_path))
     edid_data = edid_data.splitlines()
     if rc != 0:
-        sys.exit('error getting edid dat')
+        logger.error('error getting edid dat')
+        sys.exit()
     delete_file(edid_dat_path)
 
 
@@ -72,7 +76,8 @@ for l in edid_data:
         elif 'CEA' in l:
             preferred_group = 'CEA'
         else:
-            sys.exit('parsing error')
+            logger.error('parsing error')
+            sys.exit()
 
         res, mode = l.split(':')[2].split('@')
         preferred_res = res.strip()
@@ -211,8 +216,10 @@ else:
     logger.error('setting overscan to: {}'.format(target_overscan))
     if target_overscan:
         config_disable_overscan = '0'
+        default_overscan_value = -48
     else:
         config_disable_overscan = '1'
+        default_overscan_value = 0
 
 if not config_change_needed:
     logger.error('no config needed, not modifying config.txt')
@@ -228,8 +235,9 @@ enforce_root('Need to be root!')
 
 # checking if already set
 kano_screen_saved_comment = '### kano_screen_used: {}'.format(model)
-if config_txt[0] == kano_screen_saved_comment:
-    sys.exit('screen already set in config.txt, skipping screen override')
+if config_txt[0] == kano_screen_saved_comment and '--force' not in sys.argv:
+    logger.error('screen already set in config.txt, skipping screen override')
+    sys.exit()
 
 # creating new config_txt
 config_txt_new = list()
@@ -257,16 +265,16 @@ for l in config_txt:
         logger.error('writing disable_overscan')
 
     elif 'overscan_left' in l and config_disable_overscan:
-        line = 'overscan_left=0'
+        line = 'overscan_left={}'.format(default_overscan_value)
 
     elif 'overscan_right' in l and config_disable_overscan:
-        line = 'overscan_right=0'
+        line = 'overscan_right={}'.format(default_overscan_value)
 
     elif 'overscan_top' in l and config_disable_overscan:
-        line = 'overscan_top=0'
+        line = 'overscan_top={}'.format(default_overscan_value)
 
     elif 'overscan_bottom' in l and config_disable_overscan:
-        line = 'overscan_bottom=0'
+        line = 'overscan_bottom={}'.format(default_overscan_value)
 
     # deleting kano_screen_used
     elif 'kano_screen_used' in l:
