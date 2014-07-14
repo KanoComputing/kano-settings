@@ -1,5 +1,6 @@
 bin/kano-settings /usr/bin
 bin/startmouse /usr/bin
+bin/set-kano-hdmi /usr/bin
 
 kano_settings/* /usr/lib/python2.7/dist-packages/kano_settings
 media/* /usr/share/kano-settings/media
@@ -10,9 +11,8 @@ icon/settings-widget.png /usr/share/kano-settings
 
 lxpanel-plugin/kano_settings.so usr/lib/arm-linux-gnueabihf/lxpanel/plugins/
 
+etc/kano-rc.local /etc
 etc/rc.audio /etc
 etc/rc.network /etc
 etc/rc.overclock /etc
 etc/rc.others /etc
-
-etc/kano-rc.local /etc
