@@ -156,7 +156,6 @@ logger.error('preferred\t{} {}'.format(preferred_group, preferred_mode))
 if found:
     logger.error('found\t{} {}'.format(found_group, found_mode))
 
-
 logger.error('target\t{} {} {}'.format(target_group, target_mode, target_full_range))
 logger.error('is_monitor: \t{}'.format(is_monitor))
 
@@ -204,36 +203,49 @@ if not config_change_needed:
 
 # writing to config.txt
 
+# checking root
 enforce_root('Need to be root!')
 
+# checking if already set
 config_txt = read_file_contents_as_lines(config_txt_path)
 
 kano_screen_saved_comment = '### kano_screen_used: {}'.format(model)
 if config_txt[0] == kano_screen_saved_comment:
     sys.exit('screen already set in config.txt, skipping screen override')
 
+# creating new config_txt
 config_txt_new = list()
 config_txt_new.append(kano_screen_saved_comment)
 for l in config_txt:
+
+    # hdmi_group
     if config_hdmi_group and 'hdmi_group' in l:
         line = 'hdmi_group={}'.format(config_hdmi_group)
         logger.error('changing hdmi_group')
+
+    # hdmi_mode
     elif config_hdmi_mode and 'hdmi_mode' in l:
         line = 'hdmi_mode={}'.format(config_hdmi_mode)
         logger.error('changing hdmi_mode')
+
+    # hdmi_pixel_encoding
     elif config_hdmi_pixel_encoding and 'hdmi_pixel_encoding' in l:
         line = 'hdmi_pixel_encoding={}'.format(config_hdmi_pixel_encoding)
         logger.error('changing hdmi_pixel_encoding')
+
+    # deleting kano_screen_used
     elif 'kano_screen_used' in l:
         continue
+
+    # keeping other lines intact
     else:
         line = l
-    config_txt_new.append(line)
-config_txt_new = '\n'.join(config_txt_new)
 
+    config_txt_new.append(line)
+
+config_txt_new = '\n'.join(config_txt_new)
 write_file_contents(config_txt_path, config_txt_new)
 
 
 # reboot
-
 run_cmd('reboot')
