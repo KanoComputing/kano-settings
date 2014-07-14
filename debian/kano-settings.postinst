@@ -37,6 +37,10 @@ case "$1" in
 
         # Replace rc.local with Kano rc.local
         cp -f /etc/kano-rc.local /etc/rc.local
+
+        # add set-kano-hdmi to startup
+        update-rc.d kano-hdmi defaults
+
         ;;
 esac
 

@@ -21,6 +21,9 @@ case "$1" in
 
         # Remove dante libc symbolic link
         rm -f /lib/arm-linux-gnueabihf/libc.so
+
+        # remove set-kano-hdmi from startup
+        update-rc.d kano-hdmi remove
         ;;
 esac
 
