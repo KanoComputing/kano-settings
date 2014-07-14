@@ -2,7 +2,7 @@
 
 ### BEGIN INIT INFO
 # Provides:         kano-hdmi
-# Required-Start:   mountkernfs
+# Required-Start:
 # Required-Stop:
 # Default-Start:    2
 # Default-Stop:

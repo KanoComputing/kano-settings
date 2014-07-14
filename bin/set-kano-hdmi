@@ -4,6 +4,7 @@ import os
 import sys
 from kano.utils import read_file_contents_as_lines, run_cmd, delete_file, write_file_contents, \
     enforce_root
+from kano.logging import logger
 
 tvservice_path = '/usr/bin/tvservice'
 config_txt_path = '/boot/config.txt'
@@ -145,21 +146,19 @@ else:
 
 # printing to screen
 
-print model, 'size: {} cm'.format(screen_size)
+logger.error('{} size: {} cm'.format(model, screen_size))
 
 if pi_detected:
-    print 'status\t\t', status_group, status_mode, status_full_range
+    logger.error('status\t{} {} {}'.format(status_group, status_mode, status_full_range))
 
-print 'preferred\t', preferred_group, preferred_mode
+logger.error('preferred\t{} {}'.format(preferred_group, preferred_mode))
 
 if found:
-    print 'found\t\t', found_group, found_mode
+    logger.error('found\t{} {}'.format(found_group, found_mode))
 
 
-print 'target\t\t', target_group, target_mode, target_full_range
-
-print 'is_monitor: \t{}'.format(is_monitor)
-print
+logger.error('target\t{} {} {}'.format(target_group, target_mode, target_full_range))
+logger.error('is_monitor: \t{}'.format(is_monitor))
 
 
 # applying changes
@@ -173,12 +172,12 @@ config_hdmi_mode = None
 config_hdmi_pixel_encoding = None
 
 if status_group == target_group and status_mode == target_mode:
-    print 'mode change not needed'
+    logger.error('mode change not needed')
 else:
     config_change_needed = True
 
-    print 'mode change needed'
-    print '\tsetting mode: {} {}'.format(target_group, target_mode)
+    logger.error('mode change needed')
+    logger.error('\tsetting mode: {} {}'.format(target_group, target_mode))
     if target_group == 'CEA':
         config_hdmi_group = '1'
     else:
@@ -187,19 +186,19 @@ else:
     config_hdmi_mode = target_mode
 
 if status_full_range == target_full_range:
-    print 'fullrange change not needed'
+    logger.error('fullrange change not needed')
 else:
     config_change_needed = True
 
-    print 'fullrange change needed'
-    print 'setting fullrange to: {}'.format(target_full_range)
+    logger.error('fullrange change needed')
+    logger.error('setting fullrange to: {}'.format(target_full_range))
     if target_full_range:
         config_hdmi_pixel_encoding = '2'
     else:
         config_hdmi_pixel_encoding = '0'
 
 if not config_change_needed:
-    print 'no config needed, not modifying config.txt'
+    logger.error('no config needed, not modifying config.txt')
     sys.exit()
 
 
@@ -218,13 +217,13 @@ config_txt_new.append(kano_screen_saved_comment)
 for l in config_txt:
     if config_hdmi_group and 'hdmi_group' in l:
         line = 'hdmi_group={}'.format(config_hdmi_group)
-        print 'changing hdmi_group'
+        logger.error('changing hdmi_group')
     elif config_hdmi_mode and 'hdmi_mode' in l:
         line = 'hdmi_mode={}'.format(config_hdmi_mode)
-        print 'changing hdmi_mode'
+        logger.error('changing hdmi_mode')
     elif config_hdmi_pixel_encoding and 'hdmi_pixel_encoding' in l:
         line = 'hdmi_pixel_encoding={}'.format(config_hdmi_pixel_encoding)
-        print 'changing hdmi_pixel_encoding'
+        logger.error('changing hdmi_pixel_encoding')
     elif 'kano_screen_used' in l:
         continue
     else:
