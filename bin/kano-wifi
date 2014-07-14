@@ -166,7 +166,7 @@ def connect_with_retry(wiface, essid, encryption):
             connect(wiface, essid, encryption, enckey)
             online = is_gateway()
             if not online:
-                msg = '{{6 - }} {{5 Couldn\'t connect to {{2 %s }}. {{5 Do you want to re-enter the passphrase? }} {{1 Y/n }} ' % essid
+                msg = '{{6 - }} {{5 Couldn\'t connect to }}{{2 %s }}.{{5 Do you want to re-enter the passphrase? }} {{1 Y/n }} ' % essid
                 subprocess.call(['typewriter_echo', msg, '1', '0'])
                 retry_pass = raw_input().strip()
             else:
