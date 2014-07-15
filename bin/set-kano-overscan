@@ -16,10 +16,13 @@ if __name__ == '__main__' and __package__ is None:
     if dir_path != '/usr':
         sys.path.insert(1, dir_path)
 
+from kano.utils import enforce_root, run_cmd
 from kano.gtk3.top_bar import TopBar
-from kano.gtk3.buttons import KanoButton
+# from kano.gtk3.buttons import KanoButton
 from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.paths import common_css_dir
+
+overscan_pipe = "/tmp/overscan"
 
 
 def make_button_list():
@@ -34,10 +37,11 @@ def make_button_list():
     row_grid = Gtk.Grid()
     row.add(row_grid)
 
-    button = KanoButton('name')
-    button.set_size_request(200, 30)
-    button.connect('clicked', my_func)
-    row_grid.attach(button, 0, 1, 1, 1)
+    scale = Gtk.HScale.new_with_range(0, 100, 1)
+    scale.set_size_request(200, 30)
+    scale.set_value(60)
+    scale.connect('value_changed', adjust)
+    row_grid.attach(scale, 0, 1, 1, 1)
 
     align = Gtk.Alignment(xalign=0.5, yalign=0.5, xscale=0, yscale=0)
     padding = 20
@@ -47,8 +51,11 @@ def make_button_list():
     return align
 
 
-def my_func():
-    pass
+def adjust(adj):
+    value = int(adj.get_value())
+    print value
+    cmd = 'overscan {} {} {} {}'
+    run_cmd(cmd)
 
 
 class MainWindow(Gtk.Window):
@@ -80,6 +87,11 @@ class MainWindow(Gtk.Window):
 
 
 def main():
+    enforce_root('needs to run as root')
+
+    if not os.path.exists(overscan_pipe):
+        run_cmd('mknod /tmp/overscan c 100 0')
+
     # Create style sheet
     colourProvider = Gtk.CssProvider()
     colour_file = os.path.join(common_css_dir, 'colours.css')
