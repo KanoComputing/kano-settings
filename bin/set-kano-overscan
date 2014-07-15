@@ -1,0 +1,107 @@
+#!/usr/bin/env python
+
+# set-kano-overscan
+#
+# Copyright (C) 2014 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+# UI for share screen
+
+from gi.repository import Gtk, Gdk
+import os
+import sys
+
+if __name__ == '__main__' and __package__ is None:
+    dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    if dir_path != '/usr':
+        sys.path.insert(1, dir_path)
+
+from kano.gtk3.top_bar import TopBar
+from kano.gtk3.buttons import KanoButton
+from kano.gtk3.scrolled_window import ScrolledWindow
+from kano.paths import common_css_dir
+
+
+def make_button_list():
+
+    grid = Gtk.Grid()
+    grid.set_row_spacing(0)
+    grid.set_size_request(500, 400)
+
+    row = Gtk.EventBox()
+    grid.attach(row, 0, 0, 1, 1)
+
+    row_grid = Gtk.Grid()
+    row.add(row_grid)
+
+    button = KanoButton('name')
+    button.set_size_request(200, 30)
+    button.connect('clicked', my_func)
+    row_grid.attach(button, 0, 1, 1, 1)
+
+    align = Gtk.Alignment(xalign=0.5, yalign=0.5, xscale=0, yscale=0)
+    padding = 20
+    align.set_padding(padding, padding, padding, padding)
+    align.add(grid)
+
+    return align
+
+
+def my_func():
+    pass
+
+
+class MainWindow(Gtk.Window):
+
+    def __init__(self):
+        self.width = 580
+        self.height = 550
+
+        Gtk.Window.__init__(self, title='Share')
+
+        self.set_decorated(False)
+        self.set_position(Gtk.WindowPosition.CENTER)
+        self.set_resizable(False)
+
+        grid = Gtk.Grid()
+        self.add(grid)
+
+        top_bar = TopBar('Kano Help', self.width)
+        top_bar.set_close_callback(Gtk.main_quit)
+        grid.attach(top_bar, 0, 0, 1, 1)
+
+        share_list = make_button_list()
+        scrolledwindow = ScrolledWindow()
+        scrolledwindow.set_hexpand(True)
+        scrolledwindow.set_vexpand(True)
+        scrolledwindow.add_with_viewport(share_list)
+        scrolledwindow.set_size_request(self.width, self.height - top_bar.height)
+        grid.attach(scrolledwindow, 0, 1, 1, 1)
+
+
+def main():
+    # Create style sheet
+    colourProvider = Gtk.CssProvider()
+    colour_file = os.path.join(common_css_dir, 'colours.css')
+    if not os.path.exists(colour_file):
+        sys.exit('CSS file missing!')
+    colourProvider.load_from_path(colour_file)
+    cssProvider = Gtk.CssProvider()
+    css_file = os.path.join(common_css_dir, 'common.css')
+    if not os.path.exists(css_file):
+        sys.exit('CSS file missing!')
+    cssProvider.load_from_path(css_file)
+
+    screen = Gdk.Screen.get_default()
+    styleContext = Gtk.StyleContext()
+    styleContext.add_provider_for_screen(screen, colourProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+    styleContext.add_provider_for_screen(screen, cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+
+    win = MainWindow()
+    win.connect('delete-event', Gtk.main_quit)
+    win.show_all()
+    Gtk.main()
+
+
+if __name__ == '__main__':
+    main()
