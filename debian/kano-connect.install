@@ -1,8 +1,6 @@
 bin/kano-connect usr/bin
 bin/kano-wifi usr/bin
 
-icon/wifi.desktop /usr/share/kano-apps/extras
-icon/wifi.png /usr/share/kano-apps/icons
 icon/widget-no-internet.png /usr/share/kano-settings/icon
 icon/widget-wifi.png /usr/share/kano-settings/icon
 
@@ -10,6 +8,3 @@ lxpanel-plugin-internet/kano_internet.so usr/lib/arm-linux-gnueabihf/lxpanel/plu
 
 etc/modprobe.d /usr/share/kano-network/etc
 etc/network /usr/share/kano-network/etc
-
-
-
