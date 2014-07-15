@@ -10,4 +10,5 @@
 # Disable the Kernel Magig System Request hotkey
 # http://en.wikipedia.org/wiki/Magic_SysRq_key
 
-echo 0 > /proc/sys/kernel/sysrq
+# TODO: Re-enable when our kernel comes with the SysRq option
+#echo 0 > /proc/sys/kernel/sysrq
