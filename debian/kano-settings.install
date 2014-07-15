@@ -5,8 +5,8 @@ bin/set-kano-hdmi /usr/bin
 kano_settings/* /usr/lib/python2.7/dist-packages/kano_settings
 media/* /usr/share/kano-settings/media
 
-icon/settings.desktop /usr/share/kano-apps/extras
-icon/kano-settings.png /usr/share/kano-apps/icons
+icon/settings.app /usr/share/kano-applications/
+icon/kano-settings.png /usr/share/icons/Kano/66x66/apps/
 icon/settings-widget.png /usr/share/kano-settings
 
 lxpanel-plugin/kano_settings.so usr/lib/arm-linux-gnueabihf/lxpanel/plugins/
