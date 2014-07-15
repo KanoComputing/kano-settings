@@ -10,6 +10,7 @@
 from gi.repository import Gtk, Gdk
 import os
 import sys
+import time
 
 if __name__ == '__main__' and __package__ is None:
     dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -23,6 +24,7 @@ from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.paths import common_css_dir
 
 overscan_pipe = "/tmp/overscan"
+time_adj = time.time()
 
 
 def make_button_list():
@@ -38,8 +40,7 @@ def make_button_list():
     row.add(row_grid)
 
     scale = Gtk.HScale.new_with_range(0, 100, 1)
-    scale.set_size_request(200, 30)
-    scale.set_value(60)
+    scale.set_size_request(400, 30)
     scale.connect('value_changed', adjust)
     row_grid.attach(scale, 0, 1, 1, 1)
 
@@ -52,10 +53,15 @@ def make_button_list():
 
 
 def adjust(adj):
+    global time_adj
+    if time.time() - time_adj < 1 / 60.:
+        return
+
     value = int(adj.get_value())
     print value
-    cmd = 'overscan {} {} {} {}'
+    cmd = 'overscan {0} {0} {0} {0}'.format(value)
     run_cmd(cmd)
+    time_adj = time.time()
 
 
 class MainWindow(Gtk.Window):
