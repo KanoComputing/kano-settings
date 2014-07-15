@@ -18,3 +18,5 @@ etc/rc.overclock /etc
 etc/rc.others /etc
 
 etc/init.d /etc
+
+overscan/overscan /usr/bin
