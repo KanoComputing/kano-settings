@@ -14,7 +14,6 @@ pi_detected = os.path.exists(tvservice_path) and os.path.exists(config_txt_path)
 
 
 # acquiring edid
-
 if pi_detected:
     # loading config_txt
     config_txt = read_file_contents_as_lines(config_txt_path)
@@ -52,7 +51,6 @@ else:
 
 
 # parsing edid
-
 preferred_res = None
 screen_size = None
 model = None
@@ -105,7 +103,6 @@ for l in edid_data:
 
 
 # setting target mdoe
-
 if found:
     target_group = found_group
     target_mode = found_mode
@@ -115,7 +112,6 @@ else:
 
 
 # is_monitor
-
 if target_group == 'DMT':
     is_monitor = True
 else:
@@ -126,7 +122,6 @@ else:
 
 
 # hard coded overwrites
-
 if model == '32V3H-H6A':
     # found_res = '1024x768p'
     # found_hz = '60'
@@ -143,17 +138,16 @@ if model == 'BMD_HDMI':
 
 
 # is_monitor calculations
-
 if is_monitor:
     target_full_range = True
-    target_overscan = False
 else:
     target_full_range = False
-    target_overscan = True
+
+# always disable overscan
+target_overscan = False
 
 
 # printing to screen
-
 logger.error('{} size: {} cm'.format(model, screen_size))
 
 if pi_detected:
@@ -169,7 +163,6 @@ logger.error('is_monitor: \t{}'.format(is_monitor))
 
 
 # applying changes
-
 if not pi_detected:
     sys.exit()
 
