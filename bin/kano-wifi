@@ -206,8 +206,8 @@ if __name__ == '__main__':
         # -s is a status request for the user to know if connected or not
         #
         if sys.argv[1] == '-s':
-            a, _, _ = is_connected(wiface)
-            if not a:
+            a, _, _, linked = is_connected(wiface)
+            if not linked:
                 subprocess.call(['typewriter_echo', '{{6 - }} {{5 wireless network is not connected }}', '1', '2'])
             else:
                 msg = '{{4 + }} {{3 wireless network is connected to }}{{2 %s }}' % (a)
@@ -220,8 +220,8 @@ if __name__ == '__main__':
         else:
             wpaconf = sys.argv[1]
             connect(wiface, '', None, None, wpa_custom_file=wpaconf)
-            a, _, _ = is_connected(wiface)
-            if not a:
+            a, _, _, linked = is_connected(wiface)
+            if not linked:
                 msg = '{{6 - }} {{5 Couldn\'t connect using configuration {{2 %s }}. }}' % wpaconf
                 subprocess.call(['typewriter_echo', msg, '1', '2'])
                 sys.exit(2)
@@ -255,8 +255,8 @@ if __name__ == '__main__':
         sys.exit(2)
     else:
         # Step 3.1: If dongle is connected and networking is up, offer option to forget wireless network.
-        netname, _, _ = is_connected(wiface)
-        if netname:
+        netname, _, _, linked = is_connected(wiface)
+        if netname and linked:
             msg = 'You are connected to {{2 %s }}' % netname
             subprocess.call(['typewriter_echo', msg, '2', '1'])
             msg = 'Do you want to forget this network and choose a new one? {{1 [y]es/[N]o }} '
