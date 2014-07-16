@@ -10,7 +10,6 @@
 from gi.repository import Gtk, Gdk
 import os
 import sys
-import time
 
 if __name__ == '__main__' and __package__ is None:
     dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -24,7 +23,6 @@ from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.paths import common_css_dir
 
 overscan_pipe = "/var/tmp/overscan"
-time_adj = time.time()
 
 overscan_values = {
     'top': 0,
@@ -73,20 +71,17 @@ def make_button_list():
 
 
 def adjust(adj, varname):
-    global time_adj, overscan_values
-    if time.time() - time_adj < 1 / 60.:
-        return
+    global overscan_values
 
     overscan_values[varname] = int(adj.get_value())
     set_overscan_status()
-    time_adj = time.time()
 
 
 def set_overscan_status():
     print overscan_values
 
-    top = overscan_values['top'] / 1.5
-    bottom = overscan_values['bottom'] / 1.5
+    top = int(overscan_values['top'] / 1.5)
+    bottom = int(overscan_values['bottom'] / 1.5)
     left = overscan_values['left']
     right = overscan_values['right']
 
@@ -103,14 +98,16 @@ def get_overscan_status():
     except Exception:
         top = left = right = bottom = 0
 
-    top *= 1.5
-    bottom *= 1.5
+    top = int(1.5 * int(top))
+    bottom = int(1.5 * int(bottom))
+    left = int(left)
+    right = int(right)
 
     overscan_values = {
-        'top': int(top),
-        'bottom': int(bottom),
-        'left': int(left),
-        'right': int(right),
+        'top': top,
+        'bottom': bottom,
+        'left': left,
+        'right': right,
     }
 
 
