@@ -119,24 +119,6 @@ def apply_changes(button):
     set_setting("Mouse", config)
 
 
-# This function is used by auto_settings
-def auto_changes(mode):
-    logger.debug('set_mouse / auto_changes: mode:{}'.format(mode))
-    command = "xset m "
-    # Slow configuration
-    if mode == "Slow":
-        command += "1"
-    # Modest configuration
-    elif mode == "Normal":
-        command += "default"
-    # Medium configuration
-    elif mode == "Fast":
-        command += "10"
-
-    # Apply changes
-    os.system(command)
-
-
 def change_mouse_speed():
 
     command = "xset m "

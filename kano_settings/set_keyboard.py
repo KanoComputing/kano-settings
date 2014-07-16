@@ -204,39 +204,15 @@ def refresh_window():
 def apply_changes(button):
     global win, variants_combo
 
-    if not kano_keyboard:
-        # Apply changes
-        thread = WorkerThread(work_finished_cb)
-        thread.start()
+    # Apply changes
+    thread = WorkerThread(work_finished_cb)
+    thread.start()
 
-        # Save the changes in the config
-        update_config()
+    # Save the changes in the config
+    update_config()
 
     # Refresh window
     win.show_all()
-
-
-# This function is used by auto_settings
-def auto_changes(continent, country, variant):
-    logger.info('set_keyboard.auto_changes {} {} {}'.format(continent, country, variant))
-
-    variant = variant.lower()
-    # Get layout
-    if continent == 'africa':
-        layout = keyboard_layouts.layouts_africa
-    elif continent == 'america':
-        layout = keyboard_layouts.layouts_america
-    elif continent == 'asia':
-        layout = keyboard_layouts.layouts_asia
-    elif continent == 'australia':
-        layout = keyboard_layouts.layouts_australia
-    elif continent == 'europe':
-        layout = keyboard_layouts.layouts_europe
-    elif continent == 'others':
-        layout = keyboard_layouts.layouts_others
-    # Apply the keyboard changes
-    country_code = keyboard_config.find_country_code(country, layout)
-    keyboard_config.set_keyboard(country_code, variant)
 
 
 def read_config():

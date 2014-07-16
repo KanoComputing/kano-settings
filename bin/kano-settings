@@ -21,7 +21,6 @@ import kano_settings.set_intro as set_intro
 import kano_settings.constants as constants
 import kano_settings.components.first_run as first_run
 import kano_settings.components.default_intro as default_intro
-from kano_settings.auto_settings import auto_settings
 from kano.network import is_internet
 from kano.gtk3.buttons import KanoButton
 from kano.gtk3.top_bar import TopBar
@@ -130,13 +129,8 @@ if __name__ == "__main__":
         exit("Error: Settings must be executed with root privileges")
 
     if(len(sys.argv) > 1):
-        if sys.argv[1] == 'auto':
-            # Apply settings
-            auto_settings()
-            exit()
         try:
             init_state = int(sys.argv[1])
         except:
             exit("Error: incorrect argument")
     main()
-
