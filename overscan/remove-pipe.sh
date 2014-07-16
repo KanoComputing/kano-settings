@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-rm -f /tmp/overscan
+rm -f /var/tmp/overscan

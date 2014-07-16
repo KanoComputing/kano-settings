@@ -23,7 +23,7 @@ from kano.gtk3.top_bar import TopBar
 from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.paths import common_css_dir
 
-overscan_pipe = "/tmp/overscan"
+overscan_pipe = "/var/tmp/overscan"
 time_adj = time.time()
 
 
