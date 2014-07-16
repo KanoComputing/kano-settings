@@ -233,6 +233,8 @@ if config_txt[0] == kano_screen_saved_comment and '--force' not in sys.argv:
 # creating new config_txt
 config_txt_new = list()
 config_txt_new.append(kano_screen_saved_comment)
+config_txt_new.append('### is_monitor: {}'.format(is_monitor))
+
 for l in config_txt:
 
     # hdmi_group
@@ -268,7 +270,7 @@ for l in config_txt:
         line = 'overscan_bottom={}'.format(default_overscan_value)
 
     # deleting kano_screen_used
-    elif 'kano_screen_used' in l:
+    elif 'kano_screen_used' or 'is_monitor' in l:
         continue
 
     # keeping other lines intact
