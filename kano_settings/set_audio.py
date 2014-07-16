@@ -108,27 +108,6 @@ def apply_changes(button):
     constants.need_reboot = True
 
 
-# This function is used by auto_settings
-def auto_changes(hdmi):
-    logger.info('set_audio/auto_changes: hdmi:{}'.format(hdmi))
-
-    # Uncomment/comment out the line  in /boot/config.txt
-    edid_from = "#?hdmi_ignore_edid_audio=1"
-    amixer_from = "amixer -c 0 cset numid=3 [0-9]"
-    amixer_to = None
-    edid_to = None
-
-    if hdmi is True:
-        amixer_to = "amixer -c 0 cset numid=3 2"
-        edid_to = "#hdmi_ignore_edid_audio=1"
-    else:
-        amixer_to = "amixer -c 0 cset numid=3 1"
-        edid_to = "hdmi_ignore_edid_audio=1"
-
-    file_replace(rc_local_path, amixer_from, amixer_to)
-    file_replace(config_txt_path, edid_from, edid_to)
-
-
 def current_setting(analogue_button, hdmi_button):
 
     f = open(rc_local_path, 'r')

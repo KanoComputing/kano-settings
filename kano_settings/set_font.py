@@ -127,28 +127,6 @@ def apply_changes(button):
     set_setting("Font", config)
 
 
-# This function is used by auto_settings
-def auto_changes(mode):
-    logger.debug('set_font / auto_changes: mode:{}'.format(mode))
-    font = "sGtk/FontName=Bariol "
-    font_pattern = font + "[0-9][0-9]"
-
-    # Small configuration
-    if mode == "Small":
-        font += str(SIZE_SMALL)
-    # Normal configuration
-    elif mode == "Normal":
-        font += str(SIZE_NORMAL)
-    # Big configuration
-    elif mode == "Big":
-        font += str(SIZE_BIG)
-
-    # Apply changes
-    file_replace(config_file, font_pattern, font)
-    # Reload lxsession
-    os.system("lxsession -r")
-
-
 def change_font_size():
 
     font = "sGtk/FontName=Bariol "

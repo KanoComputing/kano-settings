@@ -216,29 +216,6 @@ def apply_changes(button):
     win.show_all()
 
 
-# This function is used by auto_settings
-def auto_changes(continent, country, variant):
-    logger.info('set_keyboard.auto_changes {} {} {}'.format(continent, country, variant))
-
-    variant = variant.lower()
-    # Get layout
-    if continent == 'africa':
-        layout = keyboard_layouts.layouts_africa
-    elif continent == 'america':
-        layout = keyboard_layouts.layouts_america
-    elif continent == 'asia':
-        layout = keyboard_layouts.layouts_asia
-    elif continent == 'australia':
-        layout = keyboard_layouts.layouts_australia
-    elif continent == 'europe':
-        layout = keyboard_layouts.layouts_europe
-    elif continent == 'others':
-        layout = keyboard_layouts.layouts_others
-    # Apply the keyboard changes
-    country_code = keyboard_config.find_country_code(country, layout)
-    keyboard_config.set_keyboard(country_code, variant)
-
-
 def read_config():
     global selected_continent_index, selected_country_index, selected_variant_index, selected_continent_hr, selected_country_hr, selected_variant_hr
 

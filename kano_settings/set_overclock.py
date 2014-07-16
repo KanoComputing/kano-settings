@@ -182,51 +182,6 @@ def apply_changes(button):
     constants.need_reboot = True
 
 
-# This function is used by auto_settings
-def auto_changes(mode):
-    if not os.path.exists(boot_config_file):
-        return
-
-    arm_freq = "arm_freq="
-    core_freq = "core_freq="
-    sdram_freq = "sdram_freq="
-    over_voltage = "over_voltage="
-    arm_freq_pattern = "arm_freq=[0-9][0-9][0-9]"
-    core_freq_pattern = "core_freq=[0-9][0-9][0-9]"
-    sdram_freq_pattern = "sdram_freq=[0-9][0-9][0-9]"
-    over_voltage_pattern = "over_voltage=[0-9]"
-
-    if mode == "None":
-        arm_freq += "700"
-        core_freq += "250"
-        sdram_freq += "400"
-        over_voltage += "0"
-    elif mode == "Modest":
-        arm_freq += "800"
-        core_freq += "300"
-        sdram_freq += "400"
-        over_voltage += "0"
-    elif mode == "Medium":
-        arm_freq += "900"
-        core_freq += "333"
-        sdram_freq += "450"
-        over_voltage += "2"
-    elif mode == "High":
-        arm_freq += "950"
-        core_freq += "450"
-        sdram_freq += "450"
-        over_voltage += "6"
-
-    logger.info('set_overclock / auto_changes: arm_freq:{} core_freq:{} sdram_freq:{} over_voltage:{}'.format(
-        arm_freq, core_freq, sdram_freq, over_voltage))
-
-    # Apply changes
-    file_replace(boot_config_file, arm_freq_pattern, arm_freq)
-    file_replace(boot_config_file, core_freq_pattern, core_freq)
-    file_replace(boot_config_file, sdram_freq_pattern, sdram_freq)
-    file_replace(boot_config_file, over_voltage_pattern, over_voltage)
-
-
 def current_setting():
     global initial_button
 
