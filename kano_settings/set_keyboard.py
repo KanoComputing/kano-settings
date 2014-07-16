@@ -204,13 +204,12 @@ def refresh_window():
 def apply_changes(button):
     global win, variants_combo
 
-    if not kano_keyboard:
-        # Apply changes
-        thread = WorkerThread(work_finished_cb)
-        thread.start()
+    # Apply changes
+    thread = WorkerThread(work_finished_cb)
+    thread.start()
 
-        # Save the changes in the config
-        update_config()
+    # Save the changes in the config
+    update_config()
 
     # Refresh window
     win.show_all()
