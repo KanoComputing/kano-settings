@@ -96,7 +96,7 @@ def main():
     enforce_root('needs to run as root')
 
     if not os.path.exists(overscan_pipe):
-        run_cmd('mknod /tmp/overscan c 100 0')
+        run_cmd('mknod /var/tmp/overscan c 100 0')
 
     # Create style sheet
     colourProvider = Gtk.CssProvider()
