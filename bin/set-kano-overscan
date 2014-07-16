@@ -80,13 +80,22 @@ def adjust(adj, varname):
 def set_overscan_status():
     print overscan_values
 
-    top = int(overscan_values['top'] / 1.5)
-    bottom = int(overscan_values['bottom'] / 1.5)
+    top = overscan_values['top']
+    bottom = overscan_values['bottom']
     left = overscan_values['left']
     right = overscan_values['right']
 
     cmd = 'overscan {} {} {} {}'.format(top, bottom, left, right)
     run_cmd(cmd)
+
+
+def save_overscan_status():
+    top = int(overscan_values['top'] / 1.5)
+    bottom = int(overscan_values['bottom'] / 1.5)
+    left = overscan_values['left']
+    right = overscan_values['right']
+
+    #TODO need to write to config.txt the modified values + button for this
 
 
 def get_overscan_status():
