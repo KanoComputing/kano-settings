@@ -141,14 +141,18 @@ def connect_with_retry(wiface, essid, encryption):
 
     if encryption == 'off':
         # for open networks, attempt a connection and return online status
+
+        # FIXME: Reload until linux kernel module is fixed
+        reload_kernel_module()
+
         connect(wiface, essid, encryption, enckey)
-        online = is_gateway()
+        online = is_gateway(wiface)
     else:
         # for protected networks, prompt for password, try connection
         # and give option to re-enter password in case it fails
         passprompt = GetPasswordHideAsYouType()
         retry_pass = 'Y'
-        while retry_pass in ('Y', 'y', ''):
+        while retry_pass in ('Y', ''):
             msg = 'What\'s the network password?'
             subprocess.call(['typewriter_echo', msg, '0', '1'])
             enckey = passprompt()
@@ -164,11 +168,11 @@ def connect_with_retry(wiface, essid, encryption):
             reload_kernel_module()
 
             connect(wiface, essid, encryption, enckey)
-            online = is_gateway()
+            online = is_gateway(wiface)
             if not online:
                 msg = '{{6 - }} {{5 Couldn\'t connect to }}{{2 %s }}.{{5 Do you want to re-enter the password? }} {{1 [Y]es/[n]o }} ' % essid
                 subprocess.call(['typewriter_echo', msg, '0', '0'])
-                retry_pass = raw_input().strip()
+                retry_pass = raw_input().strip().upper()
             else:
                 break
 
