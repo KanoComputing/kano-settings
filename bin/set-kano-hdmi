@@ -269,8 +269,11 @@ for l in config_txt:
     elif 'overscan_bottom' in l and config_disable_overscan:
         line = 'overscan_bottom={}'.format(default_overscan_value)
 
-    # deleting kano_screen_used
-    elif 'kano_screen_used' or 'is_monitor' in l:
+    # deleting unneeded lines
+    elif 'kano_screen_used' in l:
+        continue
+
+    elif 'is_monitor' in l:
         continue
 
     # keeping other lines intact
