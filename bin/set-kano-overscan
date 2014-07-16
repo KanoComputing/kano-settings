@@ -26,6 +26,13 @@ from kano.paths import common_css_dir
 overscan_pipe = "/var/tmp/overscan"
 time_adj = time.time()
 
+overscan_values = {
+    'top': 0,
+    'bottom': 0,
+    'left': 0,
+    'right': 0,
+}
+
 
 def make_button_list():
 
@@ -33,16 +40,29 @@ def make_button_list():
     grid.set_row_spacing(0)
     grid.set_size_request(500, 400)
 
-    row = Gtk.EventBox()
-    grid.attach(row, 0, 0, 1, 1)
+    t_scale = Gtk.HScale.new_with_range(0, 100, 1)
+    t_scale.set_value(overscan_values['top'])
+    t_scale.set_size_request(400, 30)
+    t_scale.connect('value_changed', adjust, 'top')
+    grid.attach(t_scale, 0, 0, 1, 1)
 
-    row_grid = Gtk.Grid()
-    row.add(row_grid)
+    b_scale = Gtk.HScale.new_with_range(0, 100, 1)
+    b_scale.set_value(overscan_values['bottom'])
+    b_scale.set_size_request(400, 30)
+    b_scale.connect('value_changed', adjust, 'bottom')
+    grid.attach(b_scale, 0, 1, 1, 1)
 
-    scale = Gtk.HScale.new_with_range(0, 100, 1)
-    scale.set_size_request(400, 30)
-    scale.connect('value_changed', adjust)
-    row_grid.attach(scale, 0, 1, 1, 1)
+    l_scale = Gtk.HScale.new_with_range(0, 100, 1)
+    l_scale.set_value(overscan_values['left'])
+    l_scale.set_size_request(400, 30)
+    l_scale.connect('value_changed', adjust, 'left')
+    grid.attach(l_scale, 0, 2, 1, 1)
+
+    r_scale = Gtk.HScale.new_with_range(0, 100, 1)
+    r_scale.set_value(overscan_values['right'])
+    r_scale.set_size_request(400, 30)
+    r_scale.connect('value_changed', adjust, 'right')
+    grid.attach(r_scale, 0, 3, 1, 1)
 
     align = Gtk.Alignment(xalign=0.5, yalign=0.5, xscale=0, yscale=0)
     padding = 20
@@ -52,16 +72,46 @@ def make_button_list():
     return align
 
 
-def adjust(adj):
-    global time_adj
+def adjust(adj, varname):
+    global time_adj, overscan_values
     if time.time() - time_adj < 1 / 60.:
         return
 
-    value = int(adj.get_value())
-    print value
-    cmd = 'overscan {0} {0} {0} {0}'.format(value)
-    run_cmd(cmd)
+    overscan_values[varname] = int(adj.get_value())
+    set_overscan_status()
     time_adj = time.time()
+
+
+def set_overscan_status():
+    print overscan_values
+
+    top = overscan_values['top'] / 1.5
+    bottom = overscan_values['bottom'] / 1.5
+    left = overscan_values['left']
+    right = overscan_values['right']
+
+    cmd = 'overscan {} {} {} {}'.format(top, bottom, left, right)
+    run_cmd(cmd)
+
+
+def get_overscan_status():
+    global overscan_values
+
+    out, _, _ = run_cmd('overscan')
+    try:
+        top, bottom, left, right = out.strip().split()
+    except Exception:
+        top = left = right = bottom = 0
+
+    top *= 1.5
+    bottom *= 1.5
+
+    overscan_values = {
+        'top': int(top),
+        'bottom': int(bottom),
+        'left': int(left),
+        'right': int(right),
+    }
 
 
 class MainWindow(Gtk.Window):
@@ -96,7 +146,10 @@ def main():
     enforce_root('needs to run as root')
 
     if not os.path.exists(overscan_pipe):
-        run_cmd('mknod /var/tmp/overscan c 100 0')
+        run_cmd('mknod {} c 100 0'.format(overscan_pipe))
+
+    get_overscan_status()
+    print overscan_values
 
     # Create style sheet
     colourProvider = Gtk.CssProvider()
