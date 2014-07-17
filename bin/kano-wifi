@@ -87,6 +87,9 @@ def display_networks(iwl, page=0, perpage=NETWORKS_PER_PAGE):
     end = page * perpage + perpage
     displayed = 0
 
+    subprocess.call(['clear'])
+    subprocess.call(['typewriter_echo', 'Choose a network:', '0', '2'])
+
     for idx, netw in enumerate(iwl[start:end]):
         enctxt = 'Open'
         if netw['encryption'] != 'off':
@@ -270,9 +273,7 @@ if __name__ == '__main__':
                 sys.exit(0)
 
     # Step 4: WiFi dongle > show networks menu
-    subprocess.call(['clear'])
-    subprocess.call(['typewriter_echo', 'Help me find the signal.', '0', '2'])
-    subprocess.call(['typewriter_echo', 'Choose a network:', '0', '2'])
+    subprocess.call(['typewriter_echo', 'Help me find the signal.', '1', '2'])
 
     # Scan networks in range
     iwl = IWList(wiface).getList(unsecure=False, first=False)
