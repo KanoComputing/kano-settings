@@ -1,16 +1,18 @@
-#!/bin/bash
+#!/bin/sh
 
+#
+# rc.network
 #
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
-# rc.network - automatically connect to a cached wireless network
+# - automatically connect to a cached wireless network
 #
 
 # Is the wireless dongle plugged in?
 wlan_device="wlan0"
 wlan_info=`grep -c -q $wlan_device /proc/net/dev > /dev/null`
 is_wlan=$?
-if [ "$is_wlan" == "0" ]; then
+if [ "$is_wlan" = "0" ]; then
     python /usr/bin/kano-connect -c wlan0 &
 fi

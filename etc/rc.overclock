@@ -1,10 +1,12 @@
-#!/bin/bash
+#!/bin/sh
 
+#
+# rc.overclock
 #
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
-# rc.overclock - set the cpu performance
+# set the cpu performance
 #
 
 # Ondemand cpu frequency will be enabled in the kernel. Setup the up-threshold now.
