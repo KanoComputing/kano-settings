@@ -13,7 +13,7 @@ import kano_settings.set_keyboard as set_keyboard
 import kano_settings.set_mouse as set_mouse
 import kano_settings.set_font as set_font
 import kano_settings.set_audio as set_audio
-import kano_settings.set_display as set_display
+import kano_settings.set_display.home as set_display_overscan
 import kano_settings.set_wifi.home as set_wifi_proxy
 import kano_settings.set_wifi.proxy as set_proxy
 import kano_settings.set_overclock as set_overclock
@@ -234,7 +234,7 @@ class Default_Intro():
             0: set_keyboard,
             1: set_mouse,
             2: set_audio,
-            3: set_display,
+            3: set_display_overscan,
             4: set_wifi_proxy,
             5: set_overclock,
             6: set_account,

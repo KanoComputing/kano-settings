@@ -13,7 +13,7 @@ import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
 import kano.utils as utils
 from kano.logging import logger
-from .config_file import get_setting, set_setting
+from ..config_file import get_setting, set_setting
 
 
 mode = 'auto'
@@ -24,7 +24,7 @@ display_name = None
 CONTAINER_HEIGHT = 70
 
 
-def activate(_win, box, _button):
+def activate(_win, box, _button, overscan_button):
     global button, display_name
 
     button = _button
@@ -74,6 +74,10 @@ def activate(_win, box, _button):
     set_defaults("overscan", combo=None, button=check_button)
 
     horizontal_container.pack_start(check_button, False, False, 0)
+
+    # Overscan button
+    overscan_button.set_label("Overscan")
+    horizontal_container.pack_end(overscan_button, False, False, 0)
 
     valign = Gtk.Alignment(xalign=0.5, yalign=0, xscale=0, yscale=0)
     padding_above = (settings.height - CONTAINER_HEIGHT) / 2
