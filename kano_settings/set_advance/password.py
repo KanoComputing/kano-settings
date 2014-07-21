@@ -114,7 +114,20 @@ def apply_changes(button=None):
 
 
 def create_dialog(message1, message2):
-    kdialog = KanoDialog(message1, message2, {"TRY AGAIN": {"return_value": -1}, "GO BACK": {"return_value": 0}})
+    kdialog = KanoDialog(
+        message1,
+        message2,
+        {
+            "TRY AGAIN": {
+                "return_value": -1
+            },
+            "GO BACK": {
+                "return_value": 0
+            }
+        },
+        parent_window=win
+    )
+
     response = kdialog.run()
     return response
 
@@ -146,6 +159,6 @@ def update_config(password=None):
     else:
         heading = "Error"
 
-    kdialog = KanoDialog(heading, msg)
+    kdialog = KanoDialog(heading, msg, parent_window=win)
     kdialog.run()
 
