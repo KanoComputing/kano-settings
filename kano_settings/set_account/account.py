@@ -91,7 +91,9 @@ def activate(_win, changeable_content, _button, pass_button):
 def add_account(widget=None, event=None):
     if not hasattr(event, 'keyval') or event.keyval == 65293:
         # Bring in message dialog box
-        kdialog = kano_dialog.KanoDialog("New account scheduled.", "Reboot the system.")
+        kdialog = kano_dialog.KanoDialog("New account scheduled.",
+                                         "Reboot the system.",
+                                        parent_window=win)
         kdialog.run()
         # add new user command
         os.system("kano-init newuser")
@@ -104,7 +106,19 @@ def remove_account_dialog(widget=None, event=None):
 
     if not hasattr(event, 'keyval') or event.keyval == 65293:
         # Bring in message dialog box
-        kdialog = kano_dialog.KanoDialog("Are you sure you want to delete the current user?", "", {"OK": {"return_value": -1}, "CANCEL": {"return_value": 0}})
+        kdialog = kano_dialog.KanoDialog(
+            "Are you sure you want to delete the current user?",
+            "",
+            {
+                "OK": {
+                    "return_value": -1
+                },
+                "CANCEL": {
+                    "return_value": 0
+                }
+            },
+            parent_window=win
+        )
         response = kdialog.run()
         if response == -1:
             # remove current user command

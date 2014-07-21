@@ -101,7 +101,7 @@ def apply_changes(button):
         logging.Logger().info('setting logging to error')
         msg = "De-activated"
 
-    kdialog = kano_dialog.KanoDialog("Debug mode", msg)
+    kdialog = kano_dialog.KanoDialog("Debug mode", msg, parent_window=win)
     kdialog.run()
 
     # update new debug mode

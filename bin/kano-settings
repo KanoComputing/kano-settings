@@ -25,6 +25,7 @@ from kano.network import is_internet
 from kano.gtk3.buttons import KanoButton
 from kano.gtk3.top_bar import TopBar
 from kano.gtk3.apply_styles import apply_styles
+from kano.gtk3.application_window import ApplicationWindow
 
 # storing completed in kano-profile
 from kano_profile.apps import load_app_state_variable
@@ -35,7 +36,7 @@ init_state = -1
 
 
 # Window class
-class MainWindow(Gtk.Window):
+class MainWindow(ApplicationWindow):
     grid = None
     box = None
     state = 0
@@ -49,14 +50,8 @@ class MainWindow(Gtk.Window):
         WINDOW_HEIGHT = 405
 
         # Create main window
-        Gtk.Window.__init__(self, title="Kano Settings")
-
-        # Remove decoration
-        self.set_decorated(False)
-        self.set_size_request(WINDOW_WIDTH, WINDOW_HEIGHT)
-        self.set_position(Gtk.WindowPosition.CENTER)
-
-        self.set_resizable(False)
+        Gtk.ApplicationWindow.__init__(self, "Kano Settings", WINDOW_WIDTH,
+                                       WINDOW_HEIGHT)
 
         # Main container of the window
         self.grid = Gtk.Grid()
@@ -101,7 +96,7 @@ class MainWindow(Gtk.Window):
         self.grid.attach(self.top_bar, 0, 0, 1, 1)
         self.grid.attach(self.changeable_content, 0, 2, 1, 1)
         self.grid.set_row_spacing(0)
-        self.add(self.grid)
+        self.set_main_widget(self.grid)
 
 
 def main():
