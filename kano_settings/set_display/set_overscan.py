@@ -7,6 +7,7 @@
 #
 # UI for share screen
 
+import os
 from gi.repository import Gtk
 from kano.gtk3.heading import Heading
 import kano_settings.constants as constants
@@ -27,6 +28,10 @@ button = None
 def activate(_win, box, _button):
 
     button = _button
+
+    # Launch pipeline
+    if not os.path.exists(overscan_pipe):
+        run_cmd('mknod {} c 100 0'.format(overscan_pipe))
     get_overscan_status()
 
     # Header
