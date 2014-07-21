@@ -18,7 +18,6 @@ from ..config_file import get_setting, set_setting
 
 mode = 'auto'
 mode_index = 0
-overscan = False
 button = None
 display_name = None
 CONTAINER_HEIGHT = 70
@@ -62,18 +61,9 @@ def activate(_win, box, _button, overscan_button):
     horizontal_container.pack_start(mode_combo, False, False, 0)
     mode_combo.props.valign = Gtk.Align.CENTER
 
-    # Overscan check button
-    check_button = Gtk.CheckButton("Overscan?")
-    check_button.set_can_focus(False)
-    check_button.props.valign = Gtk.Align.CENTER
-    check_button.connect("clicked", on_button_toggled)
-
     # Select the current setting in the dropdown list
-    set_defaults("resolution", mode_combo)
-    # Check overscan option appropriately
-    set_defaults("overscan", combo=None, button=check_button)
-
-    horizontal_container.pack_start(check_button, False, False, 0)
+    active_item = get_setting("Display-mode-index")
+    mode_combo.set_active(active_item)
 
     # Overscan button
     overscan_button.set_label("Overscan")
@@ -100,32 +90,25 @@ def apply_changes(button):
         return
 
     screen_config.set_hdmi_mode(parse_mode)
-    # Set overscan
-    if overscan is True:
-        screen_config.set_config_option("disable_overscan", 0)
-    else:
-        screen_config.set_config_option("disable_overscan", 1)
 
     update_config()
     constants.need_reboot = True
 
 
 def read_config():
-    global mode, mode_index, overscan
+    global mode, mode_index
 
     mode = get_setting("Display-mode")
     mode_index = get_setting("Display-mode-index")
-    overscan = get_setting("Display-overscan")
 
 
 def update_config():
-    logger.debug('set_display / update_config: {} {} {} {}'.format(display_name, mode, mode_index, overscan))
+    logger.debug('set_display / update_config: {} {} {}'.format(display_name, mode, mode_index))
 
     # Add new configurations to config file.
     set_setting("Display-name", display_name)
     set_setting("Display-mode", mode)
     set_setting("Display-mode-index", mode_index)
-    set_setting("Display-overscan", overscan)
 
 
 # Returns True if all the entries are the same as the ones stored in the config file.
@@ -133,28 +116,7 @@ def compare():
     # Compare new entries to old ones already stored.
     display_mode = get_setting("Display-mode") == mode
     display_mode_index = get_setting("Display-mode-index") == mode_index
-    display_overscan = get_setting("Display-overscan") == overscan
-    return display_mode and display_mode_index and display_overscan
-
-
-# setting = "resolution" or "overscan"
-def set_defaults(setting, combo=None, button=None):
-    # Set the default info on the dropdown lists
-    if setting == "overscan":
-        # set current state of button to be active or not.
-        active_item = get_setting("Display-overscan")
-        button.set_active(active_item)
-
-    elif setting == "resolution":
-        # set the active dropdown item to the config.
-        active_item = get_setting("Display-mode-index")
-        combo.set_active(active_item)
-
-
-def on_button_toggled(button):
-    global overscan
-
-    overscan = int(button.get_active())
+    return display_mode and display_mode_index
 
 
 def on_mode_changed(combo):

@@ -9,7 +9,6 @@
 
 from gi.repository import Gtk
 from kano.gtk3.heading import Heading
-import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
 from kano.utils import run_cmd
 from ..config_file import file_replace
@@ -33,10 +32,6 @@ def activate(_win, box, _button):
     # Header
     title = Heading("Overscan", "")
     box.pack_start(title.container, False, False, 0)
-
-    # Contains main buttons
-    settings = fixed_size_box.Fixed()
-    box.pack_start(settings.box, False, False, 0)
 
     # Add sliders
     grid = Gtk.Grid()
