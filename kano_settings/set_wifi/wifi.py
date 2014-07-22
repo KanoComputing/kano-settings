@@ -40,7 +40,7 @@ def activate(_win, _box, _button, _proxy_button, _disable_proxy=None):
     button = _button
     proxy_button = _proxy_button
 
-    title = Heading("", "")
+    title = Heading("to be set", "to be set")
     box.pack_start(title.container, False, False, 0)
 
     # Table
