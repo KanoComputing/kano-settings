@@ -12,34 +12,7 @@ import os
 import sys
 import re
 import subprocess
-from kano.utils import read_file_contents_as_lines
-
-BOOT_CONFIG_FILE = "/boot/config.txt"
-
-
-# if the value argument is None, the option will be commented out
-def set_config_option(name, value=None):
-    lines = read_file_contents_as_lines(BOOT_CONFIG_FILE)
-    if not lines:
-        return
-
-    option_re = r'^\s*#?\s*' + str(name) + r'=(.*)'
-
-    was_found = False
-    with open(BOOT_CONFIG_FILE, "w") as boot_config_file:
-        for line in lines:
-            if re.match(option_re, line):
-                was_found = True
-
-            replace_str = str(name) + "=" + str(value)
-            if value is None:
-                replace_str = r'#' + str(name) + r'=\1'
-
-            new_line = re.sub(option_re, replace_str, line)
-            boot_config_file.write(new_line + "\n")
-
-        if not was_found and value is not None:
-            boot_config_file.write(str(name) + "=" + str(value) + "\n")
+from kano_settings.boot_config import set_config_option
 
 
 # Group must be either 'DMT' or 'CEA'
