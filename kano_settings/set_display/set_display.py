@@ -7,7 +7,7 @@
 #
 
 from gi.repository import Gtk
-import kano_settings.screen.screen_config as screen_config
+from . import screen_config
 from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
