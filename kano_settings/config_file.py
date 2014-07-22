@@ -26,7 +26,6 @@ chown_path(settings_dir)
 settings_file = os.path.join(settings_dir, 'config')
 
 defaults = {
-    'Account': '',
     'Keyboard-continent-index': 1,
     'Keyboard-country-index': 21,
     'Keyboard-variant-index': 0,
@@ -36,9 +35,6 @@ defaults = {
     'Audio': 'Analogue',
     'Wifi': '',
     'Wifi-connection-attempted': False,
-    'Display-mode': 'auto',
-    'Display-mode-index': 0,
-    'Display-overscan': 0,
     'Overclocking': 'High',
     'Mouse': 'Normal',
     'Font': 'Normal',
