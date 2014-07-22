@@ -120,16 +120,19 @@ def override_models(edid):
 
 
 def calculate_is_monitor(edid):
-    edid['is_monitor'] = edid['target_full_range']
+    edid['target_full_range'] = edid['is_monitor']
     return edid
 
 
-def compare_and_set_mode(edid):
-    if edid['status_group'] == edid['target_group'] and edid['status_mode'] == ['target_mode']:
+def compare_and_set_mode():
+    global edid, status
+
+    if status['group'] == edid['target_group'] and status['mode'] == ['target_mode']:
         logger.error('mode change not needed')
     else:
         logger.error('mode change needed')
         logger.error('setting mode: {} {}'.format(edid['target_group'], edid['target_mode']))
+
         if edid['target_group'] == 'CEA':
             set_config_value('hdmi_group', 1)
         else:
@@ -138,24 +141,30 @@ def compare_and_set_mode(edid):
         set_config_value('hdmi_mode', edid['target_mode'])
 
 
-def compare_and_set_full_range(edid):
-    if edid['status_full_range'] == edid['target_full_range']:
+def compare_and_set_full_range():
+    global edid, status
+
+    if status['full_range'] == edid['target_full_range']:
         logger.error('fullrange change not needed')
     else:
         logger.error('fullrange change needed')
         logger.error('setting fullrange to: {}'.format(edid['target_full_range']))
+
         if edid['target_full_range']:
             set_config_value('hdmi_pixel_encoding', 2)
         else:
             set_config_value('hdmi_pixel_encoding', 0)
 
 
-def compare_and_set_overscan(edid):
-    if edid['status_overscan'] == edid['target_overscan']:
+def compare_and_set_overscan():
+    global edid, status
+
+    if status['overscan'] == edid['target_overscan']:
         logger.error('overscan change not needed')
     else:
         logger.error('overscan change needed')
         logger.error('setting overscan to: {}'.format(edid['target_overscan']))
+
         if edid['target_overscan']:
             set_config_value('disable_overscan', 0)
             overscan_value = -48
@@ -179,16 +188,15 @@ edid = override_models(edid)
 edid = calculate_is_monitor(edid)
 
 # output
-logger.error('edid:\n{}'.format(edid))
+logger.error(status)
+logger.error(edid)
 
 # changes
-compare_and_set_mode(edid)
-compare_and_set_full_range(edid)
-compare_and_set_overscan(edid)
+compare_and_set_mode()
+compare_and_set_full_range()
+compare_and_set_overscan()
 
 
-
-# # checking root
 
 
 # # checking if already set
