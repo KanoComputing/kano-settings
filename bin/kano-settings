@@ -17,9 +17,7 @@ if __name__ == '__main__' and __package__ is None:
     if dir_path != '/usr':
         sys.path.append(dir_path)
 
-import kano_settings.set_intro as set_intro
 import kano_settings.constants as constants
-import kano_settings.components.first_run as first_run
 import kano_settings.components.default_intro as default_intro
 from kano.network import is_internet
 from kano.gtk3.buttons import KanoButton
@@ -51,8 +49,7 @@ class MainWindow(ApplicationWindow):
         WINDOW_HEIGHT = 405
 
         # Create main window
-        ApplicationWindow.__init__(self, "Kano Settings", WINDOW_WIDTH,
-                                       WINDOW_HEIGHT)
+        ApplicationWindow.__init__(self, "Kano Settings", WINDOW_WIDTH, WINDOW_HEIGHT)
 
         # Main container of the window
         self.grid = Gtk.Grid()
@@ -71,22 +68,13 @@ class MainWindow(ApplicationWindow):
         self.button = KanoButton()
         self.button.pack_and_align()
 
-        if load_app_state_variable('kano-settings', 'completed') == 1:
-            # we define the main button here so that the text is controlled by which flow we enter
-            # ie on the first run, we want the button to say Next until the last screen, in which case it says Finish
-            # So we want to control this text in default_intro.py and first_run.py
-            self.button.set_label("APPLY CHANGES")
-            self.run_through = default_intro.Default_Intro(self, WINDOW_HEIGHT, WINDOW_WIDTH, self.top_bar.height)
-            self.top_bar.disable_next()
-            if init_state >= 0:
-                self.run_through.go_to_level_given_state(init_state)
-            else:
-                self.top_bar.disable_prev()
+        # This was done here to control the main button text  depending on in default_intro.py and first_run.py (deprecated)
+        self.button.set_label("APPLY CHANGES")
+        self.run_through = default_intro.Default_Intro(self, WINDOW_HEIGHT, WINDOW_WIDTH, self.top_bar.height)
+        self.top_bar.disable_next()
+        if init_state >= 0:
+            self.run_through.go_to_level_given_state(init_state)
         else:
-            self.button.set_label("GET STARTED")
-            self.run_through = first_run.First_Run(self)
-            set_intro.activate(self, self.changeable_content, self.button)
-            self.top_bar.next_button.set_image(self.top_bar.dark_next_arrow)
             self.top_bar.disable_prev()
 
         self.top_bar.next_button.connect("button_press_event", self.run_through.on_next)
