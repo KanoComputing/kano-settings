@@ -10,9 +10,9 @@ from gi.repository import Gtk
 from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
-from ..config_file import get_setting
 from ..boot_config import set_config_comment
-from .functions import get_model, list_supported_modes, set_hdmi_mode
+from .functions import get_model, list_supported_modes, set_hdmi_mode, read_hdmi_mode, \
+    find_matching_mode
 
 mode = 'auto'
 mode_index = 0
@@ -26,8 +26,6 @@ def activate(_win, box, _button, overscan_button):
 
     button = _button
     button.set_sensitive(False)
-
-    read_config()
 
     # Get display name
     model = get_model()
@@ -50,7 +48,7 @@ def activate(_win, box, _button, overscan_button):
     # Fill list of modes
     modes = list_supported_modes()
     mode_combo.append_text("auto")
-    if modes is not None:
+    if modes:
         for v in modes:
             mode_combo.append_text(v)
 
@@ -58,7 +56,8 @@ def activate(_win, box, _button, overscan_button):
     mode_combo.props.valign = Gtk.Align.CENTER
 
     # Select the current setting in the dropdown list
-    active_item = get_setting("Display-mode-index")
+    saved_group, saved_mode = read_hdmi_mode()
+    active_item = find_matching_mode(modes, saved_group, saved_mode)
     mode_combo.set_active(active_item)
 
     # Overscan button
@@ -84,28 +83,10 @@ def apply_changes(button):
     # Of the form "auto" or "cea:1" or "dmt:1" etc.
     parse_mode = mode.split(" ")[0]
 
-    if compare():
-        return
-
     set_hdmi_mode_from_str(parse_mode)
     set_config_comment('kano_screen_used', model)
 
     constants.need_reboot = True
-
-
-def read_config():
-    global mode, mode_index
-
-    mode = get_setting("Display-mode")
-    mode_index = get_setting("Display-mode-index")
-
-
-# Returns True if all the entries are the same as the ones stored in the config file.
-def compare():
-    # Compare new entries to old ones already stored.
-    display_mode = get_setting("Display-mode") == mode
-    display_mode_index = get_setting("Display-mode-index") == mode_index
-    return display_mode and display_mode_index
 
 
 def on_mode_changed(combo):
@@ -123,9 +104,12 @@ def on_mode_changed(combo):
 
 
 def set_hdmi_mode_from_str(mode):
+    print mode
     if mode == "auto":
         set_hdmi_mode()
         return
 
     group, number = mode.split(":")
     set_hdmi_mode(group, number)
+
+

@@ -12,7 +12,9 @@ from gi.repository import Gtk
 from kano.gtk3.heading import Heading
 import kano_settings.constants as constants
 from kano.utils import run_cmd
-from .functions import get_overscan_status, write_overscan_values, set_overscan_status
+from .functions import get_overscan_status, write_overscan_values, set_overscan_status, \
+    get_model
+from ..boot_config import set_config_comment
 
 overscan_pipe = "/var/tmp/overscan"
 overscan_values = None
@@ -27,6 +29,7 @@ def activate(_win, box, _button):
     # Launch pipeline
     if not os.path.exists(overscan_pipe):
         run_cmd('mknod {} c 100 0'.format(overscan_pipe))
+
     overscan_values = get_overscan_status()
 
     # Header
@@ -75,6 +78,7 @@ def activate(_win, box, _button):
 def apply_changes(button):
     # Apply changes
     write_overscan_values(overscan_values)
+    set_config_comment('kano_screen_used', get_model())
 
     # Tell user to reboot to see changes
     constants.need_reboot = True

@@ -64,18 +64,15 @@ def set_hdmi_mode(group=None, mode=None):
     if not group or not mode:
         set_config_value("hdmi_group", None)
         set_config_value("hdmi_mode", None)
+        return
 
     group = group.lower()
     mode = int(mode)
 
     if group == "cea":
         set_config_value("hdmi_group", 1)
-    elif group == "dmt":
-        set_config_value("hdmi_group", 2)
     else:
-        logger.error('group neither CEA or DMT')
-        sys.stderr.write("ERROR: Unknown group '%s'.\n" % group)
-        return
+        set_config_value("hdmi_group", 2)
 
     set_config_value("hdmi_mode", mode)
 
@@ -94,7 +91,15 @@ def get_status():
 
     status['mode'] = int(status_str.split('(')[1].split(')')[0].strip())
     status['full_range'] = 'RGB full' in status_str
-    status['overscan'] = not get_config_value('disable_overscan') == 1
+
+    status['overscan'] = not (
+        get_config_value('disable_overscan') == 1 and
+        get_config_value('overscan_top') == 0 and
+        get_config_value('overscan_bottom') == 0 and
+        get_config_value('overscan_left') == 0 and
+        get_config_value('overscan_right') == 0
+    )
+
     res, hz = status_str.split(',')[1].split('@')
     status['resolution'] = res.strip()
     status['hz'] = float(hz.strip()[:-2])
@@ -146,3 +151,24 @@ def write_overscan_values(overscan_values):
     set_config_value('overscan_bottom', overscan_values['bottom'])
     set_config_value('overscan_left', overscan_values['left'])
     set_config_value('overscan_right', overscan_values['right'])
+
+
+def read_hdmi_mode():
+    group_int = get_config_value('hdmi_group')
+    if group_int == 1:
+        group_name = 'CEA'
+    else:
+        group_name = 'DMT'
+
+    mode = int(get_config_value('hdmi_mode'))
+    return group_name, mode
+
+
+def find_matching_mode(modes, group, mode):
+    string = '{}:{}'.format(group.lower(), mode)
+    for i, m in enumerate(modes):
+        if m.startswith(string):
+            return i
+
+    # 0 for auto
+    return 0
