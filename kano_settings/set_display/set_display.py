@@ -7,11 +7,11 @@
 #
 
 from gi.repository import Gtk
-import kano_settings.screen.screen_config as screen_config
+from . import screen_config
 from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
-import kano.utils as utils
+from kano.utils import run_cmd
 from kano.logging import logger
 from ..config_file import get_setting, set_setting
 
@@ -33,8 +33,8 @@ def activate(_win, box, _button, overscan_button):
 
     # Get display name
     cmd = '/opt/vc/bin/tvservice -n'
-    display_name, _, _ = utils.run_cmd(cmd)
-    display_name = display_name[12:].rstrip()
+    display_name, _, _ = run_cmd(cmd)
+    display_name = display_name[16:].rstrip()
 
     title = Heading("Display", display_name)
     box.pack_start(title.container, False, False, 0)
