@@ -29,7 +29,7 @@ from ..config_file import get_setting
 
 
 names = ["Keyboard", "Mouse", "Audio", "Display", "Wifi", "Overclocking", "Account", "Wallpaper", "Font", "Advanced"]
-custom_info = ["Keyboard-country-human", "Mouse", "Audio", "Display-mode", "Wifi", "Overclocking", "Account",
+custom_info = ["Keyboard-country-human", "Mouse", "Audio", None, None, "Overclocking", None,
                "Wallpaper", "Font"]
 win = None
 NUMBER_OF_COLUMNS = 2
@@ -102,12 +102,7 @@ class Default_Intro():
     def update_intro(self):
         for x in range(len(custom_info)):
 
-            label_info = get_setting(custom_info[x])
-            if len(label_info) > 13:
-                label_info = label_info[:13] + "..."
-            self.labels[x].set_text(label_info)
-
-            if custom_info[x] == 'Wifi':
+            if names[x] == 'Wifi':
                 text = ''
                 # Check for internet
                 constants.has_internet = is_internet()
@@ -120,9 +115,18 @@ class Default_Intro():
                     text = 'Not connected'
                 self.labels[x].set_text(text)
 
-            if custom_info[x] == 'Account':
+            elif names[x] == 'Account':
                 text = get_user_unsudoed()
                 self.labels[x].set_text(text)
+
+            elif names[x] == 'Display':
+                continue
+
+            else:
+                label_info = get_setting(custom_info[x])
+                if len(label_info) > 13:
+                    label_info = label_info[:13] + "..."
+                self.labels[x].set_text(label_info)
 
     # Takes you back to the introduction screen (on pressing prev button)
     def on_prev(self, arg2=None, arg3=None):

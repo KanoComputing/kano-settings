@@ -7,36 +7,30 @@
 #
 
 from gi.repository import Gtk
-from . import screen_config
 from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
-from kano.utils import run_cmd
-from kano.logging import logger
-from ..config_file import get_setting, set_setting
-
+from ..boot_config import set_config_comment
+from .functions import get_model, list_supported_modes, set_hdmi_mode, read_hdmi_mode, \
+    find_matching_mode
 
 mode = 'auto'
 mode_index = 0
 button = None
-display_name = None
+model = None
 CONTAINER_HEIGHT = 70
 
 
 def activate(_win, box, _button, overscan_button):
-    global button, display_name
+    global button, model
 
     button = _button
     button.set_sensitive(False)
 
-    read_config()
-
     # Get display name
-    cmd = '/opt/vc/bin/tvservice -n'
-    display_name, _, _ = run_cmd(cmd)
-    display_name = display_name[16:].rstrip()
+    model = get_model()
 
-    title = Heading("Display", display_name)
+    title = Heading("Display", model)
     box.pack_start(title.container, False, False, 0)
 
     # Contains main buttons
@@ -52,9 +46,9 @@ def activate(_win, box, _button, overscan_button):
     mode_combo.connect("changed", on_mode_changed)
 
     # Fill list of modes
-    modes = screen_config.list_supported_modes()
+    modes = list_supported_modes()
     mode_combo.append_text("auto")
-    if modes is not None:
+    if modes:
         for v in modes:
             mode_combo.append_text(v)
 
@@ -62,7 +56,8 @@ def activate(_win, box, _button, overscan_button):
     mode_combo.props.valign = Gtk.Align.CENTER
 
     # Select the current setting in the dropdown list
-    active_item = get_setting("Display-mode-index")
+    saved_group, saved_mode = read_hdmi_mode()
+    active_item = find_matching_mode(modes, saved_group, saved_mode)
     mode_combo.set_active(active_item)
 
     # Overscan button
@@ -81,42 +76,17 @@ def activate(_win, box, _button, overscan_button):
 
 
 def apply_changes(button):
+    global model
+
     # Set HDMI mode
     # Get mode:group string
     # Of the form "auto" or "cea:1" or "dmt:1" etc.
     parse_mode = mode.split(" ")[0]
 
-    if compare():
-        return
+    set_hdmi_mode_from_str(parse_mode)
+    set_config_comment('kano_screen_used', model)
 
-    screen_config.set_hdmi_mode(parse_mode)
-
-    update_config()
     constants.need_reboot = True
-
-
-def read_config():
-    global mode, mode_index
-
-    mode = get_setting("Display-mode")
-    mode_index = get_setting("Display-mode-index")
-
-
-def update_config():
-    logger.debug('set_display / update_config: {} {} {}'.format(display_name, mode, mode_index))
-
-    # Add new configurations to config file.
-    set_setting("Display-name", display_name)
-    set_setting("Display-mode", mode)
-    set_setting("Display-mode-index", mode_index)
-
-
-# Returns True if all the entries are the same as the ones stored in the config file.
-def compare():
-    # Compare new entries to old ones already stored.
-    display_mode = get_setting("Display-mode") == mode
-    display_mode_index = get_setting("Display-mode-index") == mode_index
-    return display_mode and display_mode_index
 
 
 def on_mode_changed(combo):
@@ -131,3 +101,15 @@ def on_mode_changed(combo):
     mode_index = combo.get_active()
 
     button.set_sensitive(True)
+
+
+def set_hdmi_mode_from_str(mode):
+    print mode
+    if mode == "auto":
+        set_hdmi_mode()
+        return
+
+    group, number = mode.split(":")
+    set_hdmi_mode(group, number)
+
+
