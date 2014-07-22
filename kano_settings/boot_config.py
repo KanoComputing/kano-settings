@@ -9,16 +9,19 @@
 #
 
 import re
-from kano.utils import read_file_contents_as_lines
+from kano.utils import read_file_contents_as_lines, is_number
+from kano.logging import logger
 
 boot_config_path = "/boot/config.txt"
 
 
 # if the value argument is None, the option will be commented out
-def set_config_option(name, value=None):
+def set_config_value(name, value=None):
     lines = read_file_contents_as_lines(boot_config_path)
     if not lines:
         return
+
+    logger.error('writing to /boot/config.txt {} {}'.format(name, value))
 
     option_re = r'^\s*#?\s*' + str(name) + r'=(.*)'
 
@@ -40,3 +43,18 @@ def set_config_option(name, value=None):
 
         if not was_found and value is not None:
             boot_config_file.write(str(name) + "=" + str(value) + "\n")
+
+
+def get_config_value(name):
+    lines = read_file_contents_as_lines(boot_config_path)
+    if not lines:
+        return 0
+
+    for l in lines:
+        if l.startswith(name + '='):
+            value = l.split('=')[1]
+            if is_number(value):
+                value = int(value)
+            return value
+
+    return 0

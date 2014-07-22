@@ -12,7 +12,11 @@ import os
 import sys
 import re
 import subprocess
-from kano_settings.boot_config import set_config_option
+from kano_settings.boot_config import set_config_value, get_config_value
+from kano.utils import run_cmd
+from kano.logging import logger
+
+tvservice_path = '/usr/bin/tvservice'
 
 
 # Group must be either 'DMT' or 'CEA'
@@ -58,8 +62,8 @@ def list_supported_modes():
 
 def set_hdmi_mode(mode):
     if mode == "auto":
-        set_config_option("hdmi_group", None)
-        set_config_option("hdmi_mode", None)
+        set_config_value("hdmi_group", None)
+        set_config_value("hdmi_mode", None)
         return 0
 
     group, number = mode.split(":")
@@ -67,12 +71,31 @@ def set_hdmi_mode(mode):
     number = int(number)
 
     if group == "cea":
-        set_config_option("hdmi_group", 1)
+        set_config_value("hdmi_group", 1)
     elif group == "dmt":
-        set_config_option("hdmi_group", 2)
+        set_config_value("hdmi_group", 2)
     else:
         sys.stderr.write("ERROR: Unknown group '%s'.\n" % group)
         return 1
 
-    set_config_option("hdmi_mode", number)
+    set_config_value("hdmi_mode", number)
     return 0
+
+
+def get_status():
+    status = dict()
+
+    status_str, _, _ = run_cmd(tvservice_path + ' -s')
+    if 'DMT' in status_str:
+        status['group'] = 'DMT'
+    elif 'CEA' in status_str:
+        status['group'] = 'CEA'
+    else:
+        logger.error('status parsing error')
+        sys.exit()
+
+    status['mode'] = int(status_str.split('(')[1].split(')')[0].strip())
+    status['full_range'] = 'RGB full' in status_str
+    status['overscan'] = get_config_value('disable_overscan') == 1
+
+    return status
