@@ -106,3 +106,42 @@ def get_model():
     display_name, _, _ = run_cmd(cmd)
     display_name = display_name[16:].rstrip()
     return display_name
+
+
+def get_overscan_status():
+    out, _, _ = run_cmd('overscan')
+    try:
+        top, bottom, left, right = out.strip().split()
+    except Exception:
+        top = left = right = bottom = 0
+
+    top = int(top)
+    bottom = int(bottom)
+    left = int(left)
+    right = int(right)
+
+    overscan_values = {
+        'top': top,
+        'bottom': bottom,
+        'left': left,
+        'right': right,
+    }
+
+    return overscan_values
+
+
+def set_overscan_status(overscan_values):
+    top = overscan_values['top']
+    bottom = overscan_values['bottom']
+    left = overscan_values['left']
+    right = overscan_values['right']
+
+    cmd = 'overscan {} {} {} {}'.format(top, bottom, left, right)
+    run_cmd(cmd)
+
+
+def write_overscan_values(overscan_values):
+    set_config_value('overscan_top', overscan_values['top'])
+    set_config_value('overscan_bottom', overscan_values['bottom'])
+    set_config_value('overscan_left', overscan_values['left'])
+    set_config_value('overscan_right', overscan_values['right'])
