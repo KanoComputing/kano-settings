@@ -99,3 +99,10 @@ def get_status():
     status['overscan'] = not get_config_value('disable_overscan') == 1
 
     return status
+
+
+def get_model():
+    cmd = '/opt/vc/bin/tvservice -n'
+    display_name, _, _ = run_cmd(cmd)
+    display_name = display_name[16:].rstrip()
+    return display_name

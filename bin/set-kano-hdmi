@@ -4,8 +4,8 @@ import os
 import sys
 from kano.utils import run_cmd, delete_file, enforce_root
 from kano.logging import logger
-from kano_settings.set_display.screen_config import get_status
-from kano_settings.boot_config import set_config_value
+from kano_settings.set_display.functions import get_status, get_model
+from kano_settings.boot_config import set_config_value, set_config_comment, get_config_comment
 
 tvservice_path = '/usr/bin/tvservice'
 config_txt_path = '/boot/config.txt'
@@ -21,6 +21,14 @@ def enforce_pi():
     pi_detected = os.path.exists(tvservice_path) and os.path.exists(config_txt_path)
     if not pi_detected:
         logger.error('need to run on a Raspberry Pi')
+        sys.exit()
+
+
+def check_model_present():
+    global model
+
+    if get_config_comment('kano_screen_used', model):
+        logger.error('monitor already set, exiting')
         sys.exit()
 
 
@@ -65,14 +73,14 @@ def parse_edid(edid_txt):
             res, mode = l.split(':')[2].split('@')
             edid['preferred_res'] = res.strip()
             hz, mode = mode.split(' Hz (')
-            edid['preferred_hz'] = hz.strip()
-            edid['preferred_mode'] = mode[:-1]
+            edid['preferred_hz'] = int(hz.strip())
+            edid['preferred_mode'] = int(mode[:-1])
 
         # moving support
         elif 'moving support for' in l:
             found_group, found_mode = l.split(' to ')[1].split(' because sink')[0].split('mode')
             edid['found_group'] = found_group.strip()
-            edid['found_mode'] = found_mode.strip()
+            edid['found_mode'] = int(found_mode.strip())
             found = True
 
         # dmt_found
@@ -107,27 +115,27 @@ def parse_edid(edid_txt):
     return edid
 
 
-def override_models(edid):
-    global overrides
+def override_models():
+    global overrides, edid
 
     for model, rules in overrides.iteritems():
         if model == edid['model']:
             edid['target_group'] = rules['target_group']
             edid['target_mode'] = rules['target_mode']
             edid['is_monitor'] = rules['is_monitor']
-            return edid
-    return edid
+            return
 
 
-def calculate_is_monitor(edid):
+def calculate_is_monitor():
+    global edid
+
     edid['target_full_range'] = edid['is_monitor']
-    return edid
 
 
 def compare_and_set_mode():
     global edid, status
 
-    if status['group'] == edid['target_group'] and status['mode'] == ['target_mode']:
+    if status['group'] == edid['target_group'] and status['mode'] == edid['target_mode']:
         logger.error('mode change not needed')
     else:
         logger.error('mode change needed')
@@ -181,13 +189,25 @@ def compare_and_set_overscan():
 # main program
 enforce_pi()
 enforce_root('Need to be root!')
+
+# model and model comment check
+model = get_model()
+if '--force' not in sys.argv:
+    check_model_present()
+
+# read status
 status = get_status()
+
+# read edid
 edid_txt = read_edid()
 edid = parse_edid(edid_txt)
-edid = override_models(edid)
-edid = calculate_is_monitor(edid)
+
+# override modes, calculate is_monitor
+override_models()
+calculate_is_monitor()
 
 # output
+logger.error('model: {}'.format(model))
 logger.error(status)
 logger.error(edid)
 
@@ -196,18 +216,8 @@ compare_and_set_mode()
 compare_and_set_full_range()
 compare_and_set_overscan()
 
+# write comment to config
+set_config_comment('kano_screen_used', model)
 
 
 
-# # checking if already set
-# kano_screen_saved_comment = '### kano_screen_used: {}'.format(model)
-# if config_txt[0] == kano_screen_saved_comment and '--force' not in sys.argv:
-#     logger.error('screen already set in config.txt, skipping screen override')
-#     sys.exit()
-
-# # creating new config_txt
-# config_txt_new = list()
-# config_txt_new.append(kano_screen_saved_comment)
-
-# # reboot
-# run_cmd('reboot')

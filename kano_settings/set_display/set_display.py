@@ -7,13 +7,12 @@
 #
 
 from gi.repository import Gtk
-from . import screen_config
 from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
-from kano.utils import run_cmd
 from kano.logging import logger
 from ..config_file import get_setting, set_setting
+from .function import get_model, list_supported_modes, set_hdmi_mode
 
 
 mode = 'auto'
@@ -32,9 +31,7 @@ def activate(_win, box, _button, overscan_button):
     read_config()
 
     # Get display name
-    cmd = '/opt/vc/bin/tvservice -n'
-    display_name, _, _ = run_cmd(cmd)
-    display_name = display_name[16:].rstrip()
+    display_name = get_model()
 
     title = Heading("Display", display_name)
     box.pack_start(title.container, False, False, 0)
@@ -52,7 +49,7 @@ def activate(_win, box, _button, overscan_button):
     mode_combo.connect("changed", on_mode_changed)
 
     # Fill list of modes
-    modes = screen_config.list_supported_modes()
+    modes = list_supported_modes()
     mode_combo.append_text("auto")
     if modes is not None:
         for v in modes:
@@ -89,7 +86,7 @@ def apply_changes(button):
     if compare():
         return
 
-    screen_config.set_hdmi_mode(parse_mode)
+    set_hdmi_mode(parse_mode)
 
     update_config()
     constants.need_reboot = True

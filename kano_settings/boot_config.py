@@ -21,7 +21,7 @@ def set_config_value(name, value=None):
     if not lines:
         return
 
-    logger.error('writing to /boot/config.txt {} {}'.format(name, value))
+    logger.error('writing value to /boot/config.txt {} {}'.format(name, value))
 
     option_re = r'^\s*#?\s*' + str(name) + r'=(.*)'
 
@@ -58,3 +58,32 @@ def get_config_value(name):
             return value
 
     return 0
+
+
+def set_config_comment(name, value):
+    lines = read_file_contents_as_lines(boot_config_path)
+    if not lines:
+        return
+
+    logger.error('writing comment to /boot/config.txt {} {}'.format(name, value))
+
+    comment_str_full = '### {}: {}'.format(name, value)
+    comment_str_name = '### {}'.format(name)
+
+    with open(boot_config_path, "w") as boot_config_file:
+        boot_config_file.write(comment_str_full + '\n')
+
+        for line in lines:
+            if comment_str_name in line:
+                continue
+
+            boot_config_file.write(line + '\n')
+
+
+def get_config_comment(name, value):
+    lines = read_file_contents_as_lines(boot_config_path)
+    if not lines:
+        return
+
+    comment_str_full = '### {}: {}'.format(name, value)
+    return comment_str_full in lines
