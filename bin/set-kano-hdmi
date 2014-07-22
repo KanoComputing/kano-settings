@@ -4,7 +4,7 @@ import os
 import sys
 from kano.utils import run_cmd, delete_file, enforce_root
 from kano.logging import logger
-from kano_settings.set_display.functions import get_status, get_model
+from kano_settings.set_display.functions import get_status, get_model, set_hdmi_mode
 from kano_settings.boot_config import set_config_value, set_config_comment, get_config_comment
 
 tvservice_path = '/usr/bin/tvservice'
@@ -143,12 +143,7 @@ def compare_and_set_mode():
         logger.error('mode change needed')
         logger.error('setting mode: {} {}'.format(edid['target_group'], edid['target_mode']))
 
-        if edid['target_group'] == 'CEA':
-            set_config_value('hdmi_group', 1)
-        else:
-            set_config_value('hdmi_group', 2)
-
-        set_config_value('hdmi_mode', edid['target_mode'])
+        set_hdmi_mode(edid['target_group'], edid['target_mode'])
         return True
 
 

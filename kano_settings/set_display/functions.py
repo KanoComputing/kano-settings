@@ -60,26 +60,24 @@ def list_supported_modes():
     return modes
 
 
-def set_hdmi_mode(mode):
-    if mode == "auto":
+def set_hdmi_mode(group=None, mode=None):
+    if not group or not mode:
         set_config_value("hdmi_group", None)
         set_config_value("hdmi_mode", None)
-        return 0
 
-    group, number = mode.split(":")
     group = group.lower()
-    number = int(number)
+    mode = int(mode)
 
     if group == "cea":
         set_config_value("hdmi_group", 1)
     elif group == "dmt":
         set_config_value("hdmi_group", 2)
     else:
+        logger.error('group neither CEA or DMT')
         sys.stderr.write("ERROR: Unknown group '%s'.\n" % group)
-        return 1
+        return
 
-    set_config_value("hdmi_mode", number)
-    return 0
+    set_config_value("hdmi_mode", mode)
 
 
 def get_status():

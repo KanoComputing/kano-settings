@@ -10,20 +10,19 @@ from gi.repository import Gtk
 from kano.gtk3.heading import Heading
 import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
-from kano.logging import logger
-from ..config_file import get_setting, set_setting
-from .function import get_model, list_supported_modes, set_hdmi_mode
-
+from ..config_file import get_setting
+from ..boot_config import set_config_comment
+from .functions import get_model, list_supported_modes, set_hdmi_mode
 
 mode = 'auto'
 mode_index = 0
 button = None
-display_name = None
+model = None
 CONTAINER_HEIGHT = 70
 
 
 def activate(_win, box, _button, overscan_button):
-    global button, display_name
+    global button, model
 
     button = _button
     button.set_sensitive(False)
@@ -31,9 +30,9 @@ def activate(_win, box, _button, overscan_button):
     read_config()
 
     # Get display name
-    display_name = get_model()
+    model = get_model()
 
-    title = Heading("Display", display_name)
+    title = Heading("Display", model)
     box.pack_start(title.container, False, False, 0)
 
     # Contains main buttons
@@ -78,6 +77,8 @@ def activate(_win, box, _button, overscan_button):
 
 
 def apply_changes(button):
+    global model
+
     # Set HDMI mode
     # Get mode:group string
     # Of the form "auto" or "cea:1" or "dmt:1" etc.
@@ -86,9 +87,9 @@ def apply_changes(button):
     if compare():
         return
 
-    set_hdmi_mode(parse_mode)
+    set_hdmi_mode_from_str(parse_mode)
+    set_config_comment('kano_screen_used', model)
 
-    update_config()
     constants.need_reboot = True
 
 
@@ -97,15 +98,6 @@ def read_config():
 
     mode = get_setting("Display-mode")
     mode_index = get_setting("Display-mode-index")
-
-
-def update_config():
-    logger.debug('set_display / update_config: {} {} {}'.format(display_name, mode, mode_index))
-
-    # Add new configurations to config file.
-    set_setting("Display-name", display_name)
-    set_setting("Display-mode", mode)
-    set_setting("Display-mode-index", mode_index)
 
 
 # Returns True if all the entries are the same as the ones stored in the config file.
@@ -128,3 +120,12 @@ def on_mode_changed(combo):
     mode_index = combo.get_active()
 
     button.set_sensitive(True)
+
+
+def set_hdmi_mode_from_str(mode):
+    if mode == "auto":
+        set_hdmi_mode()
+        return
+
+    group, number = mode.split(":")
+    set_hdmi_mode(group, number)
