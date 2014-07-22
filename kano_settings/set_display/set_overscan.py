@@ -12,27 +12,25 @@ from gi.repository import Gtk
 from kano.gtk3.heading import Heading
 import kano_settings.constants as constants
 from kano.utils import run_cmd
-from ..config_file import file_replace
+from .functions import get_overscan_status, write_overscan_values, set_overscan_status, \
+    get_model
+from ..boot_config import set_config_comment
 
-boot_config_file = "/boot/config.txt"
 overscan_pipe = "/var/tmp/overscan"
-overscan_values = {
-    'top': 0,
-    'bottom': 0,
-    'left': 0,
-    'right': 0,
-}
+overscan_values = None
 button = None
 
 
 def activate(_win, box, _button):
+    global overscan_values
 
     button = _button
 
     # Launch pipeline
     if not os.path.exists(overscan_pipe):
         run_cmd('mknod {} c 100 0'.format(overscan_pipe))
-    get_overscan_status()
+
+    overscan_values = get_overscan_status()
 
     # Header
     title = Heading("Overscan", "")
@@ -78,21 +76,9 @@ def activate(_win, box, _button):
 
 
 def apply_changes(button):
-
-    top_pattern = "overscan_top=[0-9]*[0-9]*[0-9]"
-    bottom_pattern = "overscan_bottom=[0-9]*[0-9]*[0-9]"
-    left_pattern = "overscan_left=[0-9]*[0-9]*[0-9]"
-    right_pattern = "overscan_right=[0-9]*[0-9]*[0-9]"
-    top = "overscan_top=" + str(overscan_values['top'])
-    bottom = "overscan_bottom=" + str(overscan_values['bottom'])
-    left = "overscan_left=" + str(overscan_values['left'])
-    right = "overscan_right=" + str(overscan_values['right'])
-
     # Apply changes
-    file_replace(boot_config_file, top_pattern, top)
-    file_replace(boot_config_file, bottom_pattern, bottom)
-    file_replace(boot_config_file, left_pattern, left)
-    file_replace(boot_config_file, right_pattern, right)
+    write_overscan_values(overscan_values)
+    set_config_comment('kano_screen_used', get_model())
 
     # Tell user to reboot to see changes
     constants.need_reboot = True
@@ -102,38 +88,6 @@ def adjust(adj, varname):
     global overscan_values
 
     overscan_values[varname] = int(adj.get_value())
-    set_overscan_status()
+    set_overscan_status(overscan_values)
 
 
-def set_overscan_status():
-    #print overscan_values
-
-    top = overscan_values['top']
-    bottom = overscan_values['bottom']
-    left = overscan_values['left']
-    right = overscan_values['right']
-
-    cmd = 'overscan {} {} {} {}'.format(top, bottom, left, right)
-    run_cmd(cmd)
-
-
-def get_overscan_status():
-    global overscan_values
-
-    out, _, _ = run_cmd('overscan')
-    try:
-        top, bottom, left, right = out.strip().split()
-    except Exception:
-        top = left = right = bottom = 0
-
-    top = int(top)
-    bottom = int(bottom)
-    left = int(left)
-    right = int(right)
-
-    overscan_values = {
-        'top': top,
-        'bottom': bottom,
-        'left': left,
-        'right': right,
-    }
