@@ -1,7 +1,6 @@
 bin/kano-settings /usr/bin
 bin/startmouse /usr/bin
 bin/set-kano-hdmi /usr/bin
-bin/set-kano-overscan /usr/bin
 
 kano_settings/* /usr/lib/python2.7/dist-packages/kano_settings
 media/* /usr/share/kano-settings/media
