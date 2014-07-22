@@ -73,7 +73,7 @@ def parse_edid(edid_txt):
             res, mode = l.split(':')[2].split('@')
             edid['preferred_res'] = res.strip()
             hz, mode = mode.split(' Hz (')
-            edid['preferred_hz'] = int(hz.strip())
+            edid['preferred_hz'] = float(hz.strip())
             edid['preferred_mode'] = int(mode[:-1])
 
         # moving support
@@ -89,7 +89,7 @@ def parse_edid(edid_txt):
             if 'DMT' not in l:
                 continue
 
-            tmp_hz = l.split('@')[1].split('Hz')[0].strip()
+            tmp_hz = float(l.split('@')[1].split('Hz')[0].strip())
             if tmp_hz != edid['preferred_hz']:
                 continue
 
@@ -137,6 +137,8 @@ def compare_and_set_mode():
 
     if status['group'] == edid['target_group'] and status['mode'] == edid['target_mode']:
         logger.error('mode change not needed')
+        return False
+
     else:
         logger.error('mode change needed')
         logger.error('setting mode: {} {}'.format(edid['target_group'], edid['target_mode']))
@@ -147,6 +149,7 @@ def compare_and_set_mode():
             set_config_value('hdmi_group', 2)
 
         set_config_value('hdmi_mode', edid['target_mode'])
+        return True
 
 
 def compare_and_set_full_range():
@@ -154,6 +157,8 @@ def compare_and_set_full_range():
 
     if status['full_range'] == edid['target_full_range']:
         logger.error('fullrange change not needed')
+        return False
+
     else:
         logger.error('fullrange change needed')
         logger.error('setting fullrange to: {}'.format(edid['target_full_range']))
@@ -162,6 +167,7 @@ def compare_and_set_full_range():
             set_config_value('hdmi_pixel_encoding', 2)
         else:
             set_config_value('hdmi_pixel_encoding', 0)
+        return True
 
 
 def compare_and_set_overscan():
@@ -169,6 +175,8 @@ def compare_and_set_overscan():
 
     if status['overscan'] == edid['target_overscan']:
         logger.error('overscan change not needed')
+        return False
+
     else:
         logger.error('overscan change needed')
         logger.error('setting overscan to: {}'.format(edid['target_overscan']))
@@ -184,6 +192,7 @@ def compare_and_set_overscan():
         set_config_value('overscan_right', overscan_value)
         set_config_value('overscan_top', overscan_value)
         set_config_value('overscan_bottom', overscan_value)
+        return True
 
 
 # main program
@@ -212,15 +221,14 @@ logger.error(status)
 logger.error(edid)
 
 # changes
-compare_and_set_mode()
-compare_and_set_full_range()
-compare_and_set_overscan()
+changes = compare_and_set_mode() or compare_and_set_full_range() or compare_and_set_overscan()
 
-# write comment to config
-set_config_comment('kano_screen_used', model)
+if changes:
+    # write comment to config
+    set_config_comment('kano_screen_used', model)
 
-# reboot
-run_cmd('reboot')
+    # reboot
+    run_cmd('reboot')
 
 
 

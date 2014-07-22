@@ -97,6 +97,9 @@ def get_status():
     status['mode'] = int(status_str.split('(')[1].split(')')[0].strip())
     status['full_range'] = 'RGB full' in status_str
     status['overscan'] = not get_config_value('disable_overscan') == 1
+    res, hz = status_str.split(',')[1].split('@')
+    status['resolution'] = res.strip()
+    status['hz'] = float(hz.strip()[:-2])
 
     return status
 
