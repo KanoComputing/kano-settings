@@ -219,5 +219,8 @@ compare_and_set_overscan()
 # write comment to config
 set_config_comment('kano_screen_used', model)
 
+# reboot
+run_cmd('reboot')
+
 
 
