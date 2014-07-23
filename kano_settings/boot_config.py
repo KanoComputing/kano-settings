@@ -5,7 +5,7 @@
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
-# Functions controlling reading and writing to config file
+# Functions controlling reading and writing to /boot/confit.txt
 #
 
 import re
