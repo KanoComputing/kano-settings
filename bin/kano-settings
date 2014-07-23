@@ -54,6 +54,8 @@ class MainWindow(ApplicationWindow):
         # Main container of the window
         self.grid = Gtk.Grid()
 
+        self.set_icon_name("kano-settings")
+
         # Content that changes between levels
         self.changeable_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
         self.changeable_content.props.halign = Gtk.Align.CENTER
