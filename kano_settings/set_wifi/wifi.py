@@ -14,12 +14,10 @@ import kano_settings.components.fixed_size_box as fixed_size_box
 import kano_settings.constants as constants
 import kano.utils as utils
 from kano.network import is_internet
-from ..config_file import get_setting
 from kano.utils import get_user_unsudoed
 
 from kano_profile.apps import load_app_state_variable
 
-network_message = ""
 win = None
 box = None
 button = None
@@ -31,7 +29,7 @@ wifi_connection_attempted = False
 
 
 def activate(_win, _box, _button, _proxy_button, _disable_proxy=None):
-    global network_message, box, win, button, proxy_button
+    global box, win, button, proxy_button
 
     constants.has_internet = is_internet()
 
@@ -159,7 +157,7 @@ def network_info():
 
 
 def configure_wifi(widget=None, event=None):
-    global network_message, win, handler, button, wifi_connection_attempted
+    global win, handler, button, wifi_connection_attempted
     # If is a mouse click event or key pressed is ENTER
     if not hasattr(event, 'keyval') or event.keyval == 65293:
         button.set_sensitive(True)
@@ -169,7 +167,6 @@ def configure_wifi(widget=None, event=None):
         handler = win.connect("focus-in-event", refresh)
         # Call WiFi config
         os.system('rxvt -title \'WiFi\' -e /usr/bin/kano-wifi')
-        network_message = get_setting("Wifi")
 
 
 def refresh(widget=None, event=None):
