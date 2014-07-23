@@ -117,13 +117,13 @@ def parse_edid(edid_txt):
 
 
 def override_models():
-    global overrides, edid
+    global overrides, edid, model
 
-    for model, rules in overrides.iteritems():
-        if model == edid['model']:
-            edid['target_group'] = rules['target_group']
-            edid['target_mode'] = rules['target_mode']
-            edid['is_monitor'] = rules['is_monitor']
+    for override_model, override_rules in overrides.iteritems():
+        if override_model == model:
+            edid['target_group'] = override_rules['target_group']
+            edid['target_mode'] = override_rules['target_mode']
+            edid['is_monitor'] = override_rules['is_monitor']
             return
 
 
