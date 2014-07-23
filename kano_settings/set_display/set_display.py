@@ -84,7 +84,6 @@ def apply_changes(button):
     parse_mode = mode.split(" ")[0]
 
     set_hdmi_mode_from_str(parse_mode)
-    set_config_comment('kano_screen_used', model)
 
     constants.need_reboot = True
 
@@ -107,9 +106,12 @@ def set_hdmi_mode_from_str(mode):
     print mode
     if mode == "auto":
         set_hdmi_mode()
+        set_config_comment('kano_screen_used', 'xxx')
         return
 
     group, number = mode.split(":")
     set_hdmi_mode(group, number)
+    set_config_comment('kano_screen_used', model)
+
 
 
