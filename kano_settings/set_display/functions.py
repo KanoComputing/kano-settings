@@ -168,7 +168,7 @@ def find_matching_mode(modes, group, mode):
     string = '{}:{}'.format(group.lower(), mode)
     for i, m in enumerate(modes):
         if m.startswith(string):
-            return i
+            return i + 1
 
     # 0 for auto
     return 0
