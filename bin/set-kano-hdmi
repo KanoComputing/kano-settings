@@ -13,6 +13,7 @@ edid_dat_path = '/tmp/edid.dat'
 
 overrides = {
     '32V3H-H6A': {'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True},
+    'AS4637_______': {'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True},
     'BMD_HDMI': {'target_group': 'CEA', 'target_mode': 33, 'is_monitor': True},
 }
 
