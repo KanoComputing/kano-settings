@@ -18,5 +18,6 @@ etc/rc.overclock /etc
 etc/rc.others /etc
 etc/init.d /etc
 etc/timeserver.conf /etc
+etc/cron.d /etc
 
 overscan/overscan /usr/bin
