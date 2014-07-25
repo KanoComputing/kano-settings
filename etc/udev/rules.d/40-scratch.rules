@@ -1,0 +1,2 @@
+# Enable Lego Mindstorm's usb devices access to regular users
+ATTRS{idVendor}=="0694", ATTRS{idProduct}=="0003", SUBSYSTEMS=="usb", ACTION=="add", MODE="0666", GROUP="plugdev"
