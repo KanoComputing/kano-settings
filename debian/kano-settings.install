@@ -16,7 +16,7 @@ etc/rc.audio /etc
 etc/rc.network /etc
 etc/rc.overclock /etc
 etc/rc.others /etc
-
 etc/init.d /etc
+etc/timeserver.conf /etc
 
 overscan/overscan /usr/bin
