@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#! /usr/bin/python
 
 # kano-wifi
 #
@@ -21,6 +21,7 @@ import subprocess
 
 from kano.network import IWList, is_device, is_connected, connect, is_gateway, is_internet, KwifiCache, \
     reload_kernel_module, is_redirected
+from kano.utils import is_model_b_plus
 
 NETWORKS_PER_PAGE = 5
 
@@ -248,29 +249,33 @@ if __name__ == '__main__':
         sys.exit(0)
 
     # Step 3: check for WiFi dongle
-    if not is_device(wiface):
+    while not is_device(wiface):
         subprocess.call(['/bin/sync'])  # Flush system IO buffers to disk to avoid corruption
-        subprocess.call(['typewriter_echo', 'First, plug in your wifi piece.', '0', '1'])
-        subprocess.call(['typewriter_echo', 'Please take into account that the system will automatically reboot.', '0', '2'])
-        subprocess.call(['typewriter_echo', 'If you don\'t want to use WiFi, press {{1 ENTER }}.', '2', '1'])
-        # Wait for input or hardware reboot
+        subprocess.call(['typewriter_echo', 'First, plug in your {{2wifi piece}}.', '0', '2'])
+        if not is_model_b_plus():
+            subprocess.call(['typewriter_echo', 'Please take into account that the system will automatically reboot.', '0', '2'])
+            subprocess.call(['typewriter_echo', 'If you don\'t want to use WiFi, press {{1 ENTER }}.', '2', '0'])
+            sys.exit(2)
+        else:
+            subprocess.call(['typewriter_echo', 'Press {{1 ENTER }} to ready.', '1', '0'])
+        # Wait for input
         var = raw_input()
-        sys.exit(2)
-    else:
-        # Step 3.1: If dongle is connected and networking is up, offer option to forget wireless network.
-        netname, _, _, linked = is_connected(wiface)
-        if netname and linked:
-            msg = 'You are connected to {{2 %s }}' % netname
-            subprocess.call(['typewriter_echo', msg, '2', '1'])
-            msg = 'Do you want to forget this network and choose a new one? {{1 [y]es/[N]o }} '
-            subprocess.call(['typewriter_echo', msg, '0', '0'])
-            var = raw_input().strip()
-            if var and var.upper() == 'Y':
-                # FIXME: Reload until linux kernel module is fixed
-                reload_kernel_module()
-                wificache.empty()
-            else:
-                sys.exit(0)
+        subprocess.call(['clear'])
+
+    # Step 3.1: If dongle is connected and networking is up, offer option to forget wireless network.
+    netname, _, _, linked = is_connected(wiface)
+    if netname and linked:
+        msg = 'You are connected to {{2 %s }}' % netname
+        subprocess.call(['typewriter_echo', msg, '2', '1'])
+        msg = 'Do you want to forget this network and choose a new one? {{1 [y]es/[N]o }} '
+        subprocess.call(['typewriter_echo', msg, '0', '0'])
+        var = raw_input().strip()
+        if var and var.upper() == 'Y':
+            # FIXME: Reload until linux kernel module is fixed
+            reload_kernel_module()
+            wificache.empty()
+        else:
+            sys.exit(0)
 
     # Step 4: WiFi dongle > show networks menu
     subprocess.call(['typewriter_echo', 'Help me find the signal.', '1', '2'])
