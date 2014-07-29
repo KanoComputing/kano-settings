@@ -76,6 +76,7 @@ class SetDisplay(Template):
         self.set_hdmi_mode_from_str(parse_mode)
 
         constants.need_reboot = True
+        self.win.go_to_home()
 
     def on_mode_changed(self, combo):
 
@@ -221,6 +222,8 @@ class SetOverscan(Template):
 
         # Tell user to reboot to see changes
         constants.need_reboot = True
+
+        self.go_to_display()
 
     def adjust(self, adj, varname):
         self.overscan_values[varname] = int(adj.get_value())
