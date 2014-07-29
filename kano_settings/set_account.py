@@ -164,6 +164,7 @@ class SetPassword(Template):
 
         if not pam.authenticate(username, old_password):
             response = create_dialog(message1="Could not change password", message2="Your old password is incorrect!")
+            print response
 
         # If the two new passwords match
         elif new_password1 == new_password2:
@@ -193,8 +194,8 @@ class SetPassword(Template):
         self.kano_button.set_sensitive(text1 != "" and text2 != "" and text3 != "")
 
 
-def create_dialog(self, message1="Could not change password", message2=""):
+def create_dialog(message1="Could not change password", message2=""):
     kdialog = kano_dialog.KanoDialog(message1, message2,
-                                     {"TRY AGAIN": {"return_value": -1}, "GO BACK": {"return_value": 0}})
+                                     {"TRY AGAIN": {"return_value": -1}, "GO BACK": {"return_value": 0, "color": "red"}})
     response = kdialog.run()
     return response
