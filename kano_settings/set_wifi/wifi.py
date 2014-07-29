@@ -137,7 +137,7 @@ def activate(_win, _box, _button, _proxy_button, _disable_proxy=None):
 
 def launch_chromium(widget=None, event=None):
     user_name = get_user_unsudoed()
-    os.system('su ' + user_name + ' -c chromium')
+    utils.run_bg('su - ' + user_name + ' -c chromium')
 
 
 def network_info():
