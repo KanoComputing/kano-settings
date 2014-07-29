@@ -15,14 +15,13 @@ import kano_settings.constants as constants
 from kano_settings.wifi.functions import network_info, launch_chromium, is_enabled, set_settings, enable, disable
 from kano.network import is_internet
 from kano_settings.config_file import get_setting, set_setting
-from kano_profile.apps import load_app_state_variable
 
 
 class SetWifi(Template):
     wifi_connection_attempted = False
 
     def __init__(self, win):
-        Template.__init__(self, "", "to be set", "WIFI")
+        Template.__init__(self, "", "to be set", "FINISH")
 
         self.win = win
         self.win.set_main_widget(self)
@@ -59,8 +58,9 @@ class SetWifi(Template):
         container.pack_start(internet_img, False, False, 2)
         self.box.pack_start(container, False, False, 0)
 
-        self.kano_button.connect("button_press_event", self.configure_wifi)
-        self.kano_button.connect("key_press_event", self.configure_wifi)
+        self.add_connection = KanoButton("WIFI")
+        self.add_connection.connect("button_press_event", self.configure_wifi)
+        self.add_connection.connect("key_press_event", self.configure_wifi)
 
         if constants.has_internet:
             self.kano_button.set_label("FINISH")
@@ -103,10 +103,7 @@ class SetWifi(Template):
             container.pack_start(self.disable_proxy, False, False, 0)
 
         else:
-            completed = (load_app_state_variable('kano-settings', 'completed') == 1)
-            self.kano_button.set_sensitive(completed or self.wifi_connection_attempted)
-
-            status_box.pack_start(configure_container, False, False, 0)
+            status_box.pack_start(self.add_connection, False, False, 0)
             internet_img.set_from_file(constants.media + "/Graphics/Internet-noConnection.png")
             self.title.title.set_text("Get connected")
             self.title.description.set_text("Let's set up Internet")
