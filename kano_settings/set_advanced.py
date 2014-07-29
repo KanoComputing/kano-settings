@@ -21,11 +21,14 @@ class SetAdvanced(CheckButtonTemplate):
                                      [["Parental lock", "Restrict online content"],
                                       ["Debug mode", "Having problems? Enable this mode and report a bug"]])
         self.set_button_spacing(10)
-
-        self.get_button(0).connect("clicked", self.go_to_password)
-        self.get_button(1).connect("clicked", self.on_debug_toggled)
-
         self.win = win
+
+        self.parental_button = self.get_button(0)
+        self.parental_button.set_active(get_parental_enabled())
+        self.parental_button.connect("clicked", self.go_to_password)
+        self.debug_button = self.get_button(1)
+        self.debug_button.connect("clicked", self.on_debug_toggled)
+
         self.win.set_main_widget(self)
 
         self.top_bar.set_prev_callback(self.win.go_to_home)
