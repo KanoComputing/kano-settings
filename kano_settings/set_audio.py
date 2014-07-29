@@ -94,6 +94,8 @@ class SetAudio(Template):
         # Tell user to reboot to see changes
         constants.need_reboot = True
 
+        self.win.go_to_home()
+
     def current_setting(self):
         f = open(self.rc_local_path, 'r')
         file_string = str(f.read())
