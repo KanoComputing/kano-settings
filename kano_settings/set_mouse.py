@@ -7,159 +7,96 @@
 #
 
 import os
-from gi.repository import Gtk
-from kano.gtk3.heading import Heading
-import kano_settings.components.fixed_size_box as fixed_size_box
+from kano_settings.templates import RadioButtonTemplate
 from kano.logging import logger
 from .config_file import get_setting, set_setting
 
-selected_button = 0
-initial_button = 0
 
+class SetMouse(RadioButtonTemplate):
+    selected_button = 0
+    initial_button = 0
 
-def activate(_win, box, button):
-    global selected_button, initial_button
+    def __init__(self, win):
+        RadioButtonTemplate.__init__(self, "Mouse", "Pick your speed", "APPLY CHANGES",
+                                     [["Slow", "REQUIRES LESS MOVE PRECISION"],
+                                      ["Normal", "THE DEFAULT SETTING"],
+                                      ["Fast", "BETTER FOR WIDE SCREENS"]])
+        self.win = win
+        self.win.set_main_widget(self)
 
-    title = Heading("Mouse", "Pick your speed")
-    box.pack_start(title.container, False, False, 0)
+        # Show the current setting by electing the appropriate radio button
+        self.current_setting()
+        self.selected_button = self.initial_button
+        self.get_button(self.initial_button).set_active(True)
 
-    # Settings container
-    settings = fixed_size_box.Fixed()
+        self.top_bar.enable_prev()
+        self.top_bar.set_prev_callback(self.win.go_to_home)
 
-    box.pack_start(settings.box, False, False, 0)
+        self.kano_button.connect("button-release-event", self.set_mouse)
 
-    # Slow radio button
-    slow_button = Gtk.RadioButton.new_with_label_from_widget(None, "Slow")
-    slow_button.connect("toggled", on_button_toggled)
-    slow_button.set_can_focus(True)
-    slow_button.get_style_context().add_class("bold_toggle")
-    slow_info = Gtk.Label("REQUIRES LESS MOVE PRECISION")
-    slow_info.get_style_context().add_class("normal_label")
+        self.win.show_all()
 
-    slow_box = Gtk.Box()
-    slow_box.pack_start(slow_button, False, False, 0)
-    slow_box.pack_start(slow_info, False, False, 0)
+    def set_mouse(self, button, event):
 
-    # Normal radio button
-    normal_button = Gtk.RadioButton.new_from_widget(slow_button)
-    normal_button.set_label("Normal")
-    normal_button.connect("toggled", on_button_toggled)
-    normal_button.set_can_focus(False)
-    normal_button.get_style_context().add_class("bold_toggle")
-    normal_info = Gtk.Label("THE DEFAULT SETTING")
-    normal_info.get_style_context().add_class("normal_label")
+        #  Mode   speed
+        # Slow     1
+        # Normal  default
+        # High     10
 
-    normal_box = Gtk.Box()
-    normal_box.pack_start(normal_button, False, False, 0)
-    normal_box.pack_start(normal_info, False, False, 0)
+        # Mode has no changed
+        if self.initial_button == self.selected_button:
+            return
 
-    # Fast radio button
-    fast_button = Gtk.RadioButton.new_from_widget(slow_button)
-    fast_button.set_label("Fast")
-    fast_button.connect("toggled", on_button_toggled)
-    fast_button.set_can_focus(False)
-    fast_button.get_style_context().add_class("bold_toggle")
-    fast_info = Gtk.Label("BETTER FOR WIDE SCREENS")
-    fast_info.get_style_context().add_class("normal_label")
-
-    fast_box = Gtk.Box()
-    fast_box.pack_start(fast_button, False, False, 0)
-    fast_box.pack_start(fast_info, False, False, 0)
-
-    radio_button_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-    radio_button_container.pack_start(slow_box, False, False, 5)
-    radio_button_container.pack_start(normal_box, False, False, 5)
-    radio_button_container.pack_start(fast_box, False, False, 5)
-
-    valign = Gtk.Alignment(xalign=0.5, yalign=0.5, xscale=0, yscale=0)
-    valign.set_padding(20, 0, 0, 0)
-    valign.add(radio_button_container)
-    settings.box.pack_start(valign, False, False, 0)
-
-    # Show the current setting by electing the appropriate radio button
-    current_setting()
-    selected_button = initial_button
-    if initial_button == 0:
-        slow_button.set_active(True)
-    elif initial_button == 1:
-        normal_button.set_active(True)
-    elif initial_button == 2:
-        fast_button.set_active(True)
-
-    # Add apply changes button under the main settings content
-    box.pack_start(button.align, False, False, 0)
-    button.set_sensitive(True)
-
-    _win.show_all()
-
-
-def apply_changes(button):
-
-    #  Mode   speed
-    # Slow     1
-    # Normal  default
-    # High     10
-
-    # Mode has no changed
-    if initial_button == selected_button:
-        return
-
-    config = "Slow"
-    # Slow configuration
-    if selected_button == 0:
         config = "Slow"
-    # Modest configuration
-    elif selected_button == 1:
-        config = "Normal"
-    # Medium configuration
-    elif selected_button == 2:
-        config = "Fast"
+        # Slow configuration
+        if self.selected_button == 0:
+            config = "Slow"
+        # Modest configuration
+        elif self.selected_button == 1:
+            config = "Normal"
+        # Medium configuration
+        elif self.selected_button == 2:
+            config = "Fast"
 
-    # Update config
-    set_setting("Mouse", config)
+        # Update config
+        set_setting("Mouse", config)
+        self.win.go_to_home()
 
+    def change_mouse_speed(self):
+        command = "xset m "
+        # Slow configuration
+        if self.selected_button == 0:
+            command += "1"
+        # Modest configuration
+        elif self.selected_button == 1:
+            command += "default"
+        # Medium configuration
+        elif self.selected_button == 2:
+            command += "10"
 
-def change_mouse_speed():
+        logger.debug('set_mouse / change_mouse_speed: selected_button:{}'.format(self.selected_button))
 
-    command = "xset m "
-    # Slow configuration
-    if selected_button == 0:
-        command += "1"
-    # Modest configuration
-    elif selected_button == 1:
-        command += "default"
-    # Medium configuration
-    elif selected_button == 2:
-        command += "10"
+        # Apply changes
+        os.system(command)
 
-    logger.debug('set_mouse / change_mouse_speed: selected_button:{}'.format(selected_button))
+    def current_setting(self):
+        mouse = get_setting("Mouse")
+        if mouse == "Slow":
+            self.initial_button = 0
+        elif mouse == "Normal":
+            self.initial_button = 1
+        elif mouse == "Fast":
+            self.initial_button = 2
 
-    # Apply changes
-    os.system(command)
+    def on_button_toggled(self, button):
 
-
-def current_setting():
-    global initial_button
-
-    mouse = get_setting("Mouse")
-    if mouse == "Slow":
-        initial_button = 0
-    elif mouse == "Normal":
-        initial_button = 1
-    elif mouse == "Fast":
-        initial_button = 2
-
-
-def on_button_toggled(button):
-    global selected_button
-
-    if button.get_active():
-        label = button.get_label()
-        if label == "Slow":
-            selected_button = 0
-        elif label == "Normal":
-            selected_button = 1
-        elif label == "Fast":
-            selected_button = 2
-        # Apply changes so speed can be tested
-        change_mouse_speed()
+        if button.get_active():
+            label = button.get_label()
+            if label == "Slow":
+                self.selected_button = 0
+            elif label == "Normal":
+                self.selected_button = 1
+            elif label == "Fast":
+                self.selected_button = 2
+            # Apply changes so speed can be tested
+            self.change_mouse_speed()

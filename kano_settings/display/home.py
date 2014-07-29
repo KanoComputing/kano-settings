@@ -7,7 +7,7 @@
 #
 # This controls the interaction between wifi and proxy setting screens
 
-import kano_settings.set_display.set_display as set_display
+from kano_settings.set_display.set_display import SetDisplay
 import kano_settings.set_display.set_overscan as set_overscan
 from kano.gtk3.buttons import KanoButton, OrangeButton
 
@@ -19,16 +19,10 @@ to_display_button = None
 to_overscan_button = None
 
 
-def activate(_win, _box, _button):
-    global win, box, button, to_display_button, to_overscan_button
-
-    win = _win
-    box = _box
-    button = _button
-
+def activate(win):
     to_display_button = generate_display_button()
     to_overscan_button = generate_overscan_button()
-    set_display.activate(win, box, button, to_overscan_button)
+    SetDisplay(win)
 
 
 # This button in the proxy setting screen that takes you to the wifi screen
@@ -53,7 +47,7 @@ def to_display(arg1=None, arg2=None):
     set_overscan.apply_changes(None)
     to_overscan_button = generate_overscan_button()
     remove_children(box)
-    set_display.activate(win, box, button, to_overscan_button)
+    SetDisplay(win)
     win.show_all()
 
 
