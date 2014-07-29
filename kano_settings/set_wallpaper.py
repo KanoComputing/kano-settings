@@ -13,15 +13,14 @@ from kano.logging import logger
 from .config_file import get_setting, set_setting
 from kano_profile.badges import calculate_badges
 
+wallpaper_path = "/usr/share/kano-desktop/wallpapers/"
+padlock_path = "/usr/share/kano-settings/media/Icons/padlock.png"  # needs to be 95x95
+kdeskrc_default = "/usr/share/kano-desktop/kdesk/.kdeskrc"
+kdeskrc_home = "/home/%s/.kdeskrc"
+name_pattern = "-4-3.png"
+
 
 class SetWallpaper(ScrolledWindowTemplate):
-
-    wallpaper_path = "/usr/share/kano-desktop/wallpapers/"
-    padlock_path = "/usr/share/kano-settings/media/Icons/padlock.png"  # needs to be 95x95
-    kdeskrc_default = "/usr/share/kano-desktop/kdesk/.kdeskrc"
-    kdeskrc_home = "/home/%s/.kdeskrc"
-
-    name_pattern = "-4-3.png"
 
     def __init__(self, win):
         ScrolledWindowTemplate.__init__(self, "Choose your background", "", "APPLY CHANGES")
@@ -85,12 +84,12 @@ class SetWallpaper(ScrolledWindowTemplate):
 
     def add_wallpaper_to_table(self, name, width, height, unlocked):
         # recreate padlock overlay here becuase otherwise it's parent gets set by the class
-        padlock_pixbuf = GdkPixbuf.Pixbuf.new_from_file(self.padlock_path)
+        padlock_pixbuf = GdkPixbuf.Pixbuf.new_from_file(padlock_path)
         padlock_overlay = Gtk.Image()
         padlock_overlay.set_from_pixbuf(padlock_pixbuf)
 
         # create the wallpaper thumbnail
-        wallpaper_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(self.wallpaper_path + name + self.name_pattern, 120, 90)
+        wallpaper_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(wallpaper_path + name + name_pattern, 120, 90)
         cropped_wallpaper = wallpaper_pixbuf.new_subpixbuf(15, 0, width, height)
         image = Gtk.Image()
         image.set_from_pixbuf(cropped_wallpaper)
@@ -145,49 +144,6 @@ class SetWallpaper(ScrolledWindowTemplate):
         else:
             self.kano_button.set_sensitive(False)
 
-    def change_wallpaper(self):
-        image_name = self.get_selected()
-
-        logger.info('set_wallpaper / change_wallpaper image_name:{}'.format(image_name))
-
-        # home directory
-        USER = os.environ['SUDO_USER']
-        deskrc_path = self.kdeskrc_home % (USER)
-        # Wallpaper selected
-        image_169 = "%s%s-16-9.png" % (self.wallpaper_path, image_name)
-        image_43 = "%s%s-4-3.png" % (self.wallpaper_path, image_name)
-        image_1024 = "%s%s-1024.png" % (self.wallpaper_path, image_name)
-        # Look for the strings
-        found = False
-        if os.path.isfile(deskrc_path):
-            f = open(deskrc_path, 'r')
-            newlines = []
-            for line in f:
-                if "Background.File-medium:" in line:
-                    line = "  Background.File-medium: %s\n" % (image_1024)
-                    found = True
-                elif "Background.File-4-3:" in line:
-                    line = "  Background.File-4-3: %s\n" % (image_43)
-                elif "Background.File-16-9:" in line:
-                    line = "  Background.File-16-9: %s\n" % (image_169)
-                newlines.append(line)
-            f.close()
-        if found:
-            # Overwrite config file with new lines
-            outfile = open(deskrc_path, 'w')
-            outfile.writelines(newlines)
-            outfile.close()
-        # If not found add it
-        else:
-            with open(deskrc_path, "a") as outfile:
-                outfile.write("  Background.File-medium: %s\n" % (image_1024))
-                outfile.write("  Background.File-4-3: %s\n" % (image_43))
-                outfile.write("  Background.File-16-9: %s\n" % (image_169))
-        # Refresh the wallpaper
-        cmd = 'sudo -u %s kdesk -w' % USER
-        os.system(cmd)
-        return 0
-
     def read_config(self):
         return get_setting("Wallpaper")
 
@@ -217,18 +173,58 @@ class SetWallpaper(ScrolledWindowTemplate):
                 pass
 
     def get_wallpapers(self):
-        if not os.path.exists(self.wallpaper_path):
+        if not os.path.exists(wallpaper_path):
             return
-        for file in os.listdir(self.wallpaper_path):
-            if self.name_pattern in file:
+        for file in os.listdir(wallpaper_path):
+            if name_pattern in file:
                 self.wallpapers[file[:-8]] = {
                     'selected': False,
                     'unlocked': True
                 }
 
     def apply_changes(self, button, event):
-        self.change_wallpaper()
+        image_name = self.get_selected()
+        change_wallpaper(wallpaper_path, image_name)
         self.update_config()
         self.win.go_to_home()
 
 
+def change_wallpaper(path, name):
+    logger.info('set_wallpaper / change_wallpaper image_name:{}'.format(name))
+    # home directory
+    USER = os.environ['SUDO_USER']
+    deskrc_path = kdeskrc_home % (USER)
+    # Wallpaper selected
+    image_169 = "%s%s-16-9.png" % (path, name)
+    image_43 = "%s%s-4-3.png" % (path, name)
+    image_1024 = "%s%s-1024.png" % (path, name)
+    # Look for the strings
+    found = False
+    if os.path.isfile(deskrc_path):
+        f = open(deskrc_path, 'r')
+        newlines = []
+        for line in f:
+            if "Background.File-medium:" in line:
+                line = "  Background.File-medium: %s\n" % (image_1024)
+                found = True
+            elif "Background.File-4-3:" in line:
+                line = "  Background.File-4-3: %s\n" % (image_43)
+            elif "Background.File-16-9:" in line:
+                line = "  Background.File-16-9: %s\n" % (image_169)
+            newlines.append(line)
+        f.close()
+    if found:
+        # Overwrite config file with new lines
+        outfile = open(deskrc_path, 'w')
+        outfile.writelines(newlines)
+        outfile.close()
+    # If not found add it
+    else:
+        with open(deskrc_path, "a") as outfile:
+            outfile.write("  Background.File-medium: %s\n" % (image_1024))
+            outfile.write("  Background.File-4-3: %s\n" % (image_43))
+            outfile.write("  Background.File-16-9: %s\n" % (image_169))
+    # Refresh the wallpaper
+    cmd = 'sudo -u %s kdesk -w' % USER
+    os.system(cmd)
+    return 0

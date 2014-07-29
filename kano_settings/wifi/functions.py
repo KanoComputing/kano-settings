@@ -5,7 +5,7 @@
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
-import os
+
 from kano.utils import get_user_unsudoed
 import kano_settings.proxy as proxy
 import kano.utils as utils
@@ -43,7 +43,7 @@ def get_settings():
 
 def launch_chromium(widget=None, event=None):
     user_name = get_user_unsudoed()
-    os.system('su ' + user_name + ' -c chromium')
+    utils.run_bg('su - ' + user_name + ' -c chromium')
 
 
 def network_info():

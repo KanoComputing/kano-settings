@@ -1,0 +1,6 @@
+#
+# Entries defined below are meant to be hidden from PCMANFM left pane
+#
+
+KERNEL=="mmcblk0p1", ENV{UDISKS_PRESENTATION_HIDE}="1"
+KERNEL=="mmcblk0p2", ENV{UDISKS_PRESENTATION_HIDE}="1"
