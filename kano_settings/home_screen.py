@@ -85,11 +85,14 @@ class HomeScreen(TopBarTemplate):
                     break
             row += 1
 
+        align = Gtk.Alignment(xscale=0, yscale=0, yalign=0.5, xalign=0.5)
+        align.add(self.table)
+
         # for scroll bar
         self.scrolledwindow = ScrolledWindow()
         self.scrolledwindow.set_hexpand(True)
         self.scrolledwindow.set_vexpand(True)
-        self.scrolledwindow.add_with_viewport(self.table)
+        self.scrolledwindow.add_with_viewport(align)
         self.scrolledwindow.set_size_request(self.width, self.height)
 
         # This is to update the introdction text, so that if the settings are modified and then we go back to the
