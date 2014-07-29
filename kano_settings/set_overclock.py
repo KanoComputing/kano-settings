@@ -103,6 +103,8 @@ class SetOverclock(RadioButtonTemplate):
         # Tell user to reboot to see changes
         constants.need_reboot = True
 
+        self.win.go_to_home()
+
     def current_setting(self):
         f = open(self.boot_config_file, 'r')
         file_string = str(f.read())
