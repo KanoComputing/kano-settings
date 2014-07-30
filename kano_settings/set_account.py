@@ -41,9 +41,11 @@ class SetAccount(TopBarTemplate):
 
         self.add_button = KanoButton("ADD ACCOUNT")
         self.add_button.set_size_request(200, 44)
+        self.add_button.connect("button-release-event", self.add_account)
 
         self.remove_button = KanoButton("REMOVE ACCOUNT", color="red")
         self.remove_button.set_size_request(200, 44)
+        self.remove_button.connect("button-release-event", self.remove_account_dialog)
 
         button_container = Gtk.Box()
         button_container.pack_start(self.add_button, False, False, 10)
