@@ -18,103 +18,36 @@ if __name__ == '__main__' and __package__ is None:
         sys.path.append(dir_path)
 
 import kano_settings.constants as constants
-import kano_settings.components.default_intro as default_intro
+from kano_settings.home_screen import HomeScreen
 from kano.network import is_internet
-from kano.gtk3.buttons import KanoButton
-from kano.gtk3.top_bar import TopBar
 from kano.gtk3.apply_styles import apply_styles
 from kano.gtk3.application_window import ApplicationWindow
-import kano.gtk3.kano_dialog as kano_dialog
 
-# storing completed in kano-profile
-from kano_profile.apps import load_app_state_variable
-
-win = None
 MAX_STATE = 6
 init_state = -1
 
 
 # Window class
 class MainWindow(ApplicationWindow):
-    grid = None
-    box = None
     state = 0
+    last_level_visited = 0
+    width = 680
+    height = 405
 
     def __init__(self):
-        global grid, box, win, init_state
 
-        self.last_level_visited = 0
-
-        WINDOW_WIDTH = 680
-        WINDOW_HEIGHT = 405
-
-        # Create main window
-        ApplicationWindow.__init__(self, "Kano Settings", WINDOW_WIDTH, WINDOW_HEIGHT)
-
-        # Main container of the window
-        self.grid = Gtk.Grid()
-
-        self.set_icon_name("kano-settings")
-
-        # Content that changes between levels
-        self.changeable_content = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        self.changeable_content.props.halign = Gtk.Align.CENTER
-
-        self.top_bar = TopBar(title="Settings", window_width=680)
-        self.top_bar.close_button.connect("clicked", self.close_window)
-
-        # Check for internet
         constants.has_internet = is_internet()
 
-        # Init
-        self.button = KanoButton()
-        self.button.pack_and_align()
+        ApplicationWindow.__init__(self, "Kano Settings", self.width, self.height)
+        self.set_icon_name("kano-settings")
+        HomeScreen(self)
 
-        # This was done here to control the main button text  depending on in default_intro.py and first_run.py (deprecated)
-        self.button.set_label("APPLY CHANGES")
-        self.run_through = default_intro.Default_Intro(self, WINDOW_HEIGHT, WINDOW_WIDTH, self.top_bar.height)
-        self.top_bar.disable_next()
-        if init_state >= 0:
-            self.run_through.go_to_level_given_state(init_state)
-        else:
-            self.top_bar.disable_prev()
+    def clear_win(self):
+        self.remove_main_widget()
 
-        self.top_bar.next_button.connect("button_press_event", self.run_through.on_next)
-        self.top_bar.prev_button.connect("button_press_event", self.run_through.on_prev)
-        self.button.connect('button_press_event', self.run_through.update)
-        self.button.connect('key_press_event', self.run_through.update)
-
-        self.grid.attach(self.top_bar, 0, 0, 1, 1)
-        self.grid.attach(self.changeable_content, 0, 2, 1, 1)
-        self.grid.set_row_spacing(0)
-        self.set_main_widget(self.grid)
-
-    # On closing window, will alert if any of the listed booleans are True
-    def close_window(self, event="delete-event", button=None):
-        if constants.need_reboot:
-            if load_app_state_variable('kano-settings', 'completed') == 1:
-                kdialog = kano_dialog.KanoDialog(
-                    "Reboot?",
-                    "Your Kano needs to reboot for changes to apply",
-                    {
-                        "REBOOT NOW": {
-                            "return_value": 1,
-                            "color": "orange"
-                        },
-                        "LATER": {
-                            "return_value": 0,
-                            "color": "grey"
-                        }
-                    },
-                    parent_window=self
-                )
-
-                kdialog.set_action_background("grey")
-                response = kdialog.run()
-                if response == 1:
-                    os.system("sudo reboot")
-
-        Gtk.main_quit()
+    def go_to_home(self, widget=None, event=None):
+        self.clear_win()
+        HomeScreen(self)
 
 
 def main():

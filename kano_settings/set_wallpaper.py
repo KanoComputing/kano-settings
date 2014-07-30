@@ -8,25 +8,22 @@
 
 import os
 from gi.repository import Gtk, GdkPixbuf
-import kano_settings.components.fixed_size_box as fixed_size_box
-from kano.gtk3.scrolled_window import ScrolledWindow
+from kano_settings.templates import ScrolledWindowTemplate
 from kano.logging import logger
 from .config_file import get_setting, set_setting
 from kano_profile.badges import calculate_badges
-
 
 wallpaper_path = "/usr/share/kano-desktop/wallpapers/"
 padlock_path = "/usr/share/kano-settings/media/Icons/padlock.png"  # needs to be 95x95
 kdeskrc_default = "/usr/share/kano-desktop/kdesk/.kdeskrc"
 kdeskrc_home = "/home/%s/.kdeskrc"
-
 name_pattern = "-4-3.png"
 
 
-class Wallpaper():
+class SetWallpaper(ScrolledWindowTemplate):
 
-    def __init__(self, button):
-        self.apply_button = button
+    def __init__(self, win):
+        ScrolledWindowTemplate.__init__(self, "Choose your background", "", "APPLY CHANGES")
 
         NUMBER_OF_ROWS = 2
         NUMBER_OF_COLUMNS = 4
@@ -34,6 +31,13 @@ class Wallpaper():
         ROW_PADDING = 0
         ICON_WIDTH = 90
         ICON_HEIGHT = 90
+
+        self.win = win
+        self.win.set_main_widget(self)
+
+        self.kano_button.connect("button-release-event", self.apply_changes)
+        self.top_bar.enable_prev()
+        self.top_bar.set_prev_callback(self.win.go_to_home)
 
         self.table = Gtk.Table(NUMBER_OF_ROWS, NUMBER_OF_COLUMNS, True)
         self.table.set_row_spacings(ROW_PADDING)
@@ -74,9 +78,9 @@ class Wallpaper():
 
         # the wallpaper thumbnails will be inside a table which we put
         # into a scrollable window
-        self.scrolled_window = ScrolledWindow()
-        self.scrolled_window.add_with_viewport(self.table)
-        self.scrolled_window.set_size_request(520, 220)
+        self.sw.add_with_viewport(self.table)
+
+        self.win.show_all()
 
     def add_wallpaper_to_table(self, name, width, height, unlocked):
         # recreate padlock overlay here becuase otherwise it's parent gets set by the class
@@ -136,9 +140,9 @@ class Wallpaper():
 
         if self.wallpapers[image_name]['unlocked']:
             self.wallpapers[image_name]['selected'] = True
-            self.apply_button.set_sensitive(True)
+            self.kano_button.set_sensitive(True)
         else:
-            self.apply_button.set_sensitive(False)
+            self.kano_button.set_sensitive(False)
 
     def read_config(self):
         return get_setting("Wallpaper")
@@ -178,7 +182,11 @@ class Wallpaper():
                     'unlocked': True
                 }
 
-wallpaper = None
+    def apply_changes(self, button, event):
+        image_name = self.get_selected()
+        change_wallpaper(wallpaper_path, image_name)
+        self.update_config()
+        self.win.go_to_home()
 
 
 def change_wallpaper(path, name):
@@ -220,30 +228,3 @@ def change_wallpaper(path, name):
     cmd = 'sudo -u %s kdesk -w' % USER
     os.system(cmd)
     return 0
-
-
-def activate(_win, box, button):
-    global wallpaper
-
-    title = Gtk.Label("Choose your background")
-    title.get_style_context().add_class('title')
-
-    wallpaper = Wallpaper(button)
-    settings = fixed_size_box.Fixed()
-    settings.box.pack_start(wallpaper.scrolled_window, False, False, 10)
-
-    # Add apply changes button under the main settings content
-    box.pack_start(title, False, False, 0)
-    box.pack_start(settings.box, False, False, 0)
-    box.pack_start(button.align, False, False, 0)
-    button.set_sensitive(True)
-
-    _win.show_all()
-
-
-def apply_changes(button):
-    global wallpaper
-
-    image_name = wallpaper.get_selected()
-    change_wallpaper(wallpaper_path, image_name)
-    wallpaper.update_config()
