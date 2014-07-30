@@ -31,7 +31,7 @@ class HomeScreen(TopBarTemplate):
     custom_info = ["Keyboard-country-human", "Mouse", "Audio", None, None, "Overclocking", None,
                    "Wallpaper", "Font"]
 
-    def __init__(self, win):
+    def __init__(self, win, screen_number=None):
         TopBarTemplate.__init__(self)
 
         self.win = win
@@ -43,6 +43,10 @@ class HomeScreen(TopBarTemplate):
 
         self.generate_grid()
         self.pack_start(self.scrolledwindow, False, False, 0)
+
+        if screen_number is not None:
+            self.win.clear_win()
+            self.state_to_widget(screen_number)(self.win)
 
         self.win.show_all()
 
