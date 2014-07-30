@@ -174,28 +174,26 @@ class SetPassword(Template):
             # Verify the current password in the first text box
             # Get current username
             username, e, num = utils.run_cmd("echo $SUDO_USER")
+
             # Remove trailing newline character
             username = username.rstrip()
 
             if not pam.authenticate(username, old_password):
                 title = "Could not change password"
                 description = "Your old password is incorrect!"
-                #response = create_dialog(message1="Could not change password", message2="Your old password is incorrect!")
-                #print response
 
             # If the two new passwords match
             elif new_password1 == new_password2:
                 out, e, cmdvalue = utils.run_cmd("echo $SUDO_USER:%s | chpasswd" % (new_password1))
+
                 # if password is not changed
                 if cmdvalue != 0:
                     title = "Could not change password"
                     description = "Your new password is not long enough or contains special characters."
-                    #response = create_dialog("Could not change password", "Your new password is not long enough or contains special characters.  Try again.")
                 else:
                     title = "Password changed!"
                     description = ""
             else:
-                #response = create_dialog("Could not change password", "Your new passwords don't match!  Try again")
                 title = "Could not change password"
                 description = "Your new passwords don't match!  Try again"
 
