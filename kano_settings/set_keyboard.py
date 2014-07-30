@@ -78,8 +78,6 @@ class SetKanoKeyboard(Template):
 
 class SetKeyboard(Template):
     selected_layout = None
-    selected_country = None
-    selected_variant = None
     selected_continent_index = 1
     selected_country_index = 21
     selected_variant_index = 0
@@ -258,6 +256,8 @@ class SetKeyboard(Template):
         self.fill_countries_combo(self.selected_continent_hr)
 
     def on_country_changed(self, combo):
+        global selected_country
+
         country = None
         tree_iter = combo.get_active_iter()
 
@@ -274,7 +274,7 @@ class SetKeyboard(Template):
         self.selected_country_index = combo.get_active()
 
         # Refresh variants combo box
-        self.selected_country = keyboard_config.find_country_code(country, self.selected_layout)
+        selected_country = keyboard_config.find_country_code(country, self.selected_layout)
         variants = keyboard_config.find_keyboard_variants(selected_country)
         self.variants_combo.append_text("generic")
         if variants is not None:
@@ -284,13 +284,15 @@ class SetKeyboard(Template):
         self.set_variants_to_generic()
 
     def on_variants_changed(self, combo):
+        global selected_variant
+
         tree_iter = combo.get_active_iter()
         if tree_iter is not None:
             model = combo.get_model()
             variant = model[tree_iter][0]
             self.kano_button.set_sensitive(True)
             if variant == "generic":
-                self.selected_variant = self.selected_variant_hr = str(variant)
+                selected_variant = self.selected_variant_hr = str(variant)
                 self.selected_variant_index = 0
                 return
             # Select the variant code
@@ -298,7 +300,7 @@ class SetKeyboard(Template):
             if variants is not None:
                 for v in variants:
                     if v[0] == variant:
-                        self.selected_variant = v[1]
+                        selected_variant = v[1]
                         self.selected_variant_index = combo.get_active()
                         self.selected_variant_hr = str(variant)
 
