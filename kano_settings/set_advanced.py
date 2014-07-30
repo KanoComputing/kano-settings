@@ -14,7 +14,6 @@ from advanced.parental import get_parental_enabled, set_parental_enabled
 
 
 class SetAdvanced(CheckButtonTemplate):
-    debug_mode = None
 
     def __init__(self, win):
         CheckButtonTemplate.__init__(self, "Advanced options", "Toggle parental lock and debug mode", "APPLY CHANGES",
@@ -23,10 +22,13 @@ class SetAdvanced(CheckButtonTemplate):
         self.set_button_spacing(10)
         self.win = win
 
+        debug_mode = self.get_stored_debug_mode()
+
         self.parental_button = self.get_button(0)
         self.parental_button.set_active(get_parental_enabled())
         self.parental_button.connect("clicked", self.go_to_password)
         self.debug_button = self.get_button(1)
+        self.debug_button.set_active(debug_mode)
         self.debug_button.connect("clicked", self.on_debug_toggled)
 
         self.win.set_main_widget(self)
@@ -35,7 +37,6 @@ class SetAdvanced(CheckButtonTemplate):
         self.top_bar.enable_prev()
 
         self.kano_button.connect("button-release-event", self.apply_changes)
-        self.debug_mode = self.get_stored_debug_mode()
         self.win.show_all()
 
     def go_to_password(self, event=None):
@@ -44,7 +45,8 @@ class SetAdvanced(CheckButtonTemplate):
 
     def apply_changes(self, button, event):
         old_debug_mode = self.get_stored_debug_mode()
-        if self.debug_mode == old_debug_mode:
+        new_debug_mode = self.debug_button.get_active()
+        if new_debug_mode == old_debug_mode:
             logging.Logger().debug('skipping debug mode change')
             return
 
@@ -62,19 +64,14 @@ class SetAdvanced(CheckButtonTemplate):
         kdialog = KanoDialog("Debug mode", msg)
         kdialog.run()
 
-        # update new debug mode
-        self.debug_mode = self.get_stored_debug_mode()
-
         self.kano_button.set_sensitive(False)
         self.win.go_to_home()
 
     def on_debug_toggled(self, checkbutton):
-        self.debug_mode = checkbutton.get_active()
         self.kano_button.set_sensitive(True)
 
     def get_stored_debug_mode(self):
         ll = logging.Logger().get_log_level()
-        self.debug_mode = ll == 'debug'
         logging.Logger().debug('stored debug-mode: {}'.format(self.debug_mode))
         return ll == 'debug'
 
