@@ -50,7 +50,7 @@ class SetAdvanced(CheckButtonTemplate):
             logging.Logger().debug('skipping debug mode change')
             return
 
-        if self.debug_mode:
+        if new_debug_mode:
             # set debug on:
             logging.set_system_log_level('debug')
             logging.Logger().info('setting logging to debug')
@@ -72,8 +72,9 @@ class SetAdvanced(CheckButtonTemplate):
 
     def get_stored_debug_mode(self):
         ll = logging.Logger().get_log_level()
-        logging.Logger().debug('stored debug-mode: {}'.format(self.debug_mode))
-        return ll == 'debug'
+        debug_mode = ll == 'debug'
+        logging.Logger().debug('stored debug-mode: {}'.format(debug_mode))
+        return debug_mode
 
 
 class SetPassword(Template):
