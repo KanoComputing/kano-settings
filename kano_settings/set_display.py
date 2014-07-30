@@ -15,16 +15,20 @@ from kano_settings.boot_config import set_config_comment
 from kano.utils import run_cmd
 from kano_settings.display.functions import get_model, list_supported_modes, set_hdmi_mode, read_hdmi_mode, \
     find_matching_mode, get_overscan_status, write_overscan_values, set_overscan_status
+from kano_settings.data import get_data
 
 
 class SetDisplay(Template):
+    data = get_data("SET_DISPLAY")
 
     def __init__(self, win):
+        title = self.data["LABEL_1"]
+        kano_label = self.data["KANO_BUTTON"]
 
          # Get display name
         self.model = get_model()
 
-        Template.__init__(self, "Display", self.model, "APPLY CHANGES")
+        Template.__init__(self, title, self.model, kano_label)
 
         self.win = win
         self.win.set_main_widget(self)
@@ -107,9 +111,14 @@ class SetDisplay(Template):
 
 class SetOverscan(Template):
     overscan_pipe = "/var/tmp/overscan"
+    data = get_data("SET_OVERSCAN")
 
     def __init__(self, win):
-        Template.__init__(self, "Overscan", "", "APPLY CHANGES")
+        title = self.data["LABEL_1"]
+        description = self.data["LABEL_2"]
+        kano_label = self.data["KANO_BUTTON"]
+
+        Template.__init__(self, title, description, kano_label)
         self.kano_button.connect("button-release-event", self.apply_changes)
 
         self.win = win
@@ -143,7 +152,7 @@ class SetOverscan(Template):
         # Advance button
         self.advance_button = OrangeButton()
         self.advance_button.connect("button_press_event", self.go_to_advance)
-        self.advance_button.set_label("Advance")
+        self.advance_button.set_label("Advanced")
         self.grid.attach(self.advance_button, 0, 2, 1, 1)
 
         # Reset button

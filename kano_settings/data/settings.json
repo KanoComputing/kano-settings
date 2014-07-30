@@ -1,0 +1,127 @@
+{
+  "SET_AUDIO": {
+    "LABEL_1": "Audio",
+    "LABEL_2": "Get sound",
+    "KANO_BUTTON": "APPLY CHANGES"
+  },
+  "SET_ACCOUNT": {
+    "LABEL_1": "System account settings",
+    "LABEL_2": "Set your account",
+    "KANO_BUTTON": "APPLY CHANGES"
+  },
+  "SET_ADVANCED": {
+    "LABEL_1": "Advanced options",
+    "LABEL_2": "Toggle parental lock and debug mode",
+    "KANO_BUTTON": "APPLY CHANGES",
+    "OPTION_1": "Parental lock",
+    "DESCRIPTION_1": "Restrict online content",
+    "OPTION_2": "Debug mode",
+    "DESCRIPTION_2": "Having problems? Enable this mode and report a bug"
+  },
+  "PARENTAL_LOCK": {
+      "LABEL_1": "Set up your parental lock",
+      "LABEL_2": "Enter your password",
+      "KANO_BUTTON": "LOCK"
+  },
+  "PARENTAL_UNLOCK": {
+      "LABEL_1": "Unlock the parental lock",
+      "LABEL_2": "Choose a password",
+      "KANO_BUTTON": "UNLOCK"
+  },
+  "SET_DISPLAY": {
+    "LABEL_1": "Display",
+    "LABEL_2": "",
+    "KANO_BUTTON": "APPLY CHANGES"
+  },
+  "SET_OVERSCAN": {
+    "LABEL_1": "Overscan",
+    "LABEL_2": "",
+    "KANO_BUTTON": "APPLY CHANGES"
+  },
+  "SET_KEYBOARD": {
+    "LABEL_1": "Keyboard",
+    "LABEL_2": "Where do you live? So I can set your keyboard",
+    "ORANGE_TEXT": "Advanced options",
+    "KANO_BUTTON": "APPLY CHANGES"
+  },
+  "KANO_KEYBOARD": {
+    "LABEL_1": "Keyboard",
+    "LABEL_2": "Kano keyboard detected",
+    "ORANGE_TEXT": "Layout options",
+    "KANO_BUTTON": "APPLY CHANGES"
+  },
+  "SET_MOUSE": {
+    "LABEL_1": "Mouse",
+    "LABEL_2": "Pick your speed",
+    "KANO_BUTTON": "APPLY CHANGES",
+    "OPTION_1": "Slow",
+    "DESCRIPTION_1": "REQUIRES LESS MOVE PRECISION",
+    "OPTION_2": "Normal",
+    "DESCRIPTION_2": "THE DEFAULT SETTING",
+    "OPTION_3": "Fast",
+    "DESCRIPTION_3": "BETTER FOR WIDE SCREENS"
+  },
+  "SET_FONT" : {
+    "LABEL_1": "Font",
+    "LABEL_2": "Pick text size",
+    "OPTION_1": "Small",
+    "DESCRIPTION_1": "IDEAL FOR SMALL SCREENS",
+    "OPTION_2": "Normal",
+    "DESCRIPTION_2": "THE DEFAULT SETTING",
+    "OPTION_3": "Big",
+    "DESCRIPTION_3": "BETTER FOR BIG SCREENS",
+    "KANO_BUTTON": "APPLY"
+  },
+  "SET_WIFI": {
+    "LAUNCH_BROWSER": "Browser Login",
+    "LAUNCH_WIFI": "Configure"
+  },
+  "SET_WIFI_ETHERNET" : {
+    "LABEL_1": "Connection found!",
+    "LABEL_2": "Great",
+    "KANO_BUTTON": "FINISH",
+    "IMG_FILENAME": "/Graphics/Internet-ethernetConnection.png"
+  },
+  "SET_WIFI_WIFI" : {
+    "LABEL_1": "Connection found!",
+    "LABEL_2": "Great",
+    "KANO_BUTTON": "FINISH",
+    "LAUNCH_PROXY": "Proxy",
+    "IMG_FILENAME": "/Graphics/Internet-Connection.png"
+  },
+  "SET_WIFI_OFFLINE" : {
+    "LABEL_1": "Get connected",
+    "LABEL_2": "Let's set up Internet",
+    "CONNECTION_BUTTON": "WIFI",
+    "KANO_BUTTON": "SKIP THIS STEP",
+    "IMG_FILENAME": "/Graphics/Internet-noConnection.png"
+  },
+  "SET_PROXY": {
+    "LABEL_1": "Proxy",
+    "LABEL_2": "Connect via a friend",
+    "KANO_BUTTON": "CREATE PROXY"
+  },
+  "SET_WALLPAPER": {
+    "LABEL_1": "Choose your background",
+    "LABEL_2": "",
+    "KANO_BUTTON": "APPLY YOUR WALLPAPER"
+  },
+  "SET_OVERCLOCK" : {
+    "LABEL_1": "Overclocking",
+    "LABEL_2": "Let's put some power here",
+    "KANO_BUTTON": "APPLY",
+    "OPTION_1": "None",
+    "DESCRIPTION_1": "700MHZ ARM, 250MHZ CORE, 400MHZ SDRAM, 0 OVERVOLT",
+    "OPTION_2": "Modest",
+    "DESCRIPTION_2": "800MHZ ARM, 300MHZ CORE, 400MHZ SDRAM, 0 OVERVOLT",
+    "OPTION_3": "Medium",
+    "DESCRIPTION_3": "900MHZ ARM, 333MHZ CORE, 450MHZ SDRAM, 2 OVERVOLT",
+    "OPTION_4": "High",
+    "DESCRIPTION_4": "950MHZ ARM, 450MHZ CORE, 450MHZ SDRAM, 6 OVERVOLT"
+  },
+  "SET_PASSWORD" : {
+    "LABEL_1": "Change your password",
+    "LABEL_2": "Keep out the baddies!",
+    "KANO_BUTTON": "CHANGE PASSWORD"
+  }
+}

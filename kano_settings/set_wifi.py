@@ -15,10 +15,15 @@ import kano_settings.constants as constants
 from kano_settings.wifi.functions import network_info, launch_chromium, is_enabled, set_settings, enable, disable
 from kano.network import is_internet
 from kano_settings.config_file import get_setting, set_setting
+from kano_settings.data import get_data
 
 
 class SetWifi(Template):
     wifi_connection_attempted = False
+    data = get_data("SET_WIFI")
+    data_wifi = get_data("SET_WIFI_WIFI")
+    data_ethernet = get_data("SET_WIFI_ETHERNET")
+    data_offline = get_data("SET_WIFI_OFFLINE")
 
     def __init__(self, win):
         Template.__init__(self, "", "to be set", "FINISH")
@@ -60,10 +65,6 @@ class SetWifi(Template):
         container.pack_start(internet_img, False, False, 2)
         self.box.pack_start(container, False, False, 0)
 
-        self.add_connection = KanoButton("WIFI")
-        self.add_connection.connect("button_press_event", self.configure_wifi)
-        self.add_connection.connect("key_press_event", self.configure_wifi)
-
         if constants.has_internet:
             self.kano_button.set_label("FINISH")
 
@@ -75,8 +76,6 @@ class SetWifi(Template):
             ip = network_info()[1]
 
             internet_img.set_from_file(constants.media + "/Graphics/Internet-Connection.png")
-            self.title.title.set_text("Connection found!")
-            self.title.description.set_text("Great!")
 
             internet_status.set_text(network)
             internet_action.set_text(ip)
@@ -88,10 +87,18 @@ class SetWifi(Template):
             configure_container.pack_start(divider_label, False, False, 3)
 
             if network == "Ethernet":
+                title = self.data_ethernet["LABEL_1"]
+                description = self.data_ethernet["LABEL_2"]
+                kano_label = self.data_ethernet["KANO_BUTTON"]
+
                 # Change to ethernet image here
                 internet_img.set_from_file(constants.media + "/Graphics/Internet-ethernetConnection.png")
 
             else:
+                title = self.data_wifi["LABEL_1"]
+                description = self.data_wifi["LABEL_2"]
+                kano_label = self.data_wifi["KANO_BUTTON"]
+
                 configure_button = OrangeButton("Configure")
                 configure_button.connect("button_press_event", self.configure_wifi)
                 configure_container.pack_start(configure_button, False, False, 0)
@@ -105,13 +112,22 @@ class SetWifi(Template):
             container.pack_start(self.disable_proxy, False, False, 0)
 
         else:
+            title = self.data_offline["LABEL_1"]
+            description = self.data_offline["LABEL_2"]
+            kano_label = self.data_offline["KANO_BUTTON"]
+
+            self.add_connection = KanoButton("WIFI")
+            self.add_connection.connect("button_press_event", self.configure_wifi)
+            self.add_connection.connect("key_press_event", self.configure_wifi)
             status_box.pack_start(self.add_connection, False, False, 0)
             internet_img.set_from_file(constants.media + "/Graphics/Internet-noConnection.png")
             self.title.title.set_text("Get connected")
             self.title.description.set_text("Let's set up Internet")
             internet_status.set_text("No network found")
-            self.kano_button.set_label("SKIP THIS STEP")
+            self.kano_button.set_label(kano_label)
 
+        self.title.title.set_text(title)
+        self.title.description.set_text(description)
         self.win.show_all()
 
     def go_to_proxy(self, widget, event):
@@ -136,14 +152,20 @@ class SetWifi(Template):
 
 
 class SetProxy(TopBarTemplate):
+    data = get_data("SET_PROXY")
+
     def __init__(self, win):
+        title = self.data["LABEL_1"]
+        description = self.data["LABEL_2"]
+        kano_label = self.data["KANO_BUTTON"]
+
         TopBarTemplate.__init__(self)
 
         self.win = win
         self.win.set_main_widget(self)
 
-        self.heading = Heading("Proxy", "Connect via a friend")
-        self.kano_button = KanoButton("CREATE PROXY")
+        self.heading = Heading(title, description)
+        self.kano_button = KanoButton(kano_label)
 
         grid = Gtk.Grid(column_homogeneous=False, column_spacing=10, row_spacing=10)
 
