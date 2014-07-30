@@ -17,6 +17,7 @@ from .config_file import get_setting, set_setting
 from kano.gtk3.buttons import OrangeButton
 from kano.utils import detect_kano_keyboard
 from kano.logging import logger
+from kano_settings.data import get_data
 
 selected_country = None
 selected_variant = None
@@ -46,8 +47,15 @@ def choose_keyboard_screen(win):
 
 
 class SetKanoKeyboard(Template):
+    data = get_data("KANO_KEYBOARD")
+
     def __init__(self, win):
-        Template.__init__(self, "Keyboard", "Kano keyboard detected", "BACK")
+        title = self.data["LABEL_1"]
+        description = self.data["LABEL_2"]
+        kano_label = self.data["KANO_BUTTON"]
+
+        Template.__init__(self, title, description, kano_label)
+
         self.win = win
         self.win.set_main_widget(self)
         self.top_bar.enable_prev()
@@ -87,9 +95,14 @@ class SetKeyboard(Template):
     continents = ['Africa', 'America', 'Asia', 'Australia', 'Europe', 'Others']
     kano_keyboard = True
 
-    def __init__(self, win):
+    data = get_data("SET_KEYBOARD")
 
-        Template.__init__(self, "Keyboard", "Where do you live? So I can set your keyboard", "APPLY CHANGES")
+    def __init__(self, win):
+        title = self.data["LABEL_1"]
+        description = self.data["LABEL_2"]
+        kano_label = self.data["KANO_BUTTON"]
+
+        Template.__init__(self, title, description, kano_label)
 
         self.win = win
         self.win.set_main_widget(self)
@@ -106,9 +119,6 @@ class SetKeyboard(Template):
             self.top_bar.set_prev_callback(self.win.go_to_home)
 
         self.kano_button.connect("button-release-event", self.apply_changes)
-
-        # change text on button
-        self.kano_button.set_label("APPLY CHANGES")
 
         # Make sure continue button is enabled
         self.kano_button.set_sensitive(False)

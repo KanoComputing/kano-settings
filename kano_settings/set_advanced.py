@@ -12,13 +12,23 @@ from kano import logging
 from kano_settings.templates import CheckButtonTemplate, Template
 from advanced.parental import get_parental_enabled, set_parental_enabled
 
+from kano_settings.data import get_data
+
 
 class SetAdvanced(CheckButtonTemplate):
+    data = get_data("SET_ADVANCED")
 
     def __init__(self, win):
-        CheckButtonTemplate.__init__(self, "Advanced options", "Toggle parental lock and debug mode", "APPLY CHANGES",
-                                     [["Parental lock", "Restrict online content"],
-                                      ["Debug mode", "Having problems? Enable this mode and report a bug"]])
+        title = self.data["LABEL_1"]
+        description = self.data["LABEL_2"]
+        kano_label = self.data["KANO_BUTTON"]
+        option1 = self.data["OPTION_1"]
+        desc1 = self.data["DESCRIPTION_1"]
+        option2 = self.data["OPTION_2"]
+        desc2 = self.data["DESCRIPTION_2"]
+        CheckButtonTemplate.__init__(self, title, description, kano_label,
+                                     [[option1, desc1],
+                                      [option2, desc2]])
         self.set_button_spacing(10)
         self.win = win
 
@@ -78,6 +88,8 @@ class SetAdvanced(CheckButtonTemplate):
 
 
 class SetPassword(Template):
+    data_lock = get_data("PARENTAL_LOCK")
+    data_unlock = get_data("PARENTAL_UNLOCK")
 
     def __init__(self, win):
 
@@ -90,7 +102,11 @@ class SetPassword(Template):
 
         # if enabled, turning off
         if self.parental_enabled:
-            Template.__init__(self, "Unlock the parental lock", "Enter your password", "UNLOCK")
+            title = self.data_unlock["LABEL_1"]
+            description = self.data_unlock["LABEL_2"]
+            kano_label = self.data_unlock["KANO_BUTTON"]
+
+            Template.__init__(self, title, description, kano_label)
             self.entry = Gtk.Entry()
             self.entry.set_size_request(300, 44)
             self.entry.props.placeholder_text = "Enter your selected password"
@@ -100,7 +116,11 @@ class SetPassword(Template):
 
         # if disabled, turning on
         else:
-            Template.__init__(self, "Set up your parental lock", "Choose a password", "LOCK")
+            title = self.data_lock["LABEL_1"]
+            description = self.data_lock["LABEL_2"]
+            kano_label = self.data_lock["KANO_BUTTON"]
+
+            Template.__init__(self, title, description, kano_label)
             self.entry1 = Gtk.Entry()
             self.entry1.set_size_request(300, 44)
             self.entry1.props.placeholder_text = "Select password"

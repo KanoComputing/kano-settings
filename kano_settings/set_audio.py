@@ -11,15 +11,21 @@ import kano_settings.constants as constants
 from kano_settings.templates import Template
 from kano.logging import logger
 from .config_file import get_setting, set_setting, file_replace
+from kano_settings.data import get_data
 
 
 class SetAudio(Template):
     HDMI = False
     rc_local_path = "/etc/rc.audio"
     config_txt_path = "/boot/config.txt"
+    data = get_data("SET_AUDIO")
 
     def __init__(self, win):
-        Template.__init__(self, "Audio", "Get sound", "APPLY CHANGES")
+        title = self.data["LABEL_1"]
+        description = self.data["LABEL_2"]
+        kano_label = self.data["KANO_BUTTON"]
+
+        Template.__init__(self, title, description, kano_label)
 
         self.win = win
         self.win.set_main_widget(self)

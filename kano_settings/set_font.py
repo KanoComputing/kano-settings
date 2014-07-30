@@ -11,6 +11,7 @@ from kano.utils import get_user_unsudoed
 from kano_settings.templates import RadioButtonTemplate
 from kano.logging import logger
 from .config_file import get_setting, set_setting, file_replace
+from kano_settings.data import get_data
 
 selected_button = 0
 initial_button = 0
@@ -27,11 +28,24 @@ class SetFont(RadioButtonTemplate):
     selected_button = 0
     initial_button = 0
 
+    data = get_data("SET_FONT")
+
     def __init__(self, win):
-        RadioButtonTemplate.__init__(self, "Font", "Pick text size", "APPLY CHANGES",
-                                     [["Small", "IDEAL FOR SMALL SCREENS"],
-                                      ["Normal", "THE DEFAULT SETTING"],
-                                      ["Big", "BETTER FOR BIG SCREENS"]])
+
+        title = self.data["LABEL_1"]
+        description = self.data["LABEL_2"]
+        kano_label = self.data["KANO_BUTTON"]
+        option1 = self.data["OPTION_1"]
+        desc1 = self.data["DESCRIPTION_1"]
+        option2 = self.data["OPTION_2"]
+        desc2 = self.data["DESCRIPTION_2"]
+        option3 = self.data["OPTION_3"]
+        desc3 = self.data["DESCRIPTION_3"]
+
+        RadioButtonTemplate.__init__(self, title, description, kano_label,
+                                     [[option1, desc1],
+                                      [option2, desc2],
+                                      [option3, desc3]])
 
         self.win = win
         self.win.set_main_widget(self)
