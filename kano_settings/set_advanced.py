@@ -71,7 +71,7 @@ class SetAdvanced(CheckButtonTemplate):
             logging.Logger().info('setting logging to error')
             msg = "De-activated"
 
-        kdialog = KanoDialog("Debug mode", msg)
+        kdialog = KanoDialog("Debug mode", msg, parent_window=self.win)
         kdialog.run()
 
         self.kano_button.set_sensitive(False)
@@ -196,7 +196,8 @@ class SetPassword(Template):
                     "return_value": 0,
                     "color": "red"
                 }
-            }
+            },
+            parent_window=self.win
         )
 
         response = kdialog.run()
@@ -228,7 +229,7 @@ class SetPassword(Template):
         else:
             heading = "Error"
 
-        kdialog = KanoDialog(heading, msg)
+        kdialog = KanoDialog(heading, msg, parent_window=self.win)
         kdialog.run()
 
         self.go_to_advanced()

@@ -79,7 +79,8 @@ class SetAccount(TopBarTemplate):
         if not hasattr(event, 'keyval') or event.keyval == 65293:
             # Bring in message dialog box
             kdialog = kano_dialog.KanoDialog("New account scheduled.",
-                                             "Reboot the system.")
+                                             "Reboot the system.",
+                                             parent_window=self.win)
             kdialog.run()
             # add new user command
             os.system("kano-init newuser")
@@ -101,6 +102,7 @@ class SetAccount(TopBarTemplate):
                         "return_value": 0
                     }
                 },
+                parent_window=self.win
             )
             response = kdialog.run()
             if response == -1:
@@ -198,7 +200,7 @@ class SetPassword(Template):
                 description = "Your new passwords don't match!  Try again"
 
             def done(title, description):
-                response = create_dialog(title, description)
+                response = create_dialog(title, description, self.win)
 
                 self.win.get_window().set_cursor(None)
                 self.kano_button.set_sensitive(True)
@@ -229,8 +231,9 @@ class SetPassword(Template):
         self.kano_button.set_sensitive(text1 != "" and text2 != "" and text3 != "")
 
 
-def create_dialog(message1="Could not change password", message2=""):
+def create_dialog(message1="Could not change password", message2="", win=None):
     kdialog = kano_dialog.KanoDialog(message1, message2,
-                                     {"TRY AGAIN": {"return_value": -1}, "GO BACK": {"return_value": 0, "color": "red"}})
+                                     {"TRY AGAIN": {"return_value": -1}, "GO BACK": {"return_value": 0, "color": "red"}},
+                                     parent_window=win)
     response = kdialog.run()
     return response
