@@ -355,6 +355,10 @@ if __name__ == '__main__':
             else:
                 wificache.save(essid, encryption, enckey)
 
+    netname, _, _, linked = is_connected(wiface)
+    if netname and linked:
+        subprocess.call(['typewriter_echo', '\n{{4 + }} {{3 Great! you are connected }}', '2', '2'])
+
     # Step 5: ping exercise
     # Check for redirection
     if not is_redirected():
@@ -374,7 +378,7 @@ if __name__ == '__main__':
             if not rc == 0:
                 subprocess.call(['typewriter_echo', '{{8 x }} {{7 Oops! It seems the Internet is not reachable... Don\'t worry, we can still play! }}', '2', '2'])
             else:
-                subprocess.call(['typewriter_echo', '\n{{4 + }} {{3 Great! Internet is working }}', '2', '2'])
+                subprocess.call(['typewriter_echo', '\n{{4 + }} {{3 Brilliant! Internet is working }}', '2', '2'])
     else:
         # Launch browser
         subprocess.call(['typewriter_echo', '\nLaunching the browser so you can log in', '2', '2'])
