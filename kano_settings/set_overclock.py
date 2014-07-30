@@ -48,6 +48,7 @@ class SetOverclock(RadioButtonTemplate):
 
         # Mode has no changed
         if self.initial_button == self.selected_button:
+            self.win.go_to_home()
             return
 
         config = "High"
