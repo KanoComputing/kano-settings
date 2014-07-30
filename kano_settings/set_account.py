@@ -56,6 +56,12 @@ class SetAccount(TopBarTemplate):
 
         accounts_heading = Heading("Accounts", "Add or remove accounts")
 
+        # Check if we already scheduled an account add or remove by checking the file
+        added_or_removed_account = os.path.exists(ADD_REMOVE_USER_PATH)
+        # Disable buttons if we already scheduled
+        if added_or_removed_account:
+            self.disable_buttons()
+
         self.pack_start(main_heading.container, False, False, 0)
         self.pack_start(self.pass_button.align, False, False, 0)
         self.pack_start(accounts_heading.container, False, False, 0)
