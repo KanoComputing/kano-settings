@@ -48,7 +48,6 @@ def choose_keyboard_screen(win):
 class SetKanoKeyboard(Template):
     def __init__(self, win):
         Template.__init__(self, "Keyboard", "Kano keyboard detected", "BACK")
-        print "entered set kano keyboard"
         self.win = win
         self.win.set_main_widget(self)
         self.top_bar.enable_prev()
