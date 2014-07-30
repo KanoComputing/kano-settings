@@ -54,6 +54,8 @@ static int plugin_constructor(Plugin *p, char **fp)
     /* create an icon */
     GtkWidget *icon = gtk_image_new_from_file(WIFI_ICON);
     plugin->icon = icon;
+
+    // setup a timer to update the icon internet status periodically - milliseconds
     plugin->timer = g_timeout_add(MINUTE * 1000, (GSourceFunc) internet_status, (gpointer) plugin);
 
     /* put it where it belongs */
@@ -100,16 +102,10 @@ static void plugin_destructor(Plugin *p)
 static gboolean internet_status(kano_internet_plugin_t *plugin)
 {
     // Execute is_internet command
-    plugin->internet_available = system("/usr/bin/is_internet");
-    // Update widget icon depending on internet status
-    if (plugin->internet_available == 0) {
-        gtk_image_set_from_file(GTK_IMAGE(plugin->icon), WIFI_ICON);
-    }
-    else {
-        gtk_image_set_from_file(GTK_IMAGE(plugin->icon), NO_INTERNET_ICON);
-    }
-
-    return (plugin->internet_available == 0);
+    gboolean internet = system("/usr/bin/is_internet");
+    plugin->internet_available = internet;
+    gtk_image_set_from_file(GTK_IMAGE(plugin->icon), internet ? NO_INTERNET_ICON : WIFI_ICON);
+    return TRUE;
 }
 
 static void launch_cmd(const char *cmd)
@@ -149,9 +145,13 @@ static gboolean show_menu(GtkWidget *widget, GdkEventButton *event, kano_interne
     gtk_menu_append(GTK_MENU(menu), header_item);
     gtk_widget_show(header_item);
 
-    gboolean internet = internet_status(plugin);
+    // update the internet icon status
+    internet_status(plugin);
 
-    if (internet) {
+    // find if we have internet, save status in the plugin
+    gboolean internet = plugin->internet_available;
+
+    if (internet == 0) {
         /* Internet working correctly */
         GtkWidget* internet_item = gtk_menu_item_new_with_label("Connected");
         gtk_menu_append(GTK_MENU(menu), internet_item);
