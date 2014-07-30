@@ -26,6 +26,8 @@ class SetWifi(Template):
         self.win = win
         self.win.set_main_widget(self)
 
+        self.kano_button.connect("button-release-event", self.win.go_to_home)
+
         constants.has_internet = is_internet()
 
         internet_img = Gtk.Image()
@@ -109,7 +111,6 @@ class SetWifi(Template):
             self.title.description.set_text("Let's set up Internet")
             internet_status.set_text("No network found")
             self.kano_button.set_label("SKIP THIS STEP")
-            self.kano_button.connect("button-release-event", self.win.go_to_home)
 
         self.win.show_all()
 
