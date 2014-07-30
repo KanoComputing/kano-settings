@@ -7,7 +7,8 @@
 #
 # Controls the UI of the account setting
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk, GObject
+import threading
 import os
 from kano.gtk3.heading import Heading
 from kano.utils import get_user_unsudoed, ensure_dir
@@ -158,33 +159,61 @@ class SetPassword(Template):
 
     def apply_changes(self, button, event):
 
-        response = 0
+        # This is a callback called by the main loop, so it's safe to
+        # manipulate GTK objects:
+        watch_cursor = Gdk.Cursor(Gdk.CursorType.WATCH)
+        self.win.get_window().set_cursor(watch_cursor)
+        self.kano_button.set_sensitive(False)
 
-        old_password = self.entry1.get_text()
-        new_password1 = self.entry2.get_text()
-        new_password2 = self.entry3.get_text()
+        def lengthy_process():
 
-        # Verify the current password in the first text box
-        # Get current username
-        username, e, num = utils.run_cmd("echo $SUDO_USER")
-        # Remove trailing newline character
-        username = username.rstrip()
+            old_password = self.entry1.get_text()
+            new_password1 = self.entry2.get_text()
+            new_password2 = self.entry3.get_text()
 
-        if not pam.authenticate(username, old_password):
-            response = create_dialog(message1="Could not change password", message2="Your old password is incorrect!")
-            print response
+            # Verify the current password in the first text box
+            # Get current username
+            username, e, num = utils.run_cmd("echo $SUDO_USER")
+            # Remove trailing newline character
+            username = username.rstrip()
 
-        # If the two new passwords match
-        elif new_password1 == new_password2:
-            out, e, cmdvalue = utils.run_cmd("echo $SUDO_USER:%s | chpasswd" % (new_password1))
-            # if password is not changed
-            if cmdvalue != 0:
-                response = create_dialog("Could not change password", "Your new password is not long enough or contains special characters.  Try again.")
-        else:
-            response = create_dialog("Could not change password", "Your new passwords don't match!  Try again")
+            if not pam.authenticate(username, old_password):
+                title = "Could not change password"
+                description = "Your old password is incorrect!"
+                #response = create_dialog(message1="Could not change password", message2="Your old password is incorrect!")
+                #print response
 
-        if response == 0:
-            self.go_to_accounts()
+            # If the two new passwords match
+            elif new_password1 == new_password2:
+                out, e, cmdvalue = utils.run_cmd("echo $SUDO_USER:%s | chpasswd" % (new_password1))
+                # if password is not changed
+                if cmdvalue != 0:
+                    title = "Could not change password"
+                    description = "Your new password is not long enough or contains special characters."
+                    #response = create_dialog("Could not change password", "Your new password is not long enough or contains special characters.  Try again.")
+                else:
+                    title = "Password changed!"
+                    description = ""
+            else:
+                #response = create_dialog("Could not change password", "Your new passwords don't match!  Try again")
+                title = "Could not change password"
+                description = "Your new passwords don't match!  Try again"
+
+            def done(title, description):
+                response = create_dialog(title, description)
+
+                self.win.get_window().set_cursor(None)
+                self.kano_button.set_sensitive(True)
+
+                self.clear_text()
+
+                if response == 0:
+                    self.go_to_accounts()
+
+            GObject.idle_add(done, title, description)
+
+        thread = threading.Thread(target=lengthy_process)
+        thread.start()
 
     def go_to_accounts(self, widget=None, event=None):
         self.win.clear_win()

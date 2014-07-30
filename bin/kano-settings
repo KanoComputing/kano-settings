@@ -10,7 +10,8 @@
 
 import os
 import sys
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GObject
+GObject.threads_init()
 
 if __name__ == '__main__' and __package__ is None:
     dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))

@@ -7,7 +7,6 @@
 #
 
 from gi.repository import Gtk, GObject
-GObject.threads_init()
 import threading
 import kano_settings.keyboard.keyboard_layouts as keyboard_layouts
 import kano_settings.keyboard.keyboard_config as keyboard_config
