@@ -1,7 +1,8 @@
 {
-  "name": "Settings",
-  "description": "Kanux system settings",
-  "help": "Crank up the volume, change your screen size and more in settings: the one-stop shop for setting up your Kano!",
+  "title": "Settings",
+  "tagline": "Kanux system settings",
+  "description": "Crank up the volume, change your screen size and more in settings: the one-stop shop for setting up your Kano!",
+  "slug": "settings",
 
   "icon": "kano-settings",
   "colour": "#EF752F",
@@ -9,5 +10,5 @@
 
   "packages": [],
   "dependencies": ["kano-settings"],
-  "exec": "sudo /usr/bin/kano-launcher /usr/bin/kano-settings settings"
+  "launch_command": "sudo /usr/bin/kano-launcher /usr/bin/kano-settings settings"
 }
