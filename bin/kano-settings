@@ -39,7 +39,7 @@ class MainWindow(ApplicationWindow):
 
         constants.has_internet = is_internet()
 
-        ApplicationWindow.__init__(self, "Kano Settings", self.width, self.height)
+        ApplicationWindow.__init__(self, "Settings", self.width, self.height)
         self.set_icon_name("kano-settings")
         HomeScreen(self, screen_number)
 

@@ -28,7 +28,7 @@ class TopBarTemplate(Gtk.Box):
     def __init__(self):
         Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
 
-        self.top_bar = TopBar("Kano Settings")
+        self.top_bar = TopBar("Settings")
         self.pack_start(self.top_bar, False, False, 0)
         self.top_bar.set_close_callback(self.close_window)
 
