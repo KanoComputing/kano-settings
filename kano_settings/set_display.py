@@ -8,8 +8,9 @@
 
 import os
 from gi.repository import Gtk
-from kano_settings.templates import Template
-from kano.gtk3.buttons import OrangeButton
+from kano_settings.templates import TopBarTemplate, Template
+from kano.gtk3.buttons import OrangeButton, KanoButton
+from kano.gtk3.heading import Heading
 import kano_settings.constants as constants
 from kano_settings.boot_config import set_config_comment
 from kano.utils import run_cmd
@@ -106,26 +107,28 @@ class SetDisplay(Template):
 
     def go_to_overscan(self, widget, event):
         self.win.clear_win()
-        SetOverscan(self.win)
+        SetSimpleOverscan(self.win)
 
 
-class SetOverscan(Template):
+class OverscanTemplate(TopBarTemplate):
     overscan_pipe = "/var/tmp/overscan"
     data = get_data("SET_OVERSCAN")
 
-    def __init__(self, win):
-        title = self.data["LABEL_1"]
-        description = self.data["LABEL_2"]
-        kano_label = self.data["KANO_BUTTON"]
+    def __init__(self, win, title, description):
+        TopBarTemplate.__init__(self)
 
-        Template.__init__(self, title, description, kano_label)
+        kano_label = self.data["KANO_BUTTON"]
+        self.kano_button = KanoButton(kano_label)
         self.kano_button.connect("button-release-event", self.apply_changes)
+        self.kano_button.pack_and_align()
+
+        self.heading = Heading(title, description)
+        self.pack_start(self.heading.container, False, False, 0)
 
         self.win = win
         self.win.set_main_widget(self)
 
         self.top_bar.enable_prev()
-        self.top_bar.set_prev_callback(self.go_to_display)
 
         # Launch pipeline
         if not os.path.exists(self.overscan_pipe):
@@ -133,96 +136,12 @@ class SetOverscan(Template):
 
         self.overscan_values = get_overscan_status()
         self.original_overscan = get_overscan_status()
-        self.simple_overscan()
-
-    def simple_overscan(self):
-        # Listen for key events
-        self.win.connect("key-press-event", self.on_key_press)
-
-        # Add sliders
-        self.grid = Gtk.Grid()
-        self.grid.set_row_spacing(0)
-        ## slider
-        self.t_scale = Gtk.HScale.new_with_range(0, 100, 1)
-        self.t_scale.set_value(self.overscan_values['top'])
-        self.t_scale.set_size_request(400, 30)
-        self.t_scale.connect('value_changed', self.adjust_all)
-        self.grid.attach(self.t_scale, 0, 0, 1, 1)
-
-        # Advance button
-        self.advance_button = OrangeButton()
-        self.advance_button.connect("button_press_event", self.go_to_advance)
-        self.advance_button.set_label("Advanced")
-        self.grid.attach(self.advance_button, 0, 2, 1, 1)
 
         # Reset button
         self.reset_button = OrangeButton()
-        self.reset_button.connect("button_press_event", self.reset_simple)
-        self.reset_button.set_label("Reset")
-        self.grid.attach(self.reset_button, 0, 3, 1, 1)
-
-        self.box.add(self.grid)
-
-        self.win.show_all()
-
-    def advance_overscan(self):
-        # Add sliders
-        grid = Gtk.Grid()
-        grid.set_row_spacing(0)
-        ## Top slider
-        self.t_scale = Gtk.HScale.new_with_range(0, 100, 1)
-        self.t_scale.set_value(self.overscan_values['top'])
-        self.t_scale.set_size_request(400, 30)
-        self.t_scale.connect('value_changed', self.adjust, 'top')
-        grid.attach(self.t_scale, 0, 0, 1, 1)
-        top_label = Gtk.Label()
-        top_label.set_alignment(xalign=1, yalign=0.5)
-        top_label.set_text('Top')
-        grid.attach(top_label, 1, 0, 1, 1)
-        ## Bottom slider
-        self.b_scale = Gtk.HScale.new_with_range(0, 100, 1)
-        self.b_scale.set_value(self.overscan_values['bottom'])
-        self.b_scale.set_size_request(400, 30)
-        self.b_scale.connect('value_changed', self.adjust, 'bottom')
-        grid.attach(self.b_scale, 0, 1, 1, 1)
-        bottom_label = Gtk.Label()
-        bottom_label.set_alignment(xalign=1, yalign=0.5)
-        bottom_label.set_text('Bottom')
-        grid.attach(bottom_label, 1, 1, 1, 1)
-        ## Left slider
-        self.l_scale = Gtk.HScale.new_with_range(0, 100, 1)
-        self.l_scale.set_value(self.overscan_values['left'])
-        self.l_scale.set_size_request(400, 30)
-        self.l_scale.connect('value_changed', self.adjust, 'left')
-        grid.attach(self.l_scale, 0, 2, 1, 1)
-        left_label = Gtk.Label()
-        left_label.set_alignment(xalign=1, yalign=0.5)
-        left_label.set_text('Left')
-        grid.attach(left_label, 1, 2, 1, 1)
-        ## Right slider
-        self.r_scale = Gtk.HScale.new_with_range(0, 100, 1)
-        self.r_scale.set_value(self.overscan_values['right'])
-        self.r_scale.set_size_request(400, 30)
-        self.r_scale.connect('value_changed', self.adjust, 'right')
-        grid.attach(self.r_scale, 0, 3, 1, 1)
-        right_label = Gtk.Label()
-        right_label.set_alignment(xalign=1, yalign=0.5)
-        right_label.set_text('Right')
-        grid.attach(right_label, 1, 3, 1, 1)
-
-        # Reset button
-        reset_button = OrangeButton()
-        reset_button.connect("button_press_event", self.reset_advance)
-        reset_button.set_label("Reset")
-        grid.attach(reset_button, 0, 4, 1, 1)
-
-        self.box.pack_start(grid, False, False, 0)
-
-        self.win.show_all()
-
-    def go_to_display(self, widget, button):
-        self.win.clear_win()
-        SetDisplay(self.win)
+        reset_image = Gtk.Image().new_from_file(constants.media + "/Icons/reset.png")
+        self.reset_button.set_image(reset_image)
+        self.reset_button.connect("button_press_event", self.reset)
 
     def apply_changes(self, button, event):
         # Apply changes
@@ -237,6 +156,77 @@ class SetOverscan(Template):
     def adjust(self, adj, varname):
         self.overscan_values[varname] = int(adj.get_value())
         set_overscan_status(self.overscan_values)
+
+    def adjust_all(self, adj):
+        self.overscan_values['top'] = int(adj.get_value())
+        self.overscan_values['bottom'] = int(adj.get_value())
+        self.overscan_values['left'] = int(adj.get_value())
+        self.overscan_values['right'] = int(adj.get_value())
+        set_overscan_status(self.overscan_values)
+
+    def go_to_display(self, widget=None, button=None):
+        self.win.clear_win()
+        SetDisplay(self.win)
+
+    def reset(self, widget=None, event=None):
+        pass
+
+
+class SetSimpleOverscan(OverscanTemplate):
+    data_simple = get_data("SET_OVERSCAN_SIMPLE")
+
+    def __init__(self, win):
+        title = self.data_simple["LABEL_1"]
+        description = self.data_simple["LABEL_2"]
+        OverscanTemplate.__init__(self, win, title, description)
+
+        self.top_bar.set_prev_callback(self.go_to_display)
+
+        # Listen for key events
+        self.key_press_handler = self.win.connect("key-press-event", self.on_key_press)
+
+        ## slider
+        self.t_scale = Gtk.HScale.new_with_range(0, 100, 1)
+        self.t_scale.set_value(self.overscan_values['top'])
+        self.t_scale.set_size_request(400, 30)
+        self.t_scale.connect('value_changed', self.adjust_all)
+        self.t_scale.set_value_pos(Gtk.PositionType.RIGHT)
+
+        box = Gtk.Box()
+        box.pack_start(self.t_scale, False, False, 0)
+        box.pack_start(self.reset_button, False, False, 0)
+
+        align = Gtk.Alignment(xalign=0.5, xscale=0, yscale=0, yalign=0.5)
+        align.add(box)
+
+        # Advance button
+        self.advanced_button = OrangeButton()
+        self.advanced_button.connect("button_press_event", self.go_to_advanced)
+        self.advanced_button.set_label("Advanced")
+
+        button_box = Gtk.ButtonBox()
+        button_box.set_layout(Gtk.ButtonBoxStyle.SPREAD)
+        button_box.pack_start(self.advanced_button, False, False, 15)
+        button_box.pack_start(self.kano_button.align, False, False, 15)
+        empty_label = Gtk.Label(" ")
+        button_box.pack_start(empty_label, False, False, 0)
+
+        self.pack_start(align, True, True, 0)
+        self.pack_end(button_box, False, False, 30)
+
+        self.win.show_all()
+
+    def reset(self, widget=None, event=None):
+        # Restore overscan if any
+        if self.original_overscan != self.overscan_values:
+            set_overscan_status(self.original_overscan)
+            self.t_scale.set_value(self.original_overscan['top'])
+
+    def go_to_advanced(self, event=None, arg=None):
+        # Remove key press handler from screen
+        self.win.disconnect(self.key_press_handler)
+        self.win.clear_win()
+        SetAdvancedOverscan(self.win)
 
     def on_key_press(self, widget, event):
         # Right arrow (65363)
@@ -258,20 +248,79 @@ class SetOverscan(Template):
             self.t_scale.set_value(self.overscan_values['top'])
             return
 
-    def go_to_advance(self, event=None, arg=None):
-        # Remove children
-        for child in self.box.get_children():
-            self.box.remove(child)
-        self.advance_overscan()
 
-    def reset_simple(self, widget=None, event=None):
-        # Restore overscan if any
-        if self.original_overscan != self.overscan_values:
-            set_overscan_status(self.original_overscan)
-            self.t_scale.set_value(self.original_overscan['top'])
+class SetAdvancedOverscan(OverscanTemplate):
+    data_advanced = get_data("SET_OVERSCAN_ADVANCED")
 
-    def reset_advance(self, widget=None, event=None):
-        global t_scale, b_scale, l_scale, r_scale
+    def __init__(self, win):
+        title = self.data_advanced["LABEL_1"]
+        description = self.data_advanced["LABEL_2"]
+        OverscanTemplate.__init__(self, win, title, description)
+
+        self.top_bar.set_prev_callback(self.go_to_simple_overscan)
+
+        # Add sliders
+        grid = Gtk.Grid()
+        grid.set_row_spacing(10)
+        grid.set_column_spacing(10)
+        ## Top slider
+        self.t_scale = Gtk.HScale.new_with_range(0, 100, 1)
+        self.t_scale.set_value(self.overscan_values['top'])
+        self.t_scale.set_size_request(400, 30)
+        self.t_scale.connect('value_changed', self.adjust, 'top')
+        self.t_scale.set_value_pos(Gtk.PositionType.RIGHT)
+        grid.attach(self.t_scale, 1, 0, 1, 1)
+        top_label = Gtk.Label()
+        top_label.set_alignment(xalign=1, yalign=1)
+        top_label.set_text('Top')
+        grid.attach(top_label, 0, 0, 1, 1)
+        ## Bottom slider
+        self.b_scale = Gtk.HScale.new_with_range(0, 100, 1)
+        self.b_scale.set_value(self.overscan_values['bottom'])
+        self.b_scale.set_size_request(400, 30)
+        self.b_scale.connect('value_changed', self.adjust, 'bottom')
+        self.b_scale.set_value_pos(Gtk.PositionType.RIGHT)
+        grid.attach(self.b_scale, 1, 1, 1, 1)
+        bottom_label = Gtk.Label()
+        bottom_label.set_alignment(xalign=1, yalign=1)
+        bottom_label.set_text('Bottom')
+        grid.attach(bottom_label, 0, 1, 1, 1)
+        ## Left slider
+        self.l_scale = Gtk.HScale.new_with_range(0, 100, 1)
+        self.l_scale.set_value(self.overscan_values['left'])
+        self.l_scale.set_size_request(400, 30)
+        self.l_scale.connect('value_changed', self.adjust, 'left')
+        self.l_scale.set_value_pos(Gtk.PositionType.RIGHT)
+        grid.attach(self.l_scale, 1, 2, 1, 1)
+        left_label = Gtk.Label()
+        left_label.set_alignment(xalign=1, yalign=1)
+        left_label.set_text('Left')
+        grid.attach(left_label, 0, 2, 1, 1)
+        ## Right slider
+        self.r_scale = Gtk.HScale.new_with_range(0, 100, 1)
+        self.r_scale.set_value(self.overscan_values['right'])
+        self.r_scale.set_size_request(400, 30)
+        self.r_scale.connect('value_changed', self.adjust, 'right')
+        self.r_scale.set_value_pos(Gtk.PositionType.RIGHT)
+        grid.attach(self.r_scale, 1, 3, 1, 1)
+        right_label = Gtk.Label()
+        right_label.set_alignment(xalign=1, yalign=1)
+        right_label.set_text('Right')
+        grid.attach(right_label, 0, 3, 1, 1)
+
+        align = Gtk.Alignment(xalign=0.5, xscale=0, yscale=0, yalign=0.5)
+        align.add(grid)
+
+        box = Gtk.Box()
+        box.pack_start(align, True, True, 0)
+        box.pack_start(self.reset_button, False, False, 0)
+
+        self.pack_start(box, True, True, 0)
+        self.pack_end(self.kano_button.align, False, False, 30)
+
+        self.win.show_all()
+
+    def reset(self, widget=None, event=None):
         # Restore overscan if any
         if self.original_overscan != self.overscan_values:
             set_overscan_status(self.original_overscan)
@@ -280,9 +329,8 @@ class SetOverscan(Template):
             self.l_scale.set_value(self.original_overscan['left'])
             self.r_scale.set_value(self.original_overscan['right'])
 
-    def adjust_all(self, adj):
-        self.overscan_values['top'] = int(adj.get_value())
-        self.overscan_values['bottom'] = int(adj.get_value())
-        self.overscan_values['left'] = int(adj.get_value())
-        self.overscan_values['right'] = int(adj.get_value())
-        set_overscan_status(self.overscan_values)
+    def go_to_simple_overscan(self, widget, event):
+        self.win.clear_win()
+        SetSimpleOverscan()
+
+
