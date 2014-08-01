@@ -187,6 +187,7 @@ class SetSimpleOverscan(OverscanTemplate):
 
         ## slider
         self.t_value = Gtk.Label()
+        self.t_value.get_style_context().add_class("slider_label")
         self.t_scale = Gtk.HScale.new_with_range(0, 100, 1)
         self.t_scale.set_value(self.overscan_values['top'])
         self.t_scale.set_size_request(400, 30)
@@ -196,11 +197,11 @@ class SetSimpleOverscan(OverscanTemplate):
         self.update_all_values(self.t_scale)
 
         box = Gtk.Box()
-        box.pack_start(self.t_scale, False, False, 0)
-        box.pack_start(self.t_value, False, False, 0)
-        box.pack_start(self.reset_button, False, False, 0)
+        box.pack_start(self.t_scale, False, False, 5)
+        box.pack_start(self.t_value, False, False, 5)
+        box.pack_start(self.reset_button, False, False, 25)
 
-        align = Gtk.Alignment(xalign=0.5, xscale=0, yscale=0, yalign=0.5)
+        align = Gtk.Alignment(xalign=0.6, xscale=0, yscale=0, yalign=0.5)
         align.add(box)
 
         # Advance button
@@ -270,7 +271,7 @@ class SetAdvancedOverscan(OverscanTemplate):
         # Add sliders
         grid = Gtk.Grid()
         grid.set_row_spacing(10)
-        grid.set_column_spacing(10)
+        grid.set_column_spacing(15)
 
         # Labels next to sliders
         self.t_value = Gtk.Label()
@@ -279,55 +280,58 @@ class SetAdvancedOverscan(OverscanTemplate):
         self.r_value = Gtk.Label()
 
         ## Top slider
-        self.t_scale, top_label = self.generate_slider_label("Top")
+        t_value, self.t_scale, top_label = self.generate_slider_label("Top")
         grid.attach(self.t_scale, 1, 0, 1, 1)
         grid.attach(top_label, 0, 0, 1, 1)
-        grid.attach(self.t_value, 2, 0, 1, 1)
+        grid.attach(t_value, 2, 0, 1, 1)
 
         ## Bottom slider
-        self.b_scale, bottom_label = self.generate_slider_label("Bottom")
+        b_value, self.b_scale, bottom_label = self.generate_slider_label("Bottom")
         grid.attach(self.b_scale, 1, 1, 1, 1)
         grid.attach(bottom_label, 0, 1, 1, 1)
-        grid.attach(self.b_value, 2, 1, 1, 1)
+        grid.attach(b_value, 2, 1, 1, 1)
 
         ## Left slider
-        self.l_scale, left_label = self.generate_slider_label("Left")
+        l_value, self.l_scale, left_label = self.generate_slider_label("Left")
         grid.attach(self.l_scale, 1, 2, 1, 1)
         grid.attach(left_label, 0, 2, 1, 1)
-        grid.attach(self.l_value, 2, 2, 1, 1)
+        grid.attach(l_value, 2, 2, 1, 1)
 
         ## Right slider
-        self.r_scale, right_label = self.generate_slider_label("Right")
+        r_value, self.r_scale, right_label = self.generate_slider_label("Right")
         grid.attach(right_label, 0, 3, 1, 1)
         grid.attach(self.r_scale, 1, 3, 1, 1)
-        grid.attach(self.r_value, 2, 3, 1, 1)
-
-        align = Gtk.Alignment(xalign=0.5, xscale=0, yscale=0, yalign=0.5)
-        align.add(grid)
+        grid.attach(r_value, 2, 3, 1, 1)
 
         box = Gtk.Box()
-        box.pack_start(align, True, True, 0)
-        box.pack_start(self.reset_button, False, False, 0)
+        box.pack_start(grid, False, False, 0)
+        box.pack_start(self.reset_button, False, False, 25)
 
-        self.pack_start(box, True, True, 0)
+        align = Gtk.Alignment(xalign=0.6, xscale=0, yscale=0, yalign=0.5)
+        align.add(box)
+
+        self.pack_start(align, True, True, 0)
         self.pack_end(self.kano_button.align, False, False, 30)
 
         self.win.show_all()
 
     # direction = "top", "bottom", "right", "left"
     def generate_slider_label(self, direction):
+        value_label = Gtk.Label()
+        value_label.get_style_context().add_class("slider_label")
         slider = Gtk.HScale.new_with_range(0, 100, 1)
         slider.set_value(self.overscan_values[direction.lower()])
         slider.set_size_request(400, 30)
         slider.connect('value_changed', self.adjust, direction.lower())
-        slider.connect('value_changed', self.update_value, direction.lower())
+        slider.connect('value_changed', self.update_value, value_label)
         slider.set_value_pos(Gtk.PositionType.RIGHT)
         slider.set_draw_value(False)
-        label = Gtk.Label()
-        label.set_alignment(xalign=1, yalign=1)
-        label.set_text(direction)
-        self.update_value(slider, direction)
-        return slider, label
+        dir_label = Gtk.Label()
+        dir_label.get_style_context().add_class("slider_label")
+        dir_label.set_alignment(xalign=1, yalign=1)
+        dir_label.set_text(direction)
+        self.update_value(slider, value_label)
+        return value_label, slider, dir_label
 
     def reset(self, widget=None, event=None):
         # Restore overscan if any
@@ -342,9 +346,8 @@ class SetAdvancedOverscan(OverscanTemplate):
         self.win.clear_win()
         SetSimpleOverscan(self.win)
 
-    def update_value(self, widget, label_name):
+    def update_value(self, widget, label):
         new_value = str(int(widget.get_value()))
-        scales = {"top": self.t_value, "bottom": self.b_value, "left": self.l_value, "right": self.r_value}
-        scales[label_name.lower()].set_text(new_value)
+        label.set_text(new_value)
 
 

@@ -77,3 +77,8 @@
     font: Bariol 13;
     color: @subheading_color;
 }
+
+.slider_label {
+    font: Bariol 13;
+    color: @subheading_color;
+}
