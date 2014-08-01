@@ -4,7 +4,7 @@ import os
 import sys
 from kano.utils import run_cmd, delete_file, enforce_root
 from kano.logging import logger
-from kano_settings.set_display.functions import get_status, get_model, set_hdmi_mode
+from kano_settings.display.functions import get_status, get_model, set_hdmi_mode
 from kano_settings.boot_config import set_config_value, set_config_comment, get_config_comment
 
 tvservice_path = '/usr/bin/tvservice'
