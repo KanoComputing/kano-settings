@@ -1,7 +1,7 @@
 {
   "SET_AUDIO": {
     "LABEL_1": "Audio",
-    "LABEL_2": "Get sound",
+    "LABEL_2": "Get sound. (Changing this requires a reboot)",
     "KANO_BUTTON": "APPLY CHANGES"
   },
   "SET_ACCOUNT": {
@@ -30,7 +30,7 @@
   },
   "SET_DISPLAY": {
     "LABEL_1": "Display",
-    "LABEL_2": "",
+    "LABEL_2": "(Changing this requires a reboot)",
     "KANO_BUTTON": "APPLY CHANGES"
   },
   "SET_OVERSCAN": {
@@ -38,11 +38,11 @@
   },
   "SET_OVERSCAN_SIMPLE": {
     "LABEL_1": "Overscan",
-    "LABEL_2": "This setting lets you to adjust your screen's size"
+    "LABEL_2": "This setting lets you to adjust your screen's size. (Changing this requires a reboot)"
   },
   "SET_OVERSCAN_ADVANCED": {
     "LABEL_1": "Overscan",
-    "LABEL_2": "This setting lets you to adjust your screen's size, edge by edge"
+    "LABEL_2": "This setting lets you to adjust your screen's size, edge by edge. (Changing this requires a reboot)"
   },
   "SET_KEYBOARD": {
     "LABEL_1": "Keyboard",
@@ -114,7 +114,7 @@
   },
   "SET_OVERCLOCK" : {
     "LABEL_1": "Overclocking",
-    "LABEL_2": "Let's put some power here",
+    "LABEL_2": "Let's put some power here. (Changing this requires a reboot)",
     "KANO_BUTTON": "APPLY",
     "OPTION_1": "None",
     "DESCRIPTION_1": "700MHZ ARM, 250MHZ CORE, 400MHZ SDRAM, 0 OVERVOLT",
