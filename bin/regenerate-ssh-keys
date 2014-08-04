@@ -1,0 +1,16 @@
+#!/usr/bin/env bash
+
+# regenerate-ssh-keys
+#
+# Copyright (C) 2014 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+
+file_rsa_key=/etc/dropbear/dropbear_rsa_host_key
+file_dss_key=/etc/dropbear/dropbear_dss_host_key
+
+rm -f $file_rsa_key $file_dss_key
+
+dropbearkey -t rsa -f $file_rsa_key
+dropbearkey -t dss -f $file_dss_key
+
