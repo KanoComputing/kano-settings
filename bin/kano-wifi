@@ -302,6 +302,7 @@ if __name__ == '__main__':
         subprocess.call(['colour_echo', '{{1 s }} -> Skip'])
         subprocess.call(['colour_echo', '----------'])
         var = raw_input(" Choose a network number or option letter: ").strip()
+        print("\n")
 
         if var in ('s', 'S'):
             sys.exit(1)
@@ -365,6 +366,7 @@ if __name__ == '__main__':
         # Ask for ping
         subprocess.call(['typewriter_echo', 'Do you want to test your connection? {{1 [Y]es/[n]o }} ', '0', '0'])
         var = raw_input().strip()
+        print("\n")
         if var and (var.upper() == 'Y' or var.upper() == 'YES'):
             subprocess.call(['typewriter_echo', 'Type {{2 ping www.google.com }}', '1', '2'])
             while True:
