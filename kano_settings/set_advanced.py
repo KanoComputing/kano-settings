@@ -8,36 +8,38 @@
 
 from gi.repository import Gtk
 from kano.gtk3.kano_dialog import KanoDialog
+
 from kano import logging
-from kano_settings.templates import CheckButtonTemplate, Template
+from kano_settings.templates import Template, LabelledListTemplate
 from advanced.parental import get_parental_enabled, set_parental_enabled
 
 from kano_settings.data import get_data
 
 
-class SetAdvanced(CheckButtonTemplate):
+class SetAdvanced(Template):
     data = get_data("SET_ADVANCED")
 
     def __init__(self, win):
+
         title = self.data["LABEL_1"]
         description = self.data["LABEL_2"]
         kano_label = self.data["KANO_BUTTON"]
-        option1 = self.data["OPTION_1"]
-        desc1 = self.data["DESCRIPTION_1"]
-        option2 = self.data["OPTION_2"]
-        desc2 = self.data["DESCRIPTION_2"]
-        CheckButtonTemplate.__init__(self, title, description, kano_label,
-                                     [[option1, desc1],
-                                      [option2, desc2]])
-        self.set_button_spacing(10)
+
+        Template.__init__(self, title, description, kano_label)
+
+        parental_box = self.create_parental_button()
+        debug_box = self.create_debug_button()
+
+        self.box.set_spacing(20)
+        self.box.pack_start(parental_box, False, False, 0)
+        self.box.pack_start(debug_box, False, False, 0)
+
         self.win = win
 
         debug_mode = self.get_stored_debug_mode()
 
-        self.parental_button = self.get_button(0)
         self.parental_button.set_active(get_parental_enabled())
         self.parental_button.connect("clicked", self.go_to_password)
-        self.debug_button = self.get_button(1)
         self.debug_button.set_active(debug_mode)
         self.debug_button.connect("clicked", self.on_debug_toggled)
 
@@ -48,6 +50,35 @@ class SetAdvanced(CheckButtonTemplate):
 
         self.kano_button.connect("button-release-event", self.apply_changes)
         self.win.show_all()
+
+    def create_parental_button(self):
+        self.parental_button = Gtk.CheckButton()
+        box = LabelledListTemplate.label_button(self.parental_button,
+                                                "Parental lock", "this will:")
+
+        text_array = ["- Block under 16 videos on Youtube", "- Block list of websites in browser"]
+
+        grid = Gtk.Grid()
+        grid.attach(box, 0, 0, 1, 1)
+
+        i = 1
+
+        for text in text_array:
+            label = Gtk.Label(text)
+            label.set_alignment(xalign=0, yalign=0.5)
+            label.set_padding(xpad=25, ypad=0)
+            label.get_style_context().add_class("normal_label")
+            grid.attach(label, 0, i, 1, 1)
+            i = i + 1
+
+        return grid
+
+    def create_debug_button(self):
+        self.debug_button = Gtk.CheckButton()
+        box = LabelledListTemplate.label_button(self.debug_button, "Debug mode",
+                                                "Having problems?  Enable this mode and report a bug.")
+
+        return box
 
     def go_to_password(self, event=None):
         self.win.clear_win()

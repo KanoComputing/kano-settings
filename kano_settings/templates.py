@@ -96,14 +96,8 @@ class ScrolledWindowTemplate(TopBarTemplate):
 
 
 class LabelledListTemplate(Template):
-
-    def __init__(self, title, description, button_text, text_array):
-        Template.__init__(self, title, description, button_text)
-        self.button_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
-        self.buttons = []
-        self.box.pack_start(self.button_container, False, False, 0)
-
-    def label_button(self, button, text0, text1):
+    @staticmethod
+    def label_button(button, text0, text1):
         button.set_label(text0)
         button.get_style_context().add_class("bold_toggle")
 
@@ -114,6 +108,16 @@ class LabelledListTemplate(Template):
         box.pack_start(button, False, False, 0)
         box.pack_start(info, False, False, 0)
 
+        return box
+
+    def __init__(self, title, description, button_text, text_array):
+        Template.__init__(self, title, description, button_text)
+        self.button_container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=0)
+        self.buttons = []
+        self.box.pack_start(self.button_container, False, False, 0)
+
+    def label_button_and_pack(self, button, text0, text1):
+        box = self.label_button(button, text0, text1)
         self.button_container.pack_start(box, False, False, 5)
 
     def get_button(self, index):
@@ -130,14 +134,14 @@ class RadioButtonTemplate(LabelledListTemplate):
 
         button = Gtk.RadioButton.new_with_label_from_widget(None, text_array[0][0])
         self.buttons.append(button)
-        self.label_button(button, text_array[0][0], text_array[0][1])
+        self.label_button_and_pack(button, text_array[0][0], text_array[0][1])
         text_array.remove(text_array[0])
         button.connect("toggled", self.on_button_toggled)
 
         for text in text_array:
             button = Gtk.RadioButton.new_from_widget(self.buttons[0])
             self.buttons.append(button)
-            self.label_button(button, text[0], text[1])
+            self.label_button_and_pack(button, text[0], text[1])
             button.connect("toggled", self.on_button_toggled)
 
 
@@ -149,5 +153,5 @@ class CheckButtonTemplate(LabelledListTemplate):
         for text in text_array:
             button = Gtk.CheckButton()
             self.buttons.append(button)
-            self.label_button(button, text[0], text[1])
+            self.label_button_and_pack(button, text[0], text[1])
 

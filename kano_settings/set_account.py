@@ -10,10 +10,13 @@
 from gi.repository import Gtk, Gdk, GObject
 import threading
 import os
+
 from kano.gtk3.heading import Heading
-from kano.utils import get_user_unsudoed, ensure_dir
 import kano.gtk3.kano_dialog as kano_dialog
 from kano.gtk3.buttons import KanoButton
+from kano.gtk3.labelled_entries import LabelledEntries
+
+from kano.utils import get_user_unsudoed, ensure_dir
 from kano_settings.templates import TopBarTemplate, Template
 import kano.utils as utils
 import pam
@@ -124,14 +127,22 @@ class SetPassword(Template):
     def __init__(self, win):
         Template.__init__(self, "Change your password", "Keep out the baddies!", "APPLY CHANGES")
 
-        self.entry1 = Gtk.Entry()
+        self.labelled_entries = LabelledEntries([{"heading": "Old password", "subheading": '"kano" is default'},
+                                                {"heading": "New password", "subheading": ""},
+                                                {"heading": "Repeat new password", "subheading": ""}])
+
+        self.entry1 = self.labelled_entries.get_entry(0)
         self.entry1.set_size_request(300, 44)
         self.entry1.set_visibility(False)
         self.entry1.props.placeholder_text = "Old password"
-        self.entry2 = Gtk.Entry()
+
+        self.entry2 = self.labelled_entries.get_entry(1)
+        self.entry2.set_size_request(300, 44)
         self.entry2.set_visibility(False)
         self.entry2.props.placeholder_text = "New password"
-        self.entry3 = Gtk.Entry()
+
+        self.entry3 = self.labelled_entries.get_entry(2)
+        self.entry3.set_size_request(300, 44)
         self.entry3.set_visibility(False)
         self.entry3.props.placeholder_text = "Repeat new password"
 
@@ -142,14 +153,7 @@ class SetPassword(Template):
         self.win = win
         self.win.set_main_widget(self)
 
-        entry_container = Gtk.Grid(column_homogeneous=False,
-                                   column_spacing=22,
-                                   row_spacing=10)
-        entry_container.attach(self.entry1, 0, 0, 1, 1)
-        entry_container.attach(self.entry2, 0, 1, 1, 1)
-        entry_container.attach(self.entry3, 0, 2, 1, 1)
-
-        self.box.add(entry_container)
+        self.box.pack_start(self.labelled_entries, False, False, 0)
 
         self.top_bar.enable_prev()
         self.top_bar.set_prev_callback(self.go_to_accounts)
