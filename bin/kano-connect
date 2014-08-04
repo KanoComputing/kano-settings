@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#! /usr/bin/python
 
 # kano-connect
 #
@@ -58,7 +58,7 @@ def attempt_connect(wiface, essid, encryption, enckey, conf=None):
     logger.info("Attempting association to %s through interface %s" % (info, wiface))
     try:
         connect(wiface, essid, encryption, seckey=enckey, wpa_custom_file=conf)
-        online = is_gateway()
+        online = is_gateway(wiface)
     except:
         pass
 
