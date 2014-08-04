@@ -7,25 +7,40 @@
   "SET_ACCOUNT": {
     "LABEL_1": "System account settings",
     "LABEL_2": "Set your account",
-    "KANO_BUTTON": "APPLY CHANGES"
+    "LABEL_3": "Accounts",
+    "LABEL_4": "Add or remove accounts",
+    "ADD_BUTTON": "ADD ACCOUNT",
+    "PASSWORD_BUTTON": "CHANGE PASSWORD",
+    "REMOVE_BUTTON": "REMOVE ACCOUNT",
+    "ADD_ACCOUNT_DIALOG_TITLE": "New account scheduled.",
+    "ADD_ACCOUNT_DIALOG_DESCRIPTION": "Reboot the system.",
+    "REMOVE_ACCOUNT_DIALOG_TITLE": "Are you sure you want to delete the current user?",
+    "REMOVE_ACCOUNT_DIALOG_DESCRIPTION": "You will lose all the data on this account"
   },
   "SET_ADVANCED": {
     "LABEL_1": "Advanced options",
     "LABEL_2": "Toggle parental lock and debug mode",
     "KANO_BUTTON": "APPLY CHANGES",
     "OPTION_1": "Parental lock",
-    "DESCRIPTION_1": "Restrict online content",
+    "DESCRIPTION_1_1": "this will:",
+    "DESCRIPTION_1_2": "- Block under 16 videos on Youtube",
+    "DESCRIPTION_1_3": "- Block list of websites in browser",
     "OPTION_2": "Debug mode",
-    "DESCRIPTION_2": "Having problems? Enable this mode and report a bug"
+    "DESCRIPTION_2_1": "Having problems? Enable this mode and report a bug"
   },
   "PARENTAL_LOCK": {
       "LABEL_1": "Set up your parental lock",
       "LABEL_2": "Enter your password",
+      "PLACEHOLDER_1": "Select password",
+      "PLACEHOLDER_2": "Confirm password",
+      "ERROR_LABEL_1": "Careful",
+      "ERROR_LABEL_2": "The passwords don't match! Try again",
       "KANO_BUTTON": "LOCK"
   },
   "PARENTAL_UNLOCK": {
       "LABEL_1": "Unlock the parental lock",
       "LABEL_2": "Choose a password",
+      "PLACEHOLDER_1": "Enter your selected password",
       "KANO_BUTTON": "UNLOCK"
   },
   "SET_DISPLAY": {
@@ -128,6 +143,18 @@
   "SET_PASSWORD" : {
     "LABEL_1": "Change your password",
     "LABEL_2": "Keep out the baddies!",
+    "ENTRY_HEADING_1": "Old password",
+    "DESCRIPTION_1": "\"kano\" is default",
+    "ENTRY_HEADING_2": "New password",
+    "DESCRIPTION_2": "",
+    "ENTRY_HEADING_3": "Repeat new password",
+    "DESCRIPTION_3": "",
+    "PASSWORD_ERROR_TITLE": "Could not change password",
+    "PASSWORD_ERROR_1": "Your new password is not long enough or contains special characters.",
+    "PASSWORD_ERROR_2": "Your new passwords don't match!  Try again.",
+    "PASSWORD_ERROR_3": "",
+    "PASSWORD_SUCCESS_TITLE": "Password changed!",
+    "PASSWORD_SUCCESS_DESCRIPTION": "",
     "KANO_BUTTON": "CHANGE PASSWORD"
   }
 }
