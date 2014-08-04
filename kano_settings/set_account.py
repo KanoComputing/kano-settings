@@ -127,7 +127,7 @@ class SetPassword(Template):
     def __init__(self, win):
         Template.__init__(self, "Change your password", "Keep out the baddies!", "APPLY CHANGES")
 
-        self.labelled_entries = LabelledEntries([{"heading": "Old password", "subheading": '"Kano" is default'},
+        self.labelled_entries = LabelledEntries([{"heading": "Old password", "subheading": '"kano" is default'},
                                                 {"heading": "New password", "subheading": ""},
                                                 {"heading": "Repeat new password", "subheading": ""}])
 
