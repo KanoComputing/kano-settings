@@ -111,10 +111,8 @@ class SetKeyboard(Template):
         self.top_bar.enable_prev()
 
         if kano_keyboard:
-            self.kano_button.connect("button-release-event", self.go_to_kano_screen)
             self.top_bar.set_prev_callback(self.go_to_kano_screen)
         else:
-            self.kano_button.connect("button-release-event", self.win.go_to_home)
             self.top_bar.set_prev_callback(self.win.go_to_home)
 
         self.kano_button.connect("button-release-event", self.apply_changes)
@@ -188,6 +186,7 @@ class SetKeyboard(Template):
         self.variants_combo.hide()
 
     def apply_changes(self, button, event):
+        kano_keyboard = detect_kano_keyboard()
 
         # Apply changes
         thread = WorkerThread(self.work_finished_cb)
@@ -196,8 +195,12 @@ class SetKeyboard(Template):
         # Save the changes in the config
         self.update_config()
 
-        # Refresh window
-        #self.win.go_to_home()
+        # Go back a screen
+        if kano_keyboard:
+            self.go_to_kano_screen()
+        else:
+            self.win.go_to_home()
+
         self.win.show_all()
 
     def read_config(self):
