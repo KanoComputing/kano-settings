@@ -15,6 +15,7 @@ from kano.gtk3.heading import Heading
 import kano.gtk3.kano_dialog as kano_dialog
 from kano.gtk3.buttons import KanoButton
 from kano.gtk3.labelled_entries import LabelledEntries
+from kano_world.functions import has_token
 
 from kano.utils import get_user_unsudoed, ensure_dir
 from kano_settings.templates import TopBarTemplate, Template
@@ -127,21 +128,25 @@ class SetAccount(TopBarTemplate):
             )
             response = kdialog.run()
             if response == -1:
+
                 # remove current user command
                 os.system('kano-init deleteuser %s' % (get_user_unsudoed()))
                 self.disable_buttons()
+
                 # back up profile
-                os.system("kano-sync --sync --backup")
+                if has_token():
+                    os.system("kano-sync --sync --backup")
 
                 kdialog = kano_dialog.KanoDialog(
                     "To finish removing this account, you need to reboot",
                     "Do you want to reboot?",
                     {
-                        "OK": {
+                        "YES": {
                             "return_value": -1
                         },
-                        "CANCEL": {
-                            "return_value": 0
+                        "NO": {
+                            "return_value": 0,
+                            "color": "red"
                         }
                     },
                     parent_window=self.win
