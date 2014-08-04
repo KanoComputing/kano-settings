@@ -184,6 +184,7 @@ class SetPassword(Template):
 
         self.kano_button.set_sensitive(False)
         self.kano_button.connect("button-release-event", self.apply_changes)
+        self.kano_button.connect("key-release-event", self.apply_changes)
 
         self.box.add(entry_container)
         self.win.show_all()
@@ -193,36 +194,38 @@ class SetPassword(Template):
         SetAdvanced(self.win)
 
     def apply_changes(self, button, event):
-        password = None
+        if not hasattr(event, 'keyval') or event.keyval == 65293:
 
-        # if disabled, turning on
-        if not self.parental_enabled:
-            password = self.entry1.get_text()
-            password2 = self.entry2.get_text()
-            passed_test = (password == password2)
-            error_heading = self.data["ERROR_LABEL_1"]
-            error_description = self.data["ERROR_LABEL_2"]
+            password = None
 
-        # if enabled, turning off
-        else:
-            password = self.entry.get_text()
-            passed_test = True
+            # if disabled, turning on
+            if not self.parental_enabled:
+                password = self.entry1.get_text()
+                password2 = self.entry2.get_text()
+                passed_test = (password == password2)
+                error_heading = self.data_lock["ERROR_LABEL_1"]
+                error_description = self.data_lock["ERROR_LABEL_2"]
 
-        # if test passed, update parental configuration
-        if passed_test:
-            self.update_config(password)
-
-        # else, display try again dialog
-        else:
-            response = self.create_dialog(error_heading, error_description)
-            if response == -1:
-                if not self.parental_enabled:
-                    self.entry1.set_text("")
-                    self.entry2.set_text("")
-                else:
-                    self.entry.set_text("")
+            # if enabled, turning off
             else:
-                self.go_to_advanced()
+                password = self.entry.get_text()
+                passed_test = True
+
+            # if test passed, update parental configuration
+            if passed_test:
+                self.update_config(password)
+
+            # else, display try again dialog
+            else:
+                response = self.create_dialog(error_heading, error_description)
+                if response == -1:
+                    if not self.parental_enabled:
+                        self.entry1.set_text("")
+                        self.entry2.set_text("")
+                    else:
+                        self.entry.set_text("")
+                else:
+                    self.go_to_advanced()
 
     def create_dialog(self, message1, message2):
         kdialog = KanoDialog(
