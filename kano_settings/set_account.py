@@ -137,10 +137,12 @@ class SetPassword(Template):
         self.entry1.props.placeholder_text = "Old password"
 
         self.entry2 = self.labelled_entries.get_entry(1)
+        self.entry2.set_size_request(300, 44)
         self.entry2.set_visibility(False)
         self.entry2.props.placeholder_text = "New password"
 
         self.entry3 = self.labelled_entries.get_entry(2)
+        self.entry3.set_size_request(300, 44)
         self.entry3.set_visibility(False)
         self.entry3.props.placeholder_text = "Repeat new password"
 
@@ -151,15 +153,7 @@ class SetPassword(Template):
         self.win = win
         self.win.set_main_widget(self)
 
-        entry_container = Gtk.Grid(column_homogeneous=False,
-                                   column_spacing=22,
-                                   row_spacing=10)
-
-        entry_container.attach(self.entry1, 0, 0, 1, 1)
-        entry_container.attach(self.entry2, 0, 1, 1, 1)
-        entry_container.attach(self.entry3, 0, 2, 1, 1)
-
-        self.box.add(entry_container)
+        self.box.pack_start(self.labelled_entries, False, False, 0)
 
         self.top_bar.enable_prev()
         self.top_bar.set_prev_callback(self.go_to_accounts)
