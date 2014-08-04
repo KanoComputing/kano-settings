@@ -19,9 +19,6 @@ from kano.gtk3.kano_dialog import KanoDialog
 from kano.gtk3.scrolled_window import ScrolledWindow
 import kano_settings.constants as constants
 
-# storing completed in kano-profile
-from kano_profile.apps import load_app_state_variable
-
 
 class TopBarTemplate(Gtk.Box):
 
@@ -35,27 +32,26 @@ class TopBarTemplate(Gtk.Box):
     # On closing window, will alert if any of the listed booleans are True
     def close_window(self, button, event):
         if constants.need_reboot:
-            if load_app_state_variable('kano-settings', 'completed') == 1:
-                kdialog = KanoDialog(
-                    "Reboot?",
-                    "Your Kano needs to reboot for changes to apply",
-                    {
-                        "REBOOT NOW": {
-                            "return_value": 1,
-                            "color": "orange"
-                        },
-                        "LATER": {
-                            "return_value": 0,
-                            "color": "grey"
-                        }
+            kdialog = KanoDialog(
+                "Reboot?",
+                "Your Kano needs to reboot for changes to apply",
+                {
+                    "REBOOT NOW": {
+                        "return_value": 1,
+                        "color": "orange"
                     },
-                    parent_window=self
-                )
+                    "LATER": {
+                        "return_value": 0,
+                        "color": "grey"
+                    }
+                },
+                parent_window=self.get_toplevel()
+            )
 
-                kdialog.set_action_background("grey")
-                response = kdialog.run()
-                if response == 1:
-                    os.system("sudo reboot")
+            kdialog.set_action_background("grey")
+            response = kdialog.run()
+            if response == 1:
+                os.system("sudo reboot")
 
         Gtk.main_quit()
 
