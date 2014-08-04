@@ -363,24 +363,29 @@ if __name__ == '__main__':
     # Step 5: ping exercise
     # Check for redirection
     if not is_redirected():
-        # Ask for ping
-        subprocess.call(['typewriter_echo', 'Do you want to test your connection? {{1 [Y]es/[n]o }} ', '0', '0'])
-        var = raw_input().strip()
-        print("\n")
-        if var and (var.upper() == 'Y' or var.upper() == 'YES'):
-            subprocess.call(['typewriter_echo', 'Type {{2 ping www.google.com }}', '1', '2'])
-            while True:
-                var = raw_input().strip()
-                if var == 'ping www.google.com' or var == 'ping google.com':
-                    rc = subprocess.call(['ping', 'google.com', '-c', '1'])
-                    break
-                else:
-                    subprocess.call(['typewriter_echo', '{{6 - }} {{5 Not the correct command, try again: }} {{2 ping www.google.com }}', '0', '2'])
+        ask_ping = True
+        while ask_ping:
+            # Ask for ping
+            subprocess.call(['typewriter_echo', 'Do you want to test your connection? {{1 [Y]es/[n]o }} ', '0', '0'])
+            var = raw_input().strip()
+            print("\n")
+            if var and (var.upper() == 'Y' or var.upper() == 'YES'):
+                subprocess.call(['typewriter_echo', 'Type {{2 ping www.google.com }}', '1', '2'])
+                while True:
+                    var = raw_input().strip()
+                    if var == 'ping www.google.com' or var == 'ping google.com':
+                        rc = subprocess.call(['ping', 'google.com', '-c', '1'])
+                        break
+                    else:
+                        subprocess.call(['typewriter_echo', '{{6 - }} {{5 Not the correct command, try again: }} {{2 ping www.google.com }}', '0', '2'])
 
-            if not rc == 0:
-                subprocess.call(['typewriter_echo', '{{8 x }} {{7 Oops! It seems the Internet is not reachable... Don\'t worry, we can still play! }}', '2', '2'])
+                if not rc == 0:
+                    subprocess.call(['typewriter_echo', '{{8 x }} {{7 Oops! It seems the Internet is not reachable... Don\'t worry, we can still play! }}', '2', '2'])
+                else:
+                    ask_ping = False
+                    subprocess.call(['typewriter_echo', '\n{{4 + }} {{3 Brilliant! Internet is working }}', '2', '2'])
             else:
-                subprocess.call(['typewriter_echo', '\n{{4 + }} {{3 Brilliant! Internet is working }}', '2', '2'])
+                ask_ping = False
     else:
         # Launch browser
         subprocess.call(['typewriter_echo', '\nLaunching the browser so you can log in', '2', '2'])
