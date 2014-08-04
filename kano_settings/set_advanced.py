@@ -52,11 +52,15 @@ class SetAdvanced(Template):
         self.win.show_all()
 
     def create_parental_button(self):
+        title = self.data["OPTION_1"]
+        desc_1 = self.data["DESCRIPTION_1_1"]
+        desc_2 = self.data["DESCRIPTION_1_2"]
+        desc_3 = self.data["DESCRIPTION_1_3"]
         self.parental_button = Gtk.CheckButton()
         box = LabelledListTemplate.label_button(self.parental_button,
-                                                "Parental lock", "this will:")
+                                                title, desc_1)
 
-        text_array = ["- Block under 16 videos on Youtube", "- Block list of websites in browser"]
+        text_array = [desc_2, desc_3]
 
         grid = Gtk.Grid()
         grid.attach(box, 0, 0, 1, 1)
@@ -74,9 +78,11 @@ class SetAdvanced(Template):
         return grid
 
     def create_debug_button(self):
+        title = self.data["OPTION_2"]
+        desc_1 = self.data["DESCRIPTION_2_1"]
         self.debug_button = Gtk.CheckButton()
-        box = LabelledListTemplate.label_button(self.debug_button, "Debug mode",
-                                                "Having problems?  Enable this mode and report a bug.")
+        box = LabelledListTemplate.label_button(self.debug_button, title,
+                                                desc_1)
 
         return box
 
@@ -136,11 +142,12 @@ class SetPassword(Template):
             title = self.data_unlock["LABEL_1"]
             description = self.data_unlock["LABEL_2"]
             kano_label = self.data_unlock["KANO_BUTTON"]
+            placeholder_1 = self.data_lock["PLACEHOLDER_1"]
 
             Template.__init__(self, title, description, kano_label)
             self.entry = Gtk.Entry()
             self.entry.set_size_request(300, 44)
-            self.entry.props.placeholder_text = "Enter your selected password"
+            self.entry.props.placeholder_text = placeholder_1
             self.entry.set_visibility(False)
             self.entry.connect("key_release_event", self.enable_button)
             entry_container.attach(self.entry, 0, 0, 1, 1)
@@ -150,15 +157,17 @@ class SetPassword(Template):
             title = self.data_lock["LABEL_1"]
             description = self.data_lock["LABEL_2"]
             kano_label = self.data_lock["KANO_BUTTON"]
+            placeholder_1 = self.data_lock["PLACEHOLDER_1"]
+            placeholder_2 = self.data_lock["PLACEHOLDER_2"]
 
             Template.__init__(self, title, description, kano_label)
             self.entry1 = Gtk.Entry()
             self.entry1.set_size_request(300, 44)
-            self.entry1.props.placeholder_text = "Select password"
+            self.entry1.props.placeholder_text = placeholder_1
             self.entry1.set_visibility(False)
 
             self.entry2 = Gtk.Entry()
-            self.entry2.props.placeholder_text = "Confirm password"
+            self.entry2.props.placeholder_text = placeholder_2
             self.entry2.set_visibility(False)
 
             self.entry1.connect("key_release_event", self.enable_button)
@@ -191,8 +200,8 @@ class SetPassword(Template):
             password = self.entry1.get_text()
             password2 = self.entry2.get_text()
             passed_test = (password == password2)
-            error_heading = "Careful"
-            error_description = "The passwords don't match! Try again"
+            error_heading = self.data["ERROR_LABEL_1"]
+            error_description = self.data["ERROR_LABEL_2"]
 
         # if enabled, turning off
         else:
