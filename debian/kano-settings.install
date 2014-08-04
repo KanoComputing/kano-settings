@@ -5,7 +5,7 @@ bin/set-kano-hdmi /usr/bin
 kano_settings/* /usr/lib/python2.7/dist-packages/kano_settings
 media/* /usr/share/kano-settings/media
 
-icon/settings.app /usr/share/kano-applications/
+icon/settings.app /usr/share/applications/
 icon/kano-settings.png /usr/share/icons/Kano/66x66/apps/
 icon/settings-widget.png /usr/share/kano-settings
 
