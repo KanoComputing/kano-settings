@@ -141,7 +141,7 @@
     "DESCRIPTION_4": "950MHZ ARM, 450MHZ CORE, 450MHZ SDRAM, 6 OVERVOLT"
   },
   "SET_PASSWORD" : {
-    "LABEL_1": "Change your password",
+    "LABEL_1": "Change computer password",
     "LABEL_2": "Keep out the baddies!",
     "ENTRY_HEADING_1": "Old password",
     "DESCRIPTION_1": "\"kano\" is default",
