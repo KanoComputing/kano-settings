@@ -183,6 +183,7 @@ class SetPassword(Template):
         self.win.set_main_widget(self)
 
         self.kano_button.set_sensitive(False)
+
         self.kano_button.connect("button-release-event", self.apply_changes)
         self.kano_button.connect("key-release-event", self.apply_changes)
 
@@ -194,6 +195,17 @@ class SetPassword(Template):
         SetAdvanced(self.win)
 
     def apply_changes(self, button, event):
+        # Disable buttons and entry fields during validation
+        # we save the current parental state now because it will flip during this function
+        is_locked = self.parental_enabled
+        if is_locked:
+            self.entry.set_sensitive(False)
+            button.set_sensitive(False)
+        else:
+            self.entry1.set_sensitive(False)
+            self.entry2.set_sensitive(False)
+            button.set_sensitive(False)
+
         if not hasattr(event, 'keyval') or event.keyval == 65293:
 
             password = None
@@ -226,6 +238,15 @@ class SetPassword(Template):
                         self.entry.set_text("")
                 else:
                     self.go_to_advanced()
+
+        # Restore the UI controls (re-enable input focus)
+        if is_locked:
+            self.entry.set_sensitive(True)
+            button.set_sensitive(True)
+        else:
+            self.entry1.set_sensitive(True)
+            self.entry2.set_sensitive(True)
+            button.set_sensitive(True)
 
     def create_dialog(self, message1, message2):
         kdialog = KanoDialog(
