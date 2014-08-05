@@ -54,14 +54,17 @@ class SetAccount(TopBarTemplate):
         self.pass_button = KanoButton(pass_text)
         self.pass_button.pack_and_align()
         self.pass_button.connect("button-release-event", self.go_to_password_screen)
+        self.pass_button.connect("key-release-event", self.go_to_password_screen)
 
         self.add_button = KanoButton(add_text)
         self.add_button.set_size_request(200, 44)
         self.add_button.connect("button-release-event", self.add_account)
+        self.add_button.connect("key-release-event", self.add_account)
 
         self.remove_button = KanoButton(remove_text, color="red")
         self.remove_button.set_size_request(200, 44)
         self.remove_button.connect("button-release-event", self.remove_account_dialog)
+        self.remove_button.connect("key-release-event", self.remove_account_dialog)
 
         button_container = Gtk.Box()
         button_container.pack_start(self.add_button, False, False, 10)
@@ -86,11 +89,14 @@ class SetAccount(TopBarTemplate):
         self.win.show_all()
 
     def go_to_password_screen(self, widget, event):
-        self.win.clear_win()
-        SetPassword(self.win)
+
+        if not hasattr(event, 'keyval') or event.keyval == 65293:
+            self.win.clear_win()
+            SetPassword(self.win)
 
     # Gets executed when ADD button is clicked
     def add_account(self, widget=None, event=None):
+
         if not hasattr(event, 'keyval') or event.keyval == 65293:
             # Bring in message dialog box
             dialog_title = self.data["ADD_ACCOUNT_DIALOG_TITLE"]
