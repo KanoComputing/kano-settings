@@ -49,6 +49,7 @@ class SetAdvanced(Template):
         self.top_bar.enable_prev()
 
         self.kano_button.connect("button-release-event", self.apply_changes)
+        self.kano_button.connect("key-release-event", self.apply_changes)
         self.win.show_all()
 
     def create_parental_button(self):
@@ -91,28 +92,31 @@ class SetAdvanced(Template):
         SetPassword(self.win)
 
     def apply_changes(self, button, event):
-        old_debug_mode = self.get_stored_debug_mode()
-        new_debug_mode = self.debug_button.get_active()
-        if new_debug_mode == old_debug_mode:
-            logging.Logger().debug('skipping debug mode change')
-            return
+         # If enter key is pressed or mouse button is clicked
+        if not hasattr(event, 'keyval') or event.keyval == 65293:
 
-        if new_debug_mode:
-            # set debug on:
-            logging.set_system_log_level('debug')
-            logging.Logger().info('setting logging to debug')
-            msg = "Activated"
-        else:
-            # set debug off:
-            logging.set_system_log_level('error')
-            logging.Logger().info('setting logging to error')
-            msg = "De-activated"
+            old_debug_mode = self.get_stored_debug_mode()
+            new_debug_mode = self.debug_button.get_active()
+            if new_debug_mode == old_debug_mode:
+                logging.Logger().debug('skipping debug mode change')
+                return
 
-        kdialog = KanoDialog("Debug mode", msg, parent_window=self.win)
-        kdialog.run()
+            if new_debug_mode:
+                # set debug on:
+                logging.set_system_log_level('debug')
+                logging.Logger().info('setting logging to debug')
+                msg = "Activated"
+            else:
+                # set debug off:
+                logging.set_system_log_level('error')
+                logging.Logger().info('setting logging to error')
+                msg = "De-activated"
 
-        self.kano_button.set_sensitive(False)
-        self.win.go_to_home()
+            kdialog = KanoDialog("Debug mode", msg, parent_window=self.win)
+            kdialog.run()
+
+            self.kano_button.set_sensitive(False)
+            self.win.go_to_home()
 
     def on_debug_toggled(self, checkbutton):
         self.kano_button.set_sensitive(True)
@@ -195,62 +199,65 @@ class SetPassword(Template):
         SetAdvanced(self.win)
 
     def apply_changes(self, button, event):
-        # Disable buttons and entry fields during validation
-        # we save the current parental state now because it will flip during this function
-        is_locked = self.parental_enabled
-        if is_locked:
-            self.entry.set_sensitive(False)
-            button.set_sensitive(False)
-        else:
-            self.entry1.set_sensitive(False)
-            self.entry2.set_sensitive(False)
-            button.set_sensitive(False)
-
+        # If enter key is pressed or mouse button is clicked
         if not hasattr(event, 'keyval') or event.keyval == 65293:
 
-            password = None
-
-            # if disabled, turning on
-            if not self.parental_enabled:
-                password = self.entry1.get_text()
-                password2 = self.entry2.get_text()
-                passed_test = (password == password2)
-                error_heading = self.data_lock["ERROR_LABEL_1"]
-                error_description = self.data_lock["ERROR_LABEL_2"]
-
-            # if enabled, turning off
+            # Disable buttons and entry fields during validation
+            # we save the current parental state now because it will flip during this function
+            is_locked = self.parental_enabled
+            if is_locked:
+                self.entry.set_sensitive(False)
+                button.set_sensitive(False)
             else:
-                password = self.entry.get_text()
-                passed_test = True
+                self.entry1.set_sensitive(False)
+                self.entry2.set_sensitive(False)
+                button.set_sensitive(False)
 
-            # if test passed, update parental configuration
-            if passed_test:
-                self.update_config(password)
+            if not hasattr(event, 'keyval') or event.keyval == 65293:
 
-            # else, display try again dialog
-            else:
-                response = self.create_dialog(error_heading, error_description)
-                if response == -1:
-                    if not self.parental_enabled:
-                        self.entry1.set_text("")
-                        self.entry2.set_text("")
-                    else:
-                        self.entry.set_text("")
+                password = None
+
+                # if disabled, turning on
+                if not self.parental_enabled:
+                    password = self.entry1.get_text()
+                    password2 = self.entry2.get_text()
+                    passed_test = (password == password2)
+                    error_heading = self.data_lock["ERROR_LABEL_1"]
+                    error_description = self.data_lock["ERROR_LABEL_2"]
+
+                # if enabled, turning off
                 else:
-                    self.go_to_advanced()
+                    password = self.entry.get_text()
+                    passed_test = True
 
-        # Restore the UI controls (re-enable input focus)
-        if is_locked:
-            self.entry.set_sensitive(True)
-            button.set_sensitive(True)
-        else:
-            self.entry1.set_sensitive(True)
-            self.entry2.set_sensitive(True)
+                # if test passed, update parental configuration
+                if passed_test:
+                    self.update_config(password)
 
-            # For new password input dialog (2 entry fields) the lock button
-            # will be enabled only after the user enters text
-            # in both password fields (self.enable_button)
-            button.set_sensitive(False)
+                # else, display try again dialog
+                else:
+                    response = self.create_dialog(error_heading, error_description)
+                    if response == -1:
+                        if not self.parental_enabled:
+                            self.entry1.set_text("")
+                            self.entry2.set_text("")
+                        else:
+                            self.entry.set_text("")
+                    else:
+                        self.go_to_advanced()
+
+            # Restore the UI controls (re-enable input focus)
+            if is_locked:
+                self.entry.set_sensitive(True)
+                button.set_sensitive(True)
+            else:
+                self.entry1.set_sensitive(True)
+                self.entry2.set_sensitive(True)
+
+                # For new password input dialog (2 entry fields) the lock button
+                # will be enabled only after the user enters text
+                # in both password fields (self.enable_button)
+                button.set_sensitive(False)
 
     def create_dialog(self, message1, message2):
         kdialog = KanoDialog(
