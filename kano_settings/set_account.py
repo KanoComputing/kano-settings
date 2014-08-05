@@ -238,6 +238,8 @@ class SetPassword(Template):
 
             def lengthy_process():
 
+                success = False
+
                 old_password = self.entry1.get_text()
                 new_password1 = self.entry2.get_text()
                 new_password2 = self.entry3.get_text()
@@ -264,12 +266,16 @@ class SetPassword(Template):
                     else:
                         title = self.data["PASSWORD_SUCCESS_TITLE"]
                         description = self.data["PASSWORD_SUCCESS_DESCRIPTION"]
+                        success = True
                 else:
                     title = self.data["PASSWORD_ERROR_TITLE"]
                     description = self.data["PASSWORD_ERROR_2"]
 
-                def done(title, description):
-                    response = create_dialog(title, description, self.win)
+                def done(title, description, success):
+                    if success:
+                        response = create_success_dialog(title, description, self.win)
+                    else:
+                        response = create_error_dialog(title, description, self.win)
 
                     self.win.get_window().set_cursor(None)
                     self.kano_button.set_sensitive(True)
@@ -279,7 +285,7 @@ class SetPassword(Template):
                     if response == 0:
                         self.go_to_accounts()
 
-                GObject.idle_add(done, title, description)
+                GObject.idle_add(done, title, description, success)
 
             thread = threading.Thread(target=lengthy_process)
             thread.start()
@@ -300,9 +306,16 @@ class SetPassword(Template):
         self.kano_button.set_sensitive(text1 != "" and text2 != "" and text3 != "")
 
 
-def create_dialog(message1="Could not change password", message2="", win=None):
+def create_error_dialog(message1="Could not change password", message2="", win=None):
     kdialog = kano_dialog.KanoDialog(message1, message2,
                                      {"TRY AGAIN": {"return_value": -1}, "GO BACK": {"return_value": 0, "color": "red"}},
+                                     parent_window=win)
+    response = kdialog.run()
+    return response
+
+
+def create_success_dialog(message1, message2, win):
+    kdialog = kano_dialog.KanoDialog(message1, message2,
                                      parent_window=win)
     response = kdialog.run()
     return response
