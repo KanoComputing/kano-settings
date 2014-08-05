@@ -43,8 +43,8 @@ class SetAccount(TopBarTemplate):
 
         main_title = self.data["LABEL_1"]
         main_description = self.data["LABEL_2"]
-        accounts_title = self.data["LABEL_1"]
-        accounts_description = self.data["LABEL_2"]
+        accounts_title = self.data["LABEL_3"]
+        accounts_description = self.data["LABEL_4"]
         add_text = self.data["ADD_BUTTON"]
         remove_text = self.data["REMOVE_BUTTON"]
         pass_text = self.data["PASSWORD_BUTTON"]
