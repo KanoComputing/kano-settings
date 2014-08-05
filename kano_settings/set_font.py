@@ -51,7 +51,7 @@ class SetFont(RadioButtonTemplate):
         self.win.set_main_widget(self)
 
         self.top_bar.enable_prev()
-        self.top_bar.set_prev_callback(self.win.go_to_home)
+        self.top_bar.set_prev_callback(self.reset_and_go_home)
 
         # Show the current setting by electing the appropriate radio button
         self.current_setting()
@@ -61,6 +61,11 @@ class SetFont(RadioButtonTemplate):
         self.kano_button.connect("button-release-event", self.change_font)
         self.kano_button.connect("key-release-event", self.change_font)
         self.win.show_all()
+
+    def reset_and_go_home(self, widget=None, event=None):
+        self.selected_button = self.initial_button
+        self.get_button(self.initial_button).set_active(True)
+        self.win.go_to_home()
 
     def change_font(self, widget, event):
         # If enter key is pressed or mouse button is clicked
