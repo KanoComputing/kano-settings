@@ -42,6 +42,7 @@ class SetWallpaper(ScrolledWindowTemplate):
         self.win.set_main_widget(self)
 
         self.kano_button.connect("button-release-event", self.apply_changes)
+        self.kano_button.connect("key-release-event", self.apply_changes)
         self.top_bar.enable_prev()
         self.top_bar.set_prev_callback(self.win.go_to_home)
 
@@ -50,9 +51,11 @@ class SetWallpaper(ScrolledWindowTemplate):
         self.table.set_col_spacings(COLUMN_PADDING)
         self.buttons = {}
         self.buttons_list = []
+
         # List of wallpapers
         self.wallpapers = {}
         self.create_list_wallpaper()
+
         # Create thumbnail images
         self.images = {}
 
@@ -189,10 +192,13 @@ class SetWallpaper(ScrolledWindowTemplate):
                 }
 
     def apply_changes(self, button, event):
-        image_name = self.get_selected()
-        change_wallpaper(wallpaper_path, image_name)
-        self.update_config()
-        self.win.go_to_home()
+        # If enter key is pressed or mouse button is clicked
+        if not hasattr(event, 'keyval') or event.keyval == 65293:
+
+            image_name = self.get_selected()
+            change_wallpaper(wallpaper_path, image_name)
+            self.update_config()
+            self.win.go_to_home()
 
 
 def change_wallpaper(path, name):

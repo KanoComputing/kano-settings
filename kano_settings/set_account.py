@@ -216,64 +216,67 @@ class SetPassword(Template):
 
         self.kano_button.set_sensitive(False)
         self.kano_button.connect("button-release-event", self.apply_changes)
+        self.kano_button.connect("key-release-event", self.apply_changes)
 
         self.win.show_all()
 
     def apply_changes(self, button, event):
+        # If enter key is pressed or mouse button is clicked
+        if not hasattr(event, 'keyval') or event.keyval == 65293:
 
-        # This is a callback called by the main loop, so it's safe to
-        # manipulate GTK objects:
-        watch_cursor = Gdk.Cursor(Gdk.CursorType.WATCH)
-        self.win.get_window().set_cursor(watch_cursor)
-        self.kano_button.set_sensitive(False)
+            # This is a callback called by the main loop, so it's safe to
+            # manipulate GTK objects:
+            watch_cursor = Gdk.Cursor(Gdk.CursorType.WATCH)
+            self.win.get_window().set_cursor(watch_cursor)
+            self.kano_button.set_sensitive(False)
 
-        def lengthy_process():
+            def lengthy_process():
 
-            old_password = self.entry1.get_text()
-            new_password1 = self.entry2.get_text()
-            new_password2 = self.entry3.get_text()
+                old_password = self.entry1.get_text()
+                new_password1 = self.entry2.get_text()
+                new_password2 = self.entry3.get_text()
 
-            # Verify the current password in the first text box
-            # Get current username
-            username, e, num = utils.run_cmd("echo $SUDO_USER")
+                # Verify the current password in the first text box
+                # Get current username
+                username, e, num = utils.run_cmd("echo $SUDO_USER")
 
-            # Remove trailing newline character
-            username = username.rstrip()
+                # Remove trailing newline character
+                username = username.rstrip()
 
-            if not pam.authenticate(username, old_password):
-                title = "Could not change password"
-                description = "Your old password is incorrect!"
+                if not pam.authenticate(username, old_password):
+                    title = "Could not change password"
+                    description = "Your old password is incorrect!"
 
-            # If the two new passwords match
-            elif new_password1 == new_password2:
-                out, e, cmdvalue = utils.run_cmd("echo $SUDO_USER:%s | chpasswd" % (new_password1))
+                # If the two new passwords match
+                elif new_password1 == new_password2:
+                    out, e, cmdvalue = utils.run_cmd("echo $SUDO_USER:%s | chpasswd" % (new_password1))
 
-                # if password is not changed
-                if cmdvalue != 0:
-                    title = self.data["PASSWORD_ERROR_TITLE"]
-                    description = self.data["PASSWORD_ERROR_1"]
+                    # if password is not changed
+                    if cmdvalue != 0:
+                        title = self.data["PASSWORD_ERROR_TITLE"]
+                        description = self.data["PASSWORD_ERROR_1"]
+                    else:
+                        title = self.data["PASSWORD_SUCCESS_TITLE"]
+                        description = self.data["PASSWORD_SUCCESS_DESCRIPTION"]
                 else:
-                    title = self.data["PASSWORD_SUCCESS_TITLE"]
-                    description = self.data["PASSWORD_SUCCESS_DESCRIPTION"]
-            else:
-                title = self.data["PASSWORD_ERROR_TITLE"]
-                description = self.data["PASSWORD_ERROR_2"]
+                    title = self.data["PASSWORD_ERROR_TITLE"]
+                    description = self.data["PASSWORD_ERROR_2"]
 
-            def done(title, description):
-                response = create_dialog(title, description, self.win)
+                def done(title, description):
+                    response = create_dialog(title, description, self.win)
 
-                self.win.get_window().set_cursor(None)
-                self.kano_button.set_sensitive(True)
+                    self.win.get_window().set_cursor(None)
+                    self.kano_button.set_sensitive(True)
 
-                self.clear_text()
+                    self.clear_text()
 
-                if response == 0:
-                    self.go_to_accounts()
+                    if response == 0:
+                        self.go_to_accounts()
 
-            GObject.idle_add(done, title, description)
+                GObject.idle_add(done, title, description)
 
-        thread = threading.Thread(target=lengthy_process)
-        thread.start()
+            thread = threading.Thread(target=lengthy_process)
+            thread.start()
 
     def go_to_accounts(self, widget=None, event=None):
         self.win.clear_win()

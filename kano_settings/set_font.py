@@ -59,35 +59,38 @@ class SetFont(RadioButtonTemplate):
         self.get_button(self.initial_button).set_active(True)
 
         self.kano_button.connect("button-release-event", self.change_font)
+        self.kano_button.connect("key-release-event", self.change_font)
         self.win.show_all()
 
     def change_font(self, widget, event):
+        # If enter key is pressed or mouse button is clicked
+        if not hasattr(event, 'keyval') or event.keyval == 65293:
 
-        #  Mode   size
-        # Small    SIZE_SMALL
-        # Normal   SIZE_NORMAL
-        # Big      SIZE_BIG
+            #  Mode   size
+            # Small    SIZE_SMALL
+            # Normal   SIZE_NORMAL
+            # Big      SIZE_BIG
 
-        # Mode has no changed
-        if self.initial_button == self.selected_button:
-            self.win.go_to_home()
-            return
+            # Mode has no changed
+            if self.initial_button == self.selected_button:
+                self.win.go_to_home()
+                return
 
-        config = "Small"
-        # Slow configuration
-        if self.selected_button == 0:
             config = "Small"
-        # Modest configuration
-        elif self.selected_button == 1:
-            config = "Normal"
-        # Medium configuration
-        elif self.selected_button == 2:
-            config = "Big"
+            # Slow configuration
+            if self.selected_button == 0:
+                config = "Small"
+            # Modest configuration
+            elif self.selected_button == 1:
+                config = "Normal"
+            # Medium configuration
+            elif self.selected_button == 2:
+                config = "Big"
 
-        # Update config
-        set_setting("Font", config)
+            # Update config
+            set_setting("Font", config)
 
-        self.win.go_to_home()
+            self.win.go_to_home()
 
     def change_font_size(self):
 

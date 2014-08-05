@@ -117,8 +117,8 @@ class SetWifi(Template):
             kano_label = self.data_offline["KANO_BUTTON"]
 
             self.add_connection = KanoButton("WIFI")
-            self.add_connection.connect("button_press_event", self.configure_wifi)
-            self.add_connection.connect("key_press_event", self.configure_wifi)
+            self.add_connection.connect("button_release_event", self.configure_wifi)
+            self.add_connection.connect("key_release_event", self.configure_wifi)
             status_box.pack_start(self.add_connection, False, False, 0)
             internet_img.set_from_file(constants.media + "/Graphics/Internet-noConnection.png")
             self.title.title.set_text("Get connected")
@@ -170,6 +170,7 @@ class SetProxy(TopBarTemplate):
         grid = Gtk.Grid(column_homogeneous=False, column_spacing=10, row_spacing=10)
 
         self.kano_button.connect("button-release-event", self.go_to_wifi)
+        self.kano_button.connect("key-release-event", self.go_to_wifi)
         self.top_bar.enable_prev()
         self.top_bar.set_prev_callback(self.go_to_wifi)
 
@@ -234,8 +235,10 @@ class SetProxy(TopBarTemplate):
         self.win.show_all()
 
     def go_to_wifi(self, widget, event):
-        self.win.clear_win()
-        SetWifi(self.win)
+        # If enter key is pressed or mouse button is clicked
+        if not hasattr(event, 'keyval') or event.keyval == 65293:
+            self.win.clear_win()
+            SetWifi(self.win)
 
     # Update for proxy
     def read_config(self, radio1, radio2):
@@ -319,7 +322,6 @@ class SetProxy(TopBarTemplate):
 
     # ip address needs to be a pure ipv4 format at this moment: x.y.z.q (no segment mask as in /xx)
     def valid_ip_address(self, ip_widget, event=None):
-        global win, next_button
 
         # Find the index of "/"
         # Split into substring from "."
@@ -336,7 +338,6 @@ class SetProxy(TopBarTemplate):
             return False
 
     def set_proxy_type(self, radio_button):
-        global proxy_type
 
         if radio_button.get_active():
             self.proxy_type = "socks_v4 socks_v5"

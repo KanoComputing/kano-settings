@@ -34,6 +34,7 @@ class SetAudio(Template):
         self.top_bar.set_prev_callback(self.win.go_to_home)
 
         self.kano_button.connect("button-release-event", self.apply_changes)
+        self.kano_button.connect("key-release-event", self.apply_changes)
 
         # Analog radio button
         self.analog_button = Gtk.RadioButton.new_with_label_from_widget(None, "Speaker")
@@ -61,47 +62,50 @@ class SetAudio(Template):
         self.win.show_all()
 
     def apply_changes(self, widget, event):
-        # amixer -c 0 cset numid=3 N
-        # 1 analog
-        # 2 hdmi
+        # If enter key is pressed or mouse button is clicked
+        if not hasattr(event, 'keyval') or event.keyval == 65293:
 
-        # Uncomment/comment out the line  in /boot/config.txt
-        amixer_from = "amixer -c 0 cset numid=3 [0-9]"
-        edid_from = "#?hdmi_ignore_edid_audio=1"
-        drive_from = "#?hdmi_drive=2"
+            # amixer -c 0 cset numid=3 N
+            # 1 analog
+            # 2 hdmi
 
-        # These are the changes we'll apply if they have changed from what they were
-        if self.HDMI is True:
-            amixer_to = "amixer -c 0 cset numid=3 2"
-            edid_to = "#hdmi_ignore_edid_audio=1"
-            drive_to = "hdmi_drive=2"
-            config = "HDMI"
-        else:
-            amixer_to = "amixer -c 0 cset numid=3 1"
-            edid_to = "hdmi_ignore_edid_audio=1"
-            drive_to = "#hdmi_drive=2"
-            config = "Analogue"
+            # Uncomment/comment out the line  in /boot/config.txt
+            amixer_from = "amixer -c 0 cset numid=3 [0-9]"
+            edid_from = "#?hdmi_ignore_edid_audio=1"
+            drive_from = "#?hdmi_drive=2"
 
-        # if audio settings haven't changed, don't apply new changes
-        if get_setting('Audio') == config:
-            logger.debug("set_audio / apply_changes: audio settings haven't changed, don't apply new changes")
+            # These are the changes we'll apply if they have changed from what they were
+            if self.HDMI is True:
+                amixer_to = "amixer -c 0 cset numid=3 2"
+                edid_to = "#hdmi_ignore_edid_audio=1"
+                drive_to = "hdmi_drive=2"
+                config = "HDMI"
+            else:
+                amixer_to = "amixer -c 0 cset numid=3 1"
+                edid_to = "hdmi_ignore_edid_audio=1"
+                drive_to = "#hdmi_drive=2"
+                config = "Analogue"
+
+            # if audio settings haven't changed, don't apply new changes
+            if get_setting('Audio') == config:
+                logger.debug("set_audio / apply_changes: audio settings haven't changed, don't apply new changes")
+                self.win.go_to_home()
+                return
+
+            amixer_rc = file_replace(self.rc_local_path, amixer_from, amixer_to)
+            edid_rc = file_replace(self.config_txt_path, edid_from, edid_to)
+            drive_rc = file_replace(self.config_txt_path, drive_from, drive_to)
+
+            # Don't continue if we don't manage to change the audio settings in the file.
+            if amixer_rc == -1 or edid_rc == -1 or drive_rc == -1:
+                logger.debug("set_audio / apply_changes: we couldn't manage to change all files")
+                return
+
+            set_setting('Audio', config)
+            # Tell user to reboot to see changes
+            constants.need_reboot = True
+
             self.win.go_to_home()
-            return
-
-        amixer_rc = file_replace(self.rc_local_path, amixer_from, amixer_to)
-        edid_rc = file_replace(self.config_txt_path, edid_from, edid_to)
-        drive_rc = file_replace(self.config_txt_path, drive_from, drive_to)
-
-        # Don't continue if we don't manage to change the audio settings in the file.
-        if amixer_rc == -1 or edid_rc == -1 or drive_rc == -1:
-            logger.debug("set_audio / apply_changes: we couldn't manage to change all files")
-            return
-
-        set_setting('Audio', config)
-        # Tell user to reboot to see changes
-        constants.need_reboot = True
-
-        self.win.go_to_home()
 
     def current_setting(self):
         f = open(self.rc_local_path, 'r')

@@ -46,35 +46,38 @@ class SetMouse(RadioButtonTemplate):
         self.top_bar.set_prev_callback(self.win.go_to_home)
 
         self.kano_button.connect("button-release-event", self.set_mouse)
+        self.kano_button.connect("key-release-event", self.set_mouse)
 
         self.win.show_all()
 
     def set_mouse(self, button, event):
+        # If enter key is pressed or mouse button is clicked
+        if not hasattr(event, 'keyval') or event.keyval == 65293:
 
-        #  Mode   speed
-        # Slow     1
-        # Normal  default
-        # High     10
+            #  Mode   speed
+            # Slow     1
+            # Normal  default
+            # High     10
 
-        # Mode has no changed
-        if self.initial_button == self.selected_button:
-            self.win.go_to_home()
-            return
+            # Mode has no changed
+            if self.initial_button == self.selected_button:
+                self.win.go_to_home()
+                return
 
-        config = "Slow"
-        # Slow configuration
-        if self.selected_button == 0:
             config = "Slow"
-        # Modest configuration
-        elif self.selected_button == 1:
-            config = "Normal"
-        # Medium configuration
-        elif self.selected_button == 2:
-            config = "Fast"
+            # Slow configuration
+            if self.selected_button == 0:
+                config = "Slow"
+            # Modest configuration
+            elif self.selected_button == 1:
+                config = "Normal"
+            # Medium configuration
+            elif self.selected_button == 2:
+                config = "Fast"
 
-        # Update config
-        set_setting("Mouse", config)
-        self.win.go_to_home()
+            # Update config
+            set_setting("Mouse", config)
+            self.win.go_to_home()
 
     def change_mouse_speed(self):
         command = "xset m "

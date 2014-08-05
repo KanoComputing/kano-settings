@@ -186,22 +186,25 @@ class SetKeyboard(Template):
         self.variants_combo.hide()
 
     def apply_changes(self, button, event):
-        kano_keyboard = detect_kano_keyboard()
 
-        # Apply changes
-        thread = WorkerThread(self.work_finished_cb)
-        thread.start()
+        # If enter key is pressed or mouse button is clicked
+        if not hasattr(event, 'keyval') or event.keyval == 65293:
+            kano_keyboard = detect_kano_keyboard()
 
-        # Save the changes in the config
-        self.update_config()
+            # Apply changes
+            thread = WorkerThread(self.work_finished_cb)
+            thread.start()
 
-        # Go back a screen
-        if kano_keyboard:
-            self.go_to_kano_screen()
-        else:
-            self.win.go_to_home()
+            # Save the changes in the config
+            self.update_config()
 
-        self.win.show_all()
+            # Go back a screen
+            if kano_keyboard:
+                self.go_to_kano_screen()
+            else:
+                self.win.go_to_home()
+
+            self.win.show_all()
 
     def read_config(self):
         self.selected_continent_index = get_setting("Keyboard-continent-index")

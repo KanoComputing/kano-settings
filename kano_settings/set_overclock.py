@@ -51,76 +51,79 @@ class SetOverclock(RadioButtonTemplate):
         self.top_bar.set_prev_callback(self.win.go_to_home)
 
         self.kano_button.connect("button-release-event", self.set_overclock)
+        self.kano_button.connect("key-release-event", self.set_overclock)
 
         self.win.show_all()
 
     def set_overclock(self, widget, event):
+        # If enter key is pressed or mouse button is clicked
+        if not hasattr(event, 'keyval') or event.keyval == 65293:
 
-        #  Mode      arm_freq    core_freq    sdram_freq   over_voltage
-        # "None"   "700MHz ARM, 250MHz core, 400MHz SDRAM, 0 overvolt"
-        # "Modest" "800MHz ARM, 300MHz core, 400MHz SDRAM, 0 overvolt"
-        # "Medium" "900MHz ARM, 333MHz core, 450MHz SDRAM, 2 overvolt"
-        # "High"   "950MHz ARM, 450MHz core, 450MHz SDRAM, 6 overvolt"
+            #  Mode      arm_freq    core_freq    sdram_freq   over_voltage
+            # "None"   "700MHz ARM, 250MHz core, 400MHz SDRAM, 0 overvolt"
+            # "Modest" "800MHz ARM, 300MHz core, 400MHz SDRAM, 0 overvolt"
+            # "Medium" "900MHz ARM, 333MHz core, 450MHz SDRAM, 2 overvolt"
+            # "High"   "950MHz ARM, 450MHz core, 450MHz SDRAM, 6 overvolt"
 
-        # Mode has no changed
-        if self.initial_button == self.selected_button:
-            self.win.go_to_home()
-            return
+            # Mode has no changed
+            if self.initial_button == self.selected_button:
+                self.win.go_to_home()
+                return
 
-        config = "High"
-        arm_freq = "arm_freq="
-        core_freq = "core_freq="
-        sdram_freq = "sdram_freq="
-        over_voltage = "over_voltage="
-        arm_freq_pattern = "arm_freq=[0-9][0-9][0-9]"
-        core_freq_pattern = "core_freq=[0-9][0-9][0-9]"
-        sdram_freq_pattern = "sdram_freq=[0-9][0-9][0-9]"
-        over_voltage_pattern = "over_voltage=[0-9]"
-        # None configuration
-        if self.selected_button == 0:
-            config = "None"
-            arm_freq += "700"
-            core_freq += "250"
-            sdram_freq += "400"
-            over_voltage += "0"
-        # Modest configuration
-        elif self.selected_button == 1:
-            config = "Modest"
-            arm_freq += "800"
-            core_freq += "300"
-            sdram_freq += "400"
-            over_voltage += "0"
-        # Medium configuration
-        elif self.selected_button == 2:
-            config = "Medium"
-            arm_freq += "900"
-            core_freq += "333"
-            sdram_freq += "450"
-            over_voltage += "2"
-        # High configuration
-        elif self.selected_button == 3:
             config = "High"
-            arm_freq += "950"
-            core_freq += "450"
-            sdram_freq += "450"
-            over_voltage += "6"
+            arm_freq = "arm_freq="
+            core_freq = "core_freq="
+            sdram_freq = "sdram_freq="
+            over_voltage = "over_voltage="
+            arm_freq_pattern = "arm_freq=[0-9][0-9][0-9]"
+            core_freq_pattern = "core_freq=[0-9][0-9][0-9]"
+            sdram_freq_pattern = "sdram_freq=[0-9][0-9][0-9]"
+            over_voltage_pattern = "over_voltage=[0-9]"
+            # None configuration
+            if self.selected_button == 0:
+                config = "None"
+                arm_freq += "700"
+                core_freq += "250"
+                sdram_freq += "400"
+                over_voltage += "0"
+            # Modest configuration
+            elif self.selected_button == 1:
+                config = "Modest"
+                arm_freq += "800"
+                core_freq += "300"
+                sdram_freq += "400"
+                over_voltage += "0"
+            # Medium configuration
+            elif self.selected_button == 2:
+                config = "Medium"
+                arm_freq += "900"
+                core_freq += "333"
+                sdram_freq += "450"
+                over_voltage += "2"
+            # High configuration
+            elif self.selected_button == 3:
+                config = "High"
+                arm_freq += "950"
+                core_freq += "450"
+                sdram_freq += "450"
+                over_voltage += "6"
 
-        logger.info('set_overclock / apply_changes: config:{} arm_freq:{} core_freq:{} sdram_freq:{} over_voltage:{}'.format(
-            config, arm_freq, core_freq, sdram_freq, over_voltage))
+            logger.info('set_overclock / apply_changes: config:{} arm_freq:{} core_freq:{} sdram_freq:{} over_voltage:{}'.format(
+                config, arm_freq, core_freq, sdram_freq, over_voltage))
 
-        # Apply changes
-        file_replace(self.boot_config_file, arm_freq_pattern, arm_freq)
-        file_replace(self.boot_config_file, core_freq_pattern, core_freq)
-        file_replace(self.boot_config_file, sdram_freq_pattern, sdram_freq)
-        file_replace(self.boot_config_file, over_voltage_pattern, over_voltage)
+            # Apply changes
+            file_replace(self.boot_config_file, arm_freq_pattern, arm_freq)
+            file_replace(self.boot_config_file, core_freq_pattern, core_freq)
+            file_replace(self.boot_config_file, sdram_freq_pattern, sdram_freq)
+            file_replace(self.boot_config_file, over_voltage_pattern, over_voltage)
 
-        # Update config
-        set_setting("Overclocking", config)
+            # Update config
+            set_setting("Overclocking", config)
 
-        # Tell user to reboot to see changes
-        constants.need_reboot = True
+            # Tell user to reboot to see changes
+            constants.need_reboot = True
 
-        self.win.go_to_home()
+            self.win.go_to_home()
 
     def current_setting(self):
         f = open(self.boot_config_file, 'r')
