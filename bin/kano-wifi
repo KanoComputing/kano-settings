@@ -257,7 +257,7 @@ if __name__ == '__main__':
             subprocess.call(['typewriter_echo', 'If you don\'t want to use WiFi, press {{1 ENTER }}.', '2', '0'])
             sys.exit(2)
         else:
-            subprocess.call(['typewriter_echo', 'Press {{1 ENTER }} to ready.', '1', '0'])
+            subprocess.call(['typewriter_echo', 'Press {{1 ENTER }} when ready.', '1', '0'])
         # Wait for input
         var = raw_input()
         subprocess.call(['clear'])
