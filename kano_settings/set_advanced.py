@@ -246,7 +246,11 @@ class SetPassword(Template):
         else:
             self.entry1.set_sensitive(True)
             self.entry2.set_sensitive(True)
-            button.set_sensitive(True)
+
+            # For new password input dialog (2 entry fields) the lock button
+            # will be enabled only after the user enters text
+            # in both password fields (self.enable_button)
+            button.set_sensitive(False)
 
     def create_dialog(self, message1, message2):
         kdialog = KanoDialog(
