@@ -1,22 +1,24 @@
-#!/usr/bin/env python
+#! /usr/bin/python
 
 # kano-wifi
 #
 # Copyright (C) 2013 Kano Computing Ltd.
-# License:   http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 # This script is a guided, interactive step-by-step process to connect to a wireless network.
 # Sets return code to 0 if connected, anything else meaning an error occured.
 #
 # Exit codes:
 #
-#  1 need root privileges
-#  2 no wifi dongle connected
-#  3 a connection attempt is already in progress
+# 1 need root privileges
+# 2 no wifi dongle connected
+# 3 a connection attempt is already in progress
 #
 
 import os
 import sys
+import time
+import threading
 import subprocess
 
 from kano.network import IWList, is_device, is_connected, connect, is_gateway, is_internet, KwifiCache, \
@@ -39,7 +41,6 @@ class GetPasswordHideAsYouType:
     def __call__(self):
         import tty
         import termios
-        import time
         from termios import tcflush, TCIOFLUSH
 
         # reset password so you don't need to reinstantiate
@@ -89,7 +90,7 @@ def display_networks(iwl, page=0, perpage=NETWORKS_PER_PAGE):
     displayed = 0
 
     subprocess.call(['clear'])
-    subprocess.call(['typewriter_echo', 'Choose a network:', '0', '2'])
+    subprocess.call(['typewriter_echo', '\n Choose a network:', '0', '2'])
 
     for idx, netw in enumerate(iwl[start:end]):
         enctxt = 'Open'
@@ -135,21 +136,28 @@ def prompt_hidden():
 
 def connect_with_retry(wiface, essid, encryption):
     '''
-    Connects to a wireless network, either open or protected.
-    If it's protected, it promptd for the password
-    with a retry option in case the connection fails.
-    Returns true if online.
-    '''
+Connects to a wireless network, either open or protected.
+If it's protected, it promptd for the password
+with a retry option in case the connection fails.
+Returns true if online.
+'''
     online = False
     enckey = None
 
     if encryption == 'off':
         # for open networks, attempt a connection and return online status
 
+        # whilst we connect, we display a spinner animation
+        animation = SpinnerAnimation(speed=0.5, stages=10)
+        animation.start()
+
         # FIXME: Reload until linux kernel module is fixed
         reload_kernel_module()
 
         connect(wiface, essid, encryption, enckey)
+        animation.stop()
+        animation.join()
+
         online = is_gateway(wiface)
     else:
         # for protected networks, prompt for password, try connection
@@ -157,21 +165,28 @@ def connect_with_retry(wiface, essid, encryption):
         passprompt = GetPasswordHideAsYouType()
         retry_pass = 'Y'
         while retry_pass in ('Y', ''):
-            msg = 'What\'s the network password?'
+            msg = ' What\'s the network password?'
             subprocess.call(['typewriter_echo', msg, '0', '1'])
             enckey = passprompt()
             while not len(enckey):
-                msg = '{{8 x }} {{7 Please enter a valid network password }}'
+                msg = ' {{8 x }} {{7 Please enter a valid network password }}'
                 subprocess.call(['typewriter_echo', msg, '0', '1'])
                 enckey = passprompt()
 
-            msg = '\nTrying {{2 %s }}, please stand by...' % essid
-            subprocess.call(['typewriter_echo', msg, '0', '2'])
+            # whilst we connect, we display a spinner animation
+            print "\n"
+            spinner_text = ' Trying %s, please stand by ' % essid
+            animation = SpinnerAnimation(speed=0.5, stages=5, text=spinner_text)
+            animation.start()
 
             # FIXME: Reload until linux kernel module is fixed
             reload_kernel_module()
 
             connect(wiface, essid, encryption, enckey)
+            animation.stop()
+            animation.join()
+            print "\n"
+
             online = is_gateway(wiface)
             if not online:
                 msg = '{{6 - }} {{5 Couldn\'t connect to }}{{2 %s }}.{{5 Do you want to re-enter the password? }} {{1 [Y]es/[n]o }} ' % essid
@@ -181,6 +196,60 @@ def connect_with_retry(wiface, essid, encryption):
                 break
 
     return (online, enckey)
+
+
+class SpinnerAnimation(threading.Thread):
+    '''
+This thread is a simple progressbar-like animation.
+You can set the speed and stages when you create the object.
+To use it, simply create and start() the animation thread.
+When you want to terminate the animation, call stop() and then join().
+'''
+
+    def __init__(self, speed=1, stages=10, text=""):
+        super(SpinnerAnimation, self).__init__()
+
+        self._stop = threading.Event()
+        self.speed = speed
+        self.max_stage = stages + 1
+        self.text = text
+
+        # color_echo may be called here for more interesting graphics
+        self.completed_symbol = "."
+        self.uncompleted_symbol = " "
+
+    def stop(self):
+        self._stop.set()
+
+    def stopped(self):
+        return self._stop.isSet()
+
+    def draw_spinner(self, stage):
+        spinner = self.text
+
+        for progress in range(0, stage):
+            spinner += self.completed_symbol
+
+        for progress in range(stage + 1, self.max_stage):
+            spinner += self.uncompleted_symbol
+
+        spinner += "\r"
+
+        sys.stdout.write(spinner)
+        sys.stdout.flush()
+
+    # The animation loop checks for the stopped flag every 'speed' seconds.
+    # When the animation is terminated, it prints a line of spaces
+    # to make sure the graphics are removed.
+    def run(self):
+        while True:
+            for stage in range(0, self.max_stage):
+                self.draw_spinner(stage)
+                time.sleep(self.speed)
+
+                if self.stopped():
+                    return
+
 
 if __name__ == '__main__':
 
@@ -192,7 +261,7 @@ if __name__ == '__main__':
     page = 0
 
     #
-    #  We first need to do some environment sanity checks
+    # We first need to do some environment sanity checks
     #
 
     if not os.getuid() == 0:
@@ -238,7 +307,7 @@ if __name__ == '__main__':
                 sys.exit(0)
 
     #
-    #  Start the walkthrough process to get connected
+    # Start the walkthrough process to get connected
     #
     subprocess.call(['clear'])
     # Step 1: intro
@@ -250,7 +319,7 @@ if __name__ == '__main__':
 
     # Step 3: check for WiFi dongle
     while not is_device(wiface):
-        subprocess.call(['/bin/sync'])  # Flush system IO buffers to disk to avoid corruption
+        subprocess.call(['/bin/sync']) # Flush system IO buffers to disk to avoid corruption
         subprocess.call(['typewriter_echo', 'First, plug in your {{2wifi piece}}.', '0', '2'])
         if not is_model_b_plus():
             subprocess.call(['typewriter_echo', 'Please take into account that the system will automatically reboot.', '0', '2'])
@@ -265,9 +334,9 @@ if __name__ == '__main__':
     # Step 3.1: If dongle is connected and networking is up, offer option to forget wireless network.
     netname, _, _, linked = is_connected(wiface)
     if netname and linked:
-        msg = 'You are connected to {{2 %s }}' % netname
+        msg = '\n You are connected to {{2 %s }}' % netname
         subprocess.call(['typewriter_echo', msg, '2', '1'])
-        msg = 'Do you want to forget this network and choose a new one? {{1 [y]es/[N]o }} '
+        msg = ' Do you want to forget this network and choose a new one? {{1 [y]es/[N]o }} '
         subprocess.call(['typewriter_echo', msg, '0', '0'])
         var = raw_input().strip()
         if var and var.upper() == 'Y':
@@ -278,7 +347,7 @@ if __name__ == '__main__':
             sys.exit(0)
 
     # Step 4: WiFi dongle > show networks menu
-    subprocess.call(['typewriter_echo', 'Help me find the signal.', '1', '2'])
+    subprocess.call(['typewriter_echo', '\n Help me find the signal.', '1', '2'])
 
     # Scan networks in range
     iwl = IWList(wiface).getList(unsecure=False, first=False)
@@ -291,18 +360,17 @@ if __name__ == '__main__':
             if var and var.upper() != 'Y':
                 subprocess.call(['typewriter_echo', 'Exiting...', '1', '2'])
                 sys.exit(0)
-        print 'Total networks: %d, Page: %d' % (totalNetworks, page + 1)
-        subprocess.call(['colour_echo', '----------'])
-        subprocess.call(['colour_echo', '{{1 r }} -> Rescan'])
+        print ' Total networks: %d, Page: %d' % (totalNetworks, page + 1)
+        print ' ----------'
+        subprocess.call(['colour_echo', ' {{1 r }} -> Rescan'])
         if totalNetworks > (page + 1) * NETWORKS_PER_PAGE:
-            subprocess.call(['colour_echo', '{{1 n }} -> Next page'])
+            subprocess.call(['colour_echo', ' {{1 n }} -> Next page'])
         if page > 0:
-            subprocess.call(['colour_echo', '{{ 1 p }} -> Previous page'])
-        subprocess.call(['colour_echo', '{{1 h }} -> Connect to hidden network'])
-        subprocess.call(['colour_echo', '{{1 s }} -> Skip'])
-        subprocess.call(['colour_echo', '----------'])
-        var = raw_input(" Choose a network number or option letter: ").strip()
-        print("\n")
+            subprocess.call(['colour_echo', ' {{1 p }} -> Previous page'])
+        subprocess.call(['colour_echo', ' {{1 h }} -> Connect to hidden network'])
+        subprocess.call(['colour_echo', ' {{1 s }} -> Skip'])
+        print ' ----------'
+        var = raw_input("\n Choose a network number or option letter: ").strip()
 
         if var in ('s', 'S'):
             sys.exit(1)
@@ -344,7 +412,7 @@ if __name__ == '__main__':
             encryption = (iwl[selected]['encryption'])
             enckey = None
 
-            msg = 'Let\'s connect to {{2 %s }}' % essid
+            msg = '\n Let\'s connect to {{2 %s }}' % essid
             subprocess.call(['typewriter_echo', msg, '0', '2'])
 
             # Request password and try to connect with password retry option
@@ -363,29 +431,23 @@ if __name__ == '__main__':
     # Step 5: ping exercise
     # Check for redirection
     if not is_redirected():
-        ask_ping = True
-        while ask_ping:
-            # Ask for ping
-            subprocess.call(['typewriter_echo', 'Do you want to test your connection? {{1 [Y]es/[n]o }} ', '0', '0'])
-            var = raw_input().strip()
-            print("\n")
-            if var and (var.upper() == 'Y' or var.upper() == 'YES'):
-                subprocess.call(['typewriter_echo', 'Type {{2 ping www.google.com }}', '1', '2'])
-                while True:
-                    var = raw_input().strip()
-                    if var == 'ping www.google.com' or var == 'ping google.com':
-                        rc = subprocess.call(['ping', 'google.com', '-c', '1'])
-                        break
-                    else:
-                        subprocess.call(['typewriter_echo', '{{6 - }} {{5 Not the correct command, try again: }} {{2 ping www.google.com }}', '0', '2'])
-
-                if not rc == 0:
-                    subprocess.call(['typewriter_echo', '{{8 x }} {{7 Oops! It seems the Internet is not reachable... Don\'t worry, we can still play! }}', '2', '2'])
+        # Ask for ping
+        subprocess.call(['typewriter_echo', ' Do you want to test your connection? {{1 [Y]es/[n]o }} ', '0', '0'])
+        var = raw_input().strip()
+        if var and (var.upper() == 'Y' or var.upper() == 'YES'):
+            subprocess.call(['typewriter_echo', '\n Type {{2 ping www.google.com }}', '1', '2'])
+            while True:
+                var = raw_input().strip()
+                if var == 'ping www.google.com' or var == 'ping google.com':
+                    rc = subprocess.call(['ping', 'google.com', '-c', '1'])
+                    break
                 else:
-                    ask_ping = False
-                    subprocess.call(['typewriter_echo', '\n{{4 + }} {{3 Brilliant! Internet is working }}', '2', '2'])
+                    subprocess.call(['typewriter_echo', '{{6 - }} {{5 Not the correct command, try again: }} {{2 ping www.google.com }}', '0', '2'])
+
+            if not rc == 0:
+                subprocess.call(['typewriter_echo', '{{8 x }} {{7 Oops! It seems the Internet is not reachable... Don\'t worry, we can still play! }}', '2', '2'])
             else:
-                ask_ping = False
+                subprocess.call(['typewriter_echo', '\n{{4 + }} {{3 Brilliant! Internet is working }}', '2', '2'])
     else:
         # Launch browser
         subprocess.call(['typewriter_echo', '\nLaunching the browser so you can log in', '2', '2'])
