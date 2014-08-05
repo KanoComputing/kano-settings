@@ -114,7 +114,7 @@ class OverscanTemplate(TopBarTemplate):
     overscan_pipe = "/var/tmp/overscan"
     data = get_data("SET_OVERSCAN")
 
-    def __init__(self, win, title, description):
+    def __init__(self, win, title, description, original_overscan=None):
         TopBarTemplate.__init__(self)
 
         kano_label = self.data["KANO_BUTTON"]
@@ -135,7 +135,13 @@ class OverscanTemplate(TopBarTemplate):
             run_cmd('mknod {} c 100 0'.format(self.overscan_pipe))
 
         self.overscan_values = get_overscan_status()
-        self.original_overscan = get_overscan_status()
+        self.original_overscan = original_overscan
+
+        # Pass original overscan values between the classes
+        # If original_overscan hasn't been generated yet, get it from current overscan status
+        # Alternatively, maybe read this from a file in future
+        if original_overscan is None:
+            self.original_overscan = get_overscan_status()
 
         # Reset button
         self.reset_button = OrangeButton()
@@ -146,6 +152,7 @@ class OverscanTemplate(TopBarTemplate):
     def apply_changes(self, button, event):
         # Apply changes
         write_overscan_values(self.overscan_values)
+        self.original_overscan = self.overscan_values
         set_config_comment('kano_screen_used', get_model())
 
         # Tell user to reboot to see changes
@@ -165,6 +172,7 @@ class OverscanTemplate(TopBarTemplate):
         set_overscan_status(self.overscan_values)
 
     def go_to_display(self, widget=None, button=None):
+        self.reset()
         self.win.clear_win()
         SetDisplay(self.win)
 
@@ -175,10 +183,10 @@ class OverscanTemplate(TopBarTemplate):
 class SetSimpleOverscan(OverscanTemplate):
     data_simple = get_data("SET_OVERSCAN_SIMPLE")
 
-    def __init__(self, win):
+    def __init__(self, win, original_overscan=None):
         title = self.data_simple["LABEL_1"]
         description = self.data_simple["LABEL_2"]
-        OverscanTemplate.__init__(self, win, title, description)
+        OverscanTemplate.__init__(self, win, title, description, original_overscan)
 
         self.top_bar.set_prev_callback(self.go_to_display)
 
@@ -228,10 +236,11 @@ class SetSimpleOverscan(OverscanTemplate):
             self.t_scale.set_value(self.original_overscan['top'])
 
     def go_to_advanced(self, event=None, arg=None):
+
         # Remove key press handler from screen
         self.win.disconnect(self.key_press_handler)
         self.win.clear_win()
-        SetAdvancedOverscan(self.win)
+        SetAdvancedOverscan(self.win, self.original_overscan)
 
     def on_key_press(self, widget, event):
         # Right arrow (65363)
@@ -261,10 +270,10 @@ class SetSimpleOverscan(OverscanTemplate):
 class SetAdvancedOverscan(OverscanTemplate):
     data_advanced = get_data("SET_OVERSCAN_ADVANCED")
 
-    def __init__(self, win):
+    def __init__(self, win, original_overscan):
         title = self.data_advanced["LABEL_1"]
         description = self.data_advanced["LABEL_2"]
-        OverscanTemplate.__init__(self, win, title, description)
+        OverscanTemplate.__init__(self, win, title, description, original_overscan)
 
         self.top_bar.set_prev_callback(self.go_to_simple_overscan)
 
@@ -344,7 +353,7 @@ class SetAdvancedOverscan(OverscanTemplate):
 
     def go_to_simple_overscan(self, widget, event):
         self.win.clear_win()
-        SetSimpleOverscan(self.win)
+        SetSimpleOverscan(self.win, self.original_overscan)
 
     def update_value(self, widget, label):
         new_value = str(int(widget.get_value()))
