@@ -64,8 +64,6 @@ def main(screen_number=None):
     # Create windown
     win = MainWindow(screen_number)
     win.connect("delete-event", Gtk.main_quit)
-    # Display window
-    win.show_all()
     # start the GTK+ processing loop
     Gtk.main()
 
