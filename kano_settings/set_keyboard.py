@@ -177,7 +177,7 @@ class SetKeyboard(Template):
         # show all elements except the advanced mode
         self.refresh_window()
 
-    def go_to_kano_screen(self, widget, event):
+    def go_to_kano_screen(self, widget=None, event=None):
         self.win.clear_win()
         SetKanoKeyboard(self.win)
 
