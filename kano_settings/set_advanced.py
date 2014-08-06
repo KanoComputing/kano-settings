@@ -99,6 +99,7 @@ class SetAdvanced(Template):
             new_debug_mode = self.debug_button.get_active()
             if new_debug_mode == old_debug_mode:
                 logging.Logger().debug('skipping debug mode change')
+                self.win.go_to_home()
                 return
 
             if new_debug_mode:
