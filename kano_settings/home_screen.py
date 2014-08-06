@@ -44,11 +44,11 @@ class HomeScreen(TopBarTemplate):
         self.generate_grid()
         self.pack_start(self.scrolledwindow, False, False, 0)
 
+        self.win.show_all()
+
         if screen_number is not None:
             self.win.clear_win()
             self.state_to_widget(screen_number)(self.win)
-
-        self.win.show_all()
 
     def generate_grid(self):
         buttons = []
