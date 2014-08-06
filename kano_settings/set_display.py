@@ -88,8 +88,7 @@ class SetDisplay(Template):
         #  Get the selected mode
         tree_iter = combo.get_active_iter()
         if tree_iter is not None:
-            self.model = combo.get_model()
-            self.mode = self.model[tree_iter][0]
+            self.mode = combo.get_model()[tree_iter][0]
 
         self.mode_index = combo.get_active()
 
