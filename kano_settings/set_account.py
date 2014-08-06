@@ -278,8 +278,6 @@ class SetPassword(Template):
                         response = create_error_dialog(title, description, self.win)
 
                     self.win.get_window().set_cursor(None)
-                    self.kano_button.set_sensitive(True)
-
                     self.clear_text()
 
                     if response == 0:
