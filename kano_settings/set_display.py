@@ -28,8 +28,9 @@ class SetDisplay(Template):
 
          # Get display name
         self.model = get_model()
+        reboot_message = " (Changing this requires a reboot)"
 
-        Template.__init__(self, title, self.model, kano_label)
+        Template.__init__(self, title, self.model + reboot_message, kano_label)
 
         self.win = win
         self.win.set_main_widget(self)
