@@ -164,7 +164,7 @@ Returns true if online.
         # and give option to re-enter password in case it fails
         passprompt = GetPasswordHideAsYouType()
         retry_pass = 'Y'
-        while retry_pass in ('Y', ''):
+        while retry_pass in ('Y', 'YES', ''):
             msg = ' What\'s the network password?'
             subprocess.call(['typewriter_echo', msg, '0', '1'])
             enckey = passprompt()
@@ -339,7 +339,7 @@ if __name__ == '__main__':
         msg = ' Do you want to forget this network and choose a new one? {{1 [y]es/[N]o }} '
         subprocess.call(['typewriter_echo', msg, '0', '0'])
         var = raw_input().strip()
-        if var and var.upper() == 'Y':
+        if var and (var.upper() == 'Y' or var.upper() == 'YES'):
             # FIXME: Reload until linux kernel module is fixed
             reload_kernel_module()
             wificache.empty()
@@ -357,7 +357,7 @@ if __name__ == '__main__':
         if totalNetworks == 0:
             subprocess.call(['typewriter_echo', '{{6 - }} {{5 I can\'t find any wireless signals. Do you want to scan again? }} {{1 [Y]es/[n]o }} ', '0', '0'])
             var = raw_input().strip()
-            if var and var.upper() != 'Y':
+            if var and (var.upper() != 'Y' or var.upper() != 'YES'):
                 subprocess.call(['typewriter_echo', 'Exiting...', '1', '2'])
                 sys.exit(0)
         print ' Total networks: %d, Page: %d' % (totalNetworks, page + 1)
@@ -432,7 +432,7 @@ if __name__ == '__main__':
     # Check for redirection
     if not is_redirected():
         # Ask for ping
-        subprocess.call(['typewriter_echo', ' Do you want to test your connection? {{1 [Y]es/[n]o }} ', '0', '0'])
+        subprocess.call(['typewriter_echo', ' Do you want to test your connection? {{1 [y]es/[N]o }} ', '0', '0'])
         var = raw_input().strip()
         if var and (var.upper() == 'Y' or var.upper() == 'YES'):
             subprocess.call(['typewriter_echo', '\n Type {{2 ping www.google.com }}', '1', '2'])
