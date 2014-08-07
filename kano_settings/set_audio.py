@@ -1,259 +1,126 @@
 #!/usr/bin/env python
 
-# audio_screen.py
+# set_audio.py
 #
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
-# Screen for configuring audio
-#
 
-import time
 from gi.repository import Gtk
-
-from kano.gtk3.buttons import KanoButton
-from kano.gtk3.heading import Heading
-from template import Template, TopImageTemplate, HintHeading
-from kano.utils import play_sound
+import kano_settings.constants as constants
+from kano_settings.templates import Template
+from kano.logging import logger
+from kano_settings.config_file import get_setting, set_setting, file_replace
 from kano_settings.boot_config import set_config_value
-from kano_settings.config_file import set_setting, file_replace
-import kano_init_flow.constants as constants
-from kano_init_flow.data import get_data
-from kano_init_flow.paths import media_dir
-from kano_init_flow.display_screen import DisplayScreen
-
-number_tries = 0
+from kano_settings.data import get_data
 
 
-class AudioTemplate(Gtk.Box):
-
-    def __init__(self, img_filename, title, description):
-        Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
-
-        if img_filename is not None:
-            self.image = Gtk.Image.new_from_file(img_filename)
-            self.pack_start(self.image, False, False, 0)
-        self.heading = Heading(title, description)
-
-        self.kano_button = KanoButton(text="PLAY SOUND", color="blue", icon_filename=media_dir + "/play-sound.png")
-        self.kano_button.pack_and_align()
-        self.kano_button.set_margin_top(10)
-        self.pack_start(self.heading.container, False, False, 0)
-        self.pack_start(self.kano_button.align, False, False, 0)
-
-        button_box = Gtk.ButtonBox(spacing=15)
-        button_box.set_layout(Gtk.ButtonBoxStyle.CENTER)
-
-        self.yes_button = KanoButton("YES")
-        self.yes_button.set_sensitive(False)
-        self.no_button = KanoButton("NO", color="red")
-        self.no_button.set_sensitive(False)
-        button_box.pack_start(self.yes_button, False, False, 0)
-        button_box.pack_start(self.no_button, False, False, 0)
-        button_box.set_margin_bottom(5)
-
-        self.pack_start(button_box, False, False, 15)
-
-
-class AudioHintTemplate(TopImageTemplate):
-
-    def __init__(self, img_filename, title, description, kano_button_text, hint_text="", orange_button_text=""):
-        TopImageTemplate.__init__(self, img_filename)
-
-        self.heading = HintHeading(title, description, hint_text)
-        self.pack_start(self.heading.container, False, False, 0)
-
-        self.heading.description.set_margin_bottom(0)
-        self.heading.container.set_margin_bottom(0)
-        self.heading.container.set_size_request(590, -1)
-        self.heading.container.set_spacing(0)
-
-        self.kano_button = KanoButton(kano_button_text)
-        self.kano_button.set_margin_top(30)
-        self.kano_button.set_margin_bottom(30)
-        self.kano_button.pack_and_align()
-
-        self.pack_start(self.kano_button.align, False, False, 0)
-
-
-class AudioScreen():
-    data = get_data("AUDIO_SCREEN")
+class SetAudio(Template):
+    HDMI = False
+    rc_local_path = "/etc/rc.audio"
+    data = get_data("SET_AUDIO")
 
     def __init__(self, win):
-        global number_tries
+        title = self.data["LABEL_1"]
+        description = self.data["LABEL_2"]
+        kano_label = self.data["KANO_BUTTON"]
+
+        Template.__init__(self, title, description, kano_label)
 
         self.win = win
-        self.time_click = None
+        self.win.set_main_widget(self)
 
-        if number_tries == 0:
-            header = self.data["LABEL_1"]
-        else:
-            header = self.data["LABEL_3"]
-            self.win.reset_allocation()
-        subheader = self.data["LABEL_2"]
-        self.template = AudioTemplate(constants.media + self.data["IMG_FILENAME"], header, subheader)
-        self.template.kano_button.connect("button_release_event", self.play_sound)
-        self.template.yes_button.connect("button_release_event", self.go_to_next)
-        self.template.no_button.connect("button_release_event", self.fix_sound)
-        self.template.kano_button.connect("key_release_event", self.play_sound)
-        self.template.yes_button.connect("key_release_event", self.go_to_next)
-        self.template.no_button.connect("key_release_event", self.fix_sound)
-        self.win.add(self.template)
+        self.top_bar.enable_prev()
+        self.top_bar.set_prev_callback(self.win.go_to_home)
+
+        self.kano_button.connect("button-release-event", self.apply_changes)
+        self.kano_button.connect("key-release-event", self.apply_changes)
+
+        # Analog radio button
+        self.analog_button = Gtk.RadioButton.new_with_label_from_widget(None, "Speaker")
+
+        # HDMI radio button
+        self.hdmi_button = Gtk.RadioButton.new_from_widget(self.analog_button)
+        self.hdmi_button.set_label("TV     ")
+        self.hdmi_button.connect("toggled", self.on_button_toggled)
+
+        # height is 106px
+        self.current_img = Gtk.Image()
+        self.current_img.set_from_file(constants.media + "/Graphics/Audio-jack.png")
+
+        self.horizontal_box = Gtk.Box()
+        self.horizontal_box.pack_start(self.hdmi_button, False, False, 10)
+        self.horizontal_box.pack_start(self.current_img, False, False, 10)
+        self.horizontal_box.pack_start(self.analog_button, False, False, 10)
+
+        self.box.add(self.horizontal_box)
+        self.align.set_padding(0, 0, 25, 0)
+
+        # Show the current setting by electing the appropriate radio button
+        self.current_setting()
 
         self.win.show_all()
 
-        number_tries += 1
-
-    def play_sound(self, widget, event):
-        # Check if first click or 3 seconds have past
-        ready = (self.time_click is None) or (time.time() - self.time_click > 3)
-        # If ready and enter key is pressed or mouse button is clicked
-        if ready and (not hasattr(event, 'keyval') or event.keyval == 65293):
-            self.time_click = time.time()
-            play_sound('/usr/share/kano-media/sounds/kano_make.wav', background=True)
-            time.sleep(1)
-            self.template.yes_button.set_sensitive(True)
-            self.template.no_button.set_sensitive(True)
-
-    def go_to_next(self, widget, event):
-        # If enter key is pressed or mouse button is clicked
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
-            self.win.clear_win()
-            DisplayScreen(self.win)
-
-    def fix_sound(self, widget, event):
-        # If enter key is pressed or mouse button is clicked
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
-            self.win.clear_win()
-            if number_tries == 1:
-                AudioTutorial1(self.win)
-            else:
-                TvSpeakersScreen(self.win)
-
-
-class AudioTutorial1():
-    data = get_data("AUDIO_TUTORIAL_1")
-
-    def __init__(self, win):
-
-        self.win = win
-
-        header = self.data["LABEL_1"]
-        subheader = self.data["LABEL_2"]
-        self.template = Template(constants.media + self.data["IMG_FILENAME"], header, subheader, "YES", button2_text="NO")
-        self.template.kano_button2.set_color("red")
-        self.template.kano_button.connect("button_release_event", self.end_screen)
-        self.template.kano_button2.connect("button_release_event", self.next_screen)
-        self.template.kano_button.connect("key_release_event", self.end_screen)
-        self.template.kano_button2.connect("key_release_event", self.next_screen)
-        self.win.add(self.template)
-
-        self.win.show_all()
-
-    def end_screen(self, widget, event):
+    def apply_changes(self, widget, event):
         # If enter key is pressed or mouse button is clicked
         if not hasattr(event, 'keyval') or event.keyval == 65293:
 
-            self.win.clear_win()
-            AudioTutorial3(self.win)
-
-    def next_screen(self, widget, event):
-        # If enter key is pressed or mouse button is clicked
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
-
-            self.win.clear_win()
-            AudioTutorial2(self.win)
-
-
-class AudioTutorial2():
-    data = get_data("AUDIO_TUTORIAL_2")
-
-    def __init__(self, win):
-
-        self.win = win
-
-        header = self.data["LABEL_1"]
-        subheader = self.data["LABEL_2"]
-        hint = self.data["LABEL_3"]
-        self.template = AudioHintTemplate(constants.media + self.data["IMG_FILENAME"], header, subheader, "NEXT", hint_text=hint)
-        self.template.kano_button.connect("button_release_event", self.next_screen)
-        self.template.kano_button.connect("key_release_event", self.next_screen)
-        self.win.add(self.template)
-
-        self.win.show_all()
-
-    def next_screen(self, widget, event):
-        # If enter key is pressed or mouse button is clicked
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
-            self.win.clear_win()
-            AudioTutorial3(self.win)
-
-
-class AudioTutorial3():
-    data = get_data("AUDIO_TUTORIAL_3")
-
-    def __init__(self, win):
-
-        self.win = win
-
-        header = self.data["LABEL_1"]
-        subheader = self.data["LABEL_2"]
-        hint = self.data["LABEL_3"]
-        self.template = AudioHintTemplate(constants.media + self.data["IMG_FILENAME"], header, subheader, "FINISH", hint_text=hint)
-        self.template.kano_button.connect("button_release_event", self.next_screen)
-        self.template.kano_button.connect("key_release_event", self.next_screen)
-        self.win.add(self.template)
-        self.win.reset_allocation()
-
-        self.win.show_all()
-
-    def next_screen(self, widget, event):
-        # If enter key is pressed or mouse button is clicked
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
-
-            self.win.clear_win()
-            AudioScreen(self.win)
-
-
-class TvSpeakersScreen():
-    data = get_data("TV_SPEAKERS_SCREEN")
-
-    def __init__(self, win):
-
-        self.win = win
-
-        header = self.data["LABEL_1"]
-        subheader = self.data["LABEL_2"]
-        self.template = Template(constants.media + self.data["IMG_FILENAME"], header, subheader, "USE TV SPEAKERS", orange_button_text="Setup later")
-        self.template.kano_button.connect("button_release_event", self.setup_hdmi)
-        self.template.orange_button.connect("button_release_event", self.go_to_next)
-        self.template.kano_button.connect("key_release_event", self.setup_hdmi)
-        self.win.add(self.template)
-
-        self.win.show_all()
-
-    def setup_hdmi(self, widget, event):
-        # If enter key is pressed or mouse button is clicked
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
-
-            # Apply HDMI settings
-            rc_local_path = "/etc/rc.audio"
+            # amixer -c 0 cset numid=3 N
+            # 1 analog
+            # 2 hdmi
 
             # Uncomment/comment out the line in /etc/rc.audio
             amixer_from = "amixer -c 0 cset numid=3 [0-9]"
-            amixer_to = "amixer -c 0 cset numid=3 2"
 
-            # HDMI config also in /boot/config.txt
-            file_replace(rc_local_path, amixer_from, amixer_to)
-            set_config_value("hdmi_ignore_edid_audio", None)
-            set_config_value("hdmi_drive", 2)
+            if (get_setting('Audio') == 'HDMI' and self.HDMI is True) or \
+               (get_setting('Audio') == 'Analogue' and self.HDMI is False):
 
-            # Indicate kano-settings that we are now in HDMI
-            set_setting("Audio", "HDMI")
+                logger.debug("set_audio / apply_changes: audio settings haven't changed, don't apply new changes")
+                self.win.go_to_home()
+                return
 
-            self.go_to_next()
+            # These are the changes we'll apply if they have changed from what they were
+            if self.HDMI is True:
+                amixer_to = "amixer -c 0 cset numid=3 2"
+                set_config_value("hdmi_ignore_edid_audio", None)
+                set_config_value("hdmi_drive", 2)
+                config = "HDMI"
+            else:
+                amixer_to = "amixer -c 0 cset numid=3 1"
+                set_config_value("hdmi_ignore_edid_audio", 1)
+                set_config_value("hdmi_drive", None)
+                config = "Analogue"
 
-    def go_to_next(self, widget=None, event=None):
+            # if audio settings haven't changed, don't apply new changes
+            if get_setting('Audio') == config:
+                logger.debug("set_audio / apply_changes: audio settings haven't changed, don't apply new changes")
+                self.win.go_to_home()
+                return
 
-        self.win.clear_win()
-        DisplayScreen(self.win)
+            file_replace(self.rc_local_path, amixer_from, amixer_to)
+            set_setting('Audio', config)
+
+            # Tell user to reboot to see changes
+            constants.need_reboot = True
+            self.win.go_to_home()
+
+    def current_setting(self):
+        f = open(self.rc_local_path, 'r')
+        file_string = str(f.read())
+        analogue_string = "amixer -c 0 cset numid=3 1"
+        hdmi_string = "amixer -c 0 cset numid=3 2"
+
+        if file_string.find(analogue_string) != -1:
+            self.analog_button.set_active(True)
+
+        elif file_string.find(hdmi_string) != -1:
+            self.hdmi_button.set_active(True)
+
+    def on_button_toggled(self, button):
+        self.HDMI = button.get_active()
+
+        if self.HDMI:
+            self.current_img.set_from_file(constants.media + "/Graphics/Audio-HDMI.png")
+
+        else:
+            self.current_img.set_from_file(constants.media + "/Graphics/Audio-jack.png")
