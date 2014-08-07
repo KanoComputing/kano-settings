@@ -81,11 +81,28 @@ class SetAdvanced(Template):
     def create_debug_button(self):
         title = self.data["OPTION_2"]
         desc_1 = self.data["DESCRIPTION_2_1"]
+        desc_2 = self.data["DESCRIPTION_2_2"]
+        desc_3 = self.data["DESCRIPTION_2_3"]
         self.debug_button = Gtk.CheckButton()
-        box = LabelledListTemplate.label_button(self.debug_button, title,
-                                                desc_1)
+        box = LabelledListTemplate.label_button(self.debug_button,
+                                                title, desc_1)
 
-        return box
+        text_array = [desc_2, desc_3]
+
+        grid = Gtk.Grid()
+        grid.attach(box, 0, 0, 1, 1)
+
+        i = 1
+
+        for text in text_array:
+            label = Gtk.Label(text)
+            label.set_alignment(xalign=0, yalign=0.5)
+            label.set_padding(xpad=25, ypad=0)
+            label.get_style_context().add_class("normal_label")
+            grid.attach(label, 0, i, 1, 1)
+            i = i + 1
+
+        return grid
 
     def go_to_password(self, event=None):
         self.win.clear_win()

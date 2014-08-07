@@ -26,7 +26,9 @@
     "DESCRIPTION_1_2": "- Block mature videos on YouTube",
     "DESCRIPTION_1_3": "- Block mature websites in browser",
     "OPTION_2": "Debug mode",
-    "DESCRIPTION_2_1": "Having problems? Enable this mode and report a bug with the ? tool on the Desktop."
+    "DESCRIPTION_2_1": "Having problems?",
+    "DESCRIPTION_2_2": "1) Enable this mode",
+    "DESCRIPTION_2_3": "2) Report a bug with the ? tool on the Desktop"
   },
   "PARENTAL_LOCK": {
       "LABEL_1": "Set up your parental lock",
