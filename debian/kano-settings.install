@@ -18,8 +18,7 @@ etc/rc.network /etc
 etc/rc.overclock /etc
 etc/rc.others /etc
 etc/init.d /etc
-etc/timeserver.conf /etc
-etc/cron.d /etc
-etc/udev /etc
+
+etc_override /usr/share/kano-settings
 
 overscan/overscan /usr/bin
