@@ -324,11 +324,11 @@ if __name__ == '__main__':
         if not is_model_b_plus():
             subprocess.call(['typewriter_echo', 'Please take into account that the system will automatically reboot.', '0', '2'])
             subprocess.call(['typewriter_echo', 'If you don\'t want to use WiFi, press {{1 ENTER }}.', '2', '0'])
+            raw_input()
             sys.exit(2)
-        else:
-            subprocess.call(['typewriter_echo', 'Press {{1 ENTER }} when ready.', '1', '0'])
-        # Wait for input
-        var = raw_input()
+        # Model B+
+        subprocess.call(['typewriter_echo', 'Press {{1 ENTER }} when ready.', '1', '0'])
+        raw_input()
         subprocess.call(['clear'])
 
     # Step 3.1: If dongle is connected and networking is up, offer option to forget wireless network.
