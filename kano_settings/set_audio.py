@@ -10,14 +10,14 @@ from gi.repository import Gtk
 import kano_settings.constants as constants
 from kano_settings.templates import Template
 from kano.logging import logger
-from .config_file import get_setting, set_setting, file_replace
+from kano_settings.config_file import get_setting, set_setting, file_replace
+from kano_settings.boot_config import set_config_value
 from kano_settings.data import get_data
 
 
 class SetAudio(Template):
     HDMI = False
     rc_local_path = "/etc/rc.audio"
-    config_txt_path = "/boot/config.txt"
     data = get_data("SET_AUDIO")
 
     def __init__(self, win):
@@ -69,42 +69,33 @@ class SetAudio(Template):
             # 1 analog
             # 2 hdmi
 
-            # Uncomment/comment out the line  in /boot/config.txt
+            # Uncomment/comment out the line in /etc/rc.audio
             amixer_from = "amixer -c 0 cset numid=3 [0-9]"
-            edid_from = "#?hdmi_ignore_edid_audio=1"
-            drive_from = "#?hdmi_drive=2"
 
-            # These are the changes we'll apply if they have changed from what they were
-            if self.HDMI is True:
-                amixer_to = "amixer -c 0 cset numid=3 2"
-                edid_to = "#hdmi_ignore_edid_audio=1"
-                drive_to = "hdmi_drive=2"
-                config = "HDMI"
-            else:
-                amixer_to = "amixer -c 0 cset numid=3 1"
-                edid_to = "hdmi_ignore_edid_audio=1"
-                drive_to = "#hdmi_drive=2"
-                config = "Analogue"
+            if (get_setting('Audio') == 'HDMI' and self.HDMI is True) or \
+               (get_setting('Audio') == 'Analogue' and self.HDMI is False):
 
-            # if audio settings haven't changed, don't apply new changes
-            if get_setting('Audio') == config:
                 logger.debug("set_audio / apply_changes: audio settings haven't changed, don't apply new changes")
                 self.win.go_to_home()
                 return
 
-            amixer_rc = file_replace(self.rc_local_path, amixer_from, amixer_to)
-            edid_rc = file_replace(self.config_txt_path, edid_from, edid_to)
-            drive_rc = file_replace(self.config_txt_path, drive_from, drive_to)
+            # These are the changes we'll apply if they have changed from what they were
+            if self.HDMI is True:
+                amixer_to = "amixer -c 0 cset numid=3 2"
+                set_config_value("hdmi_ignore_edid_audio", None)
+                set_config_value("hdmi_drive", 2)
+                config = "HDMI"
+            else:
+                amixer_to = "amixer -c 0 cset numid=3 1"
+                set_config_value("hdmi_ignore_edid_audio", 1)
+                set_config_value("hdmi_drive", None)
+                config = "Analogue"
 
-            # Don't continue if we don't manage to change the audio settings in the file.
-            if amixer_rc == -1 or edid_rc == -1 or drive_rc == -1:
-                logger.debug("set_audio / apply_changes: we couldn't manage to change all files")
-                return
-
+            file_replace(self.rc_local_path, amixer_from, amixer_to)
             set_setting('Audio', config)
+
             # Tell user to reboot to see changes
             constants.need_reboot = True
-
             self.win.go_to_home()
 
     def current_setting(self):

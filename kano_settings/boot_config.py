@@ -34,7 +34,7 @@ def set_config_value(name, value=None):
                 if value is not None:
                     replace_str = str(name) + "=" + str(value)
                 else:
-                    replace_str = r'#' + str(name) + r'=\1'
+                    replace_str = r'#' + str(name) + r'=0'
                 new_line = replace_str
             else:
                 new_line = line
