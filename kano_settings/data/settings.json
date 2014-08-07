@@ -1,7 +1,7 @@
 {
   "SET_AUDIO": {
     "LABEL_1": "Audio",
-    "LABEL_2": "Get sound. (Changing this requires a reboot)",
+    "LABEL_2": "Get sound from your speaker or your TV",
     "KANO_BUTTON": "APPLY CHANGES"
   },
   "SET_ACCOUNT": {
@@ -12,7 +12,7 @@
     "ADD_BUTTON": "ADD ACCOUNT",
     "PASSWORD_BUTTON": "CHANGE PASSWORD",
     "REMOVE_BUTTON": "REMOVE ACCOUNT",
-    "ADD_ACCOUNT_DIALOG_TITLE": "New account scheduled.",
+    "ADD_ACCOUNT_DIALOG_TITLE": "A new account will be created next time you reboot.",
     "ADD_ACCOUNT_DIALOG_DESCRIPTION": "Reboot the system.",
     "REMOVE_ACCOUNT_DIALOG_TITLE": "Are you sure you want to delete the current user?",
     "REMOVE_ACCOUNT_DIALOG_DESCRIPTION": "You will lose all the data on this account"
@@ -22,11 +22,11 @@
     "LABEL_2": "Toggle parental lock and debug mode",
     "KANO_BUTTON": "APPLY CHANGES",
     "OPTION_1": "Parental lock",
-    "DESCRIPTION_1_1": "this will:",
-    "DESCRIPTION_1_2": "- Block under 16 videos on Youtube",
-    "DESCRIPTION_1_3": "- Block list of websites in browser",
+    "DESCRIPTION_1_1": "This will:",
+    "DESCRIPTION_1_2": "- Block mature videos on YouTube",
+    "DESCRIPTION_1_3": "- Block mature websites in browser",
     "OPTION_2": "Debug mode",
-    "DESCRIPTION_2_1": "Having problems? Enable this mode and report a bug"
+    "DESCRIPTION_2_1": "Having problems? Enable this mode and report a bug with the ? tool on the Desktop."
   },
   "PARENTAL_LOCK": {
       "LABEL_1": "Set up your parental lock",
@@ -45,7 +45,7 @@
   },
   "SET_DISPLAY": {
     "LABEL_1": "Display",
-    "LABEL_2": "(Changing this requires a reboot)",
+    "LABEL_2": "Set your screen size",
     "KANO_BUTTON": "APPLY CHANGES"
   },
   "SET_OVERSCAN": {
@@ -53,11 +53,11 @@
   },
   "SET_OVERSCAN_SIMPLE": {
     "LABEL_1": "Overscan",
-    "LABEL_2": "This setting lets you to adjust your screen's size. (Changing this requires a reboot)"
+    "LABEL_2": "This setting lets you adjust your screen's size."
   },
   "SET_OVERSCAN_ADVANCED": {
     "LABEL_1": "Overscan",
-    "LABEL_2": "This setting lets you to adjust your screen's size, edge by edge. (Changing this requires a reboot)"
+    "LABEL_2": "This setting lets you adjust your screen's size, edge by edge."
   },
   "SET_KEYBOARD": {
     "LABEL_1": "Keyboard",
@@ -78,17 +78,17 @@
     "OPTION_1": "Slow",
     "DESCRIPTION_1": "REQUIRES LESS MOVE PRECISION",
     "OPTION_2": "Normal",
-    "DESCRIPTION_2": "THE DEFAULT SETTING",
+    "DESCRIPTION_2": "DEFAULT",
     "OPTION_3": "Fast",
     "DESCRIPTION_3": "BETTER FOR WIDE SCREENS"
   },
   "SET_FONT" : {
     "LABEL_1": "Font",
-    "LABEL_2": "Pick text size",
+    "LABEL_2": "Choose a comfortable text size",
     "OPTION_1": "Small",
-    "DESCRIPTION_1": "IDEAL FOR SMALL SCREENS",
+    "DESCRIPTION_1": "BETTER FOR SMALL SCREENS",
     "OPTION_2": "Normal",
-    "DESCRIPTION_2": "THE DEFAULT SETTING",
+    "DESCRIPTION_2": "DEFAULT",
     "OPTION_3": "Big",
     "DESCRIPTION_3": "BETTER FOR BIG SCREENS",
     "KANO_BUTTON": "APPLY"
@@ -99,14 +99,14 @@
   },
   "SET_WIFI_ETHERNET" : {
     "LABEL_1": "Connection found!",
-    "LABEL_2": "Great",
-    "KANO_BUTTON": "FINISH",
+    "LABEL_2": "You're on a wired network",
+    "KANO_BUTTON": "COMPLETE",
     "IMG_FILENAME": "/Graphics/Internet-ethernetConnection.png"
   },
   "SET_WIFI_WIFI" : {
     "LABEL_1": "Connection found!",
-    "LABEL_2": "Great",
-    "KANO_BUTTON": "FINISH",
+    "LABEL_2": "You're on a network",
+    "KANO_BUTTON": "COMPLETE",
     "LAUNCH_PROXY": "Proxy",
     "IMG_FILENAME": "/Graphics/Internet-Connection.png"
   },
@@ -125,12 +125,12 @@
   "SET_WALLPAPER": {
     "LABEL_1": "Choose your background",
     "LABEL_2": "",
-    "KANO_BUTTON": "APPLY YOUR WALLPAPER"
+    "KANO_BUTTON": "APPLY CHANGES"
   },
   "SET_OVERCLOCK" : {
-    "LABEL_1": "Overclocking",
-    "LABEL_2": "Let's put some power here. (Changing this requires a reboot)",
-    "KANO_BUTTON": "APPLY",
+    "LABEL_1": "Overclock your processor",
+    "LABEL_2": "Make your computer's brain think faster, but run hotter.",
+    "KANO_BUTTON": "APPLY CHANGES",
     "OPTION_1": "None",
     "DESCRIPTION_1": "700MHZ ARM, 250MHZ CORE, 400MHZ SDRAM, 0 OVERVOLT",
     "OPTION_2": "Modest",
@@ -141,8 +141,8 @@
     "DESCRIPTION_4": "950MHZ ARM, 450MHZ CORE, 450MHZ SDRAM, 6 OVERVOLT"
   },
   "SET_PASSWORD" : {
-    "LABEL_1": "Change computer password",
-    "LABEL_2": "Keep out the baddies!",
+    "LABEL_1": "Change your password",
+    "LABEL_2": "",
     "ENTRY_HEADING_1": "Old password",
     "DESCRIPTION_1": "\"kano\" is default",
     "ENTRY_HEADING_2": "New password",
