@@ -26,7 +26,7 @@ class SetWifi(Template):
     data_offline = get_data("SET_WIFI_OFFLINE")
 
     def __init__(self, win):
-        Template.__init__(self, "", "to be set", "FINISH")
+        Template.__init__(self, "", "to be set", "COMPLETE")
 
         self.win = win
         self.win.set_main_widget(self)
@@ -66,7 +66,7 @@ class SetWifi(Template):
         self.box.pack_start(container, False, False, 0)
 
         if constants.has_internet:
-            self.kano_button.set_label("FINISH")
+            self.kano_button.set_label("COMPLETE")
 
             status_box.pack_start(internet_status, False, False, 3)
             status_box.pack_start(internet_action, False, False, 3)
