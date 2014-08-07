@@ -17,6 +17,7 @@ from kano_settings.data import get_data
 class SetOverclock(RadioButtonTemplate):
     selected_button = 0
     initial_button = 0
+    boot_config_file = "/boot/config.txt"
 
     data = get_data("SET_OVERCLOCK")
 
