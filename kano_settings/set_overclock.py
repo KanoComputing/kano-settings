@@ -74,31 +74,31 @@ class SetOverclock(RadioButtonTemplate):
             # None configuration
             if self.selected_button == 0:
                 config = "None"
-                arm_freq = "700"
-                core_freq = "250"
-                sdram_freq = "400"
-                over_voltage = "0"
+                arm_freq = 700
+                core_freq = 250
+                sdram_freq = 400
+                over_voltage = 0
             # Modest configuration
             elif self.selected_button == 1:
                 config = "Modest"
-                arm_freq = "800"
-                core_freq = "300"
-                sdram_freq = "400"
-                over_voltage = "0"
+                arm_freq = 800
+                core_freq = 300
+                sdram_freq = 400
+                over_voltage = 0
             # Medium configuration
             elif self.selected_button == 2:
                 config = "Medium"
-                arm_freq = "900"
-                core_freq = "333"
-                sdram_freq = "450"
-                over_voltage = "2"
+                arm_freq = 900
+                core_freq = 333
+                sdram_freq = 450
+                over_voltage = 2
             # High configuration
             elif self.selected_button == 3:
                 config = "High"
-                arm_freq = "950"
-                core_freq = "450"
-                sdram_freq = "450"
-                over_voltage = "6"
+                arm_freq = 950
+                core_freq = 450
+                sdram_freq = 450
+                over_voltage = 6
             else:
                 logger.error('kano-settings: set_overclock: SetOverclock: set_overclock(): ' +
                              'was called with an invalid self.selected_button={}'.format(self.selected_button))

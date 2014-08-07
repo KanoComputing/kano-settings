@@ -91,12 +91,6 @@ class SetAudio(Template):
                 set_config_value("hdmi_drive", None)
                 config = "Analogue"
 
-            # if audio settings haven't changed, don't apply new changes
-            if get_setting('Audio') == config:
-                logger.debug("set_audio / apply_changes: audio settings haven't changed, don't apply new changes")
-                self.win.go_to_home()
-                return
-
             file_replace(self.rc_local_path, amixer_from, amixer_to)
             set_setting('Audio', config)
 
