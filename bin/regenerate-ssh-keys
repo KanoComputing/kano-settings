@@ -13,4 +13,3 @@ rm -f $file_rsa_key $file_dss_key
 
 dropbearkey -t rsa -f $file_rsa_key
 dropbearkey -t dss -f $file_dss_key
-
