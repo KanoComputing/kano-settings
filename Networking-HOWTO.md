@@ -7,8 +7,8 @@ to the outside world.
 Kanux supports at least the following connectivity devices:
 
 - Ethernet
-- Kano Wireless wifi dongle 
-- Android  USB 
+- Kano Wireless wifi dongle
+- Android  USB
 
 ### Ethernet
 
@@ -22,11 +22,6 @@ Simply plug the usb cable, enable tethering, and Kanux will acquire a DHCP lease
 
 ### Wireless
 
-Wireless is enabled out of the box, and as soon as you plug Kano usb wifi dongle.
-At bootup, if a wireless network is in range with ssid "kanux"
-WPA-PSK encryption enabled with passphrase "kanuxpass", it will
-be connected to automatically. 
-
 You can setup your wireless router, or you can also put your mobile device
 in "Wireless tethering" mode. Note that Kanux fully supports the wireless dongle
 provided. Other wifi dongles should work as well but have not been fully tested.
@@ -39,7 +34,7 @@ so next time you boot Kanux it will automatically connect to the network
 if it is in range.
 
 In case you need to fine tune more specific wireless secured networks,
-kano-wifi allows you to provide a custom wpa_supplicant configuration file, 
+kano-wifi allows you to provide a custom wpa_supplicant configuration file,
 like this:
 
  * sudo kano-wifi /path/to/my/wpa_supplicant.conf
