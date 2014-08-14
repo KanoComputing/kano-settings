@@ -1,4 +1,5 @@
 bin/kano-settings /usr/bin
+bin/kano-settings-cli /usr/bin
 bin/startmouse /usr/bin
 bin/set-kano-hdmi /usr/bin
 bin/regenerate-ssh-keys /usr/bin
