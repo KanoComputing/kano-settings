@@ -10,7 +10,7 @@ from kano_settings.templates import RadioButtonTemplate
 import kano_settings.constants as constants
 from kano.logging import logger
 from kano_settings.config_file import set_setting
-from kano_settings.boot_config import set_config_value
+from kano_settings.boot_config import set_config_value, get_config_value
 from kano_settings.data import get_data
 
 
@@ -122,20 +122,15 @@ class SetOverclock(RadioButtonTemplate):
             self.win.go_to_home()
 
     def current_setting(self):
-        f = open(self.boot_config_file, 'r')
-        file_string = str(f.read())
-        none_string = "core_freq=250"
-        modest_string = "core_freq=300"
-        medium_string = "core_freq=333"
-        high_string = "core_freq=450"
+        freq = get_config_value('core_freq')
 
-        if file_string.find(none_string) != -1:
+        if freq == 250:
             self.initial_button = 0
-        elif file_string.find(modest_string) != -1:
+        elif freq == 300:
             self.initial_button = 1
-        elif file_string.find(medium_string) != -1:
+        elif freq == 333:
             self.initial_button = 2
-        elif file_string.find(high_string) != -1:
+        elif freq == 450:
             self.initial_button = 3
 
     def on_button_toggled(self, button):
