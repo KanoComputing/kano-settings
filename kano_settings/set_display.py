@@ -62,7 +62,7 @@ class SetDisplay(Template):
         saved_group, saved_mode = read_hdmi_mode()
         active_item = find_matching_mode(modes, saved_group, saved_mode)
         self.mode_combo.set_active(active_item)
-
+        self.init_item = active_item
         # Overscan button
         overscan_button = OrangeButton("Overscan")
         horizontal_container.pack_end(overscan_button, False, False, 0)
@@ -74,14 +74,16 @@ class SetDisplay(Template):
         self.win.show_all()
 
     def apply_changes(self, button, event):
-        # Set HDMI mode
-        # Get mode:group string
-        # Of the form "auto" or "cea:1" or "dmt:1" etc.
-        parse_mode = self.mode.split(" ")[0]
 
-        self.set_hdmi_mode_from_str(parse_mode)
+        # Check if we have done any change
+        if self.init_item != self.mode_index:
+            # Set HDMI mode
+            # Get mode:group string
+            # Of the form "auto" or "cea:1" or "dmt:1" etc.
+            parse_mode = self.mode.split(" ")[0]
+            self.set_hdmi_mode_from_str(parse_mode)
 
-        constants.need_reboot = True
+            constants.need_reboot = True
         self.win.go_to_home()
 
     def on_mode_changed(self, combo):
@@ -358,5 +360,3 @@ class SetAdvancedOverscan(OverscanTemplate):
     def update_value(self, widget, label):
         new_value = str(int(widget.get_value()))
         label.set_text(new_value)
-
-
