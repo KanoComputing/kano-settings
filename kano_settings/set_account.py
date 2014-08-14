@@ -212,6 +212,8 @@ class SetPassword(Template):
         self.entry2.connect("key_release_event", self.enable_button)
         self.entry3.connect("key_release_event", self.enable_button)
 
+        self.entry1.grab_focus()
+
         self.win = win
         self.win.set_main_widget(self)
 
@@ -296,6 +298,7 @@ class SetPassword(Template):
         self.entry1.set_text("")
         self.entry2.set_text("")
         self.entry3.set_text("")
+        self.entry1.grab_focus()
 
     def enable_button(self, widget, event):
         text1 = self.entry1.get_text()
