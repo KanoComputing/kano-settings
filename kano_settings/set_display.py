@@ -113,7 +113,7 @@ class SetDisplay(Template):
 
 
 class OverscanTemplate(TopBarTemplate):
-    overscan_pipe = "/var/tmp/overscan"
+    overscan_pipe = "/dev/mailbox"
     data = get_data("SET_OVERSCAN")
 
     def __init__(self, win, title, description, original_overscan=None):
