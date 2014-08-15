@@ -1,20 +1,16 @@
 #!/usr/bin/env python
-#
-# proxy_config.py
+
+# proxy.py
 #
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
-# A simple script to set Kanux behind a proxy.
-# Files which are managed by this module are:
-#
-#  /etc/ld.so.preload
-#  /etc/dante.conf
-#
+
 
 import os
 from kano.utils import read_file_contents_as_lines
 from kano.logging import logger
+from kano.utils import get_user_unsudoed, run_bg, run_cmd
 
 
 class LibPreload:
@@ -179,3 +175,57 @@ class ProxySettings:
         f.write(new_settings)
         f.close()
         return True
+
+
+libpreload = LibPreload()
+pxysettings = ProxySettings()
+
+
+def is_enabled():
+    return libpreload.is_enabled()
+
+
+def enable():
+    libpreload.proxify(True)
+
+
+def disable():
+    libpreload.proxify(False)
+
+
+def set_settings(proxyip, proxyport, proxytype, username=None, password=None):
+    settings = {
+        'proxy-ip': proxyip,
+        'proxy-port': proxyport,
+        'proxy-type': proxytype,   # one of : "socks_v4 socks_v5" or "http_v1.0"
+        'username': username,
+        'password': password
+    }
+    pxysettings.set_settings(settings)
+
+
+def get_settings():
+    return pxysettings.get_settings()
+
+
+def launch_chromium(widget=None, event=None):
+    user_name = get_user_unsudoed()
+    run_bg('su - ' + user_name + ' -c chromium')
+
+
+def network_info():
+    network = ''
+    command_ip = ''
+    command_network = '/sbin/iwconfig wlan0 | grep \'ESSID:\' | awk \'{print $4}\' | sed \'s/ESSID://g\' | sed \'s/\"//g\''
+    out, e, _ = run_cmd(command_network)
+    if e:
+        network = "Ethernet"
+        command_ip = '/sbin/ifconfig eth0 | grep inet | awk \'{print $2}\' | cut -d\':\' -f2'
+    else:
+        network = out
+        command_ip = '/sbin/ifconfig wlan0 | grep inet | awk \'{print $2}\' | cut -d\':\' -f2'
+    ip, _, _ = run_cmd(command_ip)
+
+    return [network.rstrip(), ip.rstrip()]
+
+
