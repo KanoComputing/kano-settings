@@ -18,6 +18,12 @@ if __name__ == '__main__' and __package__ is None:
 
 from kano_settings.keyboard.keyboard_config import set_saved_keyboard
 
+verbose = False
+
+def print_v(string):
+    if verbose:
+        print string
+
 
 def parse_args():
     # Top-level parser
@@ -25,6 +31,8 @@ def parse_args():
         description='Change settings on the Kano.')
     settings_parser.add_argument('--reset', action='store_true',
         help='Reset the setting')
+    settings_parser.add_argument('--verbose', '-v', action='store_true',
+        help='Verbose mode')
     settings_subparsers = settings_parser.add_subparsers(
         help='Set or retrieve a setting')
 
@@ -78,7 +86,13 @@ def parse_args():
         help='Get the keyboard')
     get_kb_parser.set_defaults(keyboard_opt=True)
 
+
+    # Parsing the arguments
     args = settings_parser.parse_args()
+
+    if args.verbose:
+        global verbose
+        verbose = True
 
     if 'set_opt' in args and args.set_opt:
         # Need to be root to change settings
@@ -86,21 +100,21 @@ def parse_args():
             exit("Error: Settings must be executed with root privileges")
 
         if 'audio_opt' in args and args.audio_opt:
-            print 'setting audio to {}'.format(args.hdmi)
+            print_v('setting audio to {}'.format(args.hdmi))
         elif 'keyboard_opt' in args and args.keyboard_opt:
             if 'load' in args and args.load:
                 set_saved_keyboard()
-                print 'Setting keyboard to value loaded from settings'
+                print_v('Setting keyboard to value loaded from settings')
     elif 'get_opt' in args and args.get_opt:
         if 'audio_opt' in args and args.audio_opt:
-            print (
+            print_v(
                 'Audio settings:\n\n'
                 'Audio mode: {}'.format(
                     get_setting('Audio')
                 )
             )
         elif 'network_opt' in args and args.network_opt:
-            print(
+            print_v(
                 'Network settings:\n\n'
                 'WiFi: {}, WiFi Connection Attempted: {},\n'
                 'Proxy port : {}, Proxy IP: {}, '
@@ -114,7 +128,7 @@ def parse_args():
                 )
             )
         elif 'keyboard_opt' in args and args.keyboard_opt:
-            print(
+            print_v(
                 'Keyboard settings:\n\n'
                 'Continent: {}, Country: {}, Variant: {}\n'
                 '(indicies - Continent: {}, Country: {}, Variant: {})'.format(
