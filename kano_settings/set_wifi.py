@@ -132,7 +132,6 @@ class SetWifi(Template):
         self.win.show_all()
 
     def go_to_proxy(self, widget, event):
-        print "going to proxy"
         self.win.clear_win()
         SetProxy(self.win)
 
@@ -157,10 +156,6 @@ class SetProxy(TopBarTemplate):
     data = get_data("SET_PROXY")
 
     def __init__(self, win):
-        print "hitting proxy init"
-        #################
-        self.test_index = 0
-        ##################
 
         title = self.data["LABEL_1"]
         description = self.data["LABEL_2"]
@@ -245,7 +240,6 @@ class SetProxy(TopBarTemplate):
         self.win.show_all()
 
     def clear_entries(self):
-        print "entered clear_entries"
         self.ip_entry.set_text("")
         self.username_entry.set_text("")
         self.port_entry.set_text("")
@@ -270,11 +264,6 @@ class SetProxy(TopBarTemplate):
 
         self.proxy_type = get_setting("Proxy-type")
         self.set_proxy_type_button()
-
-        ##############
-        ip_text = self.ip_entry.get_text()
-        print "ip_text = {0}".format(ip_text)
-        ################
 
     # Update for proxy
     def update_config(self, proxyip, proxyport, proxy_type, username):
@@ -334,8 +323,6 @@ class SetProxy(TopBarTemplate):
         ip_text = self.ip_entry.get_text()
         port_text = self.port_entry.get_text()
 
-        print ip_text
-
         if ip_text == "" or port_text == "":
             self.kano_button.set_sensitive(False)
             return False
@@ -348,8 +335,6 @@ class SetProxy(TopBarTemplate):
 
     # ip address needs to be a pure ipv4 format at this moment: x.y.z.q (no segment mask as in /xx)
     def valid_ip_address(self):
-        self.test_index += 1
-        print self.test_index
 
         # Find the index of "/"
         # Split into substring from "."
@@ -358,8 +343,6 @@ class SetProxy(TopBarTemplate):
         ip_text = self.ip_entry.get_text()
         ip_array = ip_text.split(".")
         slash_array = ip_text.split("/")
-
-        print ip_text
 
         if len(slash_array) == 1 and len(ip_array) == 4:
             self.kano_button.set_sensitive(True)
