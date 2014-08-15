@@ -26,6 +26,7 @@ class SetWifi(Template):
     data_offline = get_data("SET_WIFI_OFFLINE")
 
     def __init__(self, win):
+
         Template.__init__(self, "", "to be set", "COMPLETE")
 
         self.win = win
@@ -131,6 +132,7 @@ class SetWifi(Template):
         self.win.show_all()
 
     def go_to_proxy(self, widget, event):
+        print "going to proxy"
         self.win.clear_win()
         SetProxy(self.win)
 
@@ -155,6 +157,11 @@ class SetProxy(TopBarTemplate):
     data = get_data("SET_PROXY")
 
     def __init__(self, win):
+        print "hitting proxy init"
+        #################
+        self.test_index = 0
+        ##################
+
         title = self.data["LABEL_1"]
         description = self.data["LABEL_2"]
         kano_label = self.data["KANO_BUTTON"]
@@ -176,16 +183,23 @@ class SetProxy(TopBarTemplate):
 
         self.ip_entry = Gtk.Entry()
         self.ip_entry.props.placeholder_text = "IP address"
+        self.ip_entry.connect("key-release-event", self.proxy_enabled)
 
         self.username_entry = Gtk.Entry()
         self.username_entry.props.placeholder_text = "Username"
+        self.username_entry.connect("key-release-event", self.proxy_enabled)
 
         self.port_entry = Gtk.Entry()
         self.port_entry.props.placeholder_text = "Port"
+        self.port_entry.connect("key-release-event", self.proxy_enabled)
 
         self.password_entry = Gtk.Entry()
         self.password_entry.props.placeholder_text = "Password"
         self.password_entry.set_visibility(False)
+        self.password_entry.connect("key-release-event", self.proxy_enabled)
+
+        self.clear_entries()
+
         password_box = Gtk.Box()
         password_box.add(self.password_entry)
 
@@ -204,7 +218,6 @@ class SetProxy(TopBarTemplate):
 
         # Run once so we have the correct string proxy_type
         self.set_proxy_type(self.radio1)
-
         self.read_config()
 
         bottom_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
@@ -229,10 +242,14 @@ class SetProxy(TopBarTemplate):
 
         self.proxy_status(checkbutton)
 
-        # Need to disconnect this on exit
-        self.win.connect("key-release-event", self.proxy_enabled)
-
         self.win.show_all()
+
+    def clear_entries(self):
+        print "entered clear_entries"
+        self.ip_entry.set_text("")
+        self.username_entry.set_text("")
+        self.port_entry.set_text("")
+        self.password_entry.set_text("")
 
     def go_to_wifi(self, widget, event):
         # If enter key is pressed or mouse button is clicked
@@ -242,7 +259,6 @@ class SetProxy(TopBarTemplate):
 
     # Update for proxy
     def read_config(self):
-
         port_text = get_setting("Proxy-port")
         self.port_entry.set_text(port_text)
 
@@ -254,6 +270,11 @@ class SetProxy(TopBarTemplate):
 
         self.proxy_type = get_setting("Proxy-type")
         self.set_proxy_type_button()
+
+        ##############
+        ip_text = self.ip_entry.get_text()
+        print "ip_text = {0}".format(ip_text)
+        ################
 
     # Update for proxy
     def update_config(self, proxyip, proxyport, proxy_type, username):
@@ -284,7 +305,6 @@ class SetProxy(TopBarTemplate):
     # If the "enable proxy" checkbox is checked/uncheckout, this function is activated
     # Disables the text entries if enable proxy is not checked
     def proxy_status(self, widget):
-
         enable_proxy = widget.get_active()
         if enable_proxy:
             self.ip_entry.set_sensitive(True)
@@ -307,32 +327,40 @@ class SetProxy(TopBarTemplate):
 
     # if proxy enabled: ip address, port, and type are mandatory
     def proxy_enabled(self, widget=None, event=None):
-
         # Get IP address
         # Get port
         # Get type
         # If these entries are non empty, good - else, disable the next button
         ip_text = self.ip_entry.get_text()
         port_text = self.port_entry.get_text()
+
+        print ip_text
+
         if ip_text == "" or port_text == "":
             self.kano_button.set_sensitive(False)
             return False
 
-        if self.valid_ip_address(ip_text):
+        if self.valid_ip_address():
             self.kano_button.set_sensitive(True)
             return True
 
         return False
 
     # ip address needs to be a pure ipv4 format at this moment: x.y.z.q (no segment mask as in /xx)
-    def valid_ip_address(self, ip_widget, event=None):
+    def valid_ip_address(self):
+        self.test_index += 1
+        print self.test_index
 
         # Find the index of "/"
         # Split into substring from "."
         # Check there are 4 (?).
         # Return/show tick if good, else do not allow them to click the next button
-        ip_array = ip_widget.split(".")
-        slash_array = ip_widget.split("/")
+        ip_text = self.ip_entry.get_text()
+        ip_array = ip_text.split(".")
+        slash_array = ip_text.split("/")
+
+        print ip_text
+
         if len(slash_array) == 1 and len(ip_array) == 4:
             self.kano_button.set_sensitive(True)
             return True
@@ -342,14 +370,12 @@ class SetProxy(TopBarTemplate):
             return False
 
     def set_proxy_type(self, radio_button):
-
         if radio_button.get_active():
             self.proxy_type = "socks_v4 socks_v5"
         else:
             self.proxy_type = "http_v1.0"
 
     def set_proxy_type_button(self):
-
         if self.proxy_type == "socks_v4 socks_v5":
             self.radio1.set_active(True)
             self.radio2.set_active(False)
