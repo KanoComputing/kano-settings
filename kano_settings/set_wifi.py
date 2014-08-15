@@ -11,6 +11,8 @@ import os
 from kano_settings.templates import Template, TopBarTemplate
 from kano.gtk3.buttons import OrangeButton, KanoButton
 from kano.gtk3.heading import Heading
+from kano.gtk3.kano_dialog import KanoDialog
+
 import kano_settings.constants as constants
 from kano_settings.wifi.functions import network_info, launch_chromium, is_enabled, set_settings, enable, disable
 from kano.network import is_internet
@@ -171,8 +173,8 @@ class SetProxy(TopBarTemplate):
 
         grid = Gtk.Grid(column_homogeneous=False, column_spacing=10, row_spacing=10)
 
-        self.kano_button.connect("button-release-event", self.go_to_wifi)
-        self.kano_button.connect("key-release-event", self.go_to_wifi)
+        self.kano_button.connect("button-release-event", self.apply_changes)
+        self.kano_button.connect("key-release-event", self.apply_changes)
         self.top_bar.enable_prev()
         self.top_bar.set_prev_callback(self.go_to_wifi)
 
@@ -192,8 +194,6 @@ class SetProxy(TopBarTemplate):
         self.password_entry.props.placeholder_text = "Password"
         self.password_entry.set_visibility(False)
         self.password_entry.connect("key-release-event", self.proxy_enabled)
-
-        self.clear_entries()
 
         password_box = Gtk.Box()
         password_box.add(self.password_entry)
@@ -245,11 +245,9 @@ class SetProxy(TopBarTemplate):
         self.port_entry.set_text("")
         self.password_entry.set_text("")
 
-    def go_to_wifi(self, widget, event):
-        # If enter key is pressed or mouse button is clicked
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
-            self.win.clear_win()
-            SetWifi(self.win)
+    def go_to_wifi(self, widget=None, event=None):
+        self.win.clear_win()
+        SetWifi(self.win)
 
     # Update for proxy
     def read_config(self):
@@ -272,30 +270,46 @@ class SetProxy(TopBarTemplate):
         set_setting("Proxy-username", username)
         set_setting("Proxy-type", self.proxy_type)
 
-    def apply_changes(self, button=None, arg2=None):
+    def apply_changes(self, button, event):
 
-        if self.enable_proxy:
-            proxyip = self.ip_entry.get_text()
-            proxyport = self.port_entry.get_text()
-            username = self.username_entry.get_text()
-            password = self.password_entry.get_text()
-            set_settings(proxyip, proxyport, self.proxy_type, username, password)
-            enable()
-            self.update_config(proxyip, proxyport, self.proxy_type, username)
-            constants.proxy_enabled = True
+        # If enter key is pressed or mouse button is clicked
+        if not hasattr(event, 'keyval') or event.keyval == 65293:
+            if self.enable_proxy:
+                proxyip = self.ip_entry.get_text()
+                proxyport = self.port_entry.get_text()
+                username = self.username_entry.get_text()
+                password = self.password_entry.get_text()
+                set_settings(proxyip, proxyport, self.proxy_type, username, password)
+                enable()
 
-        elif is_enabled():
-            disable()
-            constants.proxy_enabled = is_enabled()
+                # if successfully enabled, save in config file
+                if is_enabled():
+                    self.update_config(proxyip, proxyport, self.proxy_type, username)
+                    constants.proxy_enabled = True
+                # else, let user know the proxy is not turned on
+                else:
+                    kdialog = KanoDialog("Could not enable proxy",
+                                         "Try again?",
+                                         {
+                                             "OK": {"return_value": 0},
+                                             "GO BACK": {"color": "red", "return_value": 1}
+                                         },
+                                         parent_window=self.win)
+                    response = kdialog.run()
+                    if response == 1:
+                        self.go_to_wifi()
 
-        return
+            elif is_enabled():
+                disable()
+                constants.proxy_enabled = is_enabled()
+                self.go_to_wifi()
 
     # Validation functions
     # If the "enable proxy" checkbox is checked/uncheckout, this function is activated
     # Disables the text entries if enable proxy is not checked
     def proxy_status(self, widget):
-        enable_proxy = widget.get_active()
-        if enable_proxy:
+        self.enable_proxy = widget.get_active()
+        if self.enable_proxy:
             self.ip_entry.set_sensitive(True)
             self.port_entry.set_sensitive(True)
             self.password_entry.set_sensitive(True)
