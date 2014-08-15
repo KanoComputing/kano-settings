@@ -31,6 +31,24 @@ def find_keyboard_variants(country_code):
         # It means this country code does not have keyboard variants
         return None
 
+def is_changed(country_code, variant):
+    continent = get_setting('Keyboard-continent-human')
+    country = get_setting('Keyboard-country-human')
+
+    stored_variant = get_setting('Keyboard-variant-human')
+    stored_layout = keyboard_layouts.layouts[continent][country]
+
+    stored_layout = stored_layout.lower()
+    stored_variant = stored_variant.lower()
+
+    if variant == 'generic':
+        variant = ''
+
+    if country_code == stored_layout and variant == stored_variant:
+        return False
+    else:
+        return True
+
 
 def set_keyboard(country_code, variant):
     default_model = 'pc105'
