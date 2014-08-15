@@ -28,8 +28,9 @@ class WorkerThread(threading.Thread):
         self.callback = callback
 
     def run(self):
-        # Apply the keyboard changes
-        keyboard_config.set_keyboard(selected_country, selected_variant)
+        if keyboard_config.is_changed(selected_country, selected_variant):
+            # Apply the keyboard changes
+            keyboard_config.set_keyboard(selected_country, selected_variant)
 
         # The callback runs a GUI task, so wrap it!
         GObject.idle_add(self.callback)
