@@ -16,7 +16,6 @@ dante_conf = '/etc/dante.conf'
 ld_so_preload_file = '/etc/ld.so.preload'
 ld_so_preload_libs = ['/usr/lib/libdsocksd.so.0', '/lib/arm-linux-gnueabihf/libdl.so.2']
 
-
 template_dante_socks = """
 # kano-settings generated dante.conf
 
@@ -128,19 +127,7 @@ def get_settings():
         return
 
     parse_out(entries)
-
-    # collect and return Chromium proxy settings
-    # TODO: Refactor code so we centralize set / get chromium settings
-    try:
-
-    except:
-        # Chromium does not have proxy settings
-        pass
-
     return saved_settings
-
-
-
 
 
 def set_settings(self, dict_settings):
@@ -169,9 +156,6 @@ def set_settings(self, dict_settings):
     f.close()
     return True
 
-
-libpreload = LibPreload()
-pxysettings = ProxySettings()
 
 
 def is_enabled():
