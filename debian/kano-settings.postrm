@@ -24,6 +24,10 @@ case "$1" in
 
         # remove set-kano-hdmi from startup
         update-rc.d kano-hdmi remove
+
+        # Remove keyboard setup at login
+        sed -i 's:^sudo /usr/bin/kano-settings-cli set keyboard --load$::' /etc/profile
+
         ;;
 esac
 

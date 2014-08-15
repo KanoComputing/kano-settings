@@ -14,6 +14,7 @@ case "$1" in
 
         # Create custom sudoers file
         echo "%sudo   ALL=(root) NOPASSWD: /usr/bin/kano-settings" > $TMP_FILE
+        echo "%sudo   ALL=(root) NOPASSWD: /usr/bin/kano-settings-cli" >> $TMP_FILE
         echo "%sudo   ALL=(root) NOPASSWD: /usr/bin/regenerate-ssh-keys" >> $TMP_FILE
 
         # The owner and group for the sudoers file must both be 0
@@ -43,6 +44,9 @@ case "$1" in
 
         # add set-kano-hdmi to startup
         update-rc.d kano-hdmi defaults
+
+        # Set the keyboard layout on login
+        echo "sudo /usr/bin/kano-settings-cli set keyboard --load" >> /etc/profile
 
         ;;
 esac
