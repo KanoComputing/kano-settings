@@ -47,6 +47,9 @@ def is_changed(country_code, variant):
 
 
 def set_keyboard(country_code, variant):
+    if variant == 'generic':
+        variant = ''
+
     # Make new settings take effect now
     os.system("setupcon -k 2>/dev/null || true")
     os.system('setupcon -k --save-only || true')
@@ -62,9 +65,7 @@ def set_saved_keyboard():
 
     layout = keyboard_layouts.layouts[continent][country]
 
-    if variant == 'generic':
-        variant = ''
-    else:
+    if variant != 'generic':
         for (variant_human, variant_code) in keyboard_layouts.variants[layout]:
             if variant_human == variant:
                 variant = variant_code
