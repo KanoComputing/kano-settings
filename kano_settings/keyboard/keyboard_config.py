@@ -42,10 +42,7 @@ def is_changed(country_code, variant):
     if variant == 'generic':
         variant = ''
 
-    if country_code == stored_layout and variant == stored_variant:
-        return False
-    else:
-        return True
+    return (country_code != stored_layout or variant != stored_variant)
 
 
 def set_keyboard(country_code, variant):
