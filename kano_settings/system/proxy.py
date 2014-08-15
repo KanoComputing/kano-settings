@@ -54,6 +54,13 @@ def set_chromium_proxy(ip, port, ptype, username, password, enable=True):
     return rc == 0
 
 
+def get_chromium_proxy():
+    lines = read_file_contents_as_lines(chromium_cfg)
+    for line in lines:
+        if '--proxy-server' in line:
+            return True
+
+
 def lib_preload_is_enabled():
     enabled_modules = read_file_contents_as_lines(ld_so_preload_file)
     for module in enabled_modules:
@@ -131,28 +138,6 @@ def get_settings():
         pass
 
     return saved_settings
-
-
-def get_chromium_proxy():
-    lines = read_file_contents_as_lines(chromium_cfg)
-    for line in lines:
-        p = j.find('--proxy-server')
-        if (p != -1):
-            # I know... below code hurts my eyes too...
-            # What we are breaking down is a string in the following form:
-            # CHROMIUM_FLAGS="--password-store=detect --proxy-server="socks5://10.5.5.5:9999"\n
-            if saved_settings is None:
-                saved_settings = {}
-
-            keys = j[p:].partition(':')
-            socks_type = keys[0].split('=')[1].strip('"')
-            socks_ip = keys[2].split(':')[0].strip('//')
-            socks_port = keys[2].split(':')[1].strip('"\n')
-
-            saved_settings['chromium_type'] = socks_type
-            saved_settings['chromium_ip'] = socks_ip
-            saved_settings['chromium_port'] = socks_port
-
 
 
 
