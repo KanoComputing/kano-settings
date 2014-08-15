@@ -10,6 +10,7 @@
 
 import os
 import kano_settings.keyboard.keyboard_layouts as keyboard_layouts
+from kano_settings.config_file import get_setting
 
 # GLOBAL variables
 keyboard_conffile = '/etc/default/keyboard'
@@ -35,11 +36,8 @@ def is_changed(country_code, variant):
     continent = get_setting('Keyboard-continent-human')
     country = get_setting('Keyboard-country-human')
 
-    stored_variant = get_setting('Keyboard-variant-human')
-    stored_layout = keyboard_layouts.layouts[continent][country]
-
-    stored_layout = stored_layout.lower()
-    stored_variant = stored_variant.lower()
+    stored_variant = get_setting('Keyboard-variant-human').lower()
+    stored_layout = keyboard_layouts.layouts[continent][country].lower()
 
     if variant == 'generic':
         variant = ''
