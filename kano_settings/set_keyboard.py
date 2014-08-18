@@ -28,8 +28,9 @@ class WorkerThread(threading.Thread):
         self.callback = callback
 
     def run(self):
-        # Apply the keyboard changes
-        keyboard_config.set_keyboard(selected_country, selected_variant)
+        if keyboard_config.is_changed(selected_country, selected_variant):
+            # Apply the keyboard changes
+            keyboard_config.set_keyboard(selected_country, selected_variant)
 
         # The callback runs a GUI task, so wrap it!
         GObject.idle_add(self.callback)
@@ -329,21 +330,12 @@ class SetKeyboard(Template):
         pass
 
     def fill_countries_combo(self, continent):
-
         continent = continent.lower()
 
-        if continent == 'africa':
-            self.selected_layout = keyboard_layouts.layouts_africa
-        elif continent == 'america':
-            self.selected_layout = keyboard_layouts.layouts_america
-        elif continent == 'asia':
-            self.selected_layout = keyboard_layouts.layouts_asia
-        elif continent == 'australia':
-            self.selected_layout = keyboard_layouts.layouts_australia
-        elif continent == 'europe':
-            self.selected_layout = keyboard_layouts.layouts_europe
-        elif continent == 'others':
-            self.selected_layout = keyboard_layouts.layouts_others
+        try:
+            self.selected_layout = keyboard_layouts.layouts[continent]
+        except KeyError:
+            return
 
         self.selected_continent_hr = continent
 
