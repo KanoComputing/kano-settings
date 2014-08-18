@@ -100,11 +100,15 @@ def update_ld_so_preload(enable):
     write_file_contents(ld_so_preload_file, new_file)
 
 
-def set_global(enable, ip, port, ptype, username, password):
+def set_all_proxies(enable, ip=None, port=None, ptype=None, username=None, password=None):
     set_chromium(enable, ip, port, ptype)
     set_dante(enable, ip, port, ptype)
 
 
-def get_global():
-    return get_dante()
+def get_all_proxies():
+    data = get_dante()
+    if data:
+        return True, data
+    else:
+        return False, None
 
