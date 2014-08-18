@@ -122,7 +122,8 @@
   "SET_PROXY": {
     "LABEL_1": "Proxy",
     "LABEL_2": "Connect via a friend",
-    "KANO_BUTTON": "CREATE PROXY"
+    "KANO_BUTTON_ENABLE": "ENABLE PROXY",
+    "KANO_BUTTON_DISABLE": "DISABLE PROXY"
   },
   "SET_WALLPAPER": {
     "LABEL_1": "Choose your background",

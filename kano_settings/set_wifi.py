@@ -161,15 +161,16 @@ class SetProxy(TopBarTemplate):
 
         title = self.data["LABEL_1"]
         description = self.data["LABEL_2"]
-        kano_label = self.data["KANO_BUTTON"]
+        self.kano_label_enable = self.data["KANO_BUTTON_ENABLE"]
+        self.kano_label_disable = self.data["KANO_BUTTON_DISABLE"]
 
         TopBarTemplate.__init__(self)
+        self.kano_button = KanoButton()
 
         self.win = win
         self.win.set_main_widget(self)
 
         self.heading = Heading(title, description)
-        self.kano_button = KanoButton(kano_label)
 
         grid = Gtk.Grid(column_homogeneous=False, column_spacing=10, row_spacing=10)
 
@@ -205,9 +206,7 @@ class SetProxy(TopBarTemplate):
         checkbutton.set_can_focus(False)
 
         self.radio1 = Gtk.RadioButton.new_with_label_from_widget(None, "socks_v4 socks_v5")
-        self.radio1.set_can_focus(False)
         self.radio2 = Gtk.RadioButton.new_with_label_from_widget(self.radio1, "http_v1.0")
-        self.radio2.set_can_focus(False)
 
         self.radio1.connect("toggled", self.set_proxy_type)
 
@@ -236,6 +235,13 @@ class SetProxy(TopBarTemplate):
         self.pack_end(bottom_row, False, False, 0)
 
         self.proxy_status(checkbutton)
+        self.kano_button.set_sensitive(False)
+
+        # Change text of kano button depending on if proxy is enabled
+        if checkbutton.get_active():
+            self.kano_button.set_label(self.kano_label_enable)
+        else:
+            self.kano_button.set_label(self.kano_label_disable)
 
         self.win.show_all()
 
@@ -286,15 +292,26 @@ class SetProxy(TopBarTemplate):
                 if is_enabled():
                     self.update_config(proxyip, proxyport, self.proxy_type, username)
                     constants.proxy_enabled = True
+                    kdialog = KanoDialog("Proxy enabled!", parent_window=self.win)
+                    self.go_to_wifi()
                 # else, let user know the proxy is not turned on
                 else:
-                    kdialog = KanoDialog("Could not enable proxy",
-                                         "Try again?",
-                                         {
-                                             "OK": {"return_value": 0},
-                                             "GO BACK": {"color": "red", "return_value": 1}
-                                         },
-                                         parent_window=self.win)
+                    kdialog = KanoDialog(
+                        "Could not enable proxy",
+                        "Try again?",
+                        {
+                            "OK":
+                            {
+                                "return_value": 0
+                            },
+                            "GO BACK":
+                            {
+                                "color": "red",
+                                "return_value": 1
+                            }
+                        },
+                        parent_window=self.win
+                    )
                     response = kdialog.run()
                     if response == 1:
                         self.go_to_wifi()
@@ -318,6 +335,7 @@ class SetProxy(TopBarTemplate):
             self.radio2.set_sensitive(True)
             # Run to see if it need enabling
             self.proxy_enabled()
+            self.kano_button.set_label(self.kano_label_enable)
 
         else:
             self.ip_entry.set_sensitive(False)
@@ -326,6 +344,7 @@ class SetProxy(TopBarTemplate):
             self.username_entry.set_sensitive(False)
             self.radio1.set_sensitive(False)
             self.radio2.set_sensitive(False)
+            self.kano_button.set_label(self.kano_label_disable)
             self.kano_button.set_sensitive(True)
 
     # if proxy enabled: ip address, port, and type are mandatory
