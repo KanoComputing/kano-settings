@@ -6,7 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-
+from string import Template
 from kano.utils import read_file_contents_as_lines, write_file_contents, run_cmd
 
 chromium_cfg = '/etc/chromium/default'
@@ -14,25 +14,25 @@ dante_conf = '/etc/dante.conf'
 ld_so_preload_file = '/etc/ld.so.preload'
 ld_so_preload_libs = ['/usr/lib/libdsocksd.so.0', '/lib/arm-linux-gnueabihf/libdl.so.2']
 
-template_dante_socks = """
+template_dante_socks = Template("""
 # kano-settings generated dante.conf
 
 route {
-   from: 0.0.0.0/0   to: 0.0.0.0/0   via: {proxyip} port = {proxyport}
+   from: 0.0.0.0/0   to: 0.0.0.0/0   via: $proxyip port = $proxyport
    protocol: tcp udp
    proxyprotocol: socks_v4 socks_v5
 }
-"""
+""")
 
-template_dante_http = """
+template_dante_http = Template("""
 # kano-settings generated dante.conf
 
 route {
-   from: 0.0.0.0/0   to: 0.0.0.0/0   via: {proxyip} port = {proxyport}
+   from: 0.0.0.0/0   to: 0.0.0.0/0   via: $proxyip port = $proxyport
    command: connect
    proxyprotocol: http_v1.0
 }
-"""
+""")
 
 
 def set_chromium(enable, ip, port, ptype):
@@ -54,9 +54,9 @@ def set_chromium(enable, ip, port, ptype):
 def set_dante(enable, proxyip, proxyport, proxytype):
     if enable:
         if proxytype == 'http_v1.0':
-            new_settings = template_dante_http.format(proxyip=proxyip, proxyport=proxyport)
+            new_settings = template_dante_http.substitute({'proxyip': proxyip, 'proxyport': proxyport})
         else:
-            new_settings = template_dante_socks.format(proxyip=proxyip, proxyport=proxyport)
+            new_settings = template_dante_socks.substitute({'proxyip': proxyip, 'proxyport': proxyport})
     else:
         new_settings = ''
 
@@ -95,12 +95,16 @@ def update_ld_so_preload(enable):
 
     # add module if not found
     else:
-        new_file = lines + [l for l in ld_so_preload_libs if l not in lines]
+        if not lines:
+            new_file = ld_so_preload_libs
+        else:
+            new_file = lines + [l for l in ld_so_preload_libs if l not in lines]
 
-    write_file_contents(ld_so_preload_file, new_file)
+    write_file_contents(ld_so_preload_file, '\n'.join(new_file))
 
 
 def set_all_proxies(enable, ip=None, port=None, ptype=None, username=None, password=None):
+    print enable, ip, port, ptype, username, password
     set_chromium(enable, ip, port, ptype)
     set_dante(enable, ip, port, ptype)
 

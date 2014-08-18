@@ -196,17 +196,16 @@ class SetProxy(TopBarTemplate):
         password_box = Gtk.Box()
         password_box.add(self.password_entry)
 
+        self.radio1 = Gtk.RadioButton.new_with_label_from_widget(None, "socks_v4 socks_v5")
+        self.radio2 = Gtk.RadioButton.new_with_label_from_widget(self.radio1, "http_v1.0")
+        self.radio1.connect("toggled", self.set_proxy_type)
+
         self.read_config()
 
         checkbutton = Gtk.CheckButton("enable proxy")
         checkbutton.set_active(self.enable_proxy)
         checkbutton.connect("clicked", self.proxy_status)
         checkbutton.set_can_focus(False)
-
-        self.radio1 = Gtk.RadioButton.new_with_label_from_widget(None, "socks_v4 socks_v5")
-        self.radio2 = Gtk.RadioButton.new_with_label_from_widget(self.radio1, "http_v1.0")
-
-        self.radio1.connect("toggled", self.set_proxy_type)
 
         # Run once so we have the correct string proxy_type
         self.set_proxy_type(self.radio1)
@@ -255,6 +254,7 @@ class SetProxy(TopBarTemplate):
     # Update for proxy
     def read_config(self):
         self.enable_proxy, data = get_all_proxies()
+        self.enabled_init = self.enable_proxy
         if self.enable_proxy:
             proxyip, proxyport, self.proxy_type = data
 
