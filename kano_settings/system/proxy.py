@@ -35,9 +35,9 @@ route {
 """)
 
 
-def set_chromium(enable, ip, port, ptype):
+def set_chromium(enable, ip, port, is_socks):
     if enable:
-        if 'socks_v5' in ptype:
+        if is_socks:
             proxy_type = 'socks5'
         else:
             proxy_type = 'http'
@@ -51,12 +51,12 @@ def set_chromium(enable, ip, port, ptype):
     return
 
 
-def set_dante(enable, proxyip, proxyport, proxytype):
+def set_dante(enable, proxyip, proxyport, is_socks):
     if enable:
-        if proxytype == 'http_v1.0':
-            new_settings = template_dante_http.substitute({'proxyip': proxyip, 'proxyport': proxyport})
-        else:
+        if is_socks:
             new_settings = template_dante_socks.substitute({'proxyip': proxyip, 'proxyport': proxyport})
+        else:
+            new_settings = template_dante_http.substitute({'proxyip': proxyip, 'proxyport': proxyport})
     else:
         new_settings = ''
 
@@ -69,7 +69,7 @@ def get_dante():
     if not lines:
         return
 
-    proxyip = proxyport = proxytype = None
+    proxyip = proxyport = is_socks = None
     try:
         for line in lines:
             if line.startswith('from:'):
@@ -78,13 +78,14 @@ def get_dante():
 
             if line.startswith('proxyprotocol:'):
                 proxytype = line.split()[1:]
+                is_socks = 'socks' in proxytype[0]
     except Exception:
         return
 
-    if not (proxyip or proxyport or proxytype):
+    if not (proxyip or proxyport or is_socks):
         return
     else:
-        return proxyip, proxyport, proxytype
+        return proxyip, proxyport, is_socks
 
 
 def update_ld_so_preload(enable):
@@ -104,9 +105,9 @@ def update_ld_so_preload(enable):
     write_file_contents(ld_so_preload_file, '\n'.join(new_file))
 
 
-def set_all_proxies(enable, ip=None, port=None, ptype=None, username=None, password=None):
-    set_chromium(enable, ip, port, ptype)
-    set_dante(enable, ip, port, ptype)
+def set_all_proxies(enable, ip=None, port=None, is_socks=None, username=None, password=None):
+    set_chromium(enable, ip, port, is_socks)
+    set_dante(enable, ip, port, is_socks)
 
 
 def get_all_proxies():

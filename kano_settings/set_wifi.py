@@ -256,7 +256,7 @@ class SetProxy(TopBarTemplate):
         self.enable_proxy, data = get_all_proxies()
         self.enabled_init = self.enable_proxy
         if self.enable_proxy:
-            proxyip, proxyport, self.proxy_type = data
+            proxyip, proxyport, self.is_socks = data
 
             self.port_entry.set_text(proxyport)
             self.ip_entry.set_text(proxyip)
@@ -270,7 +270,7 @@ class SetProxy(TopBarTemplate):
                 proxyport = self.port_entry.get_text()
                 username = self.username_entry.get_text()
                 password = self.password_entry.get_text()
-                set_all_proxies(True, proxyip, proxyport, self.proxy_type, username, password)
+                set_all_proxies(True, proxyip, proxyport, self.is_socks, username, password)
                 constants.proxy_enabled = True
 
             else:
@@ -344,13 +344,10 @@ class SetProxy(TopBarTemplate):
             return False
 
     def set_proxy_type(self, radio_button):
-        if radio_button.get_active():
-            self.proxy_type = "socks_v4 socks_v5"
-        else:
-            self.proxy_type = "http_v1.0"
+        self.is_socks = radio_button.get_active()
 
     def set_proxy_type_button(self):
-        if self.proxy_type == "socks_v4 socks_v5":
+        if self.is_socks:
             self.radio1.set_active(True)
             self.radio2.set_active(False)
         else:
