@@ -35,7 +35,7 @@ route {
 """
 
 
-def set_chromium(enable, ip, port, ptype, username, password):
+def set_chromium(enable, ip, port, ptype):
     if enable:
         if 'socks_v5' in ptype:
             proxy_type = 'socks5'
@@ -51,7 +51,7 @@ def set_chromium(enable, ip, port, ptype, username, password):
     return
 
 
-def set_dante(enable, proxyip, proxyport, proxytype, username=None, password=None):
+def set_dante(enable, proxyip, proxyport, proxytype):
     if enable:
         if proxytype == 'http_v1.0':
             new_settings = template_dante_http.format(proxyip=proxyip, proxyport=proxyport)
@@ -101,7 +101,7 @@ def update_ld_so_preload(enable):
 
 
 def set_global(enable, ip, port, ptype, username, password):
-    set_chromium(enable, ip, port, ptype, username, password)
+    set_chromium(enable, ip, port, ptype)
     set_dante(enable, ip, port, ptype)
 
 
