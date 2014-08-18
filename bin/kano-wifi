@@ -426,7 +426,7 @@ if __name__ == '__main__':
 
     netname, _, _, linked = is_connected(wiface)
     if netname and linked:
-        subprocess.call(['typewriter_echo', '\n{{4 + }} {{3 Great! you are connected }}', '2', '2'])
+        subprocess.call(['typewriter_echo', '\n{{4 + }} {{3 Great! You are connected }}', '2', '2'])
 
     # Step 5: ping exercise
     # Check for redirection
