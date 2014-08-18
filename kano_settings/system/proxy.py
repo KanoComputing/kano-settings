@@ -73,10 +73,11 @@ def get_dante():
     try:
         for line in lines:
             if line.startswith('from:'):
-                proxyip = line.split(' ')[5]
-                proxyport = line.split(' ')[8]
+                proxyip = line.split('via: ')[1].split()[0]
+                proxyport = line.split('port = ')[1].split()[0]
+
             if line.startswith('proxyprotocol:'):
-                proxytype = line.split(' ')[1:]
+                proxytype = line.split()[1:]
     except Exception:
         return
 
@@ -104,7 +105,6 @@ def update_ld_so_preload(enable):
 
 
 def set_all_proxies(enable, ip=None, port=None, ptype=None, username=None, password=None):
-    print enable, ip, port, ptype, username, password
     set_chromium(enable, ip, port, ptype)
     set_dante(enable, ip, port, ptype)
 
