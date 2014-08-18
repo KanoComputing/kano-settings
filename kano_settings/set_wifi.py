@@ -390,6 +390,7 @@ class SetProxy(TopBarTemplate):
             self.proxy_type = "socks_v4 socks_v5"
         else:
             self.proxy_type = "http_v1.0"
+        self.kano_button.set_sensitive(True)
 
     def set_proxy_type_button(self):
         if self.proxy_type == "socks_v4 socks_v5":
