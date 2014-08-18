@@ -34,8 +34,6 @@ class SetWifi(Template):
 
         self.kano_button.connect("button-release-event", self.win.go_to_home)
 
-        constants.has_internet = is_internet()
-
         internet_img = Gtk.Image()
 
         # Very hacky way to centre the Proxy button - put spaces in the label
@@ -145,6 +143,7 @@ class SetWifi(Template):
             self.focus_in_handler = self.win.connect("focus-in-event", self.refresh)
             # Call WiFi config
             os.system('rxvt -title \'WiFi\' -e /usr/bin/kano-wifi')
+            constants.has_internet = is_internet()
 
     def refresh(self, widget=None, event=None):
         self.win.clear_win()

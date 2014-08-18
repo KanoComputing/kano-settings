@@ -16,7 +16,7 @@ GObject.threads_init()
 if __name__ == '__main__' and __package__ is None:
     dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     if dir_path != '/usr':
-        sys.path.append(dir_path)
+        sys.path.insert(1, dir_path)
 
 import kano_settings.constants as constants
 from kano_settings.home_screen import HomeScreen
