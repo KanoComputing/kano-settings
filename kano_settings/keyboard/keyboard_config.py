@@ -5,11 +5,11 @@
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
-# This script is an interactive selection of the keyboard, based on country name and local keyboard variant.
+# This script is an interactive selection of the keyboard,
+# based on country name and local keyboard variant.
 #
 
-import os
-import json
+from kano.utils import run_cmd
 import kano_settings.keyboard.keyboard_layouts as keyboard_layouts
 from kano_settings.config_file import get_setting
 
@@ -29,7 +29,7 @@ def find_country_code(country_name, layout):
 def find_keyboard_variants(country_code):
     try:
         return sorted(keyboard_layouts.variants[country_code])
-    except:
+    except Exception:
         # It means this country code does not have keyboard variants
         return None
 
@@ -50,12 +50,8 @@ def set_keyboard(country_code, variant):
     if variant == 'generic':
         variant = ''
 
-    # Make new settings take effect now
-    os.system("setupcon -k 2>/dev/null || true")
-    os.system('setupcon -k --save-only || true')
-
     # Notify and apply changes to the XServer
-    os.system("setxkbmap {} {} > /dev/null 2>&1".format(country_code, variant))
+    run_cmd("setxkbmap {} {}".format(country_code, variant))
 
 
 def set_saved_keyboard():
@@ -63,7 +59,10 @@ def set_saved_keyboard():
     country = get_setting('Keyboard-country-human')
     variant = get_setting('Keyboard-variant-human')
 
-    layout = keyboard_layouts.layouts[continent][country]
+    try:
+        layout = keyboard_layouts.layouts[continent][country]
+    except KeyError:
+        return
 
     if variant != 'generic':
         for (variant_human, variant_code) in keyboard_layouts.variants[layout]:

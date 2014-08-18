@@ -332,7 +332,10 @@ class SetKeyboard(Template):
     def fill_countries_combo(self, continent):
         continent = continent.lower()
 
-        self.selected_layout = keyboard_layouts.layouts[continent]
+        try:
+            self.selected_layout = keyboard_layouts.layouts[continent]
+        except KeyError:
+            return
 
         self.selected_continent_hr = continent
 
