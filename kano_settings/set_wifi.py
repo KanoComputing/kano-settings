@@ -360,7 +360,7 @@ class SetProxy(TopBarTemplate):
             self.kano_button.set_sensitive(False)
             return False
 
-        if self.valid_ip_address():
+        else:
             self.kano_button.set_sensitive(True)
             return True
 
