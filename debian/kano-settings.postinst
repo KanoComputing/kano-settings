@@ -45,9 +45,6 @@ case "$1" in
         # add set-kano-hdmi to startup
         update-rc.d kano-hdmi defaults
 
-        # Set the keyboard layout on login
-        echo "sudo /usr/bin/kano-settings-cli set keyboard --load" >> /etc/profile
-
         ;;
 esac
 
