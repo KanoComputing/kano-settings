@@ -65,17 +65,19 @@ class SetWifi(Template):
         self.box.pack_start(container, False, False, 0)
 
         if not constants.has_internet:
-            title = self.data_offline["LABEL_1"]
-            description = self.data_offline["LABEL_2"]
-            kano_label = self.data_offline["KANO_BUTTON"]
+            if network_info():
+                description = self.data_offline["CONFIGURE_PROXY_OR_BROWSER"]
+            else:
+                description = self.data_offline["CONFIGURE_WIRELESS"]
+
+            kano_label = self.data_offline["SKIP"]
+            title = self.data_offline["GET_CONNECTED"]
 
             self.add_connection = KanoButton("WIFI")
             self.add_connection.connect("button_release_event", self.configure_wifi)
             self.add_connection.connect("key_release_event", self.configure_wifi)
             status_box.pack_start(self.add_connection, False, False, 0)
             internet_img.set_from_file(constants.media + "/Graphics/Internet-noConnection.png")
-            self.title.title.set_text("Get connected")
-            self.title.description.set_text("Let's set up Internet")
             internet_status.set_text("No network found")
             self.kano_button.set_label(kano_label)
 
@@ -116,8 +118,8 @@ class SetWifi(Template):
             configure_container.pack_start(divider_label, False, False, 3)
 
             if network == "Ethernet":
-                title = self.data_ethernet["LABEL_1"]
-                description = self.data_ethernet["LABEL_2"]
+                title = self.data_ethernet["GET_CONNECTED"]
+                description = self.data_ethernet["LETS_SET_UP_INTERNET"]
                 kano_label = self.data_ethernet["KANO_BUTTON"]
 
                 # Change to ethernet image here

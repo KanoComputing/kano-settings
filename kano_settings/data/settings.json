@@ -113,10 +113,11 @@
     "IMG_FILENAME": "/Graphics/Internet-Connection.png"
   },
   "SET_WIFI_OFFLINE" : {
-    "LABEL_1": "Get connected",
-    "LABEL_2": "Let's set up Internet",
-    "CONNECTION_BUTTON": "WIFI",
-    "KANO_BUTTON": "SKIP THIS STEP",
+    "GET_CONNECTED": "Get connected",
+    "CONFIGURE_WIRELESS": "Configure wireless",
+    "CONFIGURE_PROXY_OR_BROWSER": "Configure your proxy settings \n or use the browser to log in.",
+    "WIFI": "WIFI",
+    "SKIP": "SKIP THIS STEP",
     "IMG_FILENAME": "/Graphics/Internet-noConnection.png"
   },
   "SET_PROXY": {
