@@ -6,17 +6,20 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk, GObject
 import threading
+from gi.repository import Gtk, GObject
+
 import kano_settings.keyboard.keyboard_layouts as keyboard_layouts
 import kano_settings.keyboard.keyboard_config as keyboard_config
-from kano_settings.templates import Template
 import kano_settings.constants as constants
-from .config_file import get_setting, set_setting
+from kano_settings.templates import Template
+from kano_settings.config_file import get_setting, set_setting
+from kano_settings.data import get_data
 from kano.gtk3.buttons import OrangeButton
+from kano.gtk3.kano_combobox import KanoComboBox
 from kano.utils import detect_kano_keyboard
 from kano.logging import logger
-from kano_settings.data import get_data
+
 
 selected_country = None
 selected_variant = None
@@ -122,13 +125,13 @@ class SetKeyboard(Template):
         self.kano_button.set_sensitive(False)
 
         # Create Continents Combo box
-        self.continents_combo = Gtk.ComboBoxText.new()
+        self.continents_combo = KanoComboBox(max_display_items=7)
         for c in self.continents:
-            self.continents_combo.append_text(c)
+            self.continents_combo.append(c)
         self.continents_combo.connect("changed", self.on_continent_changed)
 
         # Create Countries Combo box
-        self.countries_combo = Gtk.ComboBoxText.new()
+        self.countries_combo = KanoComboBox(max_display_items=7)
         self.countries_combo.connect("changed", self.on_country_changed)
         self.countries_combo.props.valign = Gtk.Align.CENTER
 
@@ -140,13 +143,15 @@ class SetKeyboard(Template):
         advance_button.set_active(False)
 
         # Create Variants Combo box
-        self.variants_combo = Gtk.ComboBoxText.new()
+        self.variants_combo = KanoComboBox(max_display_items=7)
         self.variants_combo.connect("changed", self.on_variants_changed)
         self.variants_combo.props.valign = Gtk.Align.CENTER
 
         # Set up default values in dropdown lists
         self.set_defaults("continent")
+        self.fill_countries_combo(self.continents_combo.get_selected_item_text())
         self.set_defaults("country")
+        self.on_country_changed(self.countries_combo)
         self.set_defaults("variant")
 
         # Ceate various dropdown boxes so we can resize the dropdown lists appropriately
@@ -242,82 +247,80 @@ class SetKeyboard(Template):
         active_item = get_setting("Keyboard-" + setting + "-index")
 
         if setting == "continent":
-            self.continents_combo.set_active(int(active_item))
+            self.continents_combo.set_selected_item_index(int(active_item))
         elif setting == "country":
-            self.countries_combo.set_active(int(active_item))
+            self.countries_combo.set_selected_item_index(int(active_item))
         elif setting == "variant":
-            self.variants_combo.set_active(int(active_item))
+            self.variants_combo.set_selected_item_index(int(active_item))
         else:
             logger.error("Bad argument in set_defaults - should be 'continent', 'country' or 'variant'")
             return
 
     def set_variants_to_generic(self):
-        self.variants_combo.set_active(0)
+        self.variants_combo.set_selected_item_index(0)
 
     def on_continent_changed(self, combo):
 
-        continent = self.selected_continent_hr
-        tree_iter = combo.get_active_iter()
+        # making sure the continent has been set
+        continent_text = combo.get_selected_item_text()
+        continent_index = combo.get_selected_item_index()
+        if not continent_text or continent_index == -1:
+            return
 
-        if tree_iter is not None:
-            model = combo.get_model()
-            continent = model[tree_iter][0]
-
-        self.selected_continent_hr = str(continent)
-        self.selected_continent_index = str(combo.get_active())
+        self.selected_continent_hr = continent_text
+        self.selected_continent_index = continent_index
 
         self.kano_button.set_sensitive(False)
-
         self.fill_countries_combo(self.selected_continent_hr)
 
     def on_country_changed(self, combo):
         global selected_country
 
-        country = None
-        tree_iter = combo.get_active_iter()
-
-        if tree_iter is not None:
-            model = combo.get_model()
-            country = model[tree_iter][0]
-
-        if not country:
+        # making sure the country has been set
+        country_text = combo.get_selected_item_text()
+        country_index = combo.get_selected_item_index()
+        if not country_text or country_index == -1:
             return
 
         # Remove entries from variants combo box
         self.variants_combo.remove_all()
-        self.selected_country_hr = str(country)
-        self.selected_country_index = combo.get_active()
+        self.selected_country_hr = country_text
+        self.selected_country_index = country_index
 
         # Refresh variants combo box
-        selected_country = keyboard_config.find_country_code(country, self.selected_layout)
+        selected_country = keyboard_config.find_country_code(country_text, self.selected_layout)
         variants = keyboard_config.find_keyboard_variants(selected_country)
-        self.variants_combo.append_text("generic")
+        self.variants_combo.append("generic")
         if variants is not None:
             for v in variants:
-                self.variants_combo.append_text(v[0])
+                self.variants_combo.append(v[0])
 
         self.set_variants_to_generic()
+        self.on_variants_changed(self.variants_combo)
 
     def on_variants_changed(self, combo):
         global selected_variant
 
-        tree_iter = combo.get_active_iter()
-        if tree_iter is not None:
-            model = combo.get_model()
-            variant = model[tree_iter][0]
-            self.kano_button.set_sensitive(True)
-            if variant == "generic":
-                selected_variant = self.selected_variant_hr = str(variant)
-                self.selected_variant_index = 0
-                return
-            # Select the variant code
-            variants = keyboard_config.find_keyboard_variants(selected_country)
-            if variants is not None:
-                for v in variants:
-                    if v[0] == variant:
-                        selected_variant = v[1]
-                        self.selected_variant_index = combo.get_active()
-                        self.selected_variant_hr = str(variant)
+        # making sure the variant has been set
+        variant_text = combo.get_selected_item_text()
+        variant_index = combo.get_selected_item_index()
+        if not variant_text or variant_index == -1:
+            return
+
+        self.kano_button.set_sensitive(True)
+
+        if variant_text == "generic":
+            selected_variant = self.selected_variant_hr = variant_text
+            self.selected_variant_index = 0
+            return
+        # Select the variant code
+        variants = keyboard_config.find_keyboard_variants(selected_country)
+        if variants is not None:
+            for v in variants:
+                if v[0] == variant_text:
+                    selected_variant = v[1]
+                    self.selected_variant_index = variant_index
+                    self.selected_variant_hr = variant_text
 
     def on_advance_mode(self, button):
         if int(button.get_active()):
@@ -343,8 +346,9 @@ class SetKeyboard(Template):
         self.countries_combo.remove_all()
         self.variants_combo.remove_all()
 
+        # Get a sorted list of the countries from the dict layout
         sorted_countries = sorted(self.selected_layout)
 
         # Refresh countries combo box
         for country in sorted_countries:
-            self.countries_combo.append_text(country)
+            self.countries_combo.append(country)

@@ -41,6 +41,7 @@ static GtkWidget* get_resized_icon(const char* filename);
 static void selection_done(GtkWidget *);
 static void popup_set_position(GtkWidget *, gint *, gint *, gboolean *, GtkWidget *);
 static gboolean internet_status(kano_internet_plugin_t*);
+static void launch_cmd(const char *cmd);
 
 static int plugin_constructor(Plugin *p, char **fp)
 {
@@ -102,9 +103,16 @@ static void plugin_destructor(Plugin *p)
 static gboolean internet_status(kano_internet_plugin_t *plugin)
 {
     // Execute is_internet command
-    gboolean internet = system("/usr/bin/is_internet");
+    int internet = system("/usr/bin/is_internet");
     plugin->internet_available = internet;
-    gtk_image_set_from_file(GTK_IMAGE(plugin->icon), internet ? NO_INTERNET_ICON : WIFI_ICON);
+    gtk_image_set_from_file(GTK_IMAGE(plugin->icon), internet == 0 ? WIFI_ICON : NO_INTERNET_ICON);
+
+    /* If there is no internet try to run kano-connect to reconnect */
+    if (internet != 0) {
+        const char *cmd = "sudo kano-connect -c wlan0";
+	launch_cmd(cmd);
+    }
+
     return TRUE;
 }
 

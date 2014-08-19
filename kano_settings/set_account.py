@@ -18,6 +18,7 @@ from kano.gtk3.labelled_entries import LabelledEntries
 from kano_world.functions import has_token
 
 from kano.utils import get_user_unsudoed, ensure_dir
+import kano_settings.constants as constants
 from kano_settings.templates import TopBarTemplate, Template
 from kano_settings.data import get_data
 import kano.utils as utils
@@ -111,6 +112,8 @@ class SetAccount(TopBarTemplate):
             # add new user command
             os.system("kano-init newuser")
             self.disable_buttons()
+            # Tell user to reboot to see changes
+            constants.need_reboot = True
 
     # Gets executed when REMOVE button is clicked
     def remove_account_dialog(self, widget=None, event=None):
