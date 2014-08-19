@@ -318,17 +318,17 @@ if __name__ == '__main__':
         sys.exit(0)
 
     # Step 3: check for WiFi dongle
-    while not is_device(wiface):
-        subprocess.call(['/bin/sync']) # Flush system IO buffers to disk to avoid corruption
+    while not is_device(wiface) or not is_internet():
+        subprocess.call(['/bin/sync'])  # Flush system IO buffers to disk to avoid corruption
         subprocess.call(['typewriter_echo', 'First, plug in your {{2wifi piece}}.', '0', '2'])
         if not is_model_b_plus():
             subprocess.call(['typewriter_echo', 'Please take into account that the system will automatically reboot.', '0', '2'])
             subprocess.call(['typewriter_echo', 'If you don\'t want to use WiFi, press {{1 ENTER }}.', '2', '0'])
-            raw_input()
-            sys.exit(2)
+            raw_input().strip()
+            sys.exit(0)
         # Model B+
         subprocess.call(['typewriter_echo', 'Press {{1 ENTER }} when ready.', '1', '0'])
-        raw_input()
+        raw_input().strip()
         subprocess.call(['clear'])
 
     # Step 3.1: If dongle is connected and networking is up, offer option to forget wireless network.
