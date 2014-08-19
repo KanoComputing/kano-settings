@@ -196,19 +196,12 @@ class SetProxy(TopBarTemplate):
         password_box = Gtk.Box()
         password_box.add(self.password_entry)
 
-        self.radio1 = Gtk.RadioButton.new_with_label_from_widget(None, "socks_v4 socks_v5")
-        self.radio2 = Gtk.RadioButton.new_with_label_from_widget(self.radio1, "http_v1.0")
-        self.radio1.connect("toggled", self.set_proxy_type)
-
         self.read_config()
 
         checkbutton = Gtk.CheckButton("enable proxy")
         checkbutton.set_active(self.enable_proxy)
         checkbutton.connect("clicked", self.proxy_status)
         checkbutton.set_can_focus(False)
-
-        # Run once so we have the correct string proxy_type
-        self.set_proxy_type(self.radio1)
 
         bottom_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         bottom_row.pack_start(checkbutton, False, False, 0)
@@ -220,8 +213,6 @@ class SetProxy(TopBarTemplate):
         grid.attach(self.username_entry, 0, 2, 2, 2)
         grid.attach(self.port_entry, 2, 0, 2, 2)
         grid.attach(password_box, 2, 2, 3, 2)
-        grid.attach(self.radio1, 4, 0, 1, 1)
-        grid.attach(self.radio2, 4, 1, 1, 1)
 
         grid_alignment = Gtk.Alignment(xscale=0, xalign=0.5, yscale=0, yalign=0.2)
         grid_alignment.add(grid)
@@ -256,11 +247,10 @@ class SetProxy(TopBarTemplate):
         self.enable_proxy, data = get_all_proxies()
         self.enabled_init = self.enable_proxy
         if self.enable_proxy:
-            proxyip, proxyport, self.is_socks = data
+            proxyip, proxyport = data
 
             self.port_entry.set_text(proxyport)
             self.ip_entry.set_text(proxyip)
-            self.set_proxy_type_button()
 
     def apply_changes(self, button, event):
         # If enter key is pressed or mouse button is clicked
@@ -270,7 +260,7 @@ class SetProxy(TopBarTemplate):
                 proxyport = self.port_entry.get_text()
                 username = self.username_entry.get_text()
                 password = self.password_entry.get_text()
-                set_all_proxies(True, proxyip, proxyport, self.is_socks, username, password)
+                set_all_proxies(True, proxyip, proxyport, username, password)
                 constants.proxy_enabled = True
 
             else:
@@ -289,8 +279,6 @@ class SetProxy(TopBarTemplate):
             self.port_entry.set_sensitive(True)
             self.password_entry.set_sensitive(True)
             self.username_entry.set_sensitive(True)
-            self.radio1.set_sensitive(True)
-            self.radio2.set_sensitive(True)
             # Run to see if it need enabling
             self.proxy_enabled()
             self.kano_button.set_label(self.kano_label_enable)
@@ -300,16 +288,14 @@ class SetProxy(TopBarTemplate):
             self.port_entry.set_sensitive(False)
             self.password_entry.set_sensitive(False)
             self.username_entry.set_sensitive(False)
-            self.radio1.set_sensitive(False)
-            self.radio2.set_sensitive(False)
             self.kano_button.set_label(self.kano_label_disable)
             self.kano_button.set_sensitive(True)
 
-    # if proxy enabled: ip address, port, and type are mandatory
+    # if proxy enabled: ip address, port are mandatory
     def proxy_enabled(self, widget=None, event=None):
         # Get IP address
         # Get port
-        # Get type
+        # Get
         # If these entries are non empty, good - else, disable the next button
         ip_text = self.ip_entry.get_text()
         port_text = self.port_entry.get_text()
@@ -324,14 +310,3 @@ class SetProxy(TopBarTemplate):
 
         return False
 
-    def set_proxy_type(self, radio_button):
-        self.is_socks = radio_button.get_active()
-        self.kano_button.set_sensitive(True)
-
-    def set_proxy_type_button(self):
-        if self.is_socks:
-            self.radio1.set_active(True)
-            self.radio2.set_active(False)
-        else:
-            self.radio1.set_active(False)
-            self.radio2.set_active(True)
