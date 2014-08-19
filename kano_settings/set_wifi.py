@@ -116,8 +116,6 @@ class SetWifi(Template):
             go_to_portal_button = OrangeButton("Browser Login")
             go_to_portal_button.connect("button-press-event", launch_chromium)
             configure_container.pack_start(go_to_portal_button, False, False, 0)
-            # divider_label = Gtk.Label("|")
-            # configure_container.pack_start(divider_label, False, False, 3)
 
             if network_text == 'Ethernet':
                 title = self.data_ethernet["LABEL_1"]
@@ -132,12 +130,15 @@ class SetWifi(Template):
                 description = self.data_wifi["LABEL_2"]
                 kano_label = self.data_wifi["KANO_BUTTON"]
 
+                divider_label = Gtk.Label("|")
+                configure_container.pack_start(divider_label, False, False, 3)
+
                 configure_button = OrangeButton("Configure")
                 configure_button.connect("button_press_event", self.configure_wifi)
                 configure_container.pack_start(configure_button, False, False, 0)
-                # divider_label = Gtk.Label("|")
-                # configure_container.pack_start(divider_label, False, False, 3)
 
+            # divider_label = Gtk.Label("|")
+            # configure_container.pack_start(divider_label, False, False, 3)
             # configure_container.pack_end(self.proxy_button, False, False, 0)
 
         self.title.title.set_text(title)
