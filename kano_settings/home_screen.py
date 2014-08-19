@@ -7,7 +7,6 @@ from kano_settings.set_mouse import SetMouse
 from kano_settings.set_font import SetFont
 from kano_settings.set_audio import SetAudio
 from kano_settings.set_display import SetDisplay
-from kano_settings.wifi.functions import is_enabled
 from kano_settings.set_wifi import SetWifi
 from kano_settings.set_overclock import SetOverclock
 from kano_settings.set_account import SetAccount
@@ -20,7 +19,6 @@ from kano_settings.components.menu_button import Menu_button
 
 from kano.gtk3.scrolled_window import ScrolledWindow
 
-from kano.network import is_internet
 from kano.utils import get_user_unsudoed
 from kano_settings.config_file import get_setting
 
@@ -106,13 +104,8 @@ class HomeScreen(TopBarTemplate):
 
             if self.names[x] == 'Wifi':
                 text = ''
-                # Check for internet
-                constants.has_internet = is_internet()
-                constants.proxy_enabled = is_enabled()
                 if constants.has_internet:
                     text = 'Connected'
-                elif constants.proxy_enabled:
-                    text = "Proxy enabled"
                 else:
                     text = 'Not connected'
                 self.labels[x].set_text(text)

@@ -11,13 +11,11 @@ import os
 from kano_settings.templates import Template, TopBarTemplate
 from kano.gtk3.buttons import OrangeButton, KanoButton
 from kano.gtk3.heading import Heading
-from kano.gtk3.kano_dialog import KanoDialog
 
 import kano_settings.constants as constants
-from kano_settings.wifi.functions import network_info, launch_chromium, is_enabled, set_settings, enable, disable
-from kano.network import is_internet
-from kano_settings.config_file import get_setting, set_setting
+from kano.network import is_internet, network_info, launch_chromium
 from kano_settings.data import get_data
+from kano_settings.system.proxy import get_all_proxies, set_all_proxies
 
 
 class SetWifi(Template):
@@ -35,8 +33,6 @@ class SetWifi(Template):
         self.win.set_main_widget(self)
 
         self.kano_button.connect("button-release-event", self.win.go_to_home)
-
-        constants.has_internet = is_internet()
 
         internet_img = Gtk.Image()
 
@@ -147,6 +143,7 @@ class SetWifi(Template):
             self.focus_in_handler = self.win.connect("focus-in-event", self.refresh)
             # Call WiFi config
             os.system('rxvt -title \'WiFi\' -e /usr/bin/kano-wifi')
+            constants.has_internet = is_internet()
 
     def refresh(self, widget=None, event=None):
         self.win.clear_win()
@@ -199,20 +196,19 @@ class SetProxy(TopBarTemplate):
         password_box = Gtk.Box()
         password_box.add(self.password_entry)
 
+        self.radio1 = Gtk.RadioButton.new_with_label_from_widget(None, "socks_v4 socks_v5")
+        self.radio2 = Gtk.RadioButton.new_with_label_from_widget(self.radio1, "http_v1.0")
+        self.radio1.connect("toggled", self.set_proxy_type)
+
+        self.read_config()
+
         checkbutton = Gtk.CheckButton("enable proxy")
-        enabled = is_enabled()
-        checkbutton.set_active(enabled)
+        checkbutton.set_active(self.enable_proxy)
         checkbutton.connect("clicked", self.proxy_status)
         checkbutton.set_can_focus(False)
 
-        self.radio1 = Gtk.RadioButton.new_with_label_from_widget(None, "socks_v4 socks_v5")
-        self.radio2 = Gtk.RadioButton.new_with_label_from_widget(self.radio1, "http_v1.0")
-
-        self.radio1.connect("toggled", self.set_proxy_type)
-
         # Run once so we have the correct string proxy_type
         self.set_proxy_type(self.radio1)
-        self.read_config()
 
         bottom_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         bottom_row.pack_start(checkbutton, False, False, 0)
@@ -257,27 +253,16 @@ class SetProxy(TopBarTemplate):
 
     # Update for proxy
     def read_config(self):
-        port_text = get_setting("Proxy-port")
-        self.port_entry.set_text(port_text)
+        self.enable_proxy, data = get_all_proxies()
+        self.enabled_init = self.enable_proxy
+        if self.enable_proxy:
+            proxyip, proxyport, self.is_socks = data
 
-        ip_text = get_setting("Proxy-ip")
-        self.ip_entry.set_text(ip_text)
-
-        username_text = get_setting("Proxy-username")
-        self.username_entry.set_text(username_text)
-
-        self.proxy_type = get_setting("Proxy-type")
-        self.set_proxy_type_button()
-
-    # Update for proxy
-    def update_config(self, proxyip, proxyport, proxy_type, username):
-        set_setting("Proxy-port", proxyport)
-        set_setting("Proxy-ip", proxyip)
-        set_setting("Proxy-username", username)
-        set_setting("Proxy-type", self.proxy_type)
+            self.port_entry.set_text(proxyport)
+            self.ip_entry.set_text(proxyip)
+            self.set_proxy_type_button()
 
     def apply_changes(self, button, event):
-
         # If enter key is pressed or mouse button is clicked
         if not hasattr(event, 'keyval') or event.keyval == 65293:
             if self.enable_proxy:
@@ -285,41 +270,14 @@ class SetProxy(TopBarTemplate):
                 proxyport = self.port_entry.get_text()
                 username = self.username_entry.get_text()
                 password = self.password_entry.get_text()
-                set_settings(proxyip, proxyport, self.proxy_type, username, password)
-                enable()
+                set_all_proxies(True, proxyip, proxyport, self.is_socks, username, password)
+                constants.proxy_enabled = True
 
-                # if successfully enabled, save in config file
-                if is_enabled():
-                    self.update_config(proxyip, proxyport, self.proxy_type, username)
-                    constants.proxy_enabled = True
-                    kdialog = KanoDialog("Proxy enabled!", parent_window=self.win)
-                    self.go_to_wifi()
-                # else, let user know the proxy is not turned on
-                else:
-                    kdialog = KanoDialog(
-                        "Could not enable proxy",
-                        "Try again?",
-                        {
-                            "OK":
-                            {
-                                "return_value": 0
-                            },
-                            "GO BACK":
-                            {
-                                "color": "red",
-                                "return_value": 1
-                            }
-                        },
-                        parent_window=self.win
-                    )
-                    response = kdialog.run()
-                    if response == 1:
-                        self.go_to_wifi()
+            else:
+                set_all_proxies(False)
+                constants.proxy_enabled = False
 
-            elif is_enabled():
-                disable()
-                constants.proxy_enabled = is_enabled()
-                self.go_to_wifi()
+            self.go_to_wifi()
 
     # Validation functions
     # If the "enable proxy" checkbox is checked/uncheckout, this function is activated
@@ -366,34 +324,12 @@ class SetProxy(TopBarTemplate):
 
         return False
 
-    # ip address needs to be a pure ipv4 format at this moment: x.y.z.q (no segment mask as in /xx)
-    def valid_ip_address(self):
-
-        # Find the index of "/"
-        # Split into substring from "."
-        # Check there are 4 (?).
-        # Return/show tick if good, else do not allow them to click the next button
-        ip_text = self.ip_entry.get_text()
-        ip_array = ip_text.split(".")
-        slash_array = ip_text.split("/")
-
-        if len(slash_array) == 1 and len(ip_array) == 4:
-            self.kano_button.set_sensitive(True)
-            return True
-
-        else:
-            self.kano_button.set_sensitive(False)
-            return False
-
     def set_proxy_type(self, radio_button):
-        if radio_button.get_active():
-            self.proxy_type = "socks_v4 socks_v5"
-        else:
-            self.proxy_type = "http_v1.0"
+        self.is_socks = radio_button.get_active()
         self.kano_button.set_sensitive(True)
 
     def set_proxy_type_button(self):
-        if self.proxy_type == "socks_v4 socks_v5":
+        if self.is_socks:
             self.radio1.set_active(True)
             self.radio2.set_active(False)
         else:
