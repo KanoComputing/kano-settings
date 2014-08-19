@@ -143,7 +143,7 @@ class SetWifi(Template):
             # Disconnect this handler once the user regains focus to the window
             self.focus_in_handler = self.win.connect("focus-in-event", self.refresh)
             # Call WiFi config
-            os.system('rxvt -title \'WiFi\' -e /usr/bin/kano-wifi')
+            os.system('rxvt -title \'WiFi Setup\' -e /usr/bin/kano-wifi')
 
     def refresh(self, widget=None, event=None):
         self.win.clear_win()
