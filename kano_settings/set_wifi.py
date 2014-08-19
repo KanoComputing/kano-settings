@@ -105,11 +105,8 @@ class SetWifi(Template):
 
             network_info_dict = network_info()
             network = network_info_dict.keys()[0]
-            if network.startswith('eth'):
-                network_text = 'Ethernet'
-            else:
-                network_text = 'Wireless'
-            ip = network_info_dict[network]
+            ip = network_info_dict[network]['address']
+            network_text = network_info_dict[network]['nice_name']
 
             internet_img.set_from_file(constants.media + "/Graphics/Internet-Connection.png")
 
