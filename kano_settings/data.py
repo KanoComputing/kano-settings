@@ -7,14 +7,12 @@
 #
 # Data functions for getting level specific data from the json
 
-import json
 import os
+from kano.utils import read_json
+
+filename = os.path.join(os.path.dirname(__file__), 'data/settings.json')
+data = read_json(filename)
 
 
 def get_data(string):
-
-    filename = os.path.join("/usr/lib/python2.7/dist-packages/kano_settings/data/settings.json")
-    json_data = open(filename)
-    data = json.load(json_data)
-    stage_data = data[string]
-    return stage_data
+    return data[string]

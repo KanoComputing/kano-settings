@@ -93,7 +93,7 @@
     "DESCRIPTION_2": "DEFAULT",
     "OPTION_3": "Big",
     "DESCRIPTION_3": "BETTER FOR BIG SCREENS",
-    "KANO_BUTTON": "APPLY"
+    "KANO_BUTTON": "APPLY CHANGES"
   },
   "SET_WIFI": {
     "LAUNCH_BROWSER": "Browser Login",
@@ -113,16 +113,18 @@
     "IMG_FILENAME": "/Graphics/Internet-Connection.png"
   },
   "SET_WIFI_OFFLINE" : {
-    "LABEL_1": "Get connected",
-    "LABEL_2": "Let's set up Internet",
-    "CONNECTION_BUTTON": "WIFI",
-    "KANO_BUTTON": "SKIP THIS STEP",
+    "GET_CONNECTED": "Get connected",
+    "CONFIGURE_WIRELESS": "Configure wireless",
+    "CONFIGURE_PROXY_OR_BROWSER": "Use the browser to log in",
+    "WIFI": "WIFI",
+    "SKIP": "SKIP THIS STEP",
     "IMG_FILENAME": "/Graphics/Internet-noConnection.png"
   },
   "SET_PROXY": {
     "LABEL_1": "Proxy",
     "LABEL_2": "Connect via a friend",
-    "KANO_BUTTON": "CREATE PROXY"
+    "KANO_BUTTON_ENABLE": "ENABLE PROXY",
+    "KANO_BUTTON_DISABLE": "DISABLE PROXY"
   },
   "SET_WALLPAPER": {
     "LABEL_1": "Choose your background",
