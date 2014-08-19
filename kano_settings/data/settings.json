@@ -115,7 +115,7 @@
   "SET_WIFI_OFFLINE" : {
     "GET_CONNECTED": "Get connected",
     "CONFIGURE_WIRELESS": "Configure wireless",
-    "CONFIGURE_PROXY_OR_BROWSER": "Configure your proxy settings \n or use the browser to log in.",
+    "CONFIGURE_PROXY_OR_BROWSER": "Use the browser to log in",
     "WIFI": "WIFI",
     "SKIP": "SKIP THIS STEP",
     "IMG_FILENAME": "/Graphics/Internet-noConnection.png"
