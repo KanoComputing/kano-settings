@@ -64,7 +64,37 @@ class SetWifi(Template):
         container.pack_start(internet_img, False, False, 2)
         self.box.pack_start(container, False, False, 0)
 
-        if constants.has_internet:
+        if not constants.has_internet:
+            title = self.data_offline["LABEL_1"]
+            description = self.data_offline["LABEL_2"]
+            kano_label = self.data_offline["KANO_BUTTON"]
+
+            self.add_connection = KanoButton("WIFI")
+            self.add_connection.connect("button_release_event", self.configure_wifi)
+            self.add_connection.connect("key_release_event", self.configure_wifi)
+            status_box.pack_start(self.add_connection, False, False, 0)
+            internet_img.set_from_file(constants.media + "/Graphics/Internet-noConnection.png")
+            self.title.title.set_text("Get connected")
+            self.title.description.set_text("Let's set up Internet")
+            internet_status.set_text("No network found")
+            self.kano_button.set_label(kano_label)
+
+            status_box.pack_start(configure_container, False, False, 3)
+
+            go_to_portal_button = OrangeButton("Browser Login")
+            go_to_portal_button.connect("button-press-event", launch_chromium)
+            configure_container.pack_start(go_to_portal_button, False, False, 0)
+
+            divider_label = Gtk.Label("|")
+            configure_container.pack_start(divider_label, False, False, 3)
+
+            configure_container.pack_end(self.proxy_button, False, False, 0)
+
+        # CAROLINE WHAT IS THIS ONE?
+        elif constants.proxy_enabled and self.disable_proxy:
+            container.pack_start(self.disable_proxy, False, False, 0)
+
+        else:
             self.kano_button.set_label("COMPLETE")
 
             status_box.pack_start(internet_status, False, False, 3)
@@ -105,25 +135,6 @@ class SetWifi(Template):
                 configure_container.pack_start(divider_label, False, False, 3)
 
             configure_container.pack_end(self.proxy_button, False, False, 0)
-
-        elif constants.proxy_enabled and self.disable_proxy:
-
-            container.pack_start(self.disable_proxy, False, False, 0)
-
-        else:
-            title = self.data_offline["LABEL_1"]
-            description = self.data_offline["LABEL_2"]
-            kano_label = self.data_offline["KANO_BUTTON"]
-
-            self.add_connection = KanoButton("WIFI")
-            self.add_connection.connect("button_release_event", self.configure_wifi)
-            self.add_connection.connect("key_release_event", self.configure_wifi)
-            status_box.pack_start(self.add_connection, False, False, 0)
-            internet_img.set_from_file(constants.media + "/Graphics/Internet-noConnection.png")
-            self.title.title.set_text("Get connected")
-            self.title.description.set_text("Let's set up Internet")
-            internet_status.set_text("No network found")
-            self.kano_button.set_label(kano_label)
 
         self.title.title.set_text(title)
         self.title.description.set_text(description)
