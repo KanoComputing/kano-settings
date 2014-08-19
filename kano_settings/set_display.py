@@ -10,6 +10,7 @@ import os
 from gi.repository import Gtk
 from kano_settings.templates import TopBarTemplate, Template
 from kano.gtk3.buttons import OrangeButton, KanoButton
+from kano.gtk3.kano_combobox import KanoComboBox
 from kano.gtk3.heading import Heading
 import kano_settings.constants as constants
 from kano_settings.boot_config import set_config_comment
@@ -45,15 +46,15 @@ class SetDisplay(Template):
         horizontal_container.set_valign(Gtk.Align.CENTER)
 
         # HDMI mode combo box
-        self.mode_combo = Gtk.ComboBoxText.new()
+        self.mode_combo = KanoComboBox(max_display_items=7)
         self.mode_combo.connect("changed", self.on_mode_changed)
 
         # Fill list of modes
         modes = list_supported_modes()
-        self.mode_combo.append_text("auto")
+        self.mode_combo.append("auto")
         if modes:
             for v in modes:
-                self.mode_combo.append_text(v)
+                self.mode_combo.append(v)
 
         horizontal_container.pack_start(self.mode_combo, False, False, 0)
         self.mode_combo.props.valign = Gtk.Align.CENTER
@@ -61,7 +62,7 @@ class SetDisplay(Template):
         # Select the current setting in the dropdown list
         saved_group, saved_mode = read_hdmi_mode()
         active_item = find_matching_mode(modes, saved_group, saved_mode)
-        self.mode_combo.set_active(active_item)
+        self.mode_combo.set_selected_item_index(active_item)
         self.init_item = active_item
         # Overscan button
         overscan_button = OrangeButton("Overscan")
@@ -89,11 +90,8 @@ class SetDisplay(Template):
     def on_mode_changed(self, combo):
 
         #  Get the selected mode
-        tree_iter = combo.get_active_iter()
-        if tree_iter is not None:
-            self.mode = combo.get_model()[tree_iter][0]
-
-        self.mode_index = combo.get_active()
+        self.mode = combo.get_selected_item_text()
+        self.mode_index = combo.get_selected_item_index()
 
         self.kano_button.set_sensitive(True)
 
