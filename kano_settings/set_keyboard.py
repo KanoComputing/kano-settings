@@ -264,7 +264,7 @@ class SetKeyboard(Template):
         # making sure the continent has been set
         continent_text = combo.get_selected_item_text()
         continent_index = combo.get_selected_item_index()
-        if not continent_text or not continent_index:
+        if not continent_text or continent_index == -1:
             return
 
         self.selected_continent_hr = continent_text
@@ -279,7 +279,7 @@ class SetKeyboard(Template):
         # making sure the country has been set
         country_text = combo.get_selected_item_text()
         country_index = combo.get_selected_item_index()
-        if not country_text or not country_index:
+        if not country_text or country_index == -1:
             return
 
         # Remove entries from variants combo box
@@ -304,7 +304,7 @@ class SetKeyboard(Template):
         # making sure the variant has been set
         variant_text = combo.get_selected_item_text()
         variant_index = combo.get_selected_item_index()
-        if not variant_text or not variant_index:
+        if not variant_text or variant_index == -1:
             return
 
         self.kano_button.set_sensitive(True)
