@@ -261,25 +261,34 @@ class SetKeyboard(Template):
 
     def on_continent_changed(self, combo):
 
-        self.selected_continent_hr = combo.get_selected_item_text()
-        self.selected_continent_index = combo.get_selected_item_index()
+        # making sure the continent has been set
+        continent_text = combo.get_selected_item_text()
+        continent_index = combo.get_selected_item_index()
+        if not continent_text or not continent_index:
+            return
+
+        self.selected_continent_hr = continent_text
+        self.selected_continent_index = continent_index
 
         self.kano_button.set_sensitive(False)
-
         self.fill_countries_combo(self.selected_continent_hr)
 
     def on_country_changed(self, combo):
         global selected_country
 
-        country = combo.get_selected_item_text()
+        # making sure the country has been set
+        country_text = combo.get_selected_item_text()
+        country_index = combo.get_selected_item_index()
+        if not country_text or not country_index:
+            return
 
         # Remove entries from variants combo box
         self.variants_combo.remove_all()
-        self.selected_country_hr = country
-        self.selected_country_index = combo.get_selected_item_index()
+        self.selected_country_hr = country_text
+        self.selected_country_index = country_index
 
         # Refresh variants combo box
-        selected_country = keyboard_config.find_country_code(country, self.selected_layout)
+        selected_country = keyboard_config.find_country_code(country_text, self.selected_layout)
         variants = keyboard_config.find_keyboard_variants(selected_country)
         self.variants_combo.append("generic")
         if variants is not None:
@@ -292,22 +301,26 @@ class SetKeyboard(Template):
     def on_variants_changed(self, combo):
         global selected_variant
 
-        variant = combo.get_selected_item_text()
+        # making sure the variant has been set
+        variant_text = combo.get_selected_item_text()
+        variant_index = combo.get_selected_item_index()
+        if not variant_text or not variant_index:
+            return
 
         self.kano_button.set_sensitive(True)
 
-        if variant == "generic":
-            selected_variant = self.selected_variant_hr = variant
+        if variant_text == "generic":
+            selected_variant = self.selected_variant_hr = variant_text
             self.selected_variant_index = 0
             return
         # Select the variant code
         variants = keyboard_config.find_keyboard_variants(selected_country)
         if variants is not None:
             for v in variants:
-                if v[0] == variant:
+                if v[0] == variant_text:
                     selected_variant = v[1]
-                    self.selected_variant_index = combo.get_selected_item_index()
-                    self.selected_variant_hr = variant
+                    self.selected_variant_index = variant_index
+                    self.selected_variant_hr = variant_text
 
     def on_advance_mode(self, button):
         if int(button.get_active()):
