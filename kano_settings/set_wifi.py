@@ -64,6 +64,7 @@ class SetWifi(Template):
         container.pack_start(internet_img, False, False, 2)
         self.box.pack_start(container, False, False, 0)
 
+        constants.has_internet = is_internet()
         if not constants.has_internet:
             if network_info():
                 description = self.data_offline["CONFIGURE_PROXY_OR_BROWSER"]
@@ -154,17 +155,11 @@ class SetWifi(Template):
             self.kano_button.set_sensitive(True)
             self.wifi_connection_attempted = True
 
-            # Disconnect this handler once the user regains focus to the window
-            self.focus_in_handler = self.win.connect("focus-in-event", self.refresh)
-
             # Call WiFi config
             os.system('rxvt -title \'WiFi Setup\' -e /usr/bin/kano-wifi')
-            constants.has_internet = is_internet()
-
-    def refresh(self, widget=None, event=None):
-        self.win.clear_win()
-        SetWifi(self.win)
-        self.win.disconnect(self.focus_in_handler)
+            # Refresh window after WiFi Setup
+            self.win.clear_win()
+            SetWifi(self.win)
 
 
 # class SetProxy(TopBarTemplate):
