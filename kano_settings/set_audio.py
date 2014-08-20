@@ -106,9 +106,15 @@ class SetAudio(Template):
 
         if file_string.find(analogue_string) != -1:
             self.analog_button.set_active(True)
+            # Make sure config file is up to date
+            if get_setting('Audio') != 'Analogue':
+                set_setting('Audio', "Analogue")
 
         elif file_string.find(hdmi_string) != -1:
             self.hdmi_button.set_active(True)
+            # Make sure config file is up to date
+            if get_setting('Audio') != 'HDMI':
+                set_setting('Audio', "HDMI")
 
     def on_button_toggled(self, button):
         self.HDMI = button.get_active()
