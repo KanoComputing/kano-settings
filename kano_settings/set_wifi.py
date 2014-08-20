@@ -92,7 +92,6 @@ class SetWifi(Template):
 
             # configure_container.pack_end(self.proxy_button, False, False, 0)
 
-        # CAROLINE WHAT IS THIS ONE?
         # elif constants.proxy_enabled and self.disable_proxy:
             # container.pack_start(self.disable_proxy, False, False, 0)
 
