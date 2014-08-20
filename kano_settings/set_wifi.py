@@ -76,7 +76,14 @@ class SetWifi(Template):
 
             self.add_connection = KanoButton("WIFI")
             self.add_connection.connect("button_release_event", self.configure_wifi)
-            self.add_connection.connect("key_release_event", self.configure_wifi)
+            # We removed the ability to use keyboard to click, so we also remove ability
+            # to get keyboard focus
+            self.add_connecttion.set_can_focus(False)
+
+            # For now, this is removed as the event listener is interefering with the
+            # kano-connect
+            #self.add_connection.connect("key_release_event", self.configure_wifi)
+
             status_box.pack_start(self.add_connection, False, False, 0)
             internet_img.set_from_file(constants.media + "/Graphics/Internet-noConnection.png")
             internet_status.set_text("No network found")
