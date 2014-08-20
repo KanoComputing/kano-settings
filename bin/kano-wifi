@@ -318,13 +318,19 @@ if __name__ == '__main__':
         sys.exit(0)
 
     # Step 3: check for WiFi dongle
-    while not is_device(wiface) or not is_internet():
+    while not is_device(wiface):
+        # We might have gained internet at some point during this loop
+        if is_internet():
+            msg = '{{4 + }} {{3 Good news! It looks like you already have internet }}'
+            subprocess.call(['typewriter_echo', msg, '1', '2'])
+            sys.exit(0)
         subprocess.call(['/bin/sync'])  # Flush system IO buffers to disk to avoid corruption
         subprocess.call(['typewriter_echo', 'First, plug in your {{2wifi piece}}.', '0', '2'])
         if not is_model_b_plus():
             subprocess.call(['typewriter_echo', 'Please take into account that the system will automatically reboot.', '0', '2'])
             subprocess.call(['typewriter_echo', 'If you don\'t want to use WiFi, press {{1 ENTER }}.', '2', '0'])
             raw_input().strip()
+            subprocess.call(['clear'])
             sys.exit(0)
         # Model B+
         subprocess.call(['typewriter_echo', 'Press {{1 ENTER }} when ready.', '1', '0'])
