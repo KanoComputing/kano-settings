@@ -78,7 +78,7 @@ class SetWifi(Template):
             self.add_connection.connect("button_release_event", self.configure_wifi)
             # We removed the ability to use keyboard to click, so we also remove ability
             # to get keyboard focus
-            self.add_connecttion.set_can_focus(False)
+            self.add_connection.set_can_focus(False)
 
             # For now, this is removed as the event listener is interefering with the
             # kano-connect
