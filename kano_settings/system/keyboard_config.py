@@ -10,7 +10,7 @@
 #
 
 from kano.utils import run_cmd
-import kano_settings.keyboard.keyboard_layouts as keyboard_layouts
+import kano_settings.system.keyboard_layouts as keyboard_layouts
 from kano_settings.config_file import get_setting
 
 # GLOBAL variables
@@ -32,6 +32,7 @@ def find_keyboard_variants(country_code):
     except Exception:
         # It means this country code does not have keyboard variants
         return None
+
 
 def is_changed(country_code, variant):
     continent = get_setting('Keyboard-continent-human')
