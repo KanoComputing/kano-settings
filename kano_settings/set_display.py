@@ -15,7 +15,7 @@ from kano.gtk3.heading import Heading
 import kano_settings.constants as constants
 from kano_settings.boot_config import set_config_comment
 from kano.utils import run_cmd
-from kano_settings.display.functions import get_model, list_supported_modes, set_hdmi_mode, read_hdmi_mode, \
+from kano_settings.system.display import get_model, list_supported_modes, set_hdmi_mode, read_hdmi_mode, \
     find_matching_mode, get_overscan_status, write_overscan_values, set_overscan_status
 from kano_settings.data import get_data
 
