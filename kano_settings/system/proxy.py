@@ -28,10 +28,10 @@ def set_chromium(enable, ip, port):
 
 def set_curl(enable, host, port, username=None, password=None):
     if username and password:
-        proxy_string = 'proxy=http://{username}:{password}@{host}:{port}'.format(
+        data = 'proxy=http://{username}:{password}@{host}:{port}'.format(
             username=username, password=password, host=host, port=port)
     else:
-        proxy_string = 'proxy=http://{host}:{port}'.format(
+        data = 'proxy=http://{host}:{port}'.format(
             host=host, port=port)
 
     files = [os.path.join(f, '.curlrc') for f in get_all_home_folders(root=True)]
@@ -39,8 +39,21 @@ def set_curl(enable, host, port, username=None, password=None):
         if not enable:
             delete_file(f)
         else:
-            write_file_contents(f, proxy_string)
+            write_file_contents(f, data)
             chown_path(f)
+
+
+def set_wget(enable, host, port, username=None, password=None):
+    data = (
+        'http_proxy=http://{host}:{port}/\n'
+        'https_proxy=http://{host}:{port}/\n'
+    ).format(host=host, port=port)
+
+    if username and password:
+        data += 'proxy_user={username}\n'.format(username=username)
+        data += 'proxy_password={password}\n'.format(password=password)
+
+    write_file_contents('/etc/wgetrc', data)
 
 
 def set_all_proxies(enable, ip=None, port=None, username=None, password=None):
