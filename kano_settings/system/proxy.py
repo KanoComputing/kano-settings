@@ -22,6 +22,17 @@ def get_all_proxies():
     return get_apt_proxy()
 
 
+def generate_proxy_url(host=None, port=None, username=None, password=None):
+    if username and password:
+        string = 'http://{username}:{password}@{host}:{port}'.format(
+            username=username, password=password, host=host, port=port)
+    else:
+        string = 'http://{host}:{port}'.format(
+            host=host, port=port)
+
+    return string
+
+
 def set_chromium(enable, host=None, port=None):
     if enable:
         proxy_type = 'http'
@@ -36,12 +47,8 @@ def set_chromium(enable, host=None, port=None):
 
 
 def set_curl(enable, host=None, port=None, username=None, password=None):
-    if username and password:
-        data = 'proxy=http://{username}:{password}@{host}:{port}'.format(
-            username=username, password=password, host=host, port=port)
-    else:
-        data = 'proxy=http://{host}:{port}'.format(
-            host=host, port=port)
+    url_string = generate_proxy_url(host, port, username, password)
+    data = 'proxy={url}'.format(url=url_string)
 
     files = [os.path.join(f, '.curlrc') for f in get_all_home_folders(root=True, skel=True)]
     for f in files:
@@ -95,15 +102,11 @@ def get_apt_proxy():
 
 
 def set_apt_proxy(enable, host=None, port=None, username=None, password=None):
-    apt_template = 'Acquire::http::proxy "http://{credentials}{host}:{port}/";'
+    url_string = generate_proxy_url(host, port, username, password)
+    apt_template = 'Acquire::http::proxy "{url}/";'.format(url=url_string)
 
     if enable:
-        if username and password:
-            credentials = '{username}:{password}@'.format(username=username,
-                                                          password=password)
-        else:
-            credentials = ''
-        cfg = apt_template.format(credentials=credentials, host=host, port=port)
+        cfg = apt_template
     else:
         cfg = ''
 
