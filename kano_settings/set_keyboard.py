@@ -9,8 +9,8 @@
 import threading
 from gi.repository import Gtk, GObject
 
-import kano_settings.keyboard.keyboard_layouts as keyboard_layouts
-import kano_settings.keyboard.keyboard_config as keyboard_config
+import kano_settings.system.keyboard_layouts as keyboard_layouts
+import kano_settings.system.keyboard_config as keyboard_config
 import kano_settings.constants as constants
 from kano_settings.templates import Template
 from kano_settings.config_file import get_setting, set_setting

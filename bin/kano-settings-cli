@@ -17,7 +17,7 @@ if __name__ == '__main__' and __package__ is None:
     if dir_path != '/usr':
         sys.path.insert(1, dir_path)
 
-from kano_settings.keyboard.keyboard_config import set_saved_keyboard
+from kano_settings.system.keyboard_config import set_saved_keyboard
 
 verbose = False
 
