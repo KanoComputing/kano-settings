@@ -6,7 +6,9 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from kano.utils import run_cmd
+import os
+from kano.utils import run_cmd, get_all_home_folders, delete_file, \
+    write_file_contents, chown_path
 
 chromium_cfg = '/etc/chromium/default'
 
@@ -22,6 +24,23 @@ def set_chromium(enable, ip, port):
     cmd = "/bin/sed -i 's/CHROMIUM_FLAGS=.*/CHROMIUM_FLAGS=%s/g' %s" % (strflags, chromium_cfg)
     run_cmd(cmd)
     return
+
+
+def set_curl(enable, host, port, username=None, password=None):
+    if username and password:
+        proxy_string = 'proxy=http://{username}:{password}@{host}:{port}'.format(
+            username=username, password=password, host=host, port=port)
+    else:
+        proxy_string = 'proxy=http://{host}:{port}'.format(
+            host=host, port=port)
+
+    files = [os.path.join(f, '.curlrc') for f in get_all_home_folders(root=True)]
+    for f in files:
+        if not enable:
+            delete_file(f)
+        else:
+            write_file_contents(f, proxy_string)
+            chown_path(f)
 
 
 def set_all_proxies(enable, ip=None, port=None, username=None, password=None):
