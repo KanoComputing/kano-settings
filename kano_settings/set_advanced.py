@@ -6,7 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 from kano.gtk3.kano_dialog import KanoDialog
 
 from kano import logging
@@ -110,7 +110,7 @@ class SetAdvanced(Template):
 
     def apply_changes(self, button, event):
          # If enter key is pressed or mouse button is clicked
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
             old_debug_mode = self.get_stored_debug_mode()
             new_debug_mode = self.debug_button.get_active()
@@ -218,7 +218,7 @@ class SetPassword(Template):
 
     def apply_changes(self, button, event):
         # If enter key is pressed or mouse button is clicked
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
             # Disable buttons and entry fields during validation
             # we save the current parental state now because it will flip during this function
@@ -231,7 +231,7 @@ class SetPassword(Template):
                 self.entry2.set_sensitive(False)
                 button.set_sensitive(False)
 
-            if not hasattr(event, 'keyval') or event.keyval == 65293:
+            if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
                 password = None
 

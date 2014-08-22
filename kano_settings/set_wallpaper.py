@@ -6,6 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
+from gi.repository import Gdk
 import os
 from gi.repository import Gtk, GdkPixbuf
 from kano_settings.templates import ScrolledWindowTemplate
@@ -193,7 +194,7 @@ class SetWallpaper(ScrolledWindowTemplate):
 
     def apply_changes(self, button, event):
         # If enter key is pressed or mouse button is clicked
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
             image_name = self.get_selected()
             change_wallpaper(wallpaper_path, image_name)

@@ -91,14 +91,14 @@ class SetAccount(TopBarTemplate):
 
     def go_to_password_screen(self, widget, event):
 
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
             self.win.clear_win()
             SetPassword(self.win)
 
     # Gets executed when ADD button is clicked
     def add_account(self, widget=None, event=None):
 
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
             # Bring in message dialog box
             dialog_title = self.data["ADD_ACCOUNT_DIALOG_TITLE"]
             dialog_description = self.data["ADD_ACCOUNT_DIALOG_DESCRIPTION"]
@@ -118,7 +118,7 @@ class SetAccount(TopBarTemplate):
     # Gets executed when REMOVE button is clicked
     def remove_account_dialog(self, widget=None, event=None):
 
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
             dialog_title = self.data["REMOVE_ACCOUNT_DIALOG_TITLE"]
             dialog_description = self.data["REMOVE_ACCOUNT_DIALOG_DESCRIPTION"]
             # Bring in message dialog box
@@ -233,7 +233,7 @@ class SetPassword(Template):
 
     def apply_changes(self, button, event):
         # If enter key is pressed or mouse button is clicked
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
             # This is a callback called by the main loop, so it's safe to
             # manipulate GTK objects:

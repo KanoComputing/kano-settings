@@ -7,7 +7,7 @@
 #
 
 import os
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 from kano_settings.templates import TopBarTemplate, Template
 from kano.gtk3.buttons import OrangeButton, KanoButton
 from kano.gtk3.kano_combobox import KanoComboBox
@@ -244,7 +244,7 @@ class SetSimpleOverscan(OverscanTemplate):
 
     def on_key_press(self, widget, event):
         # Right arrow (65363)
-        if not hasattr(event, 'keyval') or event.keyval == 65363:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Right:
             self.overscan_values['top'] += 1
             self.overscan_values['bottom'] += 1
             self.overscan_values['left'] += 1
@@ -253,7 +253,7 @@ class SetSimpleOverscan(OverscanTemplate):
             self.t_scale.set_value(self.overscan_values['top'])
             return
          # Left arrow (65361)
-        if not hasattr(event, 'keyval') or event.keyval == 65361:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Left:
             self.overscan_values['top'] -= 1
             self.overscan_values['bottom'] -= 1
             self.overscan_values['left'] -= 1

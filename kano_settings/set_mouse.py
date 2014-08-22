@@ -6,6 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
+from gi.repository import Gdk
 import os
 from kano_settings.templates import RadioButtonTemplate
 from kano.logging import logger
@@ -57,7 +58,7 @@ class SetMouse(RadioButtonTemplate):
 
     def set_mouse(self, button, event):
         # If enter key is pressed or mouse button is clicked
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
             #  Mode   speed
             # Slow     1

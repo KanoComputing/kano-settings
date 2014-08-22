@@ -21,24 +21,6 @@ from kano.utils import detect_kano_keyboard
 from kano.logging import logger
 
 
-selected_country = None
-selected_variant = None
-
-
-class WorkerThread(threading.Thread):
-    def __init__(self, callback):
-        threading.Thread.__init__(self)
-        self.callback = callback
-
-    def run(self):
-        if keyboard_config.is_changed(selected_country, selected_variant):
-            # Apply the keyboard changes
-            keyboard_config.set_keyboard(selected_country, selected_variant)
-
-        # The callback runs a GUI task, so wrap it!
-        GObject.idle_add(self.callback)
-
-
 def choose_keyboard_screen(win):
     # Check for kano-keyboard
     kano_keyboard = detect_kano_keyboard()
@@ -89,7 +71,9 @@ class SetKanoKeyboard(Template):
 class SetKeyboard(Template):
     selected_layout = None
     selected_continent_index = 1
+    selected_country = None
     selected_country_index = 21
+    selected_variant = None
     selected_variant_index = 0
     selected_continent_hr = "America"
     selected_country_hr = "USA"
@@ -195,14 +179,23 @@ class SetKeyboard(Template):
 
         # If enter key is pressed or mouse button is clicked
         if not hasattr(event, 'keyval') or event.keyval == 65293:
-            kano_keyboard = detect_kano_keyboard()
+
+            def lengthy_process():
+                if keyboard_config.is_changed(self.selected_country, self.selected_variant):
+                    # Apply the keyboard changes
+                    keyboard_config.set_keyboard(self.selected_country, self.selected_variant)
+
+                # The callback runs a GUI task, so wrap it!
+                GObject.idle_add(self.work_finished_cb)
 
             # Apply changes
-            thread = WorkerThread(self.work_finished_cb)
+            thread = threading.Thread(lengthy_process)
             thread.start()
 
             # Save the changes in the config
             self.update_config()
+
+            kano_keyboard = detect_kano_keyboard()
 
             # Go back a screen
             if kano_keyboard:
@@ -274,7 +267,6 @@ class SetKeyboard(Template):
         self.fill_countries_combo(self.selected_continent_hr)
 
     def on_country_changed(self, combo):
-        global selected_country
 
         # making sure the country has been set
         country_text = combo.get_selected_item_text()
@@ -288,8 +280,8 @@ class SetKeyboard(Template):
         self.selected_country_index = country_index
 
         # Refresh variants combo box
-        selected_country = keyboard_config.find_country_code(country_text, self.selected_layout)
-        variants = keyboard_config.find_keyboard_variants(selected_country)
+        self.selected_country = keyboard_config.find_country_code(country_text, self.selected_layout)
+        variants = keyboard_config.find_keyboard_variants(self.selected_country)
         self.variants_combo.append("generic")
         if variants is not None:
             for v in variants:
@@ -299,7 +291,6 @@ class SetKeyboard(Template):
         self.on_variants_changed(self.variants_combo)
 
     def on_variants_changed(self, combo):
-        global selected_variant
 
         # making sure the variant has been set
         variant_text = combo.get_selected_item_text()
@@ -310,15 +301,15 @@ class SetKeyboard(Template):
         self.kano_button.set_sensitive(True)
 
         if variant_text == "generic":
-            selected_variant = self.selected_variant_hr = variant_text
+            self.selected_variant = self.selected_variant_hr = variant_text
             self.selected_variant_index = 0
             return
         # Select the variant code
-        variants = keyboard_config.find_keyboard_variants(selected_country)
+        variants = keyboard_config.find_keyboard_variants(self.selected_country)
         if variants is not None:
             for v in variants:
                 if v[0] == variant_text:
-                    selected_variant = v[1]
+                    self.selected_variant = v[1]
                     self.selected_variant_index = variant_index
                     self.selected_variant_hr = variant_text
 

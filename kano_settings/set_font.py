@@ -6,6 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
+from gi.repository import Gdk
 import os
 from kano.utils import get_user_unsudoed
 from kano_settings.templates import RadioButtonTemplate
@@ -69,7 +70,7 @@ class SetFont(RadioButtonTemplate):
 
     def change_font(self, widget, event):
         # If enter key is pressed or mouse button is clicked
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
             #  Mode   size
             # Small    SIZE_SMALL

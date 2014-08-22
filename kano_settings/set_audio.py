@@ -6,7 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 import kano_settings.constants as constants
 from kano_settings.templates import Template
 from kano.logging import logger
@@ -63,7 +63,7 @@ class SetAudio(Template):
 
     def apply_changes(self, widget, event):
         # If enter key is pressed or mouse button is clicked
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
             # amixer -c 0 cset numid=3 N
             # 1 analog
