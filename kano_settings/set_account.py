@@ -17,12 +17,12 @@ from kano.gtk3.buttons import KanoButton
 from kano.gtk3.labelled_entries import LabelledEntries
 from kano_world.functions import has_token
 
-from kano.utils import get_user_unsudoed, ensure_dir
+from kano.utils import ensure_dir
 import kano_settings.constants as constants
 from kano_settings.templates import TopBarTemplate, Template
 from kano_settings.data import get_data
-import kano.utils as utils
-import pam
+
+from kano_settings.system.account import delete_user, verify_and_change_password
 
 
 ADD_REMOVE_USER_PATH = '/tmp/kano-init/add-remove'
@@ -138,8 +138,7 @@ class SetAccount(TopBarTemplate):
             response = kdialog.run()
             if response == -1:
 
-                # remove current user command
-                os.system('kano-init deleteuser %s' % (get_user_unsudoed()))
+                delete_user()
                 self.disable_buttons()
 
                 # back up profile
@@ -243,38 +242,11 @@ class SetPassword(Template):
 
             def lengthy_process():
 
-                success = False
-
                 old_password = self.entry1.get_text()
                 new_password1 = self.entry2.get_text()
                 new_password2 = self.entry3.get_text()
 
-                # Verify the current password in the first text box
-                # Get current username
-                username, e, num = utils.run_cmd("echo $SUDO_USER")
-
-                # Remove trailing newline character
-                username = username.rstrip()
-
-                if not pam.authenticate(username, old_password):
-                    title = "Could not change password"
-                    description = "Your old password is incorrect!"
-
-                # If the two new passwords match
-                elif new_password1 == new_password2:
-                    out, e, cmdvalue = utils.run_cmd("echo $SUDO_USER:%s | chpasswd" % (new_password1))
-
-                    # if password is not changed
-                    if cmdvalue != 0:
-                        title = self.data["PASSWORD_ERROR_TITLE"]
-                        description = self.data["PASSWORD_ERROR_1"]
-                    else:
-                        title = self.data["PASSWORD_SUCCESS_TITLE"]
-                        description = self.data["PASSWORD_SUCCESS_DESCRIPTION"]
-                        success = True
-                else:
-                    title = self.data["PASSWORD_ERROR_TITLE"]
-                    description = self.data["PASSWORD_ERROR_2"]
+                title, description, success = verify_and_change_password(old_password, new_password1, new_password2)
 
                 def done(title, description, success):
                     if success:
@@ -311,9 +283,22 @@ class SetPassword(Template):
 
 
 def create_error_dialog(message1="Could not change password", message2="", win=None):
-    kdialog = kano_dialog.KanoDialog(message1, message2,
-                                     {"TRY AGAIN": {"return_value": -1}, "GO BACK": {"return_value": 0, "color": "red"}},
-                                     parent_window=win)
+    kdialog = kano_dialog.KanoDialog(
+        message1, message2,
+        {
+            "TRY AGAIN":
+            {
+                "return_value": -1
+            },
+            "GO BACK":
+            {
+                "return_value": 0,
+                "color": "red"
+            }
+        },
+        parent_window=win
+    )
+
     response = kdialog.run()
     return response
 

@@ -10,16 +10,12 @@ from gi.repository import Gdk
 import os
 from kano.utils import get_user_unsudoed
 from kano_settings.templates import RadioButtonTemplate
-from kano.logging import logger
-from .config_file import get_setting, set_setting, file_replace
+from .config_file import get_setting, set_setting
 from kano_settings.data import get_data
+from kano_settings.systen.font import change_font_size
 
 selected_button = 0
 initial_button = 0
-
-SIZE_SMALL = 10
-SIZE_NORMAL = 14
-SIZE_BIG = 18
 
 username = get_user_unsudoed()
 config_file = os.path.join('/home', username, '.config/lxsession/LXDE/desktop.conf')
@@ -98,28 +94,6 @@ class SetFont(RadioButtonTemplate):
 
             self.win.go_to_home()
 
-    def change_font_size(self):
-
-        font = "sGtk/FontName=Bariol "
-        font_pattern = font + "[0-9][0-9]"
-
-        # Small configuration
-        if self.selected_button == 0:
-            font += str(SIZE_SMALL)
-        # Normal configuration
-        elif self.selected_button == 1:
-            font += str(SIZE_NORMAL)
-        # Big configurations
-        elif self.selected_button == 2:
-            font += str(SIZE_BIG)
-
-        logger.debug('set_font / change_font_size: selected_button:{}'.format(selected_button))
-
-        # Apply changes
-        file_replace(config_file, font_pattern, font)
-        # Reload lxsession
-        os.system("lxsession -r")
-
     def current_setting(self):
 
         font = get_setting("Font")
@@ -141,4 +115,4 @@ class SetFont(RadioButtonTemplate):
                 self.selected_button = 2
 
             # Apply changes so speed can be tested
-            self.change_font_size()
+            change_font_size(self.selected_button)
