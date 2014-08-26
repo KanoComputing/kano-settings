@@ -83,8 +83,9 @@ class SetAudio(Template):
             self.win.go_to_home()
 
     def current_setting(self):
+        print is_HDMI()
         self.hdmi_button.set_active(is_HDMI())
-        self.analog_button.set_active(is_HDMI())
+        self.analog_button.set_active(not is_HDMI())
 
     def on_button_toggled(self, button):
         self.HDMI = button.get_active()
