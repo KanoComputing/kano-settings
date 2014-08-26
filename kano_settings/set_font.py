@@ -12,7 +12,7 @@ from kano.utils import get_user_unsudoed
 from kano_settings.templates import RadioButtonTemplate
 from .config_file import get_setting, set_setting
 from kano_settings.data import get_data
-from kano_settings.systen.font import change_font_size
+from kano_settings.system.font import change_font_size
 
 selected_button = 0
 initial_button = 0
