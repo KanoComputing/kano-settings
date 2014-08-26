@@ -19,19 +19,17 @@ kdeskrc_home = "/home/%s/.kdeskrc"
 name_pattern = "-4-3.png"
 
 
-def change_wallpaper(name):
+def change_wallpaper(path, name):
     logger.info('set_wallpaper / change_wallpaper image_name:{}'.format(name))
-
-    wallpaper_path = "/usr/share/kano-desktop/wallpapers/"
 
     # home directory
     USER = os.environ['SUDO_USER']
     deskrc_path = kdeskrc_home % (USER)
 
     # Wallpaper selected
-    image_169 = "%s%s-16-9.png" % (wallpaper_path, name)
-    image_43 = "%s%s-4-3.png" % (wallpaper_path, name)
-    image_1024 = "%s%s-1024.png" % (wallpaper_path, name)
+    image_169 = "%s%s-16-9.png" % (path, name)
+    image_43 = "%s%s-4-3.png" % (path, name)
+    image_1024 = "%s%s-1024.png" % (path, name)
 
     # Look for the strings
     found = False

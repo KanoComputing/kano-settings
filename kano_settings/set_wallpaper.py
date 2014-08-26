@@ -197,6 +197,6 @@ class SetWallpaper(ScrolledWindowTemplate):
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
             image_name = self.get_selected()
-            change_wallpaper(image_name)
+            change_wallpaper(wallpaper_path, image_name)
             self.update_config()
             self.win.go_to_home()
