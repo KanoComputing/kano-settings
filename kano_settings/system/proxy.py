@@ -118,3 +118,14 @@ def set_apt_proxy(enable, host=None, port=None, username=None, password=None):
     write_file_contents(apt_cfg, cfg)
 
 
+def get_requests_proxies():
+    enabled, data, proxy_url = get_all_proxies()
+    if not enabled:
+        proxies = None
+    else:
+        proxies = {
+            "http": "{}/".format(proxy_url),
+            "https": "{}/".format(proxy_url),
+        }
+
+    return proxies
