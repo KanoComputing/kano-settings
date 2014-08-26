@@ -15,7 +15,10 @@ apt_cfg = '/etc/apt/apt.conf.d/80proxy'
 
 
 def set_all_proxies(enable, host=None, port=None, username=None, password=None):
-    pass
+    set_apt_proxy(enable, host, port, username, password)
+    set_chromium(enable, host, port)
+    set_curl(enable, host, port, username, password)
+    set_wget(enable, host, port, username, password)
 
 
 def get_all_proxies():
@@ -73,6 +76,7 @@ def set_wget(enable, host=None, port=None, username=None, password=None):
 
 def get_apt_proxy():
     is_proxy = False
+    proxy_url = None
     settings = {
         'username': None,
         'password': None,
@@ -82,31 +86,32 @@ def get_apt_proxy():
 
     cfg = read_file_contents_as_lines(apt_cfg)
 
-    if not cfg:
-        return settings
+    if cfg:
+        for line in cfg:
+            if line.startswith('Acquire::'):
+                url = line.split('//')[-1].replace('/";', '')
 
-    for line in cfg:
-        if line.startswith('Acquire::'):
-            url = line.split('//')[-1].replace('/";', '')
+                if '@' in url:
+                    credentials, socket = url.split('@')
+                    settings['username'], settings['password'] = credentials.split(':')
+                else:
+                    socket = url
 
-            if '@' in url:
-                credentials, socket = url.split('@')
-                settings['username'], settings['password'] = credentials.split(':')
-            else:
-                socket = url
+                settings['host'], settings['port'] = socket.split(':')
+                is_proxy = True
+                proxy_url = generate_proxy_url(
+                    host=settings['host'], port=settings['port'],
+                    username=settings['username'], password=settings['password']
+                )
 
-            settings['host'], settings['port'] = socket.split(':')
-            is_proxy = True
-
-    return is_proxy, settings
+    return is_proxy, settings, proxy_url
 
 
 def set_apt_proxy(enable, host=None, port=None, username=None, password=None):
     url_string = generate_proxy_url(host, port, username, password)
-    apt_template = 'Acquire::http::proxy "{url}/";'.format(url=url_string)
 
-    if enable:
-        cfg = apt_template
+    if enable and host and port:
+        cfg = 'Acquire::http::proxy "{url}/";'.format(url=url_string)
     else:
         cfg = ''
 
