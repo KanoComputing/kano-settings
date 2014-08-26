@@ -11,7 +11,7 @@ from kano.gtk3.kano_dialog import KanoDialog
 
 from kano import logging
 from kano_settings.templates import Template, LabelledListTemplate
-from advanced.parental import get_parental_enabled, set_parental_enabled
+from system.advanced import get_parental_enabled, set_parental_enabled
 
 from kano_settings.data import get_data
 
