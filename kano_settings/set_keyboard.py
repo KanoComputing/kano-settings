@@ -189,7 +189,7 @@ class SetKeyboard(Template):
                 GObject.idle_add(self.work_finished_cb)
 
             # Apply changes
-            thread = threading.Thread(lengthy_process)
+            thread = threading.Thread(target=lengthy_process)
             thread.start()
 
             # Save the changes in the config
