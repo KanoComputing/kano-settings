@@ -10,7 +10,7 @@
 
 
 import os
-from .config_file import file_replace
+from kano_settings.config_file import file_replace
 from kano.utils import get_user_unsudoed
 from kano.logging import logger
 
