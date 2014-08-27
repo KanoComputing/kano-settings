@@ -64,9 +64,11 @@ class SetWifi(Template):
         container.pack_start(internet_img, False, False, 2)
         self.box.pack_start(container, False, False, 0)
 
+        network_info_dict = network_info()
         constants.has_internet = is_internet()
-        if not constants.has_internet:
-            if network_info():
+
+        if not constants.has_internet or not network_info_dict:
+            if network_info_dict:
                 description = self.data_offline["CONFIGURE_PROXY_OR_BROWSER"]
             else:
                 description = self.data_offline["CONFIGURE_WIRELESS"]
@@ -76,7 +78,14 @@ class SetWifi(Template):
 
             self.add_connection = KanoButton("WIFI")
             self.add_connection.connect("button_release_event", self.configure_wifi)
-            self.add_connection.connect("key_release_event", self.configure_wifi)
+            # We removed the ability to use keyboard to click, so we also remove ability
+            # to get keyboard focus
+            self.add_connection.set_can_focus(False)
+
+            # For now, this is removed as the event listener is interefering with the
+            # kano-connect
+            #self.add_connection.connect("key_release_event", self.configure_wifi)
+
             status_box.pack_start(self.add_connection, False, False, 0)
             internet_img.set_from_file(constants.media + "/Graphics/Internet-noConnection.png")
             internet_status.set_text("No network found")
@@ -103,7 +112,6 @@ class SetWifi(Template):
             status_box.pack_start(internet_action, False, False, 3)
             status_box.pack_start(configure_container, False, False, 3)
 
-            network_info_dict = network_info()
             network = network_info_dict.keys()[0]
             ip = network_info_dict[network]['address']
             network_text = network_info_dict[network]['nice_name']

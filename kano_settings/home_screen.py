@@ -40,7 +40,7 @@ class HomeScreen(TopBarTemplate):
         self.number_of_columns = 2
 
         self.generate_grid()
-        self.pack_start(self.scrolledwindow, False, False, 0)
+        self.pack_start(self.scrolledwindow, True, True, 0)
 
         self.win.show_all()
 
@@ -52,9 +52,9 @@ class HomeScreen(TopBarTemplate):
         buttons = []
         self.labels = []
 
-         # names at top of file
+        # names at top of file
         for x in range(len(self.names)):
-            self.item = Menu_button(self.names[x], '', self.width)
+            self.item = Menu_button(self.names[x], '')
             self.labels.append(self.item.description)
             # Update the state of the button, so we know which button has been clicked on.
             self.item.button.state = x
@@ -68,7 +68,8 @@ class HomeScreen(TopBarTemplate):
         numRows = len(self.names) / self.number_of_columns
         if len(self.names) % self.number_of_columns != 0:  # Odd number of elements
             numRows += 1
-        self.table = Gtk.Table(numRows, self.number_of_columns, True)
+        self.table = Gtk.Table(numRows, self.number_of_columns, True, hexpand=True, vexpand=True)
+        self.table.props.margin = 0
 
         # Attach to table
         index = 0
@@ -77,7 +78,8 @@ class HomeScreen(TopBarTemplate):
             for j in range(0, self.number_of_columns):
                 if index < len(self.names):
                     self.table.attach(buttons[index], j, j + 1, row, row + 1,
-                                      Gtk.AttachOptions.FILL, Gtk.AttachOptions.FILL, 0, 0)
+                                      Gtk.AttachOptions.FILL | Gtk.AttachOptions.EXPAND,
+                                      Gtk.AttachOptions.FILL, 0, 0)
                     if row % 2:
                         buttons[index].get_style_context().add_class('appgrid_grey')
                     else:
@@ -87,15 +89,11 @@ class HomeScreen(TopBarTemplate):
                     break
             row += 1
 
-        align = Gtk.Alignment(xscale=0, yscale=0, yalign=0.5, xalign=0.5)
-        align.add(self.table)
-
         # for scroll bar
-        self.scrolledwindow = ScrolledWindow()
-        self.scrolledwindow.set_hexpand(True)
-        self.scrolledwindow.set_vexpand(True)
-        self.scrolledwindow.add_with_viewport(align)
-        self.scrolledwindow.set_size_request(self.width, self.height)
+        self.scrolledwindow = ScrolledWindow(wide_scrollbar=True, vexpand=True,
+                                             hexpand=True)
+        self.scrolledwindow.get_style_context().add_class("app-grid")
+        self.scrolledwindow.add_with_viewport(self.table)
 
         # This is to update the introdction text, so that if the settings are modified and then we go back to the
     # intro screen, the latest information is shown

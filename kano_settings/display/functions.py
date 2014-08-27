@@ -153,6 +153,14 @@ def write_overscan_values(overscan_values):
     set_config_value('overscan_right', overscan_values['right'])
 
 
+def is_overscan():
+    top = get_config_value('overscan_top')
+    bottom = get_config_value('overscan_bottom')
+    left = get_config_value('overscan_left')
+    right = get_config_value('overscan_right')
+    return (top or bottom or left or right)
+
+
 def read_hdmi_mode():
     group_int = get_config_value('hdmi_group')
     if group_int == 1:
