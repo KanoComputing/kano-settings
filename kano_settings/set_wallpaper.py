@@ -17,8 +17,6 @@ from kano_settings.system.wallpaper import change_wallpaper
 
 wallpaper_path = "/usr/share/kano-desktop/wallpapers/"
 padlock_path = "/usr/share/kano-settings/media/Icons/padlock.png"  # needs to be 95x95
-kdeskrc_default = "/usr/share/kano-desktop/kdesk/.kdeskrc"
-kdeskrc_home = "/home/%s/.kdeskrc"
 name_pattern = "-4-3.png"
 
 
