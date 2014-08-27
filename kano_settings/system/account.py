@@ -10,7 +10,6 @@
 import os
 import pam
 from kano.utils import get_user_unsudoed, run_cmd
-from kano_settings.data import get_data
 
 
 # Needs sudo permission
@@ -38,33 +37,3 @@ def verify_current_password(password):
 def change_password(new_password):
     out, e, cmdvalue = run_cmd("echo $SUDO_USER:%s | chpasswd" % (new_password))
     return cmdvalue
-
-
-# Returns a title, description and whether the process was successful or not
-def verify_and_change_password(old_password, new_password1, new_password2):
-    data = get_data("SET_PASSWORD")
-    success = False
-
-    password_verified = verify_current_password(old_password)
-
-    if not password_verified:
-        title = "Could not change password"
-        description = "Your old password is incorrect!"
-
-    # If the two new passwords match
-    elif new_password1 == new_password2:
-        cmdvalue = change_password(new_password1)
-
-        # if password is not changed
-        if cmdvalue != 0:
-            title = data["PASSWORD_ERROR_TITLE"]
-            description = data["PASSWORD_ERROR_1"]
-        else:
-            title = data["PASSWORD_SUCCESS_TITLE"]
-            description = data["PASSWORD_SUCCESS_DESCRIPTION"]
-            success = True
-    else:
-        title = data["PASSWORD_ERROR_TITLE"]
-        description = data["PASSWORD_ERROR_2"]
-
-    return (title, description, success)

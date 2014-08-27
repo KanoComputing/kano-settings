@@ -22,7 +22,7 @@ import kano_settings.constants as constants
 from kano_settings.templates import TopBarTemplate, Template
 from kano_settings.data import get_data
 
-from kano_settings.system.account import delete_user, verify_and_change_password
+from kano_settings.system.account import delete_user, verify_current_password, change_password
 
 
 ADD_REMOVE_USER_PATH = '/tmp/kano-init/add-remove'
@@ -241,12 +241,22 @@ class SetPassword(Template):
             self.kano_button.set_sensitive(False)
 
             def lengthy_process():
-
+                data = get_data("SET_PASSWORD")
                 old_password = self.entry1.get_text()
                 new_password1 = self.entry2.get_text()
                 new_password2 = self.entry3.get_text()
 
-                title, description, success = verify_and_change_password(old_password, new_password1, new_password2)
+                success = False
+                password_verified = verify_current_password(old_password)
+
+                if not password_verified:
+                    title = "Could not change password"
+                    description = "Your old password is incorrect!"
+                elif new_password1 == new_password2:
+                    title, description, success = self.try_change_password(new_password1)
+                else:
+                    title = data["PASSWORD_ERROR_TITLE"]
+                    description = data["PASSWORD_ERROR_2"]
 
                 def done(title, description, success):
                     if success:
@@ -264,6 +274,24 @@ class SetPassword(Template):
 
             thread = threading.Thread(target=lengthy_process)
             thread.start()
+
+    # Returns a title, description and whether the process was successful or not
+    def try_change_password(new_password):
+        data = get_data("SET_PASSWORD")
+        success = False
+
+        cmdvalue = change_password(new_password)
+
+        # if password is not changed
+        if cmdvalue != 0:
+            title = data["PASSWORD_ERROR_TITLE"]
+            description = data["PASSWORD_ERROR_1"]
+        else:
+            title = data["PASSWORD_SUCCESS_TITLE"]
+            description = data["PASSWORD_SUCCESS_DESCRIPTION"]
+            success = True
+
+        return (title, description, success)
 
     def go_to_accounts(self, widget=None, event=None):
         self.win.clear_win()
