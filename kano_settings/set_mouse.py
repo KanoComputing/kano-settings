@@ -6,11 +6,11 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-import os
+from gi.repository import Gdk
 from kano_settings.templates import RadioButtonTemplate
-from kano.logging import logger
 from .config_file import get_setting, set_setting
 from kano_settings.data import get_data
+from kano_settings.system.mouse import change_mouse_speed
 
 
 class SetMouse(RadioButtonTemplate):
@@ -57,7 +57,7 @@ class SetMouse(RadioButtonTemplate):
 
     def set_mouse(self, button, event):
         # If enter key is pressed or mouse button is clicked
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
             #  Mode   speed
             # Slow     1
@@ -84,23 +84,6 @@ class SetMouse(RadioButtonTemplate):
             set_setting("Mouse", config)
             self.win.go_to_home()
 
-    def change_mouse_speed(self):
-        command = "xset m "
-        # Slow configuration
-        if self.selected_button == 0:
-            command += "1"
-        # Modest configuration
-        elif self.selected_button == 1:
-            command += "default"
-        # Medium configuration
-        elif self.selected_button == 2:
-            command += "10"
-
-        logger.debug('set_mouse / change_mouse_speed: selected_button:{}'.format(self.selected_button))
-
-        # Apply changes
-        os.system(command)
-
     def current_setting(self):
         mouse = get_setting("Mouse")
         if mouse == "Slow":
@@ -120,5 +103,7 @@ class SetMouse(RadioButtonTemplate):
                 self.selected_button = 1
             elif label == "Fast":
                 self.selected_button = 2
+
             # Apply changes so speed can be tested
-            self.change_mouse_speed()
+            change_mouse_speed(self.selected_button)
+

@@ -6,17 +6,15 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-import os
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 from kano_settings.templates import TopBarTemplate, Template
 from kano.gtk3.buttons import OrangeButton, KanoButton
 from kano.gtk3.kano_combobox import KanoComboBox
 from kano.gtk3.heading import Heading
 import kano_settings.constants as constants
 from kano_settings.boot_config import set_config_comment
-from kano.utils import run_cmd
-from kano_settings.display.functions import get_model, list_supported_modes, set_hdmi_mode, read_hdmi_mode, \
-    find_matching_mode, get_overscan_status, write_overscan_values, set_overscan_status
+from kano_settings.system.display import get_model, list_supported_modes, set_hdmi_mode, read_hdmi_mode, \
+    find_matching_mode, get_overscan_status, write_overscan_values, set_overscan_status, launch_pipe
 from kano_settings.data import get_data
 
 
@@ -118,7 +116,6 @@ class SetDisplay(Template):
 
 
 class OverscanTemplate(TopBarTemplate):
-    overscan_pipe = "/dev/mailbox"
     data = get_data("SET_OVERSCAN")
 
     def __init__(self, win, title, description, original_overscan=None):
@@ -137,9 +134,8 @@ class OverscanTemplate(TopBarTemplate):
 
         self.top_bar.enable_prev()
 
-        # Launch pipeline
-        if not os.path.exists(self.overscan_pipe):
-            run_cmd('mknod {} c 100 0'.format(self.overscan_pipe))
+        # Launch pipe for the overscan c code
+        launch_pipe()
 
         self.overscan_values = get_overscan_status()
         self.original_overscan = original_overscan
@@ -251,7 +247,7 @@ class SetSimpleOverscan(OverscanTemplate):
 
     def on_key_press(self, widget, event):
         # Right arrow (65363)
-        if not hasattr(event, 'keyval') or event.keyval == 65363:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Right:
             self.overscan_values['top'] += 1
             self.overscan_values['bottom'] += 1
             self.overscan_values['left'] += 1
@@ -260,7 +256,7 @@ class SetSimpleOverscan(OverscanTemplate):
             self.t_scale.set_value(self.overscan_values['top'])
             return
          # Left arrow (65361)
-        if not hasattr(event, 'keyval') or event.keyval == 65361:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Left:
             self.overscan_values['top'] -= 1
             self.overscan_values['bottom'] -= 1
             self.overscan_values['left'] -= 1

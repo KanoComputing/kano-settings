@@ -6,12 +6,18 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
+from gi.repository import Gdk
 from kano_settings.templates import RadioButtonTemplate
 import kano_settings.constants as constants
-from kano.logging import logger
-from kano_settings.config_file import set_setting
-from kano_settings.boot_config import set_config_value, get_config_value
+from kano_settings.boot_config import get_config_value
 from kano_settings.data import get_data
+from kano_settings.system.overclock import change_overclock_value
+
+# 0 = None
+# 1 = Modest
+# 2 = Medium
+# 3 = High
+modes = ["None", "Modest", "Medium", "High"]
 
 
 class SetOverclock(RadioButtonTemplate):
@@ -58,7 +64,7 @@ class SetOverclock(RadioButtonTemplate):
 
     def set_overclock(self, widget, event):
         # If enter key is pressed or mouse button is clicked
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
             #  Mode      arm_freq    core_freq    sdram_freq   over_voltage
             # "None"   "700MHz ARM, 250MHz core, 400MHz SDRAM, 0 overvolt"
@@ -71,50 +77,7 @@ class SetOverclock(RadioButtonTemplate):
                 self.win.go_to_home()
                 return
 
-            # None configuration
-            if self.selected_button == 0:
-                config = "None"
-                arm_freq = 700
-                core_freq = 250
-                sdram_freq = 400
-                over_voltage = 0
-            # Modest configuration
-            elif self.selected_button == 1:
-                config = "Modest"
-                arm_freq = 800
-                core_freq = 300
-                sdram_freq = 400
-                over_voltage = 0
-            # Medium configuration
-            elif self.selected_button == 2:
-                config = "Medium"
-                arm_freq = 900
-                core_freq = 333
-                sdram_freq = 450
-                over_voltage = 2
-            # High configuration
-            elif self.selected_button == 3:
-                config = "High"
-                arm_freq = 950
-                core_freq = 450
-                sdram_freq = 450
-                over_voltage = 6
-            else:
-                logger.error('kano-settings: set_overclock: SetOverclock: set_overclock(): ' +
-                             'was called with an invalid self.selected_button={}'.format(self.selected_button))
-                return
-
-            logger.info('set_overclock / apply_changes: config:{} arm_freq:{} core_freq:{} sdram_freq:{} over_voltage:{}'.format(
-                config, arm_freq, core_freq, sdram_freq, over_voltage))
-
-            # Apply changes
-            set_config_value("arm_freq", arm_freq)
-            set_config_value("core_freq", core_freq)
-            set_config_value("sdram_freq", sdram_freq)
-            set_config_value("over_voltage", over_voltage)
-
-            # Update config
-            set_setting("Overclocking", config)
+            change_overclock_value(modes[self.selected_button])
 
             # Tell user to reboot to see changes
             constants.need_reboot = True

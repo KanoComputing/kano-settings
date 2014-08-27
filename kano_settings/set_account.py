@@ -17,12 +17,12 @@ from kano.gtk3.buttons import KanoButton
 from kano.gtk3.labelled_entries import LabelledEntries
 from kano_world.functions import has_token
 
-from kano.utils import get_user_unsudoed, ensure_dir
+from kano.utils import ensure_dir
 import kano_settings.constants as constants
 from kano_settings.templates import TopBarTemplate, Template
 from kano_settings.data import get_data
-import kano.utils as utils
-import pam
+
+from kano_settings.system.account import delete_user, verify_current_password, change_password
 
 
 ADD_REMOVE_USER_PATH = '/tmp/kano-init/add-remove'
@@ -91,14 +91,14 @@ class SetAccount(TopBarTemplate):
 
     def go_to_password_screen(self, widget, event):
 
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
             self.win.clear_win()
             SetPassword(self.win)
 
     # Gets executed when ADD button is clicked
     def add_account(self, widget=None, event=None):
 
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
             # Bring in message dialog box
             dialog_title = self.data["ADD_ACCOUNT_DIALOG_TITLE"]
             dialog_description = self.data["ADD_ACCOUNT_DIALOG_DESCRIPTION"]
@@ -118,7 +118,7 @@ class SetAccount(TopBarTemplate):
     # Gets executed when REMOVE button is clicked
     def remove_account_dialog(self, widget=None, event=None):
 
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
             dialog_title = self.data["REMOVE_ACCOUNT_DIALOG_TITLE"]
             dialog_description = self.data["REMOVE_ACCOUNT_DIALOG_DESCRIPTION"]
             # Bring in message dialog box
@@ -138,8 +138,7 @@ class SetAccount(TopBarTemplate):
             response = kdialog.run()
             if response == -1:
 
-                # remove current user command
-                os.system('kano-init deleteuser %s' % (get_user_unsudoed()))
+                delete_user()
                 self.disable_buttons()
 
                 # back up profile
@@ -233,7 +232,7 @@ class SetPassword(Template):
 
     def apply_changes(self, button, event):
         # If enter key is pressed or mouse button is clicked
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
             # This is a callback called by the main loop, so it's safe to
             # manipulate GTK objects:
@@ -242,39 +241,22 @@ class SetPassword(Template):
             self.kano_button.set_sensitive(False)
 
             def lengthy_process():
-
-                success = False
-
+                data = get_data("SET_PASSWORD")
                 old_password = self.entry1.get_text()
                 new_password1 = self.entry2.get_text()
                 new_password2 = self.entry3.get_text()
 
-                # Verify the current password in the first text box
-                # Get current username
-                username, e, num = utils.run_cmd("echo $SUDO_USER")
+                success = False
+                password_verified = verify_current_password(old_password)
 
-                # Remove trailing newline character
-                username = username.rstrip()
-
-                if not pam.authenticate(username, old_password):
+                if not password_verified:
                     title = "Could not change password"
                     description = "Your old password is incorrect!"
-
-                # If the two new passwords match
                 elif new_password1 == new_password2:
-                    out, e, cmdvalue = utils.run_cmd("echo $SUDO_USER:%s | chpasswd" % (new_password1))
-
-                    # if password is not changed
-                    if cmdvalue != 0:
-                        title = self.data["PASSWORD_ERROR_TITLE"]
-                        description = self.data["PASSWORD_ERROR_1"]
-                    else:
-                        title = self.data["PASSWORD_SUCCESS_TITLE"]
-                        description = self.data["PASSWORD_SUCCESS_DESCRIPTION"]
-                        success = True
+                    title, description, success = self.try_change_password(new_password1)
                 else:
-                    title = self.data["PASSWORD_ERROR_TITLE"]
-                    description = self.data["PASSWORD_ERROR_2"]
+                    title = data["PASSWORD_ERROR_TITLE"]
+                    description = data["PASSWORD_ERROR_2"]
 
                 def done(title, description, success):
                     if success:
@@ -292,6 +274,24 @@ class SetPassword(Template):
 
             thread = threading.Thread(target=lengthy_process)
             thread.start()
+
+    # Returns a title, description and whether the process was successful or not
+    def try_change_password(self, new_password):
+        data = get_data("SET_PASSWORD")
+        success = False
+
+        cmdvalue = change_password(new_password)
+
+        # if password is not changed
+        if cmdvalue != 0:
+            title = data["PASSWORD_ERROR_TITLE"]
+            description = data["PASSWORD_ERROR_1"]
+        else:
+            title = data["PASSWORD_SUCCESS_TITLE"]
+            description = data["PASSWORD_SUCCESS_DESCRIPTION"]
+            success = True
+
+        return (title, description, success)
 
     def go_to_accounts(self, widget=None, event=None):
         self.win.clear_win()
@@ -311,9 +311,22 @@ class SetPassword(Template):
 
 
 def create_error_dialog(message1="Could not change password", message2="", win=None):
-    kdialog = kano_dialog.KanoDialog(message1, message2,
-                                     {"TRY AGAIN": {"return_value": -1}, "GO BACK": {"return_value": 0, "color": "red"}},
-                                     parent_window=win)
+    kdialog = kano_dialog.KanoDialog(
+        message1, message2,
+        {
+            "TRY AGAIN":
+            {
+                "return_value": -1
+            },
+            "GO BACK":
+            {
+                "return_value": 0,
+                "color": "red"
+            }
+        },
+        parent_window=win
+    )
+
     response = kdialog.run()
     return response
 

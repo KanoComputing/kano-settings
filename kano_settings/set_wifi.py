@@ -6,7 +6,7 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 import os
 from kano_settings.templates import Template, TopBarTemplate
 from kano.gtk3.buttons import OrangeButton, KanoButton
@@ -159,7 +159,7 @@ class SetWifi(Template):
 
     def configure_wifi(self, widget=None, event=None):
         # If is a mouse click event or key pressed is ENTER
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
             self.kano_button.set_sensitive(True)
             self.wifi_connection_attempted = True
 

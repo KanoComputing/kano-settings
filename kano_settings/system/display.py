@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# screen-config.py
+# display.py
 #
 # Copyright (C) 2014 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
@@ -17,6 +17,13 @@ from kano.utils import run_cmd
 from kano.logging import logger
 
 tvservice_path = '/usr/bin/tvservice'
+
+
+def launch_pipe():
+    overscan_pipe = "/dev/mailbox"
+    # Launch pipeline
+    if not os.path.exists(overscan_pipe):
+        run_cmd('mknod {} c 100 0'.format(overscan_pipe))
 
 
 # Group must be either 'DMT' or 'CEA'

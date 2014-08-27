@@ -6,18 +6,18 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 import kano_settings.constants as constants
 from kano_settings.templates import Template
 from kano.logging import logger
-from kano_settings.config_file import get_setting, set_setting, file_replace
-from kano_settings.boot_config import set_config_value
+from kano_settings.config_file import get_setting
 from kano_settings.data import get_data
+from kano_settings.system.audio import set_to_HDMI, is_HDMI
 
 
 class SetAudio(Template):
     HDMI = False
-    rc_local_path = "/etc/rc.audio"
+
     data = get_data("SET_AUDIO")
 
     def __init__(self, win):
@@ -63,14 +63,11 @@ class SetAudio(Template):
 
     def apply_changes(self, widget, event):
         # If enter key is pressed or mouse button is clicked
-        if not hasattr(event, 'keyval') or event.keyval == 65293:
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
             # amixer -c 0 cset numid=3 N
             # 1 analog
             # 2 hdmi
-
-            # Uncomment/comment out the line in /etc/rc.audio
-            amixer_from = "amixer -c 0 cset numid=3 [0-9]"
 
             if (get_setting('Audio') == 'HDMI' and self.HDMI is True) or \
                (get_setting('Audio') == 'Analogue' and self.HDMI is False):
@@ -79,48 +76,21 @@ class SetAudio(Template):
                 self.win.go_to_home()
                 return
 
-            # These are the changes we'll apply if they have changed from what they were
-            if self.HDMI is True:
-                amixer_to = "amixer -c 0 cset numid=3 2"
-                set_config_value("hdmi_ignore_edid_audio", None)
-                set_config_value("hdmi_drive", 2)
-                config = "HDMI"
-            else:
-                amixer_to = "amixer -c 0 cset numid=3 1"
-                set_config_value("hdmi_ignore_edid_audio", 1)
-                set_config_value("hdmi_drive", None)
-                config = "Analogue"
-
-            file_replace(self.rc_local_path, amixer_from, amixer_to)
-            set_setting('Audio', config)
+            set_to_HDMI(self.HDMI)
 
             # Tell user to reboot to see changes
             constants.need_reboot = True
             self.win.go_to_home()
 
     def current_setting(self):
-        f = open(self.rc_local_path, 'r')
-        file_string = str(f.read())
-        analogue_string = "amixer -c 0 cset numid=3 1"
-        hdmi_string = "amixer -c 0 cset numid=3 2"
-
-        if file_string.find(analogue_string) != -1:
-            self.analog_button.set_active(True)
-            # Make sure config file is up to date
-            if get_setting('Audio') != 'Analogue':
-                set_setting('Audio', "Analogue")
-
-        elif file_string.find(hdmi_string) != -1:
-            self.hdmi_button.set_active(True)
-            # Make sure config file is up to date
-            if get_setting('Audio') != 'HDMI':
-                set_setting('Audio', "HDMI")
+        hdmi = is_HDMI()
+        self.hdmi_button.set_active(hdmi)
+        self.analog_button.set_active(not hdmi)
 
     def on_button_toggled(self, button):
         self.HDMI = button.get_active()
 
         if self.HDMI:
             self.current_img.set_from_file(constants.media + "/Graphics/Audio-HDMI.png")
-
         else:
             self.current_img.set_from_file(constants.media + "/Graphics/Audio-jack.png")
