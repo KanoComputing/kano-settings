@@ -28,12 +28,12 @@ def set_to_HDMI(HDMI):
 
     # These are the changes we'll apply if they have changed from what they were
     if HDMI:
-        amixer_to = "amixer -c 0 cset numid=3 2"
+        amixer_to = hdmi_string
         set_config_value("hdmi_ignore_edid_audio", None)
         set_config_value("hdmi_drive", 2)
         config = "HDMI"
     else:
-        amixer_to = "amixer -c 0 cset numid=3 1"
+        amixer_to = analogue_string
         set_config_value("hdmi_ignore_edid_audio", 1)
         set_config_value("hdmi_drive", None)
         config = "Analogue"
@@ -44,6 +44,7 @@ def set_to_HDMI(HDMI):
 
 # Returns is_HDMI = True or False
 def is_HDMI():
+    # Find the audio setting in the rc file
     f = open(rc_local_path, 'r')
     file_string = str(f.read())
 
