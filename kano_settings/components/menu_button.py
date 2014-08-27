@@ -23,7 +23,8 @@ class Menu_button():
         # Info about the different settings
         self.title = Gtk.Label(name)
         self.title.get_style_context().add_class("menu_intro_label")
-        self.title.set_alignment(xalign=0, yalign=0.7)
+        self.title.set_alignment(xalign=0, yalign=0)
+        self.title.props.margin_top = 10
 
         # Replace some of the info displayed with whitespace so it fits
         if description:
@@ -33,7 +34,8 @@ class Menu_button():
         self.description = Gtk.Label(description)
         self.description.get_style_context().add_class("menu_custom_label")
         self.description.set_size_request(130, 10)
-        self.description.set_alignment(xalign=0, yalign=0.3)
+        self.description.set_alignment(xalign=0, yalign=0)
+        self.description.props.margin_bottom = 8
 
         self.button = Gtk.Button()
         self.button.set_can_focus(False)
@@ -44,8 +46,8 @@ class Menu_button():
         self.container.attach(self.title, 2, 0, 1, 1)
         self.container.attach(self.description, 2, 1, 1, 1)
         self.container.attach(self.img, 0, 0, 2, 2)
-        self.container.set_row_spacing(5)
-        self.container.set_column_spacing(10)
+        self.container.set_row_spacing(2)
+        self.container.set_column_spacing(20)
         self.container.props.valign = Gtk.Align.CENTER
 
         self.button.add(self.container)
