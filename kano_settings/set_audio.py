@@ -83,14 +83,14 @@ class SetAudio(Template):
             self.win.go_to_home()
 
     def current_setting(self):
-        self.hdmi_button.set_active(is_HDMI())
-        self.analog_button.set_active(not is_HDMI())
+        hdmi = is_HDMI()
+        self.hdmi_button.set_active(hdmi)
+        self.analog_button.set_active(not hdmi)
 
     def on_button_toggled(self, button):
         self.HDMI = button.get_active()
 
         if self.HDMI:
             self.current_img.set_from_file(constants.media + "/Graphics/Audio-HDMI.png")
-
         else:
             self.current_img.set_from_file(constants.media + "/Graphics/Audio-jack.png")
