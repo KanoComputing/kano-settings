@@ -107,7 +107,14 @@ class SetDisplay(Template):
 
     def go_to_overscan(self, widget, event):
         self.win.clear_win()
-        SetSimpleOverscan(self.win)
+        # Check if overscan values are all the same
+        overscan_values = get_overscan_status()
+        if overscan_values['top'] != overscan_values['bottom'] or \
+           overscan_values['top'] != overscan_values['left'] or \
+           overscan_values['top'] != overscan_values['right']:
+            SetAdvancedOverscan(self.win, overscan_values)
+        else:
+            SetSimpleOverscan(self.win, overscan_values)
 
 
 class OverscanTemplate(TopBarTemplate):
