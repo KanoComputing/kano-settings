@@ -276,7 +276,7 @@ class SetPassword(Template):
             thread.start()
 
     # Returns a title, description and whether the process was successful or not
-    def try_change_password(new_password):
+    def try_change_password(self, new_password):
         data = get_data("SET_PASSWORD")
         success = False
 
