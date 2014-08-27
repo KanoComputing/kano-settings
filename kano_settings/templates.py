@@ -80,7 +80,7 @@ class ScrolledWindowTemplate(TopBarTemplate):
     def __init__(self, title, description, button_text):
         TopBarTemplate.__init__(self)
 
-        self.sw = ScrolledWindow()
+        self.sw = ScrolledWindow(wide_scrollbar=True)
         self.sw.set_size_request(630, 210)
         self.title = Heading(title, description)
         self.kano_button = KanoButton(button_text)

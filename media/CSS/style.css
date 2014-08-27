@@ -33,6 +33,15 @@
     margin:10px;
 }
 
+.app-grid {
+    padding: 0px;
+    margin: 0px;
+}
+
+.app-grid GtkViewport {
+    padding: 0px;
+}
+
 /* Wallpaper icons */
 /* wallpaper_box is the image that shows the wallpaper the user can choose */
 .wallpaper_box {

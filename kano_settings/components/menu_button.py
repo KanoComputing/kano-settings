@@ -13,10 +13,12 @@ import kano.gtk3.cursor as cursor
 
 
 class Menu_button():
-    def __init__(self, name, description='', window_width=400):
+    def __init__(self, name, description=''):
 
         # Contains the info about the level and the image
         self.container = Gtk.Grid()
+        self.container.set_hexpand(True)
+        self.container.props.margin = 20
 
         # Info about the different settings
         self.title = Gtk.Label(name)
@@ -47,8 +49,3 @@ class Menu_button():
         self.container.props.valign = Gtk.Align.CENTER
 
         self.button.add(self.container)
-
-        self.button.height = 100
-        self.button.width = (window_width - 30) / 2
-
-        self.button.set_size_request(self.button.width, self.button.height)
