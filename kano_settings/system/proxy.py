@@ -7,6 +7,7 @@
 #
 
 import os
+import requests
 from kano.utils import run_cmd, get_all_home_folders, delete_file, \
     write_file_contents, read_file_contents_as_lines
 
@@ -129,3 +130,18 @@ def get_requests_proxies():
         }
 
     return proxies
+
+
+def test_proxy():
+    try:
+        response = requests.get('http://www.google.com/', proxies=get_requests_proxies())
+        if response.ok:
+            return True, None
+        else:
+            return False, response.reason
+    except Exception:
+        return False, 'Problem connecting to the proxy server'
+
+
+
+
