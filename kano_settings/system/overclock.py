@@ -13,12 +13,7 @@ from kano.logging import logger
 from kano_settings.config_file import set_setting
 
 
-# 0 = None
-# 1 = Modest
-# 2 = Medium
-# 3 = High
-
-def change_overclock_value(configuration):
+def change_overclock_value(config):
 
     #  Mode      arm_freq    core_freq    sdram_freq   over_voltage
     # "None"   "700MHz ARM, 250MHz core, 400MHz SDRAM, 0 overvolt"
@@ -26,37 +21,33 @@ def change_overclock_value(configuration):
     # "Medium" "900MHz ARM, 333MHz core, 450MHz SDRAM, 2 overvolt"
     # "High"   "950MHz ARM, 450MHz core, 450MHz SDRAM, 6 overvolt"
 
-     # None configuration
-    if configuration == 0:
-        config = "None"
+    # None configuration
+    if config is "None":
         arm_freq = 700
         core_freq = 250
         sdram_freq = 400
         over_voltage = 0
     # Modest configuration
-    elif configuration == 1:
-        config = "Modest"
+    elif config is "Modest":
         arm_freq = 800
         core_freq = 300
         sdram_freq = 400
         over_voltage = 0
     # Medium configuration
-    elif configuration == 2:
-        config = "Medium"
+    elif config is "Medium":
         arm_freq = 900
         core_freq = 333
         sdram_freq = 450
         over_voltage = 2
     # High configuration
-    elif configuration == 3:
-        config = "High"
+    elif config is "High":
         arm_freq = 950
         core_freq = 450
         sdram_freq = 450
         over_voltage = 6
     else:
         logger.error('kano-settings: set_overclock: SetOverclock: set_overclock(): ' +
-                     'was called with an invalid self.selected_button={}'.format(configuration))
+                     'was called with an invalid self.selected_button={}'.format(config))
         return
 
     logger.info('set_overclock / apply_changes: config:{} arm_freq:{} core_freq:{} sdram_freq:{} over_voltage:{}'.format(

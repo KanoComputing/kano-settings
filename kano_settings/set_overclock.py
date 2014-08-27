@@ -13,6 +13,12 @@ from kano_settings.boot_config import get_config_value
 from kano_settings.data import get_data
 from kano_settings.system.overclock import change_overclock_value
 
+# 0 = None
+# 1 = Modest
+# 2 = Medium
+# 3 = High
+modes = ["None", "Modest", "Medium", "High"]
+
 
 class SetOverclock(RadioButtonTemplate):
     selected_button = 0
@@ -71,7 +77,7 @@ class SetOverclock(RadioButtonTemplate):
                 self.win.go_to_home()
                 return
 
-            change_overclock_value(self.selected_button)
+            change_overclock_value(modes[self.selected_button])
 
             # Tell user to reboot to see changes
             constants.need_reboot = True
