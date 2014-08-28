@@ -276,3 +276,9 @@ def parse_edid(edid_txt):
     edid['target_overscan'] = False
 
     return edid
+
+
+def get_edid():
+    edid_txt = read_edid()
+    edid = parse_edid(edid_txt)
+    return edid

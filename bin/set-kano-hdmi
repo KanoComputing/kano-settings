@@ -5,7 +5,7 @@ import sys
 from kano.utils import run_cmd, enforce_root
 from kano.logging import logger
 from kano_settings.system.display import get_status, get_model, set_hdmi_mode, \
-    read_edid, parse_edid
+    get_edid
 from kano_settings.boot_config import set_config_value, set_config_comment, \
     get_config_comment
 
@@ -121,9 +121,8 @@ if '--force' not in sys.argv:
 # read status
 status = get_status()
 
-# read edid
-edid_txt = read_edid()
-edid = parse_edid(edid_txt)
+# get edid
+edid = get_edid()
 
 # override modes, calculate is_monitor
 override_models()
