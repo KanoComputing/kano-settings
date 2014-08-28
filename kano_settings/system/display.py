@@ -13,7 +13,7 @@ import sys
 import re
 import subprocess
 from kano_settings.boot_config import set_config_value, get_config_value
-from kano.utils import run_cmd
+from kano.utils import run_cmd, delete_file
 from kano.logging import logger
 
 tvservice_path = '/usr/bin/tvservice'
@@ -187,3 +187,92 @@ def find_matching_mode(modes, group, mode):
 
     # 0 for auto
     return 0
+
+
+def read_edid():
+    edid_dat_path = '/tmp/edid.dat'
+
+    delete_file(edid_dat_path)
+    edid_txt, _, rc = run_cmd('tvservice -d {0} && edidparser {0}'.format(edid_dat_path))
+    edid_txt = edid_txt.splitlines()
+    if rc != 0:
+        logger.error('error getting edid dat')
+        sys.exit()
+    delete_file(edid_dat_path)
+    return edid_txt
+
+
+def parse_edid(edid_txt):
+    edid = dict()
+
+    # parsing edid
+    found = False
+    edid['dmt_found'] = False
+    edid['hdmi_audio'] = True
+
+    for l in edid_txt:
+
+        # screen size
+        if 'screen size' in l:
+            edid['screen_size'] = int(l.split('screen size')[1].split('x')[0].strip())
+
+        # model name
+        elif 'monitor name is' in l:
+            edid['model'] = l.split('monitor name is')[1].strip()
+
+        # preferred
+        elif 'found preferred' in l:
+            if 'DMT' in l:
+                edid['preferred_group'] = 'DMT'
+            elif 'CEA' in l:
+                edid['preferred_group'] = 'CEA'
+            else:
+                logger.error('parsing error')
+                sys.exit()
+
+            res, mode = l.split(':')[2].split('@')
+            edid['preferred_res'] = res.strip()
+            hz, mode = mode.split(' Hz (')
+            edid['preferred_hz'] = float(hz.strip())
+            edid['preferred_mode'] = int(mode[:-1])
+
+        # moving support
+        elif 'moving support for' in l:
+            found_group, found_mode = l.split(' to ')[1].split(' because sink')[0].split('mode')
+            edid['found_group'] = found_group.strip()
+            edid['found_mode'] = int(found_mode.strip())
+            found = True
+
+        # dmt_found
+        elif 'preferred_res' in edid and edid['preferred_group'] == 'CEA' and \
+             edid['preferred_res'] in l and 'remained' not in l:
+            if 'DMT' not in l:
+                continue
+
+            tmp_hz = float(l.split('@')[1].split('Hz')[0].strip())
+            if tmp_hz != edid['preferred_hz']:
+                continue
+
+            edid['dmt_found'] = True
+
+        elif 'no audio support' in l:
+            edid['hdmi_audio'] = False
+
+    # setting target mdoe
+    if found:
+        edid['target_group'] = edid['found_group']
+        edid['target_mode'] = edid['found_mode']
+    else:
+        edid['target_group'] = edid['preferred_group']
+        edid['target_mode'] = edid['preferred_mode']
+
+    # is_monitor
+    if edid['target_group'] == 'DMT':
+        edid['is_monitor'] = True
+    else:
+        edid['is_monitor'] = edid['dmt_found'] or edid['screen_size'] < 60
+
+    # always disable overscan
+    edid['target_overscan'] = False
+
+    return edid
