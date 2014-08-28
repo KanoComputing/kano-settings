@@ -263,7 +263,7 @@ class SetWifi(Template):
 
 #     # Update for proxy
 #     def read_config(self):
-#         self.enable_proxy, data = get_all_proxies()
+#         self.enable_proxy, data, _ = get_all_proxies()
 #         self.enabled_init = self.enable_proxy
 #         if self.enable_proxy:
 #             proxyip, proxyport = data
