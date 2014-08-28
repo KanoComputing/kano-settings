@@ -134,7 +134,7 @@ def get_requests_proxies():
 
 def test_proxy():
     try:
-        response = requests.get('http://www.google.com/', proxies=get_requests_proxies())
+        response = requests.get('http://www.google.com/favicon.ico', proxies=get_requests_proxies())
         if response.ok:
             return True, None
         else:

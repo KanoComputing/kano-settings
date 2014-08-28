@@ -6,16 +6,17 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk, Gdk
 import os
+from gi.repository import Gtk, Gdk
+
+import kano_settings.constants as constants
 from kano_settings.templates import Template, TopBarTemplate
 from kano.gtk3.buttons import OrangeButton, KanoButton
 from kano.gtk3.heading import Heading
-
-import kano_settings.constants as constants
+from kano.gtk3.kano_dialog import KanoDialog
 from kano.network import is_internet, network_info, launch_chromium
 from kano_settings.data import get_data
-from kano_settings.system.proxy import get_all_proxies, set_all_proxies
+from kano_settings.system.proxy import get_all_proxies, set_all_proxies, test_proxy
 
 
 class SetWifi(Template):
@@ -279,11 +280,17 @@ class SetProxy(TopBarTemplate):
                 set_all_proxies(enable=True, host=host, port=port, username=username, password=password)
                 constants.proxy_enabled = True
 
+                success, text = test_proxy()
+                if not success:
+                    kdialog = KanoDialog("Error with proxy", text, parent_window=self.win)
+                    kdialog.run()
+                else:
+                    self.go_to_wifi()
+
             else:
                 set_all_proxies(False)
                 constants.proxy_enabled = False
-
-            self.go_to_wifi()
+                self.go_to_wifi()
 
     # Validation functions
     # If the "enable proxy" checkbox is checked/uncheckout, this function is activated
