@@ -15,6 +15,13 @@ from kano_settings.data import get_data
 from kano_settings.system.audio import set_to_HDMI, is_HDMI
 
 
+try:
+    from kano_settings.system.display import get_edid
+    hdmi_supported = get_edid()['hdmi_audio']
+except Exception:
+    hdmi_supported = False
+
+
 class SetAudio(Template):
     HDMI = False
 
@@ -65,10 +72,6 @@ class SetAudio(Template):
         # If enter key is pressed or mouse button is clicked
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
-            # amixer -c 0 cset numid=3 N
-            # 1 analog
-            # 2 hdmi
-
             if (get_setting('Audio') == 'HDMI' and self.HDMI is True) or \
                (get_setting('Audio') == 'Analogue' and self.HDMI is False):
 
@@ -83,9 +86,14 @@ class SetAudio(Template):
             self.win.go_to_home()
 
     def current_setting(self):
-        hdmi = is_HDMI()
-        self.hdmi_button.set_active(hdmi)
-        self.analog_button.set_active(not hdmi)
+        if not hdmi_supported:
+            self.hdmi_button.set_active(False)
+            self.hdmi_button.set_sensitive(False)
+            self.analog_button.set_active(True)
+        else:
+            hdmi = is_HDMI()
+            self.hdmi_button.set_active(hdmi)
+            self.analog_button.set_active(not hdmi)
 
     def on_button_toggled(self, button):
         self.HDMI = button.get_active()
