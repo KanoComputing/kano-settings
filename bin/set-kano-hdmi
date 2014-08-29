@@ -2,12 +2,19 @@
 
 import os
 import sys
+
+if __name__ == '__main__' and __package__ is None:
+    dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    if dir_path != '/usr':
+        sys.path.insert(1, dir_path)
+
 from kano.utils import run_cmd, enforce_root
 from kano.logging import logger
 from kano_settings.system.display import get_status, get_model, set_hdmi_mode, \
     get_edid
 from kano_settings.boot_config import set_config_value, set_config_comment, \
     get_config_comment
+from kano_settings.system.audio import is_HDMI, set_to_HDMI
 
 tvservice_path = '/usr/bin/tvservice'
 config_txt_path = '/boot/config.txt'
@@ -136,6 +143,12 @@ calculate_is_monitor()
 logger.error('model: {}'.format(model))
 logger.error(status)
 logger.error(edid)
+
+# fix hdmi audio status
+if not edid['hdmi_supported'] and is_HDMI():
+    logger.error('hdmi audio not supported on this screen, changing to analogue')
+    set_to_HDMI(False)
+
 
 # changes
 changes = compare_and_set_mode() or compare_and_set_full_range() or compare_and_set_overscan()
