@@ -120,9 +120,13 @@ if '--force' not in sys.argv:
 
 # read status
 status = get_status()
+if not status:
+    sys.exit(1)
 
 # get edid
 edid = get_edid()
+if not edid:
+    sys.exit(1)
 
 # override modes, calculate is_monitor
 override_models()

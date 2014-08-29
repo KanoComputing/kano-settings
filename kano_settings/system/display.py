@@ -9,7 +9,6 @@
 #
 
 import os
-import sys
 import re
 import subprocess
 from kano_settings.boot_config import set_config_value, get_config_value
@@ -94,7 +93,7 @@ def get_status():
         status['group'] = 'CEA'
     else:
         logger.error('status parsing error')
-        sys.exit()
+        return
 
     status['mode'] = int(status_str.split('(')[1].split(')')[0].strip())
     status['full_range'] = 'RGB full' in status_str
@@ -197,7 +196,7 @@ def read_edid():
     edid_txt = edid_txt.splitlines()
     if rc != 0:
         logger.error('error getting edid dat')
-        sys.exit()
+        return
     delete_file(edid_dat_path)
     return edid_txt
 
@@ -228,7 +227,7 @@ def parse_edid(edid_txt):
                 edid['preferred_group'] = 'CEA'
             else:
                 logger.error('parsing error')
-                sys.exit()
+                return
 
             res, mode = l.split(':')[2].split('@')
             edid['preferred_res'] = res.strip()
@@ -280,5 +279,7 @@ def parse_edid(edid_txt):
 
 def get_edid():
     edid_txt = read_edid()
-    edid = parse_edid(edid_txt)
-    return edid
+    if not edid_txt:
+        return
+
+    return parse_edid(edid_txt)
