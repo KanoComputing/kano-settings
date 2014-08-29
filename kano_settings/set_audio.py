@@ -12,14 +12,7 @@ from kano_settings.templates import Template
 from kano.logging import logger
 from kano_settings.config_file import get_setting
 from kano_settings.data import get_data
-from kano_settings.system.audio import set_to_HDMI, is_HDMI
-
-
-try:
-    from kano_settings.system.display import get_edid
-    hdmi_supported = get_edid()['hdmi_audio']
-except Exception:
-    hdmi_supported = False
+from kano_settings.system.audio import set_to_HDMI, is_HDMI, hdmi_supported
 
 
 class SetAudio(Template):
