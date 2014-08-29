@@ -26,6 +26,9 @@ except Exception:
 
 # set_to_HDMI = True or False
 def set_to_HDMI(HDMI):
+    if not hdmi_supported:
+        HDMI = False
+
     # 1 analog
     # 2 hdmi
 
