@@ -213,15 +213,13 @@ class SetProxy(TopBarTemplate):
         password_box = Gtk.Box()
         password_box.add(self.password_entry)
 
+        self.checkbutton = Gtk.CheckButton("enable proxy")
         self.read_config()
-
-        checkbutton = Gtk.CheckButton("enable proxy")
-        checkbutton.set_active(self.enable_proxy)
-        checkbutton.connect("clicked", self.proxy_status)
-        checkbutton.set_can_focus(False)
+        self.checkbutton.connect("clicked", self.proxy_status)
+        self.checkbutton.set_can_focus(False)
 
         bottom_row = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
-        bottom_row.pack_start(checkbutton, False, False, 0)
+        bottom_row.pack_start(self.checkbutton, False, False, 0)
         bottom_row.pack_start(self.kano_button, False, False, 60)
         bottom_row.set_margin_bottom(30)
         bottom_row.set_margin_left(70)
@@ -238,11 +236,11 @@ class SetProxy(TopBarTemplate):
         self.pack_start(grid_alignment, True, True, 0)
         self.pack_end(bottom_row, False, False, 0)
 
-        self.proxy_status(checkbutton)
+        self.proxy_status(self.checkbutton)
         self.kano_button.set_sensitive(False)
 
         # Change text of kano button depending on if proxy is enabled
-        if checkbutton.get_active():
+        if self.checkbutton.get_active():
             self.kano_button.set_label(self.kano_label_enable)
         else:
             self.kano_button.set_label(self.kano_label_disable)
@@ -264,10 +262,19 @@ class SetProxy(TopBarTemplate):
         self.enable_proxy, data, _ = get_all_proxies()
         self.enabled_init = self.enable_proxy
         if self.enable_proxy:
-            self.ip_entry.set_text(data['host'])
-            self.port_entry.set_text(data['port'])
-            self.username_entry.set_text(data['username'])
-            self.password_entry.set_text(data['password'])
+            try:
+                self.ip_entry.set_text(data['host'])
+                self.port_entry.set_text(data['port'])
+                self.username_entry.set_text(data['username'])
+                self.password_entry.set_text(data['password'])
+            except:
+                # Something went wrong > disable proxy
+                set_all_proxies(False)
+                constants.proxy_enabled = False
+                self.enable_proxy = False
+                self.enabled_init = False
+                self.clear_entries()
+        self.checkbutton.set_active(self.enable_proxy)
 
     def apply_changes(self, button, event):
         # If enter key is pressed or mouse button is clicked
