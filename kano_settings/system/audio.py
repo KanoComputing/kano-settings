@@ -17,9 +17,18 @@ analogue_string = "amixer -c 0 cset numid=3 1"
 hdmi_string = "amixer -c 0 cset numid=3 2"
 
 
+try:
+    from kano_settings.system.display import get_edid
+    hdmi_supported = get_edid()['hdmi_audio']
+except Exception:
+    hdmi_supported = False
+
+
 # set_to_HDMI = True or False
 def set_to_HDMI(HDMI):
-    # amixer -c 0 cset numid=3 N
+    if not hdmi_supported:
+        HDMI = False
+
     # 1 analog
     # 2 hdmi
 

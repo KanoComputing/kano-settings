@@ -39,10 +39,6 @@ defaults = {
     'Mouse': 'Normal',
     'Font': 'Normal',
     'Wallpaper': 'kanux-background',
-    'Proxy-port': '',
-    'Proxy-ip': '',
-    'Proxy-username': '',
-    'Proxy-type': '',
 }
 
 

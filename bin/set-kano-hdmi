@@ -2,14 +2,22 @@
 
 import os
 import sys
-from kano.utils import run_cmd, delete_file, enforce_root
+
+if __name__ == '__main__' and __package__ is None:
+    dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    if dir_path != '/usr':
+        sys.path.insert(1, dir_path)
+
+from kano.utils import run_cmd, enforce_root
 from kano.logging import logger
-from kano_settings.system.display import get_status, get_model, set_hdmi_mode
-from kano_settings.boot_config import set_config_value, set_config_comment, get_config_comment
+from kano_settings.system.display import get_status, get_model, set_hdmi_mode, \
+    get_edid
+from kano_settings.boot_config import set_config_value, set_config_comment, \
+    get_config_comment
+from kano_settings.system.audio import is_HDMI, set_to_HDMI
 
 tvservice_path = '/usr/bin/tvservice'
 config_txt_path = '/boot/config.txt'
-edid_dat_path = '/tmp/edid.dat'
 
 overrides = {
     '32V3H-H6A': {'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True},
@@ -31,89 +39,6 @@ def check_model_present():
     if get_config_comment('kano_screen_used', model):
         logger.error('monitor already set, exiting')
         sys.exit()
-
-
-def read_edid():
-    delete_file(edid_dat_path)
-    edid_txt, _, rc = run_cmd('tvservice -d {0} && edidparser {0}'.format(edid_dat_path))
-    edid_txt = edid_txt.splitlines()
-    if rc != 0:
-        logger.error('error getting edid dat')
-        sys.exit()
-    delete_file(edid_dat_path)
-    return edid_txt
-
-
-def parse_edid(edid_txt):
-    edid = dict()
-
-    # parsing edid
-    found = False
-    edid['dmt_found'] = False
-
-    for l in edid_txt:
-
-        # screen size
-        if 'screen size' in l:
-            edid['screen_size'] = int(l.split('screen size')[1].split('x')[0].strip())
-
-        # model name
-        elif 'monitor name is' in l:
-            edid['model'] = l.split('monitor name is')[1].strip()
-
-        # preferred
-        elif 'found preferred' in l:
-            if 'DMT' in l:
-                edid['preferred_group'] = 'DMT'
-            elif 'CEA' in l:
-                edid['preferred_group'] = 'CEA'
-            else:
-                logger.error('parsing error')
-                sys.exit()
-
-            res, mode = l.split(':')[2].split('@')
-            edid['preferred_res'] = res.strip()
-            hz, mode = mode.split(' Hz (')
-            edid['preferred_hz'] = float(hz.strip())
-            edid['preferred_mode'] = int(mode[:-1])
-
-        # moving support
-        elif 'moving support for' in l:
-            found_group, found_mode = l.split(' to ')[1].split(' because sink')[0].split('mode')
-            edid['found_group'] = found_group.strip()
-            edid['found_mode'] = int(found_mode.strip())
-            found = True
-
-        # dmt_found
-        elif 'preferred_res' in edid and edid['preferred_group'] == 'CEA' and \
-             edid['preferred_res'] in l and 'remained' not in l:
-            if 'DMT' not in l:
-                continue
-
-            tmp_hz = float(l.split('@')[1].split('Hz')[0].strip())
-            if tmp_hz != edid['preferred_hz']:
-                continue
-
-            edid['dmt_found'] = True
-
-    # setting target mdoe
-    if found:
-        edid['target_group'] = edid['found_group']
-        edid['target_mode'] = edid['found_mode']
-    else:
-        edid['target_group'] = edid['preferred_group']
-        edid['target_mode'] = edid['preferred_mode']
-
-    # is_monitor
-    if edid['target_group'] == 'DMT':
-        edid['is_monitor'] = True
-    else:
-        edid['is_monitor'] = edid['dmt_found'] or edid['screen_size'] < 60
-
-    # always disable overscan
-    edid['target_overscan'] = False
-
-    return edid
 
 
 def override_models():
@@ -202,10 +127,13 @@ if '--force' not in sys.argv:
 
 # read status
 status = get_status()
+if not status:
+    sys.exit(1)
 
-# read edid
-edid_txt = read_edid()
-edid = parse_edid(edid_txt)
+# get edid
+edid = get_edid()
+if not edid:
+    sys.exit(1)
 
 # override modes, calculate is_monitor
 override_models()
@@ -215,6 +143,12 @@ calculate_is_monitor()
 logger.error('model: {}'.format(model))
 logger.error(status)
 logger.error(edid)
+
+# fix hdmi audio status
+if not edid['hdmi_supported'] and is_HDMI():
+    logger.error('hdmi audio not supported on this screen, changing to analogue')
+    set_to_HDMI(False)
+
 
 # changes
 changes = compare_and_set_mode() or compare_and_set_full_range() or compare_and_set_overscan()
