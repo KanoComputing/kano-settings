@@ -7,7 +7,8 @@
 #
 
 import os
-from gi.repository import Gtk, Gdk
+from gi.repository import Gtk, Gdk, GObject
+import threading
 
 import kano_settings.constants as constants
 from kano_settings.templates import Template, TopBarTemplate
@@ -279,25 +280,62 @@ class SetProxy(TopBarTemplate):
     def apply_changes(self, button, event):
         # If enter key is pressed or mouse button is clicked
         if not hasattr(event, 'keyval') or event.keyval == 65293:
-            if self.enable_proxy:
-                host = self.ip_entry.get_text()
-                port = self.port_entry.get_text()
-                username = self.username_entry.get_text()
-                password = self.password_entry.get_text()
-                set_all_proxies(enable=True, host=host, port=port, username=username, password=password)
-                constants.proxy_enabled = True
 
-                success, text = test_proxy()
-                if not success:
-                    kdialog = KanoDialog("Error with proxy", text, parent_window=self.win)
-                    kdialog.run()
+            # This is a callback called by the main loop, so it's safe to
+            # manipulate GTK objects:
+            watch_cursor = Gdk.Cursor(Gdk.CursorType.WATCH)
+            self.win.get_window().set_cursor(watch_cursor)
+            self.kano_button.set_sensitive(False)
+
+            def lengthy_process():
+
+                if self.enable_proxy:
+                    host = self.ip_entry.get_text()
+                    port = self.port_entry.get_text()
+                    username = self.username_entry.get_text()
+                    password = self.password_entry.get_text()
+                    set_all_proxies(enable=True, host=host, port=port, username=username, password=password)
+                    constants.proxy_enabled = True
+
+                    success, text = test_proxy()
+                    if not success:
+                        title = "Error with proxy"
+                        description = text
+                        return_value = 1
+                    else:
+                        title = "Successfully enabled proxy"
+                        description = ""
+                        return_value = 0
+
                 else:
-                    self.go_to_wifi()
+                    set_all_proxies(False)
+                    constants.proxy_enabled = False
+                    title = "Successfully disabled proxy"
+                    description = ""
+                    return_value = 0
 
-            else:
-                set_all_proxies(False)
-                constants.proxy_enabled = False
-                self.go_to_wifi()
+                def done(title, description, return_value):
+                    kdialog = KanoDialog(
+                        title,
+                        description,
+                        {
+                            "OK":
+                            {
+                                "return_value": return_value
+                            }
+                        },
+                        parent_window=self.win
+                    )
+                    response = kdialog.run()
+                    self.win.get_window().set_cursor(None)
+
+                    if response == 0:
+                        self.go_to_wifi()
+
+                GObject.idle_add(done, title, description, return_value)
+
+            thread = threading.Thread(target=lengthy_process)
+            thread.start()
 
     # Validation functions
     # If the "enable proxy" checkbox is checked/uncheckout, this function is activated
