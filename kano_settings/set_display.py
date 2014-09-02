@@ -278,7 +278,7 @@ class SetAdvancedOverscan(OverscanTemplate):
         description = self.data_advanced["LABEL_2"]
         OverscanTemplate.__init__(self, win, title, description, original_overscan)
 
-        self.top_bar.set_prev_callback(self.go_to_simple_overscan)
+        self.top_bar.set_prev_callback(self.go_to_display)
 
         # Add sliders
         grid = Gtk.Grid()
@@ -353,10 +353,6 @@ class SetAdvancedOverscan(OverscanTemplate):
             self.b_scale.set_value(self.original_overscan['bottom'])
             self.l_scale.set_value(self.original_overscan['left'])
             self.r_scale.set_value(self.original_overscan['right'])
-
-    def go_to_simple_overscan(self, widget, event):
-        self.win.clear_win()
-        SetSimpleOverscan(self.win, self.original_overscan)
 
     def update_value(self, widget, label):
         new_value = str(int(widget.get_value()))
