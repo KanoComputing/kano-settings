@@ -78,6 +78,11 @@ if __name__ == '__main__':
         print 'You need root privileges to start this app. Please try sudo'
         sys.exit(1)
 
+    # Check for ethernet cable
+    if is_ethernet_plugged():
+        logger.info('ethernet cable is plugged in, exiting')
+        sys.exit(0)
+
     # kanoconnect cannot work while kanowifi is running.
     # Keep a pid file to semaphore our process
     if os.access('/var/run/kanowifi.py', os.R_OK):
@@ -103,7 +108,6 @@ if __name__ == '__main__':
         if sys.argv[1] == '-c':
             if len(sys.argv) < 3:
                 logger.error('I need a wireless device name (wlanX)')
-                print 'need wireless interface device'
                 sys.exit(1)
             else:
                 cached_connect = True
@@ -113,14 +117,10 @@ if __name__ == '__main__':
             if len(sys.argv) > 2:
                 essid = sys.argv[2]
 
-        # check if wireless dongle is plugged in, and that ethernet cable is not plugged in
+        # check if wireless dongle is plugged in
         if not is_device(wiface):
             logger.error('wireless device %s is not plugged in' % (wiface))
             sys.exit(2)
-        else:
-            if is_ethernet_plugged():
-                logger.error('ethernet cable is plugged in, exiting')
-                sys.exit(2)
 
         # if cache connect mode, and there is no cached network, stop wasting time.
         if cached_connect:
