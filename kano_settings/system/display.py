@@ -16,6 +16,8 @@ from kano.utils import run_cmd, delete_file
 from kano.logging import logger
 
 tvservice_path = '/usr/bin/tvservice'
+fbset_path = '/bin/fbset'
+xrefresh_path = '/usr/bin/xrefresh'
 
 
 def launch_pipe():
@@ -65,6 +67,21 @@ def list_supported_modes():
 
     return modes
 
+def set_hdmi_mode_live(group=None, mode=None, drive='HDMI'):
+    success = False
+
+    if not group or not mode:
+        return success
+
+    # ask tvservice to switch to the given mode immediately
+    status_str, _, rc = run_cmd(tvservice_path + ' -e "%s %s %s"' % (group, mode, drive))
+    if rc == 0 and os.path.exists(fbset_path) and os.path.exists(xrefresh_path):
+        # refresh the Xserver screen because most probably it has become black as a result of the graphic mode switch
+        _, _, _ = run_cmd('%s -depth 8 ; fbset -depth 16' % fbset_path)
+        _, _, _ = run_cmd(xrefresh_path)
+        success = True
+
+    return success
 
 def set_hdmi_mode(group=None, mode=None):
     if not group or not mode:
