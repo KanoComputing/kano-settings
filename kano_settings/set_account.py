@@ -15,14 +15,13 @@ from kano.gtk3.heading import Heading
 import kano.gtk3.kano_dialog as kano_dialog
 from kano.gtk3.buttons import KanoButton
 from kano.gtk3.labelled_entries import LabelledEntries
-from kano_world.functions import has_token
 
 from kano.utils import ensure_dir
 import kano_settings.constants as constants
 from kano_settings.templates import TopBarTemplate, Template
 from kano_settings.data import get_data
 
-from kano_settings.system.account import delete_user, verify_current_password, change_password
+from kano_settings.system.account import add_user, delete_user, verify_current_password, change_password
 
 
 ADD_REMOVE_USER_PATH = '/tmp/kano-init/add-remove'
@@ -110,7 +109,8 @@ class SetAccount(TopBarTemplate):
             )
             kdialog.run()
             # add new user command
-            os.system("kano-init newuser")
+            add_user()
+            #
             self.disable_buttons()
             # Tell user to reboot to see changes
             constants.need_reboot = True
@@ -137,13 +137,9 @@ class SetAccount(TopBarTemplate):
             )
             response = kdialog.run()
             if response == -1:
-
+                # Delete current user
                 delete_user()
                 self.disable_buttons()
-
-                # back up profile
-                if has_token():
-                    os.system("kano-sync --sync --backup")
 
                 kdialog = kano_dialog.KanoDialog(
                     "To finish removing this account, you need to reboot",

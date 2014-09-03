@@ -10,11 +10,20 @@
 import os
 import pam
 from kano.utils import get_user_unsudoed, run_cmd
+from kano_world.functions import has_token
+
+
+# Needs sudo permission
+def add_user():
+    os.system("kano-init newuser")
 
 
 # Needs sudo permission
 def delete_user():
     os.system('kano-init deleteuser %s' % (get_user_unsudoed()))
+    # back up profile
+    if has_token():
+        os.system("kano-sync --sync --backup")
 
 
 # Returns True if password matches system password, else returns False
