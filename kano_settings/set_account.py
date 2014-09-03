@@ -108,10 +108,10 @@ class SetAccount(TopBarTemplate):
                 parent_window=self.win
             )
             kdialog.run()
-            # add new user command
-            add_user()
             #
             self.disable_buttons()
+            # add new user command
+            add_user()
             # Tell user to reboot to see changes
             constants.need_reboot = True
 
@@ -137,9 +137,9 @@ class SetAccount(TopBarTemplate):
             )
             response = kdialog.run()
             if response == -1:
+                self.disable_buttons()
                 # Delete current user
                 delete_user()
-                self.disable_buttons()
 
                 kdialog = kano_dialog.KanoDialog(
                     "To finish removing this account, you need to reboot",
