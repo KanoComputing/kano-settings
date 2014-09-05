@@ -11,6 +11,7 @@
 import os
 import re
 import subprocess
+import time
 from kano_settings.boot_config import set_config_value, get_config_value
 from kano.utils import run_cmd, delete_file
 from kano.logging import logger
@@ -76,7 +77,9 @@ def set_hdmi_mode_live(group=None, mode=None, drive='HDMI'):
     # ask tvservice to switch to the given mode immediately
     status_str, _, rc = run_cmd(tvservice_path + ' -e "%s %s %s"' % (group, mode, drive))
     if rc == 0 and os.path.exists(fbset_path) and os.path.exists(xrefresh_path):
-        # refresh the Xserver screen because most probably it has become black as a result of the graphic mode switch
+        # refresh the Xserver screen because most probably it has become black as a result of the graphic mode switch.
+        # we wait a tiny bit because on some occassions it happens to early and has no effect (leaves the screen black).
+        time.sleep(2)
         _, _, _ = run_cmd('%s -depth 8 ; %s -depth 16' % (fbset_path, fbset_path))
         _, _, _ = run_cmd(xrefresh_path)
         success = True
