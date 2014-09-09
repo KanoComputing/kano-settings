@@ -145,7 +145,7 @@ logger.error(status)
 logger.error(edid)
 
 # fix hdmi audio status
-if not edid['hdmi_supported'] and is_HDMI():
+if not edid['hdmi_audio'] and is_HDMI():
     logger.error('hdmi audio not supported on this screen, changing to analogue')
     set_to_HDMI(False)
 

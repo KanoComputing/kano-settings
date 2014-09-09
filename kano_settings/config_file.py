@@ -18,12 +18,13 @@ USER = None
 USER_ID = None
 
 username = get_user_unsudoed()
-settings_dir = os.path.join('/home', username, '.kano-settings')
-if os.path.exists(settings_dir) and os.path.isfile(settings_dir):
-    os.rename(settings_dir, settings_dir + '.bak')
-ensure_dir(settings_dir)
-chown_path(settings_dir)
-settings_file = os.path.join(settings_dir, 'config')
+if username != 'root':
+    settings_dir = os.path.join('/home', username, '.kano-settings')
+    if os.path.exists(settings_dir) and os.path.isfile(settings_dir):
+        os.rename(settings_dir, settings_dir + '.bak')
+    ensure_dir(settings_dir)
+    chown_path(settings_dir)
+    settings_file = os.path.join(settings_dir, 'config')
 
 defaults = {
     'Keyboard-continent-index': 1,
@@ -88,6 +89,9 @@ def get_setting(variable):
 
 
 def set_setting(variable, value):
+    if username == 'root':
+        return
+
     logger.debug('config_file / set_setting: {} {}'.format(variable, value))
 
     data = read_json(settings_file)
