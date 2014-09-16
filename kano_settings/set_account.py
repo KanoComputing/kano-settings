@@ -234,6 +234,7 @@ class SetPassword(Template):
             # manipulate GTK objects:
             watch_cursor = Gdk.Cursor(Gdk.CursorType.WATCH)
             self.win.get_window().set_cursor(watch_cursor)
+            self.kano_button.start_spinner()
             self.kano_button.set_sensitive(False)
 
             def lengthy_process():
@@ -261,6 +262,7 @@ class SetPassword(Template):
                         response = create_error_dialog(title, description, self.win)
 
                     self.win.get_window().set_cursor(None)
+                    self.kano_button.stop_spinner()
                     self.clear_text()
 
                     if response == 0:
