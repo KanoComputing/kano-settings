@@ -23,24 +23,24 @@
 #define WIFI_ICON "/usr/share/kano-settings/icon/widget-wifi.png"
 #define WIFI_SETTING_ICON "/usr/share/kano-settings/media/Icons/Icon-Wifi.png"
 
-#define SETTINGS_CMD "/usr/bin/is_internet"
 #define PLUGIN_TOOLTIP "Internet status"
 
 #define MINUTE 60
 
 Panel *panel;
 
-typedef struct {
+typedef struct
+{
     int internet_available;
     GtkWidget *icon;
     guint timer;
 } kano_internet_plugin_t;
 
-static gboolean show_menu(GtkWidget*, GdkEventButton*, kano_internet_plugin_t*);
-static GtkWidget* get_resized_icon(const char* filename);
+static gboolean show_menu(GtkWidget *, GdkEventButton *, kano_internet_plugin_t *);
+static GtkWidget *get_resized_icon(const char *filename);
 static void selection_done(GtkWidget *);
 static void popup_set_position(GtkWidget *, gint *, gint *, gboolean *, GtkWidget *);
-static gboolean internet_status(kano_internet_plugin_t*);
+static gboolean internet_status(kano_internet_plugin_t *);
 static void launch_cmd(const char *cmd);
 
 static int plugin_constructor(Plugin *p, char **fp)
@@ -50,7 +50,7 @@ static int plugin_constructor(Plugin *p, char **fp)
     panel = p->panel;
 
     /* allocate our private structure instance */
-    kano_internet_plugin_t* plugin = g_new0(kano_internet_plugin_t, 1);
+    kano_internet_plugin_t *plugin = g_new0(kano_internet_plugin_t, 1);
     plugin->internet_available = 0;
     /* create an icon */
     GtkWidget *icon = gtk_image_new_from_file(WIFI_ICON);
@@ -93,7 +93,7 @@ static int plugin_constructor(Plugin *p, char **fp)
 
 static void plugin_destructor(Plugin *p)
 {
-    kano_internet_plugin_t* plugin = (kano_internet_plugin_t*)p->priv;
+    kano_internet_plugin_t *plugin = (kano_internet_plugin_t *)p->priv;
     /* Disconnect the timer. */
     g_source_remove(plugin->timer);
 
@@ -108,9 +108,10 @@ static gboolean internet_status(kano_internet_plugin_t *plugin)
     gtk_image_set_from_file(GTK_IMAGE(plugin->icon), internet == 0 ? WIFI_ICON : NO_INTERNET_ICON);
 
     /* If there is no internet try to run kano-connect to reconnect */
-    if (internet != 0) {
+    if (internet != 0)
+    {
         const char *cmd = "sudo kano-connect -c wlan0";
-	launch_cmd(cmd);
+        launch_cmd(cmd);
     }
 
     return TRUE;
@@ -123,19 +124,22 @@ static void launch_cmd(const char *cmd)
 
     appinfo = g_app_info_create_from_commandline(cmd, NULL, G_APP_INFO_CREATE_NONE, NULL);
 
-    if (appinfo == NULL) {
+    if (appinfo == NULL)
+    {
         perror("Command lanuch failed.");
         return;
     }
 
     ret = g_app_info_launch(appinfo, NULL, NULL, NULL);
     if (!ret)
+    {
         perror("Command launch failed.");
+    }
 }
 
-void connect_clicked(GtkWidget* widget)
+void connect_clicked(GtkWidget *widget)
 {
-    const char* cmd = "sudo kano-settings 4";
+    const char *cmd = "sudo kano-settings 4";
     launch_cmd(cmd);
 }
 
@@ -145,7 +149,9 @@ static gboolean show_menu(GtkWidget *widget, GdkEventButton *event, kano_interne
     GtkWidget *header_item;
 
     if (event->button != 1)
+    {
         return FALSE;
+    }
 
     /* Create the menu items */
     header_item = gtk_menu_item_new_with_label("Internet status");
@@ -159,15 +165,17 @@ static gboolean show_menu(GtkWidget *widget, GdkEventButton *event, kano_interne
     // find if we have internet, save status in the plugin
     gboolean internet = plugin->internet_available;
 
-    if (internet == 0) {
+    if (internet == 0)
+    {
         /* Internet working correctly */
-        GtkWidget* internet_item = gtk_menu_item_new_with_label("Connected");
+        GtkWidget *internet_item = gtk_menu_item_new_with_label("Connected");
         gtk_menu_append(GTK_MENU(menu), internet_item);
         gtk_widget_show(internet_item);
     }
-    else {
+    else
+    {
         /* Internet not working */
-        GtkWidget* internet_item = gtk_image_menu_item_new_with_label("Connect");
+        GtkWidget *internet_item = gtk_image_menu_item_new_with_label("Connect");
         g_signal_connect(internet_item, "activate", G_CALLBACK(connect_clicked), NULL);
         gtk_menu_append(GTK_MENU(menu), internet_item);
         gtk_widget_show(internet_item);
@@ -178,16 +186,16 @@ static gboolean show_menu(GtkWidget *widget, GdkEventButton *event, kano_interne
 
     /* Show the menu. */
     gtk_menu_popup(GTK_MENU(menu), NULL, NULL,
-               (GtkMenuPositionFunc) popup_set_position, widget,
-               event->button, event->time);
+                   (GtkMenuPositionFunc) popup_set_position, widget,
+                   event->button, event->time);
 
     return TRUE;
 }
 
-static GtkWidget* get_resized_icon(const char* filename)
+static GtkWidget *get_resized_icon(const char *filename)
 {
     GError *error = NULL;
-    GdkPixbuf* pixbuf = gdk_pixbuf_new_from_file_at_size (filename, 40, 40, &error);
+    GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file_at_size(filename, 40, 40, &error);
     return gtk_image_new_from_pixbuf(pixbuf);
 }
 
@@ -197,22 +205,28 @@ static void selection_done(GtkWidget *menu)
 }
 
 /* Helper for position-calculation callback for popup menus. */
-void lxpanel_plugin_popup_set_position_helper(Panel * p, GtkWidget * near,
-    GtkWidget * popup, GtkRequisition * popup_req, gint * px, gint * py)
+void lxpanel_plugin_popup_set_position_helper(Panel *p, GtkWidget *near,
+        GtkWidget *popup, GtkRequisition *popup_req, gint *px, gint *py)
 {
     /* Get the origin of the requested-near widget in
-screen coordinates. */
+    screen coordinates. */
     gint x, y;
     gdk_window_get_origin(GDK_WINDOW(near->window), &x, &y);
 
     /* Doesn't seem to be working according to spec; the allocation.x
-sometimes has the window origin in it */
-    if (x != near->allocation.x) x += near->allocation.x;
-    if (y != near->allocation.y) y += near->allocation.y;
+    sometimes has the window origin in it */
+    if (x != near->allocation.x)
+    {
+        x += near->allocation.x;
+    }
+    if (y != near->allocation.y)
+    {
+        y += near->allocation.y;
+    }
 
     /* Dispatch on edge to lay out the popup menu with respect to
-the button. Also set "push-in" to avoid any case where it
-might flow off screen. */
+    the button. Also set "push-in" to avoid any case where it
+    might flow off screen. */
     switch (p->edge)
     {
         case EDGE_TOP: y += near->allocation.height; break;
@@ -226,7 +240,7 @@ might flow off screen. */
 
 /* Position-calculation callback for popup menu. */
 static void popup_set_position(GtkWidget *menu, gint *px, gint *py,
-                gboolean *push_in, GtkWidget *p)
+                               gboolean *push_in, GtkWidget *p)
 {
     /* Get the allocation of the popup menu. */
     GtkRequisition popup_req;
@@ -239,22 +253,23 @@ static void popup_set_position(GtkWidget *menu, gint *px, gint *py,
 
 static void plugin_configure(Plugin *p, GtkWindow *parent)
 {
-  // doing nothing here, so make sure neither of the parameters
-  // emits a warning at compilation
-  (void)p;
-  (void)parent;
+    // doing nothing here, so make sure neither of the parameters
+    // emits a warning at compilation
+    (void)p;
+    (void)parent;
 }
 
 static void plugin_save_configuration(Plugin *p, FILE *fp)
 {
-  // doing nothing here, so make sure neither of the parameters
-  // emits a warning at compilation
-  (void)p;
-  (void)fp;
+    // doing nothing here, so make sure neither of the parameters
+    // emits a warning at compilation
+    (void)p;
+    (void)fp;
 }
 
 /* Plugin descriptor. */
-PluginClass kano_internet_plugin_class = {
+PluginClass kano_internet_plugin_class =
+{
     // this is a #define taking care of the size/version variables
     PLUGINCLASS_VERSIONING,
 
