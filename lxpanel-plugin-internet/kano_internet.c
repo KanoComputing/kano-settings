@@ -112,7 +112,7 @@ static gboolean internet_status(kano_internet_plugin_t *plugin)
     if (internet != 0)
     {
         // skip if the wireless dongle is not plugged in
-        int wlan_dongle = system("grep -q wlan0 /proc/net/dev")
+        int wlan_dongle = system("grep -q wlan0 /proc/net/dev");
         if (wlan_dongle != 0)
         {
             return TRUE;
