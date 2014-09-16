@@ -18,6 +18,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include <time.h>
+#include <unistd.h>
 
 #define NO_INTERNET_ICON "/usr/share/kano-settings/icon/widget-no-internet.png"
 #define WIFI_ICON "/usr/share/kano-settings/icon/widget-wifi.png"
@@ -110,6 +111,19 @@ static gboolean internet_status(kano_internet_plugin_t *plugin)
     /* If there is no internet try to run kano-connect to reconnect */
     if (internet != 0)
     {
+        // skip if the wireless dongle is not plugged in
+        int wlan_dongle = system("grep -q wlan0 /proc/net/dev")
+        if (wlan_dongle != 0)
+        {
+            return TRUE;
+        }
+
+        // skip if the wifi cache file is not present
+        if( access("/etc/kwifiprompt-cache.conf", F_OK) == -1 ) {
+            return TRUE;
+        }
+
+        // run kano-connect if everything was OK
         const char *cmd = "sudo kano-connect -c wlan0";
         launch_cmd(cmd);
     }
