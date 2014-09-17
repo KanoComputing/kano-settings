@@ -285,6 +285,7 @@ class SetProxy(TopBarTemplate):
             # manipulate GTK objects:
             watch_cursor = Gdk.Cursor(Gdk.CursorType.WATCH)
             self.win.get_window().set_cursor(watch_cursor)
+            self.kano_button.start_spinner()
             self.kano_button.set_sensitive(False)
 
             def lengthy_process():
@@ -328,6 +329,7 @@ class SetProxy(TopBarTemplate):
                     )
                     response = kdialog.run()
                     self.win.get_window().set_cursor(None)
+                    self.kano_button.stop_spinner()
 
                     if response == 0:
                         self.go_to_wifi()
