@@ -111,15 +111,13 @@ static gboolean internet_status(kano_internet_plugin_t *plugin)
     /* If there is no internet try to run kano-connect to reconnect */
     if (internet != 0)
     {
-        // skip if the wireless dongle is not plugged in
-        int wlan_dongle = system("grep -q wlan0 /proc/net/dev");
-        if (wlan_dongle != 0)
-        {
+        // skip if the wifi cache file is not present
+        if( access("/etc/kwifiprompt-cache.conf", F_OK) == -1 ) {
             return TRUE;
         }
 
-        // skip if the wifi cache file is not present
-        if( access("/etc/kwifiprompt-cache.conf", F_OK) == -1 ) {
+        // skip if the wireless dongle is not plugged in
+        if( access("/sys/class/net/wlan0", F_OK) == -1 ) {
             return TRUE;
         }
 
