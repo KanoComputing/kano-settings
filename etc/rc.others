@@ -22,4 +22,4 @@ control alt     keycode  3 = Console_2
 control alt     keycode  8 = Console_7
 "
 
-echo "$new_keymaps" | loadkeys -
+echo "$new_keymaps" | /usr/bin/loadkeys -
