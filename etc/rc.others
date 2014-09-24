@@ -14,3 +14,12 @@
 
 # TODO: Re-enable when our kernel comes with the SysRq option
 #echo 0 > /proc/sys/kernel/sysrq
+
+# Assign alias Ctrl-Alt-1, 2, 7 to switch virtual terminals from the consoles.
+new_keymaps="
+control alt     keycode  2 = Console_1
+control alt     keycode  3 = Console_2
+control alt     keycode  8 = Console_7
+"
+
+echo "$new_keymaps" | /usr/bin/loadkeys -
