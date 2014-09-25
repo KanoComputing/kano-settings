@@ -20,6 +20,8 @@
 #include <time.h>
 #include <unistd.h>
 
+#include <kdesk-hourglass.h>
+
 #define NO_INTERNET_ICON "/usr/share/kano-settings/icon/widget-no-internet.png"
 #define WIFI_ICON "/usr/share/kano-settings/icon/widget-wifi.png"
 #define WIFI_SETTING_ICON "/usr/share/kano-settings/media/Icons/Icon-Wifi.png"
@@ -46,7 +48,7 @@ static GtkWidget *get_resized_icon(const char *filename);
 static void selection_done(GtkWidget *);
 static void popup_set_position(GtkWidget *, gint *, gint *, gboolean *, GtkWidget *);
 static gboolean internet_status(kano_internet_plugin_t *);
-static void launch_cmd(const char *cmd);
+static void launch_cmd(const char *cmd, const char *appname);
 
 static int plugin_constructor(Plugin *p, char **fp)
 {
@@ -126,22 +128,29 @@ static gboolean internet_status(kano_internet_plugin_t *plugin)
         }
 
         // run kano-connect if everything was OK
-        launch_cmd(RECONNECT_CMD);
+        launch_cmd(RECONNECT_CMD, NULL);
     }
 
     return TRUE;
 }
 
-static void launch_cmd(const char *cmd)
+static void launch_cmd(const char *cmd, const char *appname)
 {
     GAppInfo *appinfo = NULL;
     gboolean ret = FALSE;
+
+    if (appname) {
+        kdesk_hourglass_start((char *) appname);
+    }
 
     appinfo = g_app_info_create_from_commandline(cmd, NULL, G_APP_INFO_CREATE_NONE, NULL);
 
     if (appinfo == NULL)
     {
-        perror("Command lanuch failed.");
+        perror("Command launch failed.");
+        if (appname) {
+            kdesk_hourglass_end();
+        }
         return;
     }
 
@@ -149,15 +158,18 @@ static void launch_cmd(const char *cmd)
     if (!ret)
     {
         perror("Command launch failed.");
+        if (appname) {
+            kdesk_hourglass_end();
+        }
     }
 }
 
 void connect_clicked(GtkWidget *widget)
 {
     /* Launch settings*/
-    launch_cmd(SETTINGS_CMD);
+    launch_cmd(SETTINGS_CMD, "kano-settings");
     /* Play sound */
-    launch_cmd(SOUND_CMD);
+    launch_cmd(SOUND_CMD, NULL);
 }
 
 static gboolean show_menu(GtkWidget *widget, GdkEventButton *event, kano_internet_plugin_t *plugin)
