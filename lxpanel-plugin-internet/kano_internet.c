@@ -24,6 +24,10 @@
 #define WIFI_ICON "/usr/share/kano-settings/icon/widget-wifi.png"
 #define WIFI_SETTING_ICON "/usr/share/kano-settings/media/Icons/Icon-Wifi.png"
 
+#define INTERNET_CMD "/usr/bin/is_internet"
+#define SETTINGS_CMD "sudo /usr/bin/kano-settings 4"
+#define RECONNECT_CMD "sudo /usr/bin/kano-connect -c wlan0"
+#define SOUND_CMD "/usr/bin/aplay /usr/share/kano-media/sounds/kano_open_app.wav"
 #define PLUGIN_TOOLTIP "Internet status"
 
 #define MINUTE 60
@@ -104,7 +108,7 @@ static void plugin_destructor(Plugin *p)
 static gboolean internet_status(kano_internet_plugin_t *plugin)
 {
     // Execute is_internet command
-    int internet = system("/usr/bin/is_internet");
+    int internet = system(INTERNET_CMD);
     plugin->internet_available = internet;
     gtk_image_set_from_file(GTK_IMAGE(plugin->icon), internet == 0 ? WIFI_ICON : NO_INTERNET_ICON);
 
@@ -122,8 +126,7 @@ static gboolean internet_status(kano_internet_plugin_t *plugin)
         }
 
         // run kano-connect if everything was OK
-        const char *cmd = "sudo kano-connect -c wlan0";
-        launch_cmd(cmd);
+        launch_cmd(RECONNECT_CMD);
     }
 
     return TRUE;
@@ -151,8 +154,10 @@ static void launch_cmd(const char *cmd)
 
 void connect_clicked(GtkWidget *widget)
 {
-    const char *cmd = "sudo kano-settings 4";
-    launch_cmd(cmd);
+    /* Launch settings*/
+    launch_cmd(SETTINGS_CMD);
+    /* Play sound */
+    launch_cmd(SOUND_CMD);
 }
 
 static gboolean show_menu(GtkWidget *widget, GdkEventButton *event, kano_internet_plugin_t *plugin)

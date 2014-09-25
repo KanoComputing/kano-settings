@@ -25,7 +25,9 @@
 #define AUDIO_ICON "/usr/share/kano-settings/media/Icons/Icon-Audio.png"
 #define DISPLAY_ICON "/usr/share/kano-settings/media/Icons/Icon-Display.png"
 #define WIFI_ICON "/usr/share/kano-settings/media/Icons/Icon-Wifi.png"
+
 #define SETTINGS_CMD "sudo kano-settings "
+#define SOUND_CMD "/usr/bin/aplay /usr/share/kano-media/sounds/kano_open_app.wav"
 #define PLUGIN_TOOLTIP "Kano Settings"
 
 Panel *panel;
@@ -100,10 +102,13 @@ static void launch_cmd(const char *cmd)
 
 void settings_clicked(GtkWidget* widget, const char* state)
 {
+    /* Launch command sudo kano-settings state */
     char cmd[100];
     strcpy(cmd, SETTINGS_CMD);
     strcat(cmd, state);
     launch_cmd(cmd);
+    /* Play sound */
+    launch_cmd(SOUND_CMD);
 }
 
 static gboolean show_menu(GtkWidget *widget, GdkEventButton *event)
