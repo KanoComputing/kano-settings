@@ -19,6 +19,8 @@
 #include <ctype.h>
 #include <time.h>
 
+#include <kdesk-hourglass.h>
+
 #define ICON_FILE "/usr/share/kano-settings/settings-widget.png"
 #define KEYBOARD_ICON "/usr/share/kano-settings/media/Icons/Icon-Keyboard.png"
 #define MOUSE_ICON "/usr/share/kano-settings/media/Icons/Icon-Mouse.png"
@@ -82,22 +84,33 @@ static void plugin_destructor(Plugin *p)
     (void)p;
 }
 
-static void launch_cmd(const char *cmd)
+static void launch_cmd(const char *cmd, const char *appname)
 {
     GAppInfo *appinfo = NULL;
     gboolean ret = FALSE;
+
+    if (appname) {
+        kdesk_hourglass_start((char *) appname);
+    }
 
     appinfo = g_app_info_create_from_commandline(cmd, NULL,
                 G_APP_INFO_CREATE_NONE, NULL);
 
     if (appinfo == NULL) {
-        perror("Command lanuch failed.");
+        perror("Command launch failed.");
+        if (appname) {
+            kdesk_hourglass_end();
+        }
         return;
     }
 
     ret = g_app_info_launch(appinfo, NULL, NULL, NULL);
-    if (!ret)
+    if (!ret) {
         perror("Command lanuch failed.");
+        if (appname) {
+            kdesk_hourglass_end();
+        }
+    }
 }
 
 void settings_clicked(GtkWidget* widget, const char* state)
@@ -106,9 +119,9 @@ void settings_clicked(GtkWidget* widget, const char* state)
     char cmd[100];
     strcpy(cmd, SETTINGS_CMD);
     strcat(cmd, state);
-    launch_cmd(cmd);
+    launch_cmd(cmd, "kano-settings");
     /* Play sound */
-    launch_cmd(SOUND_CMD);
+    launch_cmd(SOUND_CMD, NULL);
 }
 
 static gboolean show_menu(GtkWidget *widget, GdkEventButton *event)
