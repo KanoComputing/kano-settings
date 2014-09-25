@@ -11,7 +11,7 @@ from kano_settings.templates import TopBarTemplate, Template
 from kano.gtk3.buttons import OrangeButton, KanoButton
 from kano.gtk3.kano_combobox import KanoComboBox
 from kano.gtk3.heading import Heading
-import kano_settings.constants as constants
+import kano_settings.global as global
 from kano_settings.boot_config import set_config_comment
 from kano_settings.system.display import get_model, list_supported_modes, set_hdmi_mode, read_hdmi_mode, \
     find_matching_mode, get_overscan_status, write_overscan_values, set_overscan_status, launch_pipe
@@ -82,7 +82,7 @@ class SetDisplay(Template):
             parse_mode = self.mode.split(" ")[0]
             self.set_hdmi_mode_from_str(parse_mode)
 
-            constants.need_reboot = True
+            global.need_reboot = True
         self.win.go_to_home()
 
     def on_mode_changed(self, combo):
@@ -148,7 +148,7 @@ class OverscanTemplate(TopBarTemplate):
 
         # Reset button
         self.reset_button = OrangeButton()
-        reset_image = Gtk.Image().new_from_file(constants.media + "/Icons/reset.png")
+        reset_image = Gtk.Image().new_from_file(global.media + "/Icons/reset.png")
         self.reset_button.set_image(reset_image)
         self.reset_button.connect("button_press_event", self.reset)
 
@@ -159,7 +159,7 @@ class OverscanTemplate(TopBarTemplate):
         set_config_comment('kano_screen_used', get_model())
 
         # Tell user to reboot to see changes
-        constants.need_reboot = True
+        global.need_reboot = True
 
         self.go_to_display()
 

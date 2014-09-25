@@ -18,7 +18,7 @@ if __name__ == '__main__' and __package__ is None:
     if dir_path != '/usr':
         sys.path.insert(1, dir_path)
 
-import kano_settings.constants as constants
+import kano_settings.global as global
 from kano_settings.home_screen import HomeScreen
 from kano.network import is_internet
 from kano.gtk3.apply_styles import apply_styling_to_screen, apply_common_to_screen
@@ -35,10 +35,10 @@ class MainWindow(ApplicationWindow):
     last_level_visited = 0
     width = 680
     height = 405
-    CSS_PATH = constants.media + '/CSS/style.css'
+    CSS_PATH = global.media + '/CSS/style.css'
 
     def __init__(self, screen_number=None):
-        constants.has_internet = is_internet()
+        global.has_internet = is_internet()
         apply_styling_to_screen(self.CSS_PATH)
         apply_common_to_screen()
 
