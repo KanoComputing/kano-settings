@@ -17,7 +17,7 @@ from kano.gtk3.buttons import KanoButton
 from kano.gtk3.heading import Heading
 from kano.gtk3.kano_dialog import KanoDialog
 from kano.gtk3.scrolled_window import ScrolledWindow
-import kano_settings.constants as constants
+import kano_settings.global as global
 
 
 class TopBarTemplate(Gtk.Box):
@@ -31,7 +31,7 @@ class TopBarTemplate(Gtk.Box):
 
     # On closing window, will alert if any of the listed booleans are True
     def close_window(self, button, event):
-        if constants.need_reboot:
+        if global.need_reboot:
             kdialog = KanoDialog(
                 "Reboot?",
                 "Your Kano needs to reboot for changes to apply",

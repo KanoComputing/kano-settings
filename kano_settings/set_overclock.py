@@ -8,7 +8,7 @@
 
 from gi.repository import Gdk
 from kano_settings.templates import RadioButtonTemplate
-import kano_settings.constants as constants
+import kano_settings.global as global
 from kano_settings.boot_config import get_config_value
 from kano_settings.data import get_data
 from kano_settings.system.overclock import change_overclock_value
@@ -80,7 +80,7 @@ class SetOverclock(RadioButtonTemplate):
             change_overclock_value(modes[self.selected_button])
 
             # Tell user to reboot to see changes
-            constants.need_reboot = True
+            global.need_reboot = True
 
             self.win.go_to_home()
 
