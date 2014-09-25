@@ -11,7 +11,7 @@ from gi.repository import Gtk, GObject
 
 import kano_settings.system.keyboard_layouts as keyboard_layouts
 import kano_settings.system.keyboard_config as keyboard_config
-import kano_settings.global as global
+import kano_settings.common as common
 from kano_settings.templates import Template
 from kano_settings.config_file import get_setting, set_setting
 from kano_settings.data import get_data
@@ -47,7 +47,7 @@ class SetKanoKeyboard(Template):
 
         # height is 106px
         img = Gtk.Image()
-        img.set_from_file(global.media + "/Graphics/keyboard.png")
+        img.set_from_file(common.media + "/Graphics/keyboard.png")
 
         # Link to advance options
         self.to_advance_button = OrangeButton("Layout options")

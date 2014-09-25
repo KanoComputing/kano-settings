@@ -17,7 +17,7 @@ from kano.gtk3.buttons import KanoButton
 from kano.gtk3.labelled_entries import LabelledEntries
 
 from kano.utils import ensure_dir
-import kano_settings.global as global
+import kano_settings.common as common
 from kano_settings.templates import TopBarTemplate, Template
 from kano_settings.data import get_data
 
@@ -113,7 +113,7 @@ class SetAccount(TopBarTemplate):
             # add new user command
             add_user()
             # Tell user to reboot to see changes
-            global.need_reboot = True
+            common.need_reboot = True
 
     # Gets executed when REMOVE button is clicked
     def remove_account_dialog(self, widget=None, event=None):

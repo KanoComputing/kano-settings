@@ -8,7 +8,7 @@
 # This controls the button styling in the default introduction screen which shows all the settings
 
 from gi.repository import Gtk
-import kano_settings.global as global
+import kano_settings.common as common
 import kano.gtk3.cursor as cursor
 
 
@@ -41,7 +41,7 @@ class Menu_button():
         self.button.set_can_focus(False)
         cursor.attach_cursor_events(self.button)
         self.img = Gtk.Image()
-        self.img.set_from_file(global.media + "/Icons/Icon-" + name + ".png")
+        self.img.set_from_file(common.media + "/Icons/Icon-" + name + ".png")
 
         self.container.attach(self.title, 2, 0, 1, 1)
         self.container.attach(self.description, 2, 1, 1, 1)

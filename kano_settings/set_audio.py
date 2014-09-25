@@ -7,7 +7,7 @@
 #
 
 from gi.repository import Gtk, Gdk
-import kano_settings.global as global
+import kano_settings.common as common
 from kano_settings.templates import Template
 from kano.logging import logger
 from kano_settings.config_file import get_setting
@@ -46,7 +46,7 @@ class SetAudio(Template):
 
         # height is 106px
         self.current_img = Gtk.Image()
-        self.current_img.set_from_file(global.media + "/Graphics/Audio-jack.png")
+        self.current_img.set_from_file(common.media + "/Graphics/Audio-jack.png")
 
         self.horizontal_box = Gtk.Box()
         self.horizontal_box.pack_start(self.hdmi_button, False, False, 10)
@@ -75,7 +75,7 @@ class SetAudio(Template):
             set_to_HDMI(self.HDMI)
 
             # Tell user to reboot to see changes
-            global.need_reboot = True
+            common.need_reboot = True
             self.win.go_to_home()
 
     def current_setting(self):
@@ -92,6 +92,6 @@ class SetAudio(Template):
         self.HDMI = button.get_active()
 
         if self.HDMI:
-            self.current_img.set_from_file(global.media + "/Graphics/Audio-HDMI.png")
+            self.current_img.set_from_file(common.media + "/Graphics/Audio-HDMI.png")
         else:
-            self.current_img.set_from_file(global.media + "/Graphics/Audio-jack.png")
+            self.current_img.set_from_file(common.media + "/Graphics/Audio-jack.png")

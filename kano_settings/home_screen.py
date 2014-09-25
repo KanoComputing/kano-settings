@@ -14,7 +14,7 @@ from kano_settings.set_advanced import SetAdvanced
 from kano_settings.set_wallpaper import SetWallpaper
 from kano_settings.templates import TopBarTemplate
 
-import kano_settings.global as global
+import kano_settings.common as common
 from kano_settings.components.menu_button import Menu_button
 
 from kano.gtk3.scrolled_window import ScrolledWindow
@@ -102,7 +102,7 @@ class HomeScreen(TopBarTemplate):
 
             if self.names[x] == 'Wifi':
                 text = ''
-                if global.has_internet:
+                if common.has_internet:
                     text = 'Connected'
                 else:
                     text = 'Not connected'

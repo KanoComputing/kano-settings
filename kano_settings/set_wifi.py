@@ -10,7 +10,7 @@ import os
 from gi.repository import Gtk, Gdk, GObject
 import threading
 
-import kano_settings.global as global
+import kano_settings.common as common
 from kano_settings.templates import Template, TopBarTemplate
 from kano.gtk3.buttons import OrangeButton, KanoButton
 from kano.gtk3.heading import Heading
@@ -67,9 +67,9 @@ class SetWifi(Template):
         self.box.pack_start(container, False, False, 0)
 
         network_info_dict = network_info()
-        global.has_internet = is_internet()
+        common.has_internet = is_internet()
 
-        if not global.has_internet or not network_info_dict:
+        if not common.has_internet or not network_info_dict:
             if network_info_dict:
                 description = self.data_offline["CONFIGURE_PROXY_OR_BROWSER"]
             else:
@@ -89,7 +89,7 @@ class SetWifi(Template):
             #self.add_connection.connect("key_release_event", self.configure_wifi)
 
             status_box.pack_start(self.add_connection, False, False, 0)
-            internet_img.set_from_file(global.media + "/Graphics/Internet-noConnection.png")
+            internet_img.set_from_file(common.media + "/Graphics/Internet-noConnection.png")
             internet_status.set_text("No network found")
             self.kano_button.set_label(kano_label)
 
@@ -115,7 +115,7 @@ class SetWifi(Template):
             ip = network_info_dict[network]['address']
             network_text = network_info_dict[network]['nice_name']
 
-            internet_img.set_from_file(global.media + "/Graphics/Internet-Connection.png")
+            internet_img.set_from_file(common.media + "/Graphics/Internet-Connection.png")
 
             internet_status.set_text(network_text)
             internet_action.set_text(ip)
@@ -130,7 +130,7 @@ class SetWifi(Template):
                 kano_label = self.data_ethernet["KANO_BUTTON"]
 
                 # Change to ethernet image here
-                internet_img.set_from_file(global.media + "/Graphics/Internet-ethernetConnection.png")
+                internet_img.set_from_file(common.media + "/Graphics/Internet-ethernetConnection.png")
 
             else:
                 title = self.data_wifi["LABEL_1"]
@@ -271,7 +271,7 @@ class SetProxy(TopBarTemplate):
             except:
                 # Something went wrong > disable proxy
                 set_all_proxies(False)
-                global.proxy_enabled = False
+                common.proxy_enabled = False
                 self.enable_proxy = False
                 self.enabled_init = False
                 self.clear_entries()
@@ -296,7 +296,7 @@ class SetProxy(TopBarTemplate):
                     username = self.username_entry.get_text()
                     password = self.password_entry.get_text()
                     set_all_proxies(enable=True, host=host, port=port, username=username, password=password)
-                    global.proxy_enabled = True
+                    common.proxy_enabled = True
 
                     success, text = test_proxy()
                     if not success:
@@ -310,7 +310,7 @@ class SetProxy(TopBarTemplate):
 
                 else:
                     set_all_proxies(False)
-                    global.proxy_enabled = False
+                    common.proxy_enabled = False
                     title = "Successfully disabled proxy"
                     description = ""
                     return_value = 0
