@@ -307,6 +307,7 @@ class SetProxy(TopBarTemplate):
                         # disable proxy if we couldn't successfully enable it
                         set_all_proxies(False)
                         common.proxy_enabled = False
+                        self.checkbutton.set_active(False)
                     else:
                         title = "Successfully enabled proxy"
                         description = ""
