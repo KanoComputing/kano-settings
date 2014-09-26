@@ -339,6 +339,7 @@ class SetProxy(TopBarTemplate):
                         self.go_to_wifi()
                     elif response == 1:
                         self.checkbutton.set_active(False)
+                        self.kano_button.set_sensitive(False)
 
                 GObject.idle_add(done, title, description, return_value)
 
