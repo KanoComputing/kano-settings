@@ -303,6 +303,10 @@ class SetProxy(TopBarTemplate):
                         title = "Error with proxy"
                         description = text
                         return_value = 1
+
+                        # disable proxy if we couldn't successfully enable it
+                        set_all_proxies(False)
+                        common.proxy_enabled = False
                     else:
                         title = "Successfully enabled proxy"
                         description = ""
