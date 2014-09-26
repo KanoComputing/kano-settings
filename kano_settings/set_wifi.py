@@ -266,8 +266,10 @@ class SetProxy(TopBarTemplate):
             try:
                 self.ip_entry.set_text(data['host'])
                 self.port_entry.set_text(data['port'])
-                self.username_entry.set_text(data['username'])
-                self.password_entry.set_text(data['password'])
+                if data['username']:
+                    self.username_entry.set_text(data['username'])
+                if data['password']:
+                    self.password_entry.set_text(data['password'])
             except:
                 # Something went wrong > disable proxy
                 set_all_proxies(False)
