@@ -307,7 +307,6 @@ class SetProxy(TopBarTemplate):
                         # disable proxy if we couldn't successfully enable it
                         set_all_proxies(False)
                         common.proxy_enabled = False
-                        self.checkbutton.set_active(False)
                     else:
                         title = "Successfully enabled proxy"
                         description = ""
@@ -338,6 +337,8 @@ class SetProxy(TopBarTemplate):
 
                     if response == 0:
                         self.go_to_wifi()
+                    elif response == 1:
+                        self.checkbutton.set_active(False)
 
                 GObject.idle_add(done, title, description, return_value)
 
