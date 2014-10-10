@@ -12,11 +12,13 @@ import os
 import shutil
 import hashlib
 
-from kano.utils import read_file_contents, write_file_contents
+from kano.utils import read_file_contents, write_file_contents, \
+    read_json, write_json, ensure_dir
 from kano.logging import logger
 
 password_file = "/etc/kano-parental-lock"
 hosts_file = '/etc/hosts'
+chromium_policy_file = '/etc/chromium/policies/managed/policy.json'
 
 
 def get_parental_enabled():
@@ -123,7 +125,26 @@ def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/P
             create_empty_hosts()
 
 
+def set_chromium_policies(policies):
+    if not os.path.exists(chromium_policy_file):
+        ensure_dir(os.path.dirname(chromium_policy_file))
+        policy_config = {}
+    else:
+        policy_config = read_json(chromium_policy_file)
+
+    for policy in policies:
+        policy_config[policy[0]] = policy[1]
+
+    write_json(chromium_policy_file, policy_config)
 
 
+def set_chromium_parental(enabled):
+    # Policy keys and values can be found at:
+    #     www.chromium.org/administrators/policy-list-3
+    policies = {
+        # Chromium_setting: (disabled_value, enabled_value),
+        'IncognitoModeAvailability': (0, 1)
+    }
 
-
+    new_policy = [(key, policies[key][enabled]) for key in policies]
+    set_chromium_policies(new_policy)
