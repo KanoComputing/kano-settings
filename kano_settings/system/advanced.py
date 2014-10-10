@@ -15,6 +15,7 @@ import hashlib
 from kano.utils import read_file_contents, write_file_contents, \
     read_json, write_json, ensure_dir
 from kano.logging import logger
+from kano.network import set_dns
 
 password_file = "/etc/kano-parental-lock"
 hosts_file = '/etc/hosts'
@@ -148,3 +149,22 @@ def set_chromium_parental(enabled):
 
     new_policy = [(key, policies[key][enabled]) for key in policies]
     set_chromium_policies(new_policy)
+
+
+def set_dns_parental(enabled):
+    open_dns_servers = [
+        '208.67.222.123',
+        '208.67.220.123'
+    ]
+
+    google_servers = [
+        '8.8.8.8',
+        '8.8.4.4'
+    ]
+
+    if enabled:
+        logger.debug('Enabling parental DNS servers (OpenDNS servers)')
+        set_dns(open_dns_servers)
+    else:
+        logger.debug('Disabling parental DNS servers (Google servers)')
+        set_dns(google_servers)
