@@ -90,7 +90,8 @@ def create_empty_hosts():
     os.chmod(hosts_file, 0644)
 
 
-def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/Parental/parental-hosts-blacklist.gz'):
+def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/Parental/parental-hosts-blacklist.gz',
+        blocked_sites=None):
     logger.debug('set_hosts_blacklist: {}'.format(enable))
 
     hosts_file_backup = '/etc/kano-hosts-parental-backup'
@@ -110,6 +111,12 @@ def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/P
 
             logger.debug('appending the blacklist`')
             os.system('zcat %s >> %s' % (blacklist_file, hosts_file))
+
+            logger.debug('Adding user-specified blacklist websites')
+            if blocked_sites:
+                blocked_str = '\n'.join(
+                    ['127.0.0.1    {}'.format(site) for site in blocked_sites])
+                os.system('echo "{}" >> {}'.format(blocked_str, hosts_file))
 
             logger.debug('making the file root read-only')
             os.chmod(hosts_file, 0644)
