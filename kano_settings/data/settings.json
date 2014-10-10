@@ -92,6 +92,11 @@
     "OPTION_3": "Fast",
     "DESCRIPTION_3": "BETTER FOR WIDE SCREENS"
   },
+  "SET_NOTIFICATIONS": {
+    "LABEL_1": "Notifications",
+    "LABEL_2": "Toggle notifications",
+    "KANO_BUTTON": "APPLY CHANGES"
+  },
   "SET_FONT" : {
     "LABEL_1": "Font",
     "LABEL_2": "Choose a comfortable text size",

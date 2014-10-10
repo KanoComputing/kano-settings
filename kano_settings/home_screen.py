@@ -4,6 +4,7 @@ from gi.repository import Gtk
 
 from kano_settings.set_keyboard import choose_keyboard_screen
 from kano_settings.set_mouse import SetMouse
+from kano_settings.set_notifications import SetNotifications
 from kano_settings.set_font import SetFont
 from kano_settings.set_audio import SetAudio
 from kano_settings.set_display import SetDisplay
@@ -27,7 +28,7 @@ from kano_settings.config_file import get_setting
 class HomeScreen(TopBarTemplate):
 
     names = ["Keyboard", "Mouse", "Audio", "Display", "Wifi", "Overclocking", "Account", "Wallpaper", "Font",
-             "Advanced", "About"]
+             "Advanced", "About", "Notifications"]
     custom_info = ["Keyboard-country-human", "Mouse", "Audio", None, None, "Overclocking", None,
                    "Wallpaper", "Font"]
 
@@ -172,4 +173,5 @@ class HomeScreen(TopBarTemplate):
             8: SetFont,
             9: SetAdvanced,
             10: SetAbout,
+            11: SetNotifications,
         }[x]
