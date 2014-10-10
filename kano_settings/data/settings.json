@@ -1,4 +1,12 @@
 {
+  "SET_ABOUT": {
+    "LABEL_1": "About your Kano kit",
+    "LABEL_2": "Useful information about the system",
+    "LABEL_3": "Available space",
+    "LABEL_4": "OS version",
+    "LABEL_5": "Temperature",
+    "KANO_BUTTON": "BACK"
+  },
   "SET_AUDIO": {
     "LABEL_1": "Audio",
     "LABEL_2": "Get sound from your speaker or your TV",

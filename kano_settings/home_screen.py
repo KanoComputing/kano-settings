@@ -10,6 +10,7 @@ from kano_settings.set_display import SetDisplay
 from kano_settings.set_wifi import SetWifi
 from kano_settings.set_overclock import SetOverclock
 from kano_settings.set_account import SetAccount
+from kano_settings.set_about import SetAbout
 from kano_settings.set_advanced import SetAdvanced
 from kano_settings.set_wallpaper import SetWallpaper
 from kano_settings.templates import TopBarTemplate
@@ -25,7 +26,8 @@ from kano_settings.config_file import get_setting
 
 class HomeScreen(TopBarTemplate):
 
-    names = ["Keyboard", "Mouse", "Audio", "Display", "Wifi", "Overclocking", "Account", "Wallpaper", "Font", "Advanced"]
+    names = ["Keyboard", "Mouse", "Audio", "Display", "Wifi", "Overclocking", "Account", "Wallpaper", "Font",
+             "Advanced", "About"]
     custom_info = ["Keyboard-country-human", "Mouse", "Audio", None, None, "Overclocking", None,
                    "Wallpaper", "Font"]
 
@@ -124,9 +126,6 @@ class HomeScreen(TopBarTemplate):
     # When clicking next in the default intro screen - takes you to the last level you visited
     def on_next(self, widget=None, arg2=None):
 
-        #self.win.top_bar.enable_prev()
-        #self.win.top_bar.disable_next()
-
         self.state_to_widget(self.win.last_level_visited)(self.win)
         self.win.last_level_visited = self.win.state
         # Do not do win.show_all() as will stop the combotextbox in set_keyboard being hidden properly
@@ -138,10 +137,6 @@ class HomeScreen(TopBarTemplate):
         self.win.state = widget.state
         # Record this level so we can go back to it
         self.win.last_level_visited = self.win.state
-
-        # Grey out next arrow and darken prev arrow
-        #self.win.top_bar.enable_prev()
-        #self.win.top_bar.disable_next()
 
         # Call next state
         self.win.clear_win()
@@ -157,10 +152,6 @@ class HomeScreen(TopBarTemplate):
         self.win.state = state
         # Record this level so we can go back to it
         self.win.last_level_visited = self.win.state
-
-        # Grey out next arrow and darken prev arrow
-        #self.win.top_bar.enable_prev()
-        #self.win.top_bar.disable_next()
 
         # Call next state
         self.state_to_widget(self.win.state)(self.win)
@@ -180,4 +171,5 @@ class HomeScreen(TopBarTemplate):
             7: SetWallpaper,
             8: SetFont,
             9: SetAdvanced,
+            10: SetAbout,
         }[x]
