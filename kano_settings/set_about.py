@@ -37,13 +37,13 @@ class SetAbout(Template):
         space_available = self.get_space_available()
         temperature = self.get_temperature()
 
-        version_label = Gtk.Label(current_version)
-        space_label = Gtk.Label(space_available)
-        temperature_label = Gtk.Label(temperature)
+        version_box = self.create_box("Version: ", current_version)
+        space_box = self.create_box("Space used: ", space_available)
+        temperature_box = self.create_box("Temperature of your Kano: ", temperature)
 
-        self.box.pack_start(version_label, False, False, 0)
-        self.box.pack_start(space_label, False, False, 0)
-        self.box.pack_start(temperature_label, False, False, 0)
+        self.box.pack_start(version_box, False, False, 0)
+        self.box.pack_start(space_box, False, False, 0)
+        self.box.pack_start(temperature_box, False, False, 0)
 
         self.kano_button.connect("button-release-event", self.win.go_to_home)
         self.kano_button.connect("key-release-event", self.win.go_to_home)
@@ -69,3 +69,16 @@ class SetAbout(Template):
                                          echo $cputemp1\".\"$cputemp", shell=True)
         output = output.strip()
         return output + degree_sign + "C"
+
+    def create_box(self, header, info):
+        header_label = Gtk.Label(header)
+        header_label.get_style_context().add_class("about_heading")
+
+        info_label = Gtk.Label(info)
+        info_label.get_style_context().add_class("about_info")
+
+        box = Gtk.Box()
+        box.pack_start(header_label, False, False, 0)
+        box.pack_start(info_label, False, False, 0)
+
+        return box

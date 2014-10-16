@@ -91,3 +91,14 @@
     font: Bariol 13;
     color: @subheading_color;
 }
+
+/* Info from the about screen */
+.about_heading {
+    font: Bariol Bold 16;
+    color: @title_color;
+}
+
+.about_info {
+    font: Bariol 16;
+    color: @subheading_color;
+}
