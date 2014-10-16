@@ -151,3 +151,69 @@ class CheckButtonTemplate(LabelledListTemplate):
             self.buttons.append(button)
             self.label_button_and_pack(button, text[0], text[1])
 
+
+class EditableList(Gtk.Grid):
+
+    def __init__(self, size_x=400, size_y=150):
+        Gtk.Grid.__init__(self)
+
+        self.set_row_spacing(10)
+        self.set_column_spacing(10)
+
+        scroll = Gtk.ScrolledWindow()
+        scroll.set_size_request(size_x, size_y)
+
+        self.edit_list_store = Gtk.ListStore(str)
+        self.edit_list = Gtk.TreeView(self.edit_list_store)
+        self.edit_list.set_headers_visible(False)
+
+        renderer = Gtk.CellRendererText()
+        renderer.set_property('editable', True)
+        renderer.connect('edited', self._item_edited_handler)
+        column = Gtk.TreeViewColumn(cell_renderer=renderer, text=0)
+        self.edit_list.append_column(column)
+
+        add_btn = Gtk.Button('ADD')
+        add_btn.connect('button-release-event', self.add)
+        rm_btn = Gtk.Button('REMOVE')
+        rm_btn.connect('button-release-event', self.rm)
+
+        scroll.add(self.edit_list)
+
+        self.attach(scroll, 0, 0, 2, 1)
+        self.attach(add_btn, 0, 1, 1, 1)
+        self.attach(rm_btn, 1, 1, 1, 1)
+
+    def add(self, button, event):
+        self.edit_list_store.append([''])
+
+        self.edit_list.grab_focus()
+
+        row = len(self.edit_list_store) - 1
+        col = self.edit_list.get_column(0)
+        self.edit_list.set_cursor(row, col, start_editing=True)
+
+    def rm(self, button=None, event=None):
+        selection = self.edit_list.get_selection()
+        _, selected = selection.get_selected()
+
+        if not selected:
+            return
+
+        self.edit_list_store.remove(selected)
+
+    def _item_edited_handler(self, cellrenderertext, path, new_text):
+        selection = self.edit_list.get_selection()
+        _, selected = selection.get_selected()
+
+        if not new_text:
+            row = self.edit_list_store[selected]
+            old_text = row[0]
+
+            if old_text:
+                return
+
+            self.rm()
+
+
+        self.edit_list_store.set_value(selected, 0, new_text)

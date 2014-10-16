@@ -102,3 +102,7 @@
     font: Bariol 16;
     color: @subheading_color;
 }
+
+.parental_activated {
+    color: @kano_green;
+}
