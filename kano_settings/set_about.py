@@ -7,12 +7,17 @@
 #
 
 import subprocess
+import os
 from gi.repository import Gtk
+from kano.gtk3.kano_dialog import KanoDialog
+from kano.gtk3.buttons import OrangeButton, KanoButton
+from kano_profile.paths import legal_dir
+from kano_settings.common import media
 from kano_settings.data import get_data
-from kano_settings.templates import Template
+from kano_settings.templates import TopBarTemplate
 
 
-class SetAbout(Template):
+class SetAbout(TopBarTemplate):
     selected_button = 0
     initial_button = 0
 
@@ -20,11 +25,9 @@ class SetAbout(Template):
 
     def __init__(self, win):
 
-        title = self.data["LABEL_1"]
-        description = self.data["LABEL_2"]
         kano_label = self.data["KANO_BUTTON"]
 
-        Template.__init__(self, title, description, kano_label)
+        TopBarTemplate.__init__(self)
 
         self.win = win
         self.win.set_main_widget(self)
@@ -33,17 +36,29 @@ class SetAbout(Template):
         self.top_bar.enable_prev()
         self.top_bar.set_prev_callback(self.win.go_to_home)
 
-        current_version = self.get_current_version()
+        image = Gtk.Image.new_from_file(media + "/Graphics/about-screen.png")
+
+        version_align = self.create_version_align()
+
         space_available = self.get_space_available()
         temperature = self.get_temperature()
 
-        version_box = self.create_box("Version: ", current_version)
-        space_box = self.create_box("Space used: ", space_available)
-        temperature_box = self.create_box("Temperature of your Kano: ", temperature)
+        space_align = self.create_other_align(space_available)
+        temperature_align = self.create_other_align(temperature)
 
-        self.box.pack_start(version_box, False, False, 0)
-        self.box.pack_start(space_box, False, False, 0)
-        self.box.pack_start(temperature_box, False, False, 0)
+        terms_and_conditions = OrangeButton("Terms and conditions")
+        terms_and_conditions.connect("button_release_event", self.show_terms_and_conditions)
+
+        self.kano_button = KanoButton(kano_label)
+        self.kano_button.pack_and_align()
+
+        image.set_margin_top(30)
+        self.pack_start(image, False, False, 10)
+        self.pack_start(version_align, False, False, 2)
+        self.pack_start(space_align, False, False, 2)
+        self.pack_start(temperature_align, False, False, 2)
+        self.pack_start(terms_and_conditions, False, False, 3)
+        self.pack_start(self.kano_button.align, False, False, 10)
 
         self.kano_button.connect("button-release-event", self.win.go_to_home)
         self.kano_button.connect("key-release-event", self.win.go_to_home)
@@ -53,12 +68,16 @@ class SetAbout(Template):
 
     def get_current_version(self):
         output = subprocess.check_output(["cat", "/etc/kanux_version"])
-        return output.strip()
+        version_number = output.split("-")[-1].strip()
+        return "Kano OS v." + version_number
 
     def get_space_available(self):
         output = subprocess.check_output("df -h | grep rootfs", shell=True)
-        space_available = output.strip().split(" ")[-2]
-        return space_available
+        items = output.strip().split(" ")
+        items = filter(None, items)
+        total_space = items[1]
+        space_used = items[2]
+        return "Disk space used: " + space_used + " / " + total_space
 
     def get_temperature(self):
         degree_sign = u'\N{DEGREE SIGN}'
@@ -68,17 +87,35 @@ class SetAbout(Template):
                                          cputemp=$(($cputemp2%$cputemp1)); \
                                          echo $cputemp1\".\"$cputemp", shell=True)
         output = output.strip()
-        return output + degree_sign + "C"
+        return "Temperature: " + output + degree_sign + "C"
 
-    def create_box(self, header, info):
-        header_label = Gtk.Label(header)
-        header_label.get_style_context().add_class("about_heading")
+    def create_version_align(self):
+        text = self.get_current_version()
+        label = Gtk.Label(text)
+        label.get_style_context().add_class("about_version")
 
-        info_label = Gtk.Label(info)
-        info_label.get_style_context().add_class("about_info")
+        align = Gtk.Alignment(xalign=0.5, xscale=0, yalign=0, yscale=0)
+        align.add(label)
 
-        box = Gtk.Box()
-        box.pack_start(header_label, False, False, 0)
-        box.pack_start(info_label, False, False, 0)
+        return align
 
-        return box
+    def create_other_align(self, text):
+        label = Gtk.Label(text)
+        label.get_style_context().add_class("about_label")
+
+        align = Gtk.Alignment(xalign=0.5, xscale=0, yalign=0, yscale=0)
+        align.add(label)
+
+        return align
+
+    def show_terms_and_conditions(self, widget, event):
+
+        legal_text = ''
+        for file in os.listdir(legal_dir):
+            with open(legal_dir + file, 'r') as f:
+                legal_text = legal_text + f.read() + '\n\n\n'
+
+        kdialog = KanoDialog("Terms and conditions", "",
+                             scrolled_text=legal_text,
+                             parent_window=self.win)
+        kdialog.run()

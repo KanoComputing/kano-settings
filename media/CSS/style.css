@@ -93,12 +93,12 @@
 }
 
 /* Info from the about screen */
-.about_heading {
-    font: Bariol Bold 16;
+.about_version {
+    font: Bariol Bold 18;
     color: @title_color;
 }
 
-.about_info {
-    font: Bariol 16;
+.about_label {
+    font: Bariol 15;
     color: @subheading_color;
 }
