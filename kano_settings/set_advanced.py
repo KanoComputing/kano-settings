@@ -8,10 +8,12 @@
 
 from gi.repository import Gtk, Gdk
 from kano.gtk3.kano_dialog import KanoDialog
+from kano.gtk3.buttons import OrangeButton
 
 from kano import logging
 from kano_settings.templates import Template, LabelledListTemplate
 from system.advanced import get_parental_enabled, set_parental_enabled
+from parental_config import ParentalConfig
 
 from kano_settings.data import get_data
 
@@ -76,7 +78,17 @@ class SetAdvanced(Template):
             grid.attach(label, 0, i, 1, 1)
             i = i + 1
 
+        if get_parental_enabled():
+            parental_config_button = OrangeButton("Configure")
+            parental_config_button.connect("button-press-event",
+                                           self.go_to_parental_config)
+            grid.attach(parental_config_button, 0, i, 1, 1)
+
         return grid
+
+    def go_to_parental_config(self, button=None, event=None):
+        self.win.clear_win()
+        ParentalConfig(self.win)
 
     def create_debug_button(self):
         title = self.data["OPTION_2"]
@@ -109,7 +121,7 @@ class SetAdvanced(Template):
         SetPassword(self.win)
 
     def apply_changes(self, button, event):
-         # If enter key is pressed or mouse button is clicked
+        # If enter key is pressed or mouse button is clicked
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
             old_debug_mode = self.get_stored_debug_mode()

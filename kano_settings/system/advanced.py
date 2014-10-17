@@ -12,11 +12,21 @@ import os
 import shutil
 import hashlib
 
-from kano.utils import read_file_contents, write_file_contents
+from kano.utils import read_file_contents, write_file_contents, \
+    read_file_contents_as_lines, read_json, write_json, ensure_dir, \
+    get_user_unsudoed
 from kano.logging import logger
+from kano.network import set_dns
 
 password_file = "/etc/kano-parental-lock"
 hosts_file = '/etc/hosts'
+chromium_policy_file = '/etc/chromium/policies/managed/policy.json'
+
+username = get_user_unsudoed()
+if username != 'root':
+    settings_dir = os.path.join('/home', username, '.kano-settings')
+    blacklist_file = os.path.join(settings_dir, 'blacklist')
+    whitelist_file = os.path.join(settings_dir, 'whitelist')
 
 
 def get_parental_enabled():
@@ -75,6 +85,10 @@ def encrypt_password(str):
     return hashlib.sha1(str).hexdigest()
 
 
+def authenticate_parental_password(passwd):
+    return read_file_contents(password_file) == encrypt_password(passwd)
+
+
 def create_empty_hosts():
     import platform
     hostname = platform.node()
@@ -87,7 +101,8 @@ def create_empty_hosts():
     os.chmod(hosts_file, 0644)
 
 
-def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/Parental/parental-hosts-blacklist.gz'):
+def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/Parental/parental-hosts-blacklist.gz',
+        blocked_sites=None, allowed_sites=None):
     logger.debug('set_hosts_blacklist: {}'.format(enable))
 
     hosts_file_backup = '/etc/kano-hosts-parental-backup'
@@ -111,6 +126,17 @@ def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/P
             logger.debug('making the file root read-only')
             os.chmod(hosts_file, 0644)
 
+        logger.debug('Removing allowed websites')
+        if allowed_sites:
+            for site in allowed_sites:
+                os.system('sed -i /{}/d {}'.format(site, hosts_file))
+
+        logger.debug('Adding user-specified blacklist websites')
+        if blocked_sites:
+            blocked_str = '\n'.join(
+                ['127.0.0.1    {}'.format(site) for site in blocked_sites])
+            os.system('echo "{}" >> {}'.format(blocked_str, hosts_file))
+
     else:
         logger.debug('disabling blacklist')
 
@@ -123,7 +149,87 @@ def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/P
             create_empty_hosts()
 
 
+def set_chromium_policies(policies):
+    if not os.path.exists(chromium_policy_file):
+        ensure_dir(os.path.dirname(chromium_policy_file))
+        policy_config = {}
+    else:
+        policy_config = read_json(chromium_policy_file)
+
+    for policy in policies:
+        policy_config[policy[0]] = policy[1]
+
+    write_json(chromium_policy_file, policy_config)
 
 
+def set_chromium_parental(enabled):
+    # Policy keys and values can be found at:
+    #     www.chromium.org/administrators/policy-list-3
+    policies = {
+        # Chromium_setting: (disabled_value, enabled_value),
+        'IncognitoModeAvailability': (0, 1)
+    }
 
+    new_policy = [(key, policies[key][enabled]) for key in policies]
+    set_chromium_policies(new_policy)
+
+
+def set_dns_parental(enabled):
+    open_dns_servers = [
+        '208.67.222.123',
+        '208.67.220.123'
+    ]
+
+    google_servers = [
+        '8.8.8.8',
+        '8.8.4.4'
+    ]
+
+    if enabled:
+        logger.debug('Enabling parental DNS servers (OpenDNS servers)')
+        set_dns(open_dns_servers)
+    else:
+        logger.debug('Disabling parental DNS servers (Google servers)')
+        set_dns(google_servers)
+
+
+def read_listed_sites():
+    return (
+        read_file_contents_as_lines(blacklist_file),
+        read_file_contents_as_lines(whitelist_file)
+    )
+
+
+def write_whitelisted_sites(whitelist):
+    write_file_contents(whitelist_file, '\n'.join(whitelist))
+
+
+def write_blacklisted_sites(blacklist):
+    write_file_contents(blacklist_file, '\n'.join(blacklist))
+
+
+def set_parental_level(level_setting):
+    feature_levels = [
+        # Low
+        ['blacklist'],
+        # Medium
+        ['dns'],
+        # High
+        ['chromium']
+    ]
+
+    enabled = []
+
+    for level, features in enumerate(feature_levels):
+        if level <= level_setting:
+            enabled = enabled + features
+
+    logger.debug('Setting parental control to level {}'.format(level_setting))
+
+    set_chromium_parental('chromium' in enabled)
+    set_dns_parental('dns' in enabled)
+
+    blacklist, whitelist = read_listed_sites()
+    set_hosts_blacklist('blacklist' in enabled,
+                        blocked_sites=blacklist, allowed_sites=whitelist)
 
