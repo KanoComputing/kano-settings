@@ -10,7 +10,7 @@
 from gi.repository import Gdk
 from kano_settings.templates import CheckButtonTemplate
 from kano_settings.data import get_data
-from kano.notifications import enable, disable, allow_world_notifications, disallow_world_notifications
+import kano.notifications as notifications  # enable, disable, allow_world_notifications, disallow_world_notifications
 
 
 class SetNotifications(CheckButtonTemplate):
@@ -43,15 +43,19 @@ class SetNotifications(CheckButtonTemplate):
 
     def configure_all_notifications(self):
         if self.disable_all_checkbutton.get_active():
-            disable()
+            notifications.disable()
         else:
-            enable()
+            notifications.enable()
 
     def configure_world_notifications(self):
         if self.disable_world_checkbutton.get_active():
-            disallow_world_notifications()
+            notifications.disallow_world_notifications()
         else:
-            allow_world_notifications()
+            notifications.allow_world_notifications()
+
+    def show_configuration(self):
+        self.disable_all_checkbutton.set_enabled(not notifications.is_enabled())
+        self.disable_world_checkbutton.set_enabled(not notifications.world_notifications_allowed())
 
     def apply_changes(self, widget, event):
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
