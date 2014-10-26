@@ -36,6 +36,7 @@ class SetNotifications(CheckButtonTemplate):
 
         self.disable_all_checkbutton = self.get_button(0)
         self.disable_world_checkbutton = self.get_button(1)
+        self.show_configuration()
 
         self.kano_button.connect("button-release-event", self.apply_changes)
 
@@ -54,8 +55,8 @@ class SetNotifications(CheckButtonTemplate):
             notifications.allow_world_notifications()
 
     def show_configuration(self):
-        self.disable_all_checkbutton.set_enabled(not notifications.is_enabled())
-        self.disable_world_checkbutton.set_enabled(not notifications.world_notifications_allowed())
+        self.disable_all_checkbutton.set_active(not notifications.is_enabled())
+        self.disable_world_checkbutton.set_active(not notifications.world_notifications_allowed())
 
     def apply_changes(self, widget, event):
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
