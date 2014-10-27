@@ -10,7 +10,7 @@
 from gi.repository import Gdk
 from kano_settings.templates import CheckButtonTemplate
 from kano_settings.data import get_data
-import kano.notifications as notifications  # enable, disable, allow_world_notifications, disallow_world_notifications
+import kano.notifications as notifications
 
 
 class SetNotifications(CheckButtonTemplate):
