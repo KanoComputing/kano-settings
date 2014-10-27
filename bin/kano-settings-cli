@@ -17,7 +17,9 @@ if __name__ == '__main__' and __package__ is None:
     if dir_path != '/usr':
         sys.path.insert(1, dir_path)
 
-from kano_settings.system.keyboard_config import set_saved_keyboard
+from kano_settings.config_file import get_setting
+from kano_settings.system.keyboard_config import get_saved_keyboard, \
+    set_saved_keyboard, set_keyboard
 
 verbose = False
 
@@ -61,6 +63,8 @@ def parse_args():
         required=True)
     set_kb_parser_group.add_argument('layout', nargs='?',
         help='The keyboard layout code')
+    set_kb_parser_group.add_argument('variant', nargs='?',
+        help='The keyboard variant code')
     set_kb_parser_group.add_argument('--load', action='store_true',
         help='Set the keyboard to the value saved by Kano-Settings')
 
@@ -106,6 +110,10 @@ def parse_args():
             if 'load' in args and args.load:
                 set_saved_keyboard()
                 print_v('Setting keyboard to value loaded from settings')
+            else:
+                set_keyboard(args.layout, args.variant)
+                print_v('Setting keyboard to {} {}'.format(args.layout,
+                                                           args.variant))
     elif 'get_opt' in args and args.get_opt:
         if 'audio_opt' in args and args.audio_opt:
             print_v(
@@ -129,16 +137,18 @@ def parse_args():
                 )
             )
         elif 'keyboard_opt' in args and args.keyboard_opt:
-            print_v(
+            print(
                 'Keyboard settings:\n\n'
                 'Continent: {}, Country: {}, Variant: {}\n'
-                '(indicies - Continent: {}, Country: {}, Variant: {})'.format(
+                '(indicies - Continent: {}, Country: {}, Variant: {})\n'
+                'xkbmap: {}'.format(
                     get_setting('Keyboard-continent-human'),
                     get_setting('Keyboard-country-human'),
                     get_setting('Keyboard-variant-human'),
                     get_setting('Keyboard-continent-index'),
                     get_setting('Keyboard-country-index'),
-                    get_setting('Keyboard-variant-index')
+                    get_setting('Keyboard-variant-index'),
+                    get_saved_keyboard()
                 )
             )
 
