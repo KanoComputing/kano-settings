@@ -140,6 +140,9 @@ class RadioButtonTemplate(LabelledListTemplate):
             self.label_button_and_pack(button, text[0], text[1])
             button.connect("toggled", self.on_button_toggled)
 
+    def on_button_toggled(self, widget=None):
+        pass
+
 
 class CheckButtonTemplate(LabelledListTemplate):
 
@@ -214,6 +217,5 @@ class EditableList(Gtk.Grid):
                 return
 
             self.rm()
-
 
         self.edit_list_store.set_value(selected, 0, new_text)
