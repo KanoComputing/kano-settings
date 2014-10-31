@@ -14,10 +14,9 @@ from kano.gtk3.buttons import OrangeButton, KanoButton
 from kano_profile.paths import legal_dir
 from kano_settings.common import media
 from kano_settings.data import get_data
-from kano_settings.templates import TopBarTemplate
 
 
-class SetAbout(TopBarTemplate):
+class SetAbout(Gtk.Box):
     selected_button = 0
     initial_button = 0
 
@@ -27,14 +26,14 @@ class SetAbout(TopBarTemplate):
 
         kano_label = self.data["KANO_BUTTON"]
 
-        TopBarTemplate.__init__(self)
+        Gtk.Box.__init__(self)
 
         self.win = win
         self.win.set_main_widget(self)
-        self.top_bar.enable_prev()
+        self.win.top_bar.enable_prev()
 
-        self.top_bar.enable_prev()
-        self.top_bar.set_prev_callback(self.win.go_to_home)
+        self.win.top_bar.enable_prev()
+        self.win.top_bar.set_prev_callback(self.win.go_to_home)
 
         image = Gtk.Image.new_from_file(media + "/Graphics/about-screen.png")
 

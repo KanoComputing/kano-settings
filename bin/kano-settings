@@ -24,6 +24,8 @@ from kano.network import is_internet
 from kano.gtk3.apply_styles import apply_styling_to_screen, apply_common_to_screen
 from kano.gtk3.application_window import ApplicationWindow
 from kano.gtk3.kano_combobox import KanoComboBox
+from kano.gtk3.top_bar import TopBar
+from kano.gtk3.kano_dialog import KanoDialog
 
 MAX_STATE = 6
 init_state = -1
@@ -47,6 +49,10 @@ class MainWindow(ApplicationWindow):
         KanoComboBox.apply_styling_to_screen()
 
         ApplicationWindow.__init__(self, "Settings", self.width, self.height)
+        self.set_decorated(True)
+        self.top_bar = TopBar("Settings")
+        self.top_bar.set_close_callback(self.close_window)
+        self.set_titlebar(self.top_bar)
         self.set_icon_name("kano-settings")
         self.connect("delete-event", Gtk.main_quit)
         HomeScreen(self, screen_number)
@@ -57,6 +63,32 @@ class MainWindow(ApplicationWindow):
     def go_to_home(self, widget=None, event=None):
         self.clear_win()
         HomeScreen(self)
+
+    # On closing window, will alert if any of the listed booleans are True
+    def close_window(self, button, event):
+        if common.need_reboot:
+            kdialog = KanoDialog(
+                "Reboot?",
+                "Your Kano needs to reboot for changes to apply",
+                {
+                    "REBOOT NOW": {
+                        "return_value": 1,
+                        "color": "orange"
+                    },
+                    "LATER": {
+                        "return_value": 0,
+                        "color": "grey"
+                    }
+                },
+                parent_window=self.get_toplevel()
+            )
+
+            kdialog.set_action_background("grey")
+            response = kdialog.run()
+            if response == 1:
+                os.system("sudo reboot")
+
+        Gtk.main_quit()
 
 
 def main(screen_number=None):

@@ -14,7 +14,6 @@ from kano_settings.set_account import SetAccount
 from kano_settings.set_about import SetAbout
 from kano_settings.set_advanced import SetAdvanced
 from kano_settings.set_wallpaper import SetWallpaper
-from kano_settings.templates import TopBarTemplate
 
 import kano_settings.common as common
 from kano_settings.components.menu_button import Menu_button
@@ -25,7 +24,7 @@ from kano.utils import get_user_unsudoed
 from kano_settings.config_file import get_setting
 
 
-class HomeScreen(TopBarTemplate):
+class HomeScreen(Gtk.Box):
 
     names = ["Keyboard", "Mouse", "Audio", "Display", "Wifi", "Overclocking", "Account", "Wallpaper", "Font",
              "Advanced", "About", "Notifications"]
@@ -33,7 +32,7 @@ class HomeScreen(TopBarTemplate):
                    "Wallpaper", "Font"]
 
     def __init__(self, win, screen_number=None):
-        TopBarTemplate.__init__(self)
+        Gtk.Box.__init__(self)
 
         self.win = win
         self.win.set_main_widget(self)

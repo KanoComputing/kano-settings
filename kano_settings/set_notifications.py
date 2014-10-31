@@ -31,8 +31,8 @@ class SetNotifications(CheckButtonTemplate):
         self.win = win
         self.win.set_main_widget(self)
 
-        self.top_bar.enable_prev()
-        self.top_bar.set_prev_callback(self.win.go_to_home)
+        self.win.top_bar.enable_prev()
+        self.win.top_bar.set_prev_callback(self.win.go_to_home)
 
         self.disable_all_checkbutton = self.get_button(0)
         self.disable_world_checkbutton = self.get_button(1)
@@ -42,12 +42,14 @@ class SetNotifications(CheckButtonTemplate):
         self.win.show_all()
 
     def configure_all_notifications(self):
+        pass
         if self.disable_all_checkbutton.get_active():
             disable()
         else:
             enable()
 
     def configure_world_notifications(self):
+        pass
         if self.disable_world_checkbutton.get_active():
             disallow_world_notifications()
         else:

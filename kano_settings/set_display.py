@@ -7,7 +7,7 @@
 #
 
 from gi.repository import Gtk, Gdk
-from kano_settings.templates import TopBarTemplate, Template
+from kano_settings.templates import Template
 from kano.gtk3.buttons import OrangeButton, KanoButton
 from kano.gtk3.kano_combobox import KanoComboBox
 from kano.gtk3.heading import Heading
@@ -34,8 +34,8 @@ class SetDisplay(Template):
         self.win = win
         self.win.set_main_widget(self)
 
-        self.top_bar.enable_prev()
-        self.top_bar.set_prev_callback(self.win.go_to_home)
+        self.win.top_bar.enable_prev()
+        self.win.top_bar.set_prev_callback(self.win.go_to_home)
 
         self.kano_button.set_sensitive(False)
         self.kano_button.connect("button-release-event", self.apply_changes)
@@ -115,11 +115,11 @@ class SetDisplay(Template):
             SetSimpleOverscan(self.win, overscan_values)
 
 
-class OverscanTemplate(TopBarTemplate):
+class OverscanTemplate(Gtk.Box):
     data = get_data("SET_OVERSCAN")
 
     def __init__(self, win, title, description, original_overscan=None):
-        TopBarTemplate.__init__(self)
+        Gtk.Box.__init__(self)
 
         kano_label = self.data["KANO_BUTTON"]
         self.kano_button = KanoButton(kano_label)
@@ -132,7 +132,7 @@ class OverscanTemplate(TopBarTemplate):
         self.win = win
         self.win.set_main_widget(self)
 
-        self.top_bar.enable_prev()
+        self.win.top_bar.enable_prev()
 
         # Launch pipe for the overscan c code
         launch_pipe()
@@ -191,7 +191,7 @@ class SetSimpleOverscan(OverscanTemplate):
         description = self.data_simple["LABEL_2"]
         OverscanTemplate.__init__(self, win, title, description, original_overscan)
 
-        self.top_bar.set_prev_callback(self.go_to_display)
+        self.win.top_bar.set_prev_callback(self.go_to_display)
 
         # Listen for key events
         self.key_press_handler = self.win.connect("key-press-event", self.on_key_press)
@@ -278,7 +278,7 @@ class SetAdvancedOverscan(OverscanTemplate):
         description = self.data_advanced["LABEL_2"]
         OverscanTemplate.__init__(self, win, title, description, original_overscan)
 
-        self.top_bar.set_prev_callback(self.go_to_display)
+        self.win.top_bar.set_prev_callback(self.go_to_display)
 
         # Add sliders
         grid = Gtk.Grid()
