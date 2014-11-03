@@ -179,7 +179,7 @@ class SetProxy(Gtk.Box):
         self.kano_label_enable = self.data["KANO_BUTTON_ENABLE"]
         self.kano_label_disable = self.data["KANO_BUTTON_DISABLE"]
 
-        Gtk.Box.__init__(self)
+        Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
         self.kano_button = KanoButton()
 
         self.win = win

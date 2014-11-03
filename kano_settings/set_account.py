@@ -31,7 +31,7 @@ class SetAccount(Gtk.Box):
     data = get_data("SET_ACCOUNT")
 
     def __init__(self, win):
-        Gtk.Box.__init__(self)
+        Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
 
         self.win = win
         self.win.set_main_widget(self)
