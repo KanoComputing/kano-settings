@@ -36,6 +36,7 @@ class HomeScreen(Gtk.Box):
 
         self.win = win
         self.win.set_main_widget(self)
+        self.win.top_bar.disable_prev()
 
         self.width = 640
         self.height = 304
