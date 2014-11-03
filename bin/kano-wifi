@@ -21,8 +21,9 @@ import time
 import threading
 import subprocess
 
-from kano.network import IWList, is_device, is_connected, connect, is_gateway, is_internet, KwifiCache, \
-    reload_kernel_module, is_redirected
+from kano.network import IWList, is_device, is_connected, connect, is_gateway, \
+    is_internet, KwifiCache, reload_kernel_module, is_redirected, \
+    launch_chromium
 from kano.utils import is_model_b_plus
 
 NETWORKS_PER_PAGE = 5
@@ -457,7 +458,7 @@ if __name__ == '__main__':
     else:
         # Launch browser
         subprocess.call(['typewriter_echo', '\nLaunching the browser so you can log in', '2', '2'])
-        os.system('/usr/bin/chromium &')
+        launch_chromium()
 
         subprocess.call(['colour_echo', 'Press {{1 ENTER }} to continue', '1', '2'])
         raw_input().strip()
