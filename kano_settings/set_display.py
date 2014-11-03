@@ -119,7 +119,7 @@ class OverscanTemplate(Gtk.Box):
     data = get_data("SET_OVERSCAN")
 
     def __init__(self, win, title, description, original_overscan=None):
-        Gtk.Box.__init__(self)
+        Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
 
         kano_label = self.data["KANO_BUTTON"]
         self.kano_button = KanoButton(kano_label)

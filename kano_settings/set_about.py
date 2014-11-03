@@ -26,7 +26,7 @@ class SetAbout(Gtk.Box):
 
         kano_label = self.data["KANO_BUTTON"]
 
-        Gtk.Box.__init__(self)
+        Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
 
         self.win = win
         self.win.set_main_widget(self)

@@ -38,7 +38,7 @@ class Template(Gtk.Box):
 class ScrolledWindowTemplate(Gtk.Box):
 
     def __init__(self, title, description, button_text):
-        Gtk.Box.__init__(self)
+        Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
 
         self.sw = ScrolledWindow(wide_scrollbar=True)
         self.sw.set_size_request(630, 210)
