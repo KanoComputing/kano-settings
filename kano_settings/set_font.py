@@ -47,8 +47,8 @@ class SetFont(RadioButtonTemplate):
         self.win = win
         self.win.set_main_widget(self)
 
-        self.top_bar.enable_prev()
-        self.top_bar.set_prev_callback(self.reset_and_go_home)
+        self.win.top_bar.enable_prev()
+        self.win.top_bar.set_prev_callback(self.reset_and_go_home)
 
         # Show the current setting by electing the appropriate radio button
         self.current_setting()

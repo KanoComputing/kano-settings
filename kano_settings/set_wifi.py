@@ -11,7 +11,7 @@ from gi.repository import Gtk, Gdk, GObject
 import threading
 
 import kano_settings.common as common
-from kano_settings.templates import Template, TopBarTemplate
+from kano_settings.templates import Template
 from kano.gtk3.buttons import OrangeButton, KanoButton
 from kano.gtk3.heading import Heading
 from kano.gtk3.kano_dialog import KanoDialog
@@ -43,8 +43,8 @@ class SetWifi(Template):
         self.proxy_button.connect("button-release-event", self.go_to_proxy)
         self.disable_proxy = OrangeButton("Disable proxy")
 
-        self.top_bar.set_prev_callback(self.win.go_to_home)
-        self.top_bar.enable_prev()
+        self.win.top_bar.set_prev_callback(self.win.go_to_home)
+        self.win.top_bar.enable_prev()
 
         internet_status = Gtk.Label()
         internet_status_style = internet_status.get_style_context()
@@ -169,7 +169,7 @@ class SetWifi(Template):
             SetWifi(self.win)
 
 
-class SetProxy(TopBarTemplate):
+class SetProxy(Gtk.Box):
     data = get_data("SET_PROXY")
 
     def __init__(self, win):
@@ -179,7 +179,7 @@ class SetProxy(TopBarTemplate):
         self.kano_label_enable = self.data["KANO_BUTTON_ENABLE"]
         self.kano_label_disable = self.data["KANO_BUTTON_DISABLE"]
 
-        TopBarTemplate.__init__(self)
+        Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
         self.kano_button = KanoButton()
 
         self.win = win
@@ -191,8 +191,8 @@ class SetProxy(TopBarTemplate):
 
         self.kano_button.connect("button-release-event", self.apply_changes)
         self.kano_button.connect("key-release-event", self.apply_changes)
-        self.top_bar.enable_prev()
-        self.top_bar.set_prev_callback(self.go_to_wifi)
+        self.win.top_bar.enable_prev()
+        self.win.top_bar.set_prev_callback(self.go_to_wifi)
 
         self.ip_entry = Gtk.Entry()
         self.ip_entry.props.placeholder_text = "IP address"

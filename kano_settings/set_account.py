@@ -18,7 +18,7 @@ from kano.gtk3.labelled_entries import LabelledEntries
 
 from kano.utils import ensure_dir
 import kano_settings.common as common
-from kano_settings.templates import TopBarTemplate, Template
+from kano_settings.templates import Template
 from kano_settings.data import get_data
 
 from kano_settings.system.account import add_user, delete_user, verify_current_password, change_password
@@ -27,17 +27,17 @@ from kano_settings.system.account import add_user, delete_user, verify_current_p
 ADD_REMOVE_USER_PATH = '/tmp/kano-init/add-remove'
 
 
-class SetAccount(TopBarTemplate):
+class SetAccount(Gtk.Box):
     data = get_data("SET_ACCOUNT")
 
     def __init__(self, win):
-        TopBarTemplate.__init__(self)
+        Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
 
         self.win = win
         self.win.set_main_widget(self)
 
-        self.top_bar.enable_prev()
-        self.top_bar.set_prev_callback(self.win.go_to_home)
+        self.win.top_bar.enable_prev()
+        self.win.top_bar.set_prev_callback(self.win.go_to_home)
 
         self.added_or_removed_account = False
 
@@ -217,8 +217,8 @@ class SetPassword(Template):
 
         self.box.pack_start(self.labelled_entries, False, False, 0)
 
-        self.top_bar.enable_prev()
-        self.top_bar.set_prev_callback(self.go_to_accounts)
+        self.win.top_bar.enable_prev()
+        self.win.top_bar.set_prev_callback(self.go_to_accounts)
 
         self.kano_button.set_sensitive(False)
         self.kano_button.connect("button-release-event", self.apply_changes)
