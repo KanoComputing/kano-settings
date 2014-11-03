@@ -10,6 +10,7 @@ from kano_settings.config_file import get_setting, set_setting
 from system.advanced import write_whitelisted_sites, write_blacklisted_sites, \
     read_listed_sites, set_parental_level, authenticate_parental_password
 
+
 class ParentalConfig(Template):
 
     LANGUAGE = get_data('PARENTAL_CONFIG')
@@ -63,8 +64,8 @@ class ParentalConfig(Template):
 
         self.win.set_main_widget(self)
 
-        self.top_bar.set_prev_callback(self.win.go_to_home)
-        self.top_bar.enable_prev()
+        self.win.top_bar.set_prev_callback(self.win.go_to_home)
+        self.win.top_bar.enable_prev()
 
         self.kano_button.connect('button-release-event', self.apply_changes)
         self.kano_button.connect('key-release-event', self.apply_changes)
@@ -132,8 +133,8 @@ class AllowedSites(Template):
 
         self.win.set_main_widget(self)
 
-        self.top_bar.enable_prev()
-        self.top_bar.set_prev_callback(self.go_to_parental_config)
+        self.win.top_bar.enable_prev()
+        self.win.top_bar.set_prev_callback(self.go_to_parental_config)
 
         self.kano_button.connect('button-release-event', self.apply_changes)
         self.kano_button.connect('key-release-event', self.apply_changes)

@@ -9,57 +9,17 @@
 # Template container class
 #
 
-import os
 from gi.repository import Gtk
 
-from kano.gtk3.top_bar import TopBar
 from kano.gtk3.buttons import KanoButton
 from kano.gtk3.heading import Heading
-from kano.gtk3.kano_dialog import KanoDialog
 from kano.gtk3.scrolled_window import ScrolledWindow
-import kano_settings.common as common
 
 
-class TopBarTemplate(Gtk.Box):
-
-    def __init__(self):
-        Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
-
-        self.top_bar = TopBar("Settings")
-        self.pack_start(self.top_bar, False, False, 0)
-        self.top_bar.set_close_callback(self.close_window)
-
-    # On closing window, will alert if any of the listed booleans are True
-    def close_window(self, button, event):
-        if common.need_reboot:
-            kdialog = KanoDialog(
-                "Reboot?",
-                "Your Kano needs to reboot for changes to apply",
-                {
-                    "REBOOT NOW": {
-                        "return_value": 1,
-                        "color": "orange"
-                    },
-                    "LATER": {
-                        "return_value": 0,
-                        "color": "grey"
-                    }
-                },
-                parent_window=self.get_toplevel()
-            )
-
-            kdialog.set_action_background("grey")
-            response = kdialog.run()
-            if response == 1:
-                os.system("sudo reboot")
-
-        Gtk.main_quit()
-
-
-class Template(TopBarTemplate):
+class Template(Gtk.Box):
 
     def __init__(self, title, description, button_text):
-        TopBarTemplate.__init__(self)
+        Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
 
         self.title = Heading(title, description)
         self.title.container.set_margin_bottom(0)
@@ -75,10 +35,10 @@ class Template(TopBarTemplate):
         self.pack_end(self.kano_button.align, False, False, 0)
 
 
-class ScrolledWindowTemplate(TopBarTemplate):
+class ScrolledWindowTemplate(Gtk.Box):
 
     def __init__(self, title, description, button_text):
-        TopBarTemplate.__init__(self)
+        Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
 
         self.sw = ScrolledWindow(wide_scrollbar=True)
         self.sw.set_size_request(630, 210)
@@ -139,6 +99,9 @@ class RadioButtonTemplate(LabelledListTemplate):
             self.buttons.append(button)
             self.label_button_and_pack(button, text[0], text[1])
             button.connect("toggled", self.on_button_toggled)
+
+    def on_button_toggled(self, widget=None):
+        pass
 
 
 class CheckButtonTemplate(LabelledListTemplate):
@@ -214,6 +177,5 @@ class EditableList(Gtk.Grid):
                 return
 
             self.rm()
-
 
         self.edit_list_store.set_value(selected, 0, new_text)

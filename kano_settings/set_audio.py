@@ -30,8 +30,8 @@ class SetAudio(Template):
         self.win = win
         self.win.set_main_widget(self)
 
-        self.top_bar.enable_prev()
-        self.top_bar.set_prev_callback(self.win.go_to_home)
+        self.win.top_bar.enable_prev()
+        self.win.top_bar.set_prev_callback(self.win.go_to_home)
 
         self.kano_button.connect("button-release-event", self.apply_changes)
         self.kano_button.connect("key-release-event", self.apply_changes)

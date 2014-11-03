@@ -43,7 +43,7 @@ class SetKanoKeyboard(Template):
 
         self.win = win
         self.win.set_main_widget(self)
-        self.top_bar.enable_prev()
+        self.win.top_bar.enable_prev()
 
         # height is 106px
         img = Gtk.Image()
@@ -54,7 +54,7 @@ class SetKanoKeyboard(Template):
         self.to_advance_button.connect("button_press_event", self.to_advance)
 
         self.kano_button.connect("button-release-event", self.win.go_to_home)
-        self.top_bar.set_prev_callback(self.win.go_to_home)
+        self.win.top_bar.set_prev_callback(self.win.go_to_home)
 
         self.box.pack_start(img, False, False, 0)
         self.box.pack_start(self.to_advance_button, False, False, 0)
@@ -96,12 +96,12 @@ class SetKeyboard(Template):
         self.read_config()
 
         kano_keyboard = detect_kano_keyboard()
-        self.top_bar.enable_prev()
+        self.win.top_bar.enable_prev()
 
         if kano_keyboard:
-            self.top_bar.set_prev_callback(self.go_to_kano_screen)
+            self.win.top_bar.set_prev_callback(self.go_to_kano_screen)
         else:
-            self.top_bar.set_prev_callback(self.win.go_to_home)
+            self.win.top_bar.set_prev_callback(self.win.go_to_home)
 
         self.kano_button.connect("button-release-event", self.apply_changes)
 

@@ -54,8 +54,8 @@ class SetOverclock(RadioButtonTemplate):
         self.selected_button = self.initial_button
         self.get_button(self.initial_button).set_active(True)
 
-        self.top_bar.enable_prev()
-        self.top_bar.set_prev_callback(self.win.go_to_home)
+        self.win.top_bar.enable_prev()
+        self.win.top_bar.set_prev_callback(self.win.go_to_home)
 
         self.kano_button.connect("button-release-event", self.set_overclock)
         self.kano_button.connect("key-release-event", self.set_overclock)

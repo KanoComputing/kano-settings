@@ -10,7 +10,7 @@
 from gi.repository import Gdk
 from kano_settings.templates import CheckButtonTemplate
 from kano_settings.data import get_data
-from kano.notifications import enable, disable, allow_world_notifications, disallow_world_notifications
+import kano.notifications as notifications
 
 
 class SetNotifications(CheckButtonTemplate):
@@ -31,27 +31,34 @@ class SetNotifications(CheckButtonTemplate):
         self.win = win
         self.win.set_main_widget(self)
 
-        self.top_bar.enable_prev()
-        self.top_bar.set_prev_callback(self.win.go_to_home)
+        self.win.top_bar.enable_prev()
+        self.win.top_bar.set_prev_callback(self.win.go_to_home)
 
         self.disable_all_checkbutton = self.get_button(0)
         self.disable_world_checkbutton = self.get_button(1)
+        self.show_configuration()
 
         self.kano_button.connect("button-release-event", self.apply_changes)
 
         self.win.show_all()
 
     def configure_all_notifications(self):
+        pass
         if self.disable_all_checkbutton.get_active():
-            disable()
+            notifications.disable()
         else:
-            enable()
+            notifications.enable()
 
     def configure_world_notifications(self):
+        pass
         if self.disable_world_checkbutton.get_active():
-            disallow_world_notifications()
+            notifications.disallow_world_notifications()
         else:
-            allow_world_notifications()
+            notifications.allow_world_notifications()
+
+    def show_configuration(self):
+        self.disable_all_checkbutton.set_active(not notifications.is_enabled())
+        self.disable_world_checkbutton.set_active(not notifications.world_notifications_allowed())
 
     def apply_changes(self, widget, event):
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
