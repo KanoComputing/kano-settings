@@ -47,7 +47,7 @@ class SetAdvanced(Template):
 
         self.win.set_main_widget(self)
 
-        self.win.top_bar.set_prev_callback(self.win.go_to_home)
+        self.win.change_prev_callback(self.win.go_to_home)
         self.win.top_bar.enable_prev()
 
         self.kano_button.connect("button-release-event", self.apply_changes)
@@ -212,7 +212,7 @@ class SetPassword(Template):
 
         self.win = win
         self.win.set_main_widget(self)
-        self.win.top_bar.set_prev_callback(self.go_to_advanced)
+        self.win.change_prev_callback(self.go_to_advanced)
         self.win.top_bar.enable_prev()
 
         self.kano_button.set_sensitive(False)

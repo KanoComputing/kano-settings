@@ -54,6 +54,7 @@ class MainWindow(ApplicationWindow):
         self.set_decorated(True)
         self.top_bar = TopBar("Settings")
         self.top_bar.set_close_callback(self.close_window)
+        self.prev_handler = None
         self.set_titlebar(self.top_bar)
         self.set_icon_name("kano-settings")
         self.connect("delete-event", Gtk.main_quit)
@@ -65,6 +66,16 @@ class MainWindow(ApplicationWindow):
     def go_to_home(self, widget=None, event=None):
         self.clear_win()
         HomeScreen(self)
+
+    def change_prev_callback(self, callback):
+        # first time, no event attached
+        self.remove_prev_callback()
+        self.prev_handler = self.top_bar.prev_button.connect("button-release-event", callback)
+
+    def remove_prev_callback(self):
+        if self.prev_handler:
+            self.top_bar.prev_button.disconnect(self.prev_handler)
+            self.prev_handler = None
 
     # On closing window, will alert if any of the listed booleans are True
     def close_window(self, button, event):

@@ -35,7 +35,7 @@ class SetDisplay(Template):
         self.win.set_main_widget(self)
 
         self.win.top_bar.enable_prev()
-        self.win.top_bar.set_prev_callback(self.win.go_to_home)
+        self.win.change_prev_callback(self.win.go_to_home)
 
         self.kano_button.set_sensitive(False)
         self.kano_button.connect("button-release-event", self.apply_changes)
@@ -191,7 +191,7 @@ class SetSimpleOverscan(OverscanTemplate):
         description = self.data_simple["LABEL_2"]
         OverscanTemplate.__init__(self, win, title, description, original_overscan)
 
-        self.win.top_bar.set_prev_callback(self.go_to_display)
+        self.win.change_prev_callback(self.go_to_display)
 
         # Listen for key events
         self.key_press_handler = self.win.connect("key-press-event", self.on_key_press)
@@ -278,7 +278,7 @@ class SetAdvancedOverscan(OverscanTemplate):
         description = self.data_advanced["LABEL_2"]
         OverscanTemplate.__init__(self, win, title, description, original_overscan)
 
-        self.win.top_bar.set_prev_callback(self.go_to_display)
+        self.win.change_prev_callback(self.go_to_display)
 
         # Add sliders
         grid = Gtk.Grid()
