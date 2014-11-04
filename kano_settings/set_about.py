@@ -31,9 +31,7 @@ class SetAbout(Gtk.Box):
         self.win = win
         self.win.set_main_widget(self)
         self.win.top_bar.enable_prev()
-
-        self.win.top_bar.enable_prev()
-        self.win.top_bar.set_prev_callback(self.win.go_to_home)
+        self.win.change_prev_callback(self.win.go_to_home)
 
         image = Gtk.Image.new_from_file(media + "/Graphics/about-screen.png")
 

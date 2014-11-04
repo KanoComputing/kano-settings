@@ -43,7 +43,7 @@ class SetMouse(RadioButtonTemplate):
         self.get_button(self.initial_button).set_active(True)
 
         self.win.top_bar.enable_prev()
-        self.win.top_bar.set_prev_callback(self.reset_and_go_home)
+        self.win.change_prev_callback(self.reset_and_go_home)
 
         self.kano_button.connect("button-release-event", self.set_mouse)
         self.kano_button.connect("key-release-event", self.set_mouse)

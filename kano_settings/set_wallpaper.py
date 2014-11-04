@@ -43,7 +43,7 @@ class SetWallpaper(ScrolledWindowTemplate):
         self.kano_button.connect("button-release-event", self.apply_changes)
         self.kano_button.connect("key-release-event", self.apply_changes)
         self.win.top_bar.enable_prev()
-        self.win.top_bar.set_prev_callback(self.win.go_to_home)
+        self.win.change_prev_callback(self.win.go_to_home)
 
         self.table = Gtk.Table(NUMBER_OF_ROWS, NUMBER_OF_COLUMNS, True)
         self.table.set_row_spacings(ROW_PADDING)

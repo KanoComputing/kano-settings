@@ -43,7 +43,7 @@ class SetWifi(Template):
         self.proxy_button.connect("button-release-event", self.go_to_proxy)
         self.disable_proxy = OrangeButton("Disable proxy")
 
-        self.win.top_bar.set_prev_callback(self.win.go_to_home)
+        self.win.change_prev_callback(self.win.go_to_home)
         self.win.top_bar.enable_prev()
 
         internet_status = Gtk.Label()
@@ -192,7 +192,7 @@ class SetProxy(Gtk.Box):
         self.kano_button.connect("button-release-event", self.apply_changes)
         self.kano_button.connect("key-release-event", self.apply_changes)
         self.win.top_bar.enable_prev()
-        self.win.top_bar.set_prev_callback(self.go_to_wifi)
+        self.win.change_prev_callback(self.go_to_wifi)
 
         self.ip_entry = Gtk.Entry()
         self.ip_entry.props.placeholder_text = "IP address"
