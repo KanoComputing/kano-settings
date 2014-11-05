@@ -185,13 +185,13 @@
     "MEDIUM_DESC": "Switch to use filtering DNS servers",
     "LOW": "Low Settings",
     "LOW_DESC": "Blocks blacklisted websites",
-    "KANO_BUTTON": "APPLY"
+    "KANO_BUTTON": "APPLY CHANGES"
   },
   "PARENTAL_BLACKLIST" : {
     "TITLE": "Allow and Block Sites",
     "DESCRIPTION": "Add extra sites to block or allow",
     "BLACKLIST": "Add extra sites to block",
     "WHITELIST": "Something blocked that shouldn't be? Unblock it",
-    "KANO_BUTTON": "APPLY"
+    "KANO_BUTTON": "APPLY CHANGES"
   }
 }
