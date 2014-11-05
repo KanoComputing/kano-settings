@@ -135,13 +135,13 @@ class EditableList(Gtk.Grid):
         renderer.connect('edited', self._item_edited_handler)
         renderer.connect('editing-started', self._item_edit_started)
         renderer.connect('editing-canceled', self._item_edit_canceled)
-
         column = Gtk.TreeViewColumn(cell_renderer=renderer, text=0)
         self.edit_list.append_column(column)
 
         self._add_btn = KanoButton('ADD')
         self._add_btn.connect('button-release-event', self.add)
         self._rm_btn = KanoButton('REMOVE')
+        self._set_rm_btn_state()
         self._rm_btn.connect('button-release-event', self.rm)
 
         scroll.add(self.edit_list)
@@ -158,6 +158,7 @@ class EditableList(Gtk.Grid):
         row = len(self.edit_list_store) - 1
         col = self.edit_list.get_column(0)
         self.edit_list.set_cursor(row, col, start_editing=True)
+        self._set_rm_btn_state()
 
     def rm(self, button=None, event=None):
         selection = self.edit_list.get_selection()
@@ -167,6 +168,7 @@ class EditableList(Gtk.Grid):
             return
 
         self.edit_list_store.remove(selected)
+        self._set_rm_btn_state()
 
     def _item_edited_handler(self, cellrenderertext, path, new_text):
         selection = self.edit_list.get_selection()
@@ -183,9 +185,15 @@ class EditableList(Gtk.Grid):
 
         self.edit_list_store.set_value(selected, 0, new_text)
         self._add_btn.set_sensitive(True)
+        self._set_rm_btn_state()
 
     def _item_edit_started(self, *_):
         self._add_btn.set_sensitive(False)
 
     def _item_edit_canceled(self, *_):
         self._add_btn.set_sensitive(True)
+
+    def _set_rm_btn_state(self):
+        state = len(self.edit_list_store) != 0
+
+        self._rm_btn.set_sensitive(state)
