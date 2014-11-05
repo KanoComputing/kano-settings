@@ -1,6 +1,7 @@
 from gi.repository import Gtk
 
 from kano import logging
+from kano_settings import common
 from kano_settings.templates import Template, EditableList
 from kano.gtk3.buttons import OrangeButton
 from kano.gtk3.kano_dialog import KanoDialog
@@ -79,6 +80,7 @@ class ParentalConfig(Template):
         level = self.parental_level.get_value()
         set_parental_level(level)
         set_setting('Parental-level', level)
+        common.need_reboot = True
 
         self.win.go_to_home()
 
@@ -154,6 +156,7 @@ class AllowedSites(Template):
         write_blacklisted_sites(blacklist)
 
         set_parental_level(get_setting('Parental-level'))
+        common.need_reboot = True
 
         self.win.go_to_home()
 
