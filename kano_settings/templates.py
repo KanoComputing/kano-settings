@@ -139,9 +139,9 @@ class EditableList(Gtk.Grid):
         column = Gtk.TreeViewColumn(cell_renderer=renderer, text=0)
         self.edit_list.append_column(column)
 
-        self._add_btn = Gtk.Button('ADD')
+        self._add_btn = KanoButton('ADD')
         self._add_btn.connect('button-release-event', self.add)
-        self._rm_btn = Gtk.Button('REMOVE')
+        self._rm_btn = KanoButton('REMOVE')
         self._rm_btn.connect('button-release-event', self.rm)
 
         scroll.add(self.edit_list)
