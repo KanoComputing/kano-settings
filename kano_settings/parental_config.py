@@ -113,8 +113,8 @@ class AllowedSites(Template):
 
         blacklist, whitelist = read_listed_sites()
 
-        self.blacklist = EditableList(size_y=75)
-        self.whitelist = EditableList(size_y=75)
+        self.blacklist = EditableList(size_x=250, size_y=25)
+        self.whitelist = EditableList(size_x=250, size_y=25)
 
         if whitelist:
             for site in whitelist:
@@ -124,13 +124,17 @@ class AllowedSites(Template):
             for site in blacklist:
                 self.blacklist.edit_list_store.append([site])
 
-        self.box.set_spacing(10)
-        self.box.pack_start(
-            Gtk.Label(self.LANGUAGE['BLACKLIST']), False, False, 0)
-        self.box.pack_start(self.blacklist, False, False, 0)
-        self.box.pack_start(
-            Gtk.Label(self.LANGUAGE['WHITELIST']), False, False, 0)
-        self.box.pack_start(self.whitelist, False, False, 0)
+        grid = Gtk.Grid()
+        grid.set_column_spacing(40)
+
+        grid.attach(
+            Gtk.Label(self.LANGUAGE['BLACKLIST']), 0, 0, 1, 1)
+        grid.attach(self.blacklist, 0, 1, 1, 1)
+        grid.attach(
+            Gtk.Label(self.LANGUAGE['WHITELIST']), 1, 0, 1, 1)
+        grid.attach(self.whitelist, 1, 1, 1, 1)
+        self.box.pack_start(grid, False, False, 0)
+
         self.box.pack_start(Gtk.Label(''), False, False, 0)
 
         self.win.set_main_widget(self)

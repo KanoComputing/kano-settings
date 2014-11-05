@@ -123,8 +123,9 @@ class EditableList(Gtk.Grid):
         self.set_row_spacing(10)
         self.set_column_spacing(10)
 
-        scroll = Gtk.ScrolledWindow()
+        scroll = ScrolledWindow()
         scroll.set_size_request(size_x, size_y)
+        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 
         self.edit_list_store = Gtk.ListStore(str)
         self.edit_list = Gtk.TreeView(self.edit_list_store)
@@ -144,7 +145,7 @@ class EditableList(Gtk.Grid):
         self._set_rm_btn_state()
         self._rm_btn.connect('button-release-event', self.rm)
 
-        scroll.add(self.edit_list)
+        scroll.add_with_viewport(self.edit_list)
 
         self.attach(scroll, 0, 0, 2, 1)
         self.attach(self._add_btn, 0, 1, 1, 1)

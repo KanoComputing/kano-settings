@@ -192,7 +192,7 @@
     "TITLE": "Allow and Block Sites",
     "DESCRIPTION": "Add extra sites to block or allow",
     "BLACKLIST": "Add extra sites to block",
-    "WHITELIST": "Something blocked that shouldn't be? Unblock it",
+    "WHITELIST": "Something blocked that shouldn't be?",
     "KANO_BUTTON": "APPLY CHANGES"
   }
 }
