@@ -95,9 +95,10 @@
     "SET_NOTIFICATIONS" : {
     "LABEL_1": "Notifications",
     "LABEL_2": "Here you can manage the built-in notification system",
-    "DESCRIPTION_1": "Hide all notifications",
-    "DESCRIPTION_2": "Hide only Kano World notifications",
-    "KANO_BUTTON": "CHANGE NOTIFICATIONS"
+    "DESCRIPTION_1": "Show all notifications",
+    "DESCRIPTION_2": "Hide all notifications",
+    "DESCRIPTION_3": "Hide only Kano World notifications",
+    "KANO_BUTTON": "APPLY CHANGES"
   },
   "SET_FONT" : {
     "LABEL_1": "Font",

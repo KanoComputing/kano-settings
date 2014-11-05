@@ -6,7 +6,6 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-import subprocess
 import os
 from gi.repository import Gtk
 from kano.gtk3.kano_dialog import KanoDialog
@@ -14,6 +13,7 @@ from kano.gtk3.buttons import OrangeButton, KanoButton
 from kano_profile.paths import legal_dir
 from kano_settings.common import media
 from kano_settings.data import get_data
+from kano_settings.system.about import (get_current_version, get_space_available, get_temperature)
 
 
 class SetAbout(Gtk.Box):
@@ -36,9 +36,8 @@ class SetAbout(Gtk.Box):
         image = Gtk.Image.new_from_file(media + "/Graphics/about-screen.png")
 
         version_align = self.create_version_align()
-
-        space_available = self.get_space_available()
-        temperature = self.get_temperature()
+        space_available = get_space_available()
+        temperature = get_temperature()
 
         space_align = self.create_other_align(space_available)
         temperature_align = self.create_other_align(temperature)
@@ -63,31 +62,8 @@ class SetAbout(Gtk.Box):
         # Refresh window
         self.win.show_all()
 
-    def get_current_version(self):
-        output = subprocess.check_output(["cat", "/etc/kanux_version"])
-        version_number = output.split("-")[-1].strip()
-        return "Kano OS v." + version_number
-
-    def get_space_available(self):
-        output = subprocess.check_output("df -h | grep rootfs", shell=True)
-        items = output.strip().split(" ")
-        items = filter(None, items)
-        total_space = items[1]
-        space_used = items[2]
-        return "Disk space used: " + space_used + " / " + total_space
-
-    def get_temperature(self):
-        degree_sign = u'\N{DEGREE SIGN}'
-        output = subprocess.check_output("cputemp0=`cat /sys/class/thermal/thermal_zone0/temp`; \
-                                         cputemp1=$(($cputemp0/1000)); \
-                                         cputemp2=$(($cputemp0/100)); \
-                                         cputemp=$(($cputemp2%$cputemp1)); \
-                                         echo $cputemp1\".\"$cputemp", shell=True)
-        output = output.strip()
-        return "Temperature: " + output + degree_sign + "C"
-
     def create_version_align(self):
-        text = self.get_current_version()
+        text = get_current_version()
         label = Gtk.Label(text)
         label.get_style_context().add_class("about_version")
 
