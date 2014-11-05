@@ -123,8 +123,9 @@ class EditableList(Gtk.Grid):
         self.set_row_spacing(10)
         self.set_column_spacing(10)
 
-        scroll = Gtk.ScrolledWindow()
+        scroll = ScrolledWindow()
         scroll.set_size_request(size_x, size_y)
+        scroll.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 
         self.edit_list_store = Gtk.ListStore(str)
         self.edit_list = Gtk.TreeView(self.edit_list_store)
@@ -133,19 +134,22 @@ class EditableList(Gtk.Grid):
         renderer = Gtk.CellRendererText()
         renderer.set_property('editable', True)
         renderer.connect('edited', self._item_edited_handler)
+        renderer.connect('editing-started', self._item_edit_started)
+        renderer.connect('editing-canceled', self._item_edit_canceled)
         column = Gtk.TreeViewColumn(cell_renderer=renderer, text=0)
         self.edit_list.append_column(column)
 
-        add_btn = Gtk.Button('ADD')
-        add_btn.connect('button-release-event', self.add)
-        rm_btn = Gtk.Button('REMOVE')
-        rm_btn.connect('button-release-event', self.rm)
+        self._add_btn = KanoButton('ADD')
+        self._add_btn.connect('button-release-event', self.add)
+        self._rm_btn = KanoButton('REMOVE')
+        self._set_rm_btn_state()
+        self._rm_btn.connect('button-release-event', self.rm)
 
-        scroll.add(self.edit_list)
+        scroll.add_with_viewport(self.edit_list)
 
         self.attach(scroll, 0, 0, 2, 1)
-        self.attach(add_btn, 0, 1, 1, 1)
-        self.attach(rm_btn, 1, 1, 1, 1)
+        self.attach(self._add_btn, 0, 1, 1, 1)
+        self.attach(self._rm_btn, 1, 1, 1, 1)
 
     def add(self, button, event):
         self.edit_list_store.append([''])
@@ -155,6 +159,7 @@ class EditableList(Gtk.Grid):
         row = len(self.edit_list_store) - 1
         col = self.edit_list.get_column(0)
         self.edit_list.set_cursor(row, col, start_editing=True)
+        self._set_rm_btn_state()
 
     def rm(self, button=None, event=None):
         selection = self.edit_list.get_selection()
@@ -164,18 +169,31 @@ class EditableList(Gtk.Grid):
             return
 
         self.edit_list_store.remove(selected)
+        self._set_rm_btn_state()
 
     def _item_edited_handler(self, cellrenderertext, path, new_text):
         selection = self.edit_list.get_selection()
         _, selected = selection.get_selected()
 
-        if not new_text:
+        if new_text:
+            self.edit_list_store.set_value(selected, 0, new_text)
+        else:
             row = self.edit_list_store[selected]
             old_text = row[0]
 
-            if old_text:
-                return
+            if not old_text:
+                self.rm()
 
-            self.rm()
+        self._add_btn.set_sensitive(True)
+        self._set_rm_btn_state()
 
-        self.edit_list_store.set_value(selected, 0, new_text)
+    def _item_edit_started(self, *_):
+        self._add_btn.set_sensitive(False)
+
+    def _item_edit_canceled(self, *_):
+        self._add_btn.set_sensitive(True)
+
+    def _set_rm_btn_state(self):
+        state = len(self.edit_list_store) != 0
+
+        self._rm_btn.set_sensitive(state)
