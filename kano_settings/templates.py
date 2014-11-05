@@ -174,16 +174,15 @@ class EditableList(Gtk.Grid):
         selection = self.edit_list.get_selection()
         _, selected = selection.get_selected()
 
-        if not new_text:
+        if new_text:
+            self.edit_list_store.set_value(selected, 0, new_text)
+        else:
             row = self.edit_list_store[selected]
             old_text = row[0]
 
-            if old_text:
-                return
+            if not old_text:
+                self.rm()
 
-            self.rm()
-
-        self.edit_list_store.set_value(selected, 0, new_text)
         self._add_btn.set_sensitive(True)
         self._set_rm_btn_state()
 
