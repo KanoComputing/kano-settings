@@ -106,3 +106,13 @@
 .parental_activated {
     color: @kano_green;
 }
+
+GtkTreeView:hover {
+    color: #ffffff;
+    background: @kano_orange_lighter;
+}
+
+GtkTreeView:selected {
+    color: #ffffff;
+    background: @kano_orange;
+}
