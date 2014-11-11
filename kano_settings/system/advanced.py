@@ -133,12 +133,12 @@ def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/P
 
         logger.debug('Adding user-specified blacklist websites')
         if blocked_sites:
-            blocked_str = '\n'.join(
-                ['127.0.0.1    www.{site}\n'
-                 '127.0.0.1    {site}'
-                 .format(site=site) for site in blocked_sites])
+            for site in blocked_sites:
+                blocked_str = ('127.0.0.1    www.{site}\n'
+                               '127.0.0.1    {site}'.format(site=site))
 
-            os.system('echo "{}" >> {}'.format(blocked_str, hosts_file))
+                os.system('grep -q -F "{str}" {file} || echo "{str}" >> {file}'
+                          .format(str=blocked_str, file=hosts_file))
 
     else:
         logger.debug('disabling blacklist')
