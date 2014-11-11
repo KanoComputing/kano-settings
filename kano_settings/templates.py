@@ -151,6 +151,9 @@ class EditableList(Gtk.Grid):
         self.attach(self._add_btn, 0, 1, 1, 1)
         self.attach(self._rm_btn, 1, 1, 1, 1)
 
+    def __contains__(self, item):
+        return item in [row[0] for row in self.edit_list_store]
+
     def add(self, button, event):
         self.edit_list_store.append([''])
 
@@ -175,7 +178,7 @@ class EditableList(Gtk.Grid):
         selection = self.edit_list.get_selection()
         _, selected = selection.get_selected()
 
-        if new_text:
+        if new_text and new_text not in self:
             self.edit_list_store.set_value(selected, 0, new_text)
         else:
             row = self.edit_list_store[selected]

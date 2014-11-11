@@ -98,6 +98,20 @@ class ParentalConfig(Template):
                 style.add_class('normal_label')
 
 
+class SiteList(EditableList):
+
+    def __init__(self, size_x=250, size_y=25):
+        EditableList.__init__(self, size_x=size_x, size_y=size_y)
+
+    @staticmethod
+    def _sanitise_site(site):
+        return site.replace(' ', '').lstrip('www.')
+
+    def _item_edited_handler(self, cellrenderertext, path, new_text):
+        site = self._sanitise_site(new_text)
+        EditableList._item_edited_handler(self, cellrenderertext, path, site)
+
+
 class AllowedSites(Template):
 
     LANGUAGE = get_data('PARENTAL_BLACKLIST')
@@ -113,8 +127,8 @@ class AllowedSites(Template):
 
         blacklist, whitelist = read_listed_sites()
 
-        self.blacklist = EditableList(size_x=250, size_y=25)
-        self.whitelist = EditableList(size_x=250, size_y=25)
+        self.blacklist = SiteList(size_x=250, size_y=25)
+        self.whitelist = SiteList(size_x=250, size_y=25)
 
         if whitelist:
             for site in whitelist:
