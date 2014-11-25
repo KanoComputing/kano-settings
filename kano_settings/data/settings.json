@@ -133,7 +133,7 @@
     "CONFIGURE_WIRELESS": "Configure wireless",
     "CONFIGURE_PROXY_OR_BROWSER": "Use the browser to log in or configure proxy",
     "WIFI": "WIFI",
-    "SKIP": "SKIP THIS STEP",
+    "SKIP": "BACK",
     "IMG_FILENAME": "/Graphics/Internet-noConnection.png"
   },
   "SET_PROXY": {
