@@ -1,7 +1,6 @@
 
 from gi.repository import Gtk
 
-
 from kano_settings.set_keyboard import choose_keyboard_screen
 from kano_settings.set_mouse import SetMouse
 from kano_settings.set_notifications import SetNotifications
@@ -9,6 +8,7 @@ from kano_settings.set_font import SetFont
 from kano_settings.set_audio import SetAudio
 from kano_settings.set_display import SetDisplay
 from kano_settings.set_wifi import SetWifi
+from kano_settings.no_internet_screen import NoInternet
 from kano_settings.set_overclock import SetOverclock
 from kano_settings.set_account import SetAccount
 from kano_settings.set_about import SetAbout
@@ -17,11 +17,10 @@ from kano_settings.set_wallpaper import SetWallpaper
 
 import kano_settings.common as common
 from kano_settings.components.menu_button import Menu_button
+from kano_settings.config_file import get_setting
 
 from kano.gtk3.scrolled_window import ScrolledWindow
-
 from kano.utils import get_user_unsudoed
-from kano_settings.config_file import get_setting
 
 
 class HomeScreen(Gtk.Box):
@@ -175,4 +174,5 @@ class HomeScreen(Gtk.Box):
             9: SetAdvanced,
             10: SetAbout,
             11: SetNotifications,
+            12: NoInternet,
         }[x]

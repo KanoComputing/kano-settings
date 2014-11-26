@@ -194,5 +194,10 @@
     "BLACKLIST": "Add extra sites to block",
     "WHITELIST": "Something blocked that shouldn't be?",
     "KANO_BUTTON": "APPLY CHANGES"
+  },
+  "SET_NO_INTERNET": {
+    "LABEL_1": "You need internet to continue",
+    "ORANGE_BUTTON": "Later",
+    "KANO_BUTTON": "CONNECT NOW"
   }
 }
