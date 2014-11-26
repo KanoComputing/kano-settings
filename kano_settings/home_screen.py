@@ -31,6 +31,11 @@ class HomeScreen(Gtk.Box):
                    "Wallpaper", "Font"]
 
     def __init__(self, win, screen_number=None):
+        # Check if we want to initialise another window first
+        if screen_number is not None:
+            self.state_to_widget(screen_number)(win)
+            return
+
         Gtk.Box.__init__(self)
 
         self.win = win
@@ -46,10 +51,6 @@ class HomeScreen(Gtk.Box):
         self.pack_start(self.scrolledwindow, True, True, 0)
 
         self.win.show_all()
-
-        if screen_number is not None:
-            self.win.clear_win()
-            self.state_to_widget(screen_number)(self.win)
 
     def generate_grid(self):
         buttons = []

@@ -41,15 +41,19 @@ class MainWindow(ApplicationWindow):
     CSS_PATH = common.media + '/CSS/style.css'
 
     def __init__(self, screen_number=None):
-        common.has_internet = is_internet()
-        apply_styling_to_screen(self.CSS_PATH)
-        apply_common_to_screen()
+        # Check for internet, if screen is 12 means no internet
+        if screen_number == 12:
+            common.has_internet = False
+        else:
+            common.has_internet = is_internet()
 
         # Set combobox styling to the screen
         # Is done here so we don't attach the styling multiple times when switching screens
+        apply_styling_to_screen(self.CSS_PATH)
+        apply_common_to_screen()
         KanoComboBox.apply_styling_to_screen()
         ScrolledWindow.apply_styling_to_screen(wide=True)
-
+        # Set window
         ApplicationWindow.__init__(self, "Settings", self.width, self.height)
         self.set_decorated(True)
         self.top_bar = TopBar("Settings")
@@ -58,6 +62,7 @@ class MainWindow(ApplicationWindow):
         self.set_titlebar(self.top_bar)
         self.set_icon_name("kano-settings")
         self.connect("delete-event", Gtk.main_quit)
+        # Init to Home Screen
         HomeScreen(self, screen_number)
 
     def clear_win(self):
