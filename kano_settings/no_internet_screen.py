@@ -37,7 +37,8 @@ class NoInternet(Gtk.Box):
         # Text label
         text_align = self.create_text_align()
         # Place elements
-        image.set_margin_top(0)
+        image.set_margin_top(50)
+        image.set_margin_bottom(30)
         self.pack_start(image, False, False, 0)
         self.pack_start(text_align, False, False, 2)
         self.pack_start(self.kano_button.align, False, False, 10)
