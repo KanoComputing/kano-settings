@@ -13,9 +13,11 @@ from kano_settings.templates import ScrolledWindowTemplate
 from .config_file import get_setting, set_setting
 from kano_profile.badges import calculate_badges
 from kano_settings.data import get_data
+from kano_settings.config_file import username
 from kano_settings.system.wallpaper import change_wallpaper
 
 wallpaper_path = "/usr/share/kano-desktop/wallpapers/"
+kano_draw_path = os.path.join('/home', username, 'Draw-content/wallpapers/')
 padlock_path = "/usr/share/kano-settings/media/Icons/padlock.png"  # needs to be 95x95
 name_pattern = "-4-3.png"
 
@@ -91,16 +93,15 @@ class SetWallpaper(ScrolledWindowTemplate):
         self.win.show_all()
 
     def add_wallpaper_to_table(self, name, width, height, unlocked):
-        # recreate padlock overlay here becuase otherwise it's parent gets set by the class
-        padlock_pixbuf = GdkPixbuf.Pixbuf.new_from_file(padlock_path)
-        padlock_overlay = Gtk.Image()
-        padlock_overlay.set_from_pixbuf(padlock_pixbuf)
-
+        
         # create the wallpaper thumbnail
-        wallpaper_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(wallpaper_path + name + name_pattern, 120, 90)
-        cropped_wallpaper = wallpaper_pixbuf.new_subpixbuf(15, 0, width, height)
-        image = Gtk.Image()
-        image.set_from_pixbuf(cropped_wallpaper)
+        try:
+            wallpaper_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(self.get_path(name) + name + name_pattern, 120, 90)
+            cropped_wallpaper = wallpaper_pixbuf.new_subpixbuf(15, 0, width, height)
+            image = Gtk.Image()
+            image.set_from_pixbuf(cropped_wallpaper)
+        except:
+            return
 
         # create the container for the thumbnails
         container = Gtk.Fixed()
@@ -108,6 +109,10 @@ class SetWallpaper(ScrolledWindowTemplate):
 
         # add the padlock overlay on the thumbnail if it is locked
         if not unlocked:
+            # recreate padlock overlay here becuase otherwise it's parent gets set by the class
+            padlock_pixbuf = GdkPixbuf.Pixbuf.new_from_file(padlock_path)
+            padlock_overlay = Gtk.Image()
+            padlock_overlay.set_from_pixbuf(padlock_pixbuf)
             container.put(padlock_overlay, 0, 0)
 
         self.images[name] = image
@@ -130,9 +135,6 @@ class SetWallpaper(ScrolledWindowTemplate):
         style.add_class("wallpaper_box_active")
         self.set_selected(image_name)
 
-    def add_wallpaper(self, widget=None, event=None):
-        pass
-
     # Get the current selected wallpaper
     # Handles global variable wallpaper_array
     def get_selected(self):
@@ -143,14 +145,15 @@ class SetWallpaper(ScrolledWindowTemplate):
     # Set the currents elected wallpaper
     # Handles global variable wallpaper_array
     def set_selected(self, image_name):
-        for x in self.wallpapers:
-            self.wallpapers[x]['selected'] = False
-
-        if self.wallpapers[image_name]['unlocked']:
-            self.wallpapers[image_name]['selected'] = True
-            self.kano_button.set_sensitive(True)
-        else:
-            self.kano_button.set_sensitive(False)
+        # Unselect current one
+        selected = self.get_selected()
+        if selected:
+            self.wallpapers[selected]['selected'] = False
+        # Select the new one
+        self.wallpapers[image_name]['selected'] = True
+        # Enable Apply Changes button accordingly
+        unlocked = self.wallpapers[image_name]['unlocked']
+        self.kano_button.set_sensitive(unlocked)
 
     def read_config(self):
         return get_setting("Wallpaper")
@@ -162,7 +165,8 @@ class SetWallpaper(ScrolledWindowTemplate):
             set_setting("Wallpaper", selected)
 
     def create_list_wallpaper(self):
-        self.get_wallpapers()
+        self.get_wallpapers(wallpaper_path)
+        self.get_wallpapers(kano_draw_path)
 
         # To get info about which environments are unlocked we first calculate badges
         # then we take the 'achieved' attribute of an environment and add it to
@@ -180,21 +184,27 @@ class SetWallpaper(ScrolledWindowTemplate):
             except:
                 pass
 
-    def get_wallpapers(self):
-        if not os.path.exists(wallpaper_path):
-            return
-        for file in os.listdir(wallpaper_path):
-            if name_pattern in file:
-                self.wallpapers[file[:-8]] = {
-                    'selected': False,
-                    'unlocked': True
-                }
+    def get_wallpapers(self, path):
+
+        if os.path.exists(path):
+            for file in os.listdir(path):
+                if name_pattern in file:
+                    self.wallpapers[file[:-8]] = {
+                        'path': path,
+                        'selected': False,
+                        'unlocked': True
+                    }
 
     def apply_changes(self, button, event):
         # If enter key is pressed or mouse button is clicked
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
             image_name = self.get_selected()
-            change_wallpaper(wallpaper_path, image_name)
+            path = self.get_path(image_name)
+            change_wallpaper(path, image_name)
             self.update_config()
             self.win.go_to_home()
+
+    def get_path(self, name):
+        return self.wallpapers[name]['path']
+
