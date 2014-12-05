@@ -33,13 +33,15 @@
 import os
 import sys
 from kano.logging import logger
+from kano.utils import is_running
+from kano.network import is_internet
 import atexit
+import signal
 
 from kano.network import IWList, is_device, is_gateway, connect, disconnect, is_ethernet_plugged, KwifiCache
 
 # filename to keep our process semaphore
-pidfile = '/var/run/kanoconnect.py'
-
+pidfile = '/var/run/kano-connect.pid'
 
 def remove_pid(filename):
     try:
@@ -47,6 +49,9 @@ def remove_pid(filename):
     except:
         pass
 
+def sig_catch(signum, frame):
+    # SIGTERM handler
+    remove_pid()
 
 def attempt_connect(wiface, essid, encryption, enckey, conf=None):
     online = False
@@ -83,21 +88,22 @@ if __name__ == '__main__':
         logger.info('ethernet cable is plugged in, exiting')
         sys.exit(0)
 
-    # kanoconnect cannot work while kanowifi is running.
-    # Keep a pid file to semaphore our process
-    if os.access('/var/run/kanowifi.py', os.R_OK):
-        print 'Kanowifi.py is running, please close it before running kanoconnect.py'
-        sys.exit(1)
+    # kano-connect should not step in if kano-wifi is working or if internet is up
+    if is_running('kano-wifi') or is_internet():
+        logger.info('Kano-wifi is running or internet is already up - terminating')
+        sys.exit(0)
     else:
         if os.access(pidfile, os.R_OK):
-            logger.error('An instance of kano-connect is already running')
-            print 'An instance of Kanoconnet.py is already running.'
-            sys.exit(1)
+            # Attempt to start kano-connect when one is already in progress - exit quietly
+            sys.exit(0)
         else:
+            # Install handlers for graceful and SIGTERM signals
             atexit.register(remove_pid, pidfile)
-            frun = open(pidfile, 'w')
-            frun.write(str(os.getpid()))
-            frun.close()
+            with open(pidfile, 'w') as frun:
+                frun.write(str(os.getpid()))
+
+            signal.signal(signal.SIGTERM, sig_catch)
+
 
     # TODO: Use getopt to collect parameters in a more clear way
     if len(sys.argv) < 2:
