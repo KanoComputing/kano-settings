@@ -91,11 +91,11 @@ if __name__ == '__main__':
     # kano-connect should not step in if kano-wifi is working or if internet is up
     if is_running('kano-wifi') or is_internet():
         logger.info('Kano-wifi is running or internet is already up - terminating')
-        sys.exit(1)
+        sys.exit(0)
     else:
         if os.access(pidfile, os.R_OK):
             # Attempt to start kano-connect when one is already in progress - exit quietly
-            sys.exit(1)
+            sys.exit(0)
         else:
             # Install handlers for graceful and SIGTERM signals
             atexit.register(remove_pid, pidfile)
