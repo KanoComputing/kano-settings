@@ -9,4 +9,4 @@ SHELL=/bin/sh
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 MAILTO=""
 
-00 * * * * root /usr/bin/rdate -cv $(cat /etc/timeserver.conf)
+00 * * * * root /usr/bin/rdate -4 -u -v -c -n $(cat /etc/timeserver.conf)
