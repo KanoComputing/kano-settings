@@ -277,7 +277,7 @@ def parse_edid(edid_txt):
         elif 'no audio support' in l:
             edid['hdmi_audio'] = False
 
-    # setting target mdoe
+    # setting target mode
     if found:
         edid['target_group'] = edid['found_group']
         edid['target_mode'] = edid['found_mode']
@@ -288,8 +288,10 @@ def parse_edid(edid_txt):
     # is_monitor
     if edid['target_group'] == 'DMT':
         edid['is_monitor'] = True
+    elif 'TV' in edid['model']:
+        edid['is_monitor'] = False
     else:
-        edid['is_monitor'] = edid['dmt_found'] or edid['screen_size'] < 60
+        edid['is_monitor'] = edid['dmt_found'] or edid.get('screen_size') < 60
 
     # always disable overscan
     edid['target_overscan'] = False
