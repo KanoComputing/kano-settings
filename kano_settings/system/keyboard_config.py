@@ -34,6 +34,7 @@ def find_keyboard_variants(country_code):
         return None
 
 
+# Find macintosh index within the variants combobox 
 def find_macintosh_index(country_name, layout):
     country_code = find_country_code(country_name, layout)
     variants = find_keyboard_variants(country_code)

@@ -253,15 +253,17 @@ class SetKeyboard(Template):
         self.variants_combo.set_selected_item_index(0)
 
     def set_variants_to_mac_layout(self):
-        # search for mac option
-        # This is called 'Macintosh' or 'mac'
+        
+        # If the country is the United States, select the generic setting
         if self.selected_country_hr.upper() == "UNITED STATES":
             self.set_variants_to_generic()
             return
 
+        # Otherwise, try and find a Macintosh variant
         layout = keyboard_layouts.layouts[self.selected_continent_hr]
         index = keyboard_config.find_macintosh_index(self.selected_country_hr, layout)
 
+        # If the macintosh variant exists, set it
         if index:
             self.variants_combo.set_selected_item_index(index)
 
