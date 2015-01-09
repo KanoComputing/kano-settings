@@ -34,6 +34,20 @@ def find_keyboard_variants(country_code):
         return None
 
 
+# Find macintosh index within the variants combobox 
+def find_macintosh_index(country_name, layout):
+    country_code = find_country_code(country_name, layout)
+    variants = find_keyboard_variants(country_code)
+
+    if variants:
+        for i in range(len(variants)):
+            if variants[i] == ("Macintosh", "mac"):
+                # This is due to the adding of generic at the start of the array
+                return i + 1
+    else:
+        return None
+
+
 def is_changed(country_code, variant):
     continent = get_setting('Keyboard-continent-human')
     country = get_setting('Keyboard-country-human')

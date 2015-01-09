@@ -252,6 +252,25 @@ class SetKeyboard(Template):
     def set_variants_to_generic(self):
         self.variants_combo.set_selected_item_index(0)
 
+    def set_variants_to_mac_layout(self):
+        
+        # If the country is the United States, select the generic setting
+        if self.selected_country_hr.upper() == "UNITED STATES":
+            self.set_variants_to_generic()
+            return
+
+        # Otherwise, try and find a Macintosh variant
+        layout = keyboard_layouts.layouts[self.selected_continent_hr]
+        index = keyboard_config.find_macintosh_index(self.selected_country_hr, layout)
+
+        # If the macintosh variant exists, set it
+        if index:
+            self.variants_combo.set_selected_item_index(index)
+
+        # if not found, select generic
+        else:
+            self.set_variants_to_generic()
+
     def on_continent_changed(self, combo):
 
         # making sure the continent has been set
@@ -286,8 +305,14 @@ class SetKeyboard(Template):
         if variants is not None:
             for v in variants:
                 self.variants_combo.append(v[0])
+        
+        # if kano keyboard is connected, change to Mac layout
+        kano_keyboard = detect_kano_keyboard()
 
-        self.set_variants_to_generic()
+        if kano_keyboard:
+            self.set_variants_to_mac_layout()
+        else:
+            self.set_variants_to_generic()
         self.on_variants_changed(self.variants_combo)
 
     def on_variants_changed(self, combo):
