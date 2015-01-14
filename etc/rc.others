@@ -23,3 +23,20 @@ control alt     keycode  8 = Console_7
 "
 
 echo "$new_keymaps" | /usr/bin/loadkeys -
+
+# If the Shift key is pressed, switch to a safe display resolution
+/usr/bin/kano-keys-pressed
+if [ "$?" -eq 10 ]; then
+
+    # Ask the video controller for a lower, safe video mode
+    safe_resolution="1024x768"
+    video_group="DMT"
+    video_mode=`tvservice -m $video_group | grep -m1 $safe_resolution | awk '{ print $2 }' | sed 's/://g'`
+
+    echo "Setting new display mode: group: $video_group mode: $video_mode resolution: $safe_resolution"
+
+    tvservice -e "$video_group $video_mode"
+
+    # A file for system apps to know that we switched video mode
+    touch /tmp/display-in-safe-mode
+fi
