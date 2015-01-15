@@ -24,17 +24,50 @@ control alt     keycode  8 = Console_7
 
 echo "$new_keymaps" | /usr/bin/loadkeys -
 
+
+# Support for Shift hotkey to reboot in "Safe Mode"
+enable_config_setting() {
+
+    # Force a value in the config file, add it if it's not there
+    grep -q "$2=" $1 && sed "s/^#\{0,1\}$2=.*/$2=$3/" -i $1 || sed "$ a\\$2=$3" -i $1
+}
+
 # If the Shift key is pressed, switch to a safe display resolution
 /usr/bin/kano-keys-pressed
 if [ "$?" -eq 10 ]; then
 
-    # Enable safe hdmi mode in the PI firmware and reboot immediately
+    echo "Enabling HDMI safe mode"
+
+    # We are enabling safe mode by using a combination of RPi native "hdmi_safe"
+    # but at 1024x768@60Hz instead of 640x480.
+    #
+    # From the wiki documentation: http://elinux.org/RPiconfig
+    #
+    # hdmi_safe Use "safe mode" settings to try to boot with maximum hdmi compatibility.
+    # This is the same as the combination of: hdmi_force_hotplug=1, hdmi_ignore_edid=0xa5000080, 
+    # config_hdmi_boost=4, hdmi_group=2, hdmi_mode=4, disable_overscan=0, overscan_left=24,
+    # overscan_right=24, overscan_top=24, overscan_bottom=24
+
+
+    # RPi config.txt file we need to modify
     configtxt="/boot/config.txt"
 
-    # The command below will enable the key "hdmi_safe" or add it if absent to guarantee it's always up
-    grep -q "hdmi_safe=" $configtxt && sed "s/^#hdmi_safe=.*/hdmi_safe=1/" -i $configtxt || sed "$ a\hdmi_safe=1" -i $configtxt
+    # Apply the KanoOS "hdmi_safe" changes one by one
+    enable_config_setting $configtxt "hdmi_force_hotplug" "1"
+    enable_config_setting $configtxt "hdmi_ignore_edid" "0xa5000080"
+    enable_config_setting $configtxt "config_hdmi_boost" "4"
+    enable_config_setting $configtxt "hdmi_group" "2"
 
-    # force a reboot of the unit now
+    # Specify 1024x768 mode instead of 640x480
+    enable_config_setting $configtxt "hdmi_mode" "16"
+
+    enable_config_setting $configtxt "disable_overscan" "0"
+    enable_config_setting $configtxt "overscan_left" "24"
+    enable_config_setting $configtxt "overscan_right" "24"
+    enable_config_setting $configtxt "overscan_top" "24"
+    enable_config_setting $configtxt "overscan_bottom" "24"
+
+    # reboot now
     /sbin/reboot -f
 
 fi
