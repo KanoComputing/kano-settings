@@ -28,15 +28,13 @@ echo "$new_keymaps" | /usr/bin/loadkeys -
 /usr/bin/kano-keys-pressed
 if [ "$?" -eq 10 ]; then
 
-    # Ask the video controller for a lower, safe video mode
-    safe_resolution="1024x768"
-    video_group="DMT"
-    video_mode=`tvservice -m $video_group | grep -m1 $safe_resolution | awk '{ print $2 }' | sed 's/://g'`
+    # Enable safe hdmi mode in the PI firmware and reboot immediately
+    configtxt="/boot/config.txt"
 
-    echo "Setting new display mode: group: $video_group mode: $video_mode resolution: $safe_resolution"
+    # The command below will enable the key "hdmi_safe" or add it if absent to guarantee it's always up
+    grep -q "hdmi_safe=" $configtxt && sed "s/^#hdmi_safe=.*/hdmi_safe=1/" -i $configtxt || sed "$ a\hdmi_safe=1" -i $configtxt
 
-    tvservice -e "$video_group $video_mode"
+    # force a reboot of the unit now
+    /sbin/reboot -f
 
-    # A file for system apps to know that we switched video mode
-    touch /tmp/display-in-safe-mode
 fi
