@@ -61,11 +61,11 @@ if [ "$?" -eq 10 ]; then
     # Specify 1024x768 mode instead of 640x480
     enable_config_setting $configtxt "hdmi_mode" "16"
 
-    enable_config_setting $configtxt "disable_overscan" "0"
-    enable_config_setting $configtxt "overscan_left" "24"
-    enable_config_setting $configtxt "overscan_right" "24"
-    enable_config_setting $configtxt "overscan_top" "24"
-    enable_config_setting $configtxt "overscan_bottom" "24"
+    enable_config_setting $configtxt "disable_overscan" "1"
+    enable_config_setting $configtxt "overscan_left" "0"
+    enable_config_setting $configtxt "overscan_right" "0"
+    enable_config_setting $configtxt "overscan_top" "0"
+    enable_config_setting $configtxt "overscan_bottom" "0"
 
     # reboot now
     /sbin/reboot -f
