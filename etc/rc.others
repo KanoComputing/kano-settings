@@ -15,6 +15,17 @@
 # TODO: Re-enable when our kernel comes with the SysRq option
 #echo 0 > /proc/sys/kernel/sysrq
 
+. /usr/share/kano-toolset/logging.sh
+
+# This script is essential for diagnostics so we force the log level to
+# more verbose so we get more information about it.
+LOG_LEVEL="info"
+
+# RPi config.txt file we need to modify
+configtxt="/boot/config.txt"
+configtxt_orig="/boot/config.txt.orig"
+
+
 # Assign alias Ctrl-Alt-1, 2, 7 to switch virtual terminals from the consoles.
 new_keymaps="
 control alt     keycode  2 = Console_1
@@ -32,42 +43,51 @@ enable_config_setting() {
     grep -q "$2=" $1 && sed "s/^#\{0,1\}$2=.*/$2=$3/" -i $1 || sed "$ a\\$2=$3" -i $1
 }
 
-# If the Shift key is pressed, switch to a safe display resolution
-/usr/bin/kano-keys-pressed
-if [ "$?" -eq 10 ]; then
+if [ -f "$configtxt_orig" ]; then
+    # A backup copy of the config file is there, we're in a safe mode.
+    # That means we won't detect any keys to avoid chain-reboots and
+    # we will put the original config file back over the safe version
+    # so it is there for the next reboot.
+    logger_info "Restoring"
+    mv "$configtxt_orig" "$configtxt"
+else
+    # We're definitely not in the safe mode, check whether the emergency
+    # shortcut is pressed.
 
-    echo "Enabling HDMI safe mode"
+    # If the Shift key is pressed, switch to a safe display resolution
+    /usr/bin/kano-keys-pressed
+    if [ "$?" -eq 10 ]; then
+        logger_warn "Enabling HDMI safe mode"
 
-    # We are enabling safe mode by using a combination of RPi native "hdmi_safe"
-    # but at 1024x768@60Hz instead of 640x480.
-    #
-    # From the wiki documentation: http://elinux.org/RPiconfig
-    #
-    # hdmi_safe Use "safe mode" settings to try to boot with maximum hdmi compatibility.
-    # This is the same as the combination of: hdmi_force_hotplug=1, hdmi_ignore_edid=0xa5000080, 
-    # config_hdmi_boost=4, hdmi_group=2, hdmi_mode=4, disable_overscan=0, overscan_left=24,
-    # overscan_right=24, overscan_top=24, overscan_bottom=24
+        # We are enabling safe mode by using a combination of RPi native "hdmi_safe"
+        # but at 1024x768@60Hz instead of 640x480.
+        #
+        # From the wiki documentation: http://elinux.org/RPiconfig
+        #
+        # hdmi_safe Use "safe mode" settings to try to boot with maximum hdmi compatibility.
+        # This is the same as the combination of: hdmi_force_hotplug=1, hdmi_ignore_edid=0xa5000080,
+        # config_hdmi_boost=4, hdmi_group=2, hdmi_mode=4, disable_overscan=0, overscan_left=24,
+        # overscan_right=24, overscan_top=24, overscan_bottom=24
 
+        # Make a backup of the original config
+        cp "$configtxt" "$configtxt_orig"
 
-    # RPi config.txt file we need to modify
-    configtxt="/boot/config.txt"
+        # Apply the KanoOS "hdmi_safe" changes one by one
+        enable_config_setting $configtxt "hdmi_force_hotplug" "1"
+        enable_config_setting $configtxt "hdmi_ignore_edid" "0xa5000080"
+        enable_config_setting $configtxt "config_hdmi_boost" "4"
+        enable_config_setting $configtxt "hdmi_group" "2"
 
-    # Apply the KanoOS "hdmi_safe" changes one by one
-    enable_config_setting $configtxt "hdmi_force_hotplug" "1"
-    enable_config_setting $configtxt "hdmi_ignore_edid" "0xa5000080"
-    enable_config_setting $configtxt "config_hdmi_boost" "4"
-    enable_config_setting $configtxt "hdmi_group" "2"
+        # Specify 1024x768 mode instead of 640x480
+        enable_config_setting $configtxt "hdmi_mode" "16"
 
-    # Specify 1024x768 mode instead of 640x480
-    enable_config_setting $configtxt "hdmi_mode" "16"
+        enable_config_setting $configtxt "disable_overscan" "1"
+        enable_config_setting $configtxt "overscan_left" "0"
+        enable_config_setting $configtxt "overscan_right" "0"
+        enable_config_setting $configtxt "overscan_top" "0"
+        enable_config_setting $configtxt "overscan_bottom" "0"
 
-    enable_config_setting $configtxt "disable_overscan" "1"
-    enable_config_setting $configtxt "overscan_left" "0"
-    enable_config_setting $configtxt "overscan_right" "0"
-    enable_config_setting $configtxt "overscan_top" "0"
-    enable_config_setting $configtxt "overscan_bottom" "0"
-
-    # reboot now
-    /sbin/reboot -f
-
+        # reboot now
+        /sbin/reboot -f
+    fi
 fi
