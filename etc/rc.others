@@ -74,7 +74,6 @@ else
 
         # Apply the KanoOS "hdmi_safe" changes one by one
         enable_config_setting $configtxt "hdmi_force_hotplug" "1"
-        enable_config_setting $configtxt "hdmi_ignore_edid" "0xa5000080"
         enable_config_setting $configtxt "config_hdmi_boost" "4"
         enable_config_setting $configtxt "hdmi_group" "2"
 
