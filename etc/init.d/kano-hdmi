@@ -8,9 +8,4 @@
 # Default-Stop:
 ### END INIT INFO
 
-skip=`json-get /boot/init.conf set-kano-hdmi.skip`
-if [ "$skip" = "True" ]; then
-    exit 0
-else
-    /usr/bin/set-kano-hdmi
-fi
+/usr/bin/set-kano-hdmi
