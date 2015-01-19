@@ -39,6 +39,7 @@ class SetDisplay(Template):
 
         self.kano_button.set_sensitive(False)
         self.kano_button.connect("button-release-event", self.apply_changes)
+        self.kano_button.connect("key-release-event", self.apply_changes)
 
         horizontal_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=40)
         horizontal_container.set_valign(Gtk.Align.CENTER)
@@ -74,16 +75,20 @@ class SetDisplay(Template):
 
     def apply_changes(self, button, event):
 
-        # Check if we have done any change
-        if self.init_item != self.mode_index:
-            # Set HDMI mode
-            # Get mode:group string
-            # Of the form "auto" or "cea:1" or "dmt:1" etc.
-            parse_mode = self.mode.split(" ")[0]
-            self.set_hdmi_mode_from_str(parse_mode)
+        # If enter key is pressed or mouse button is clicked
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
-            common.need_reboot = True
-        self.win.go_to_home()
+            # Check if we have done any change
+            if self.init_item != self.mode_index:
+                # Set HDMI mode
+                # Get mode:group string
+                # Of the form "auto" or "cea:1" or "dmt:1" etc.
+                parse_mode = self.mode.split(" ")[0]
+                self.set_hdmi_mode_from_str(parse_mode)
+
+                common.need_reboot = True
+
+            self.win.go_to_home()
 
     def on_mode_changed(self, combo):
 
