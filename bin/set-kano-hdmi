@@ -2,6 +2,7 @@
 
 import os
 import sys
+import shutil
 
 if __name__ == '__main__' and __package__ is None:
     dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -13,11 +14,14 @@ from kano.logging import logger
 from kano_settings.system.display import get_status, get_model, set_hdmi_mode, \
     get_edid
 from kano_settings.boot_config import set_config_value, set_config_comment, \
-    get_config_comment
+    get_config_comment, get_config_value, has_config_comment
 from kano_settings.system.audio import is_HDMI, set_to_HDMI
+
+logger.force_log_level('info')
 
 tvservice_path = '/usr/bin/tvservice'
 config_txt_path = '/boot/config.txt'
+config_txt_backup_path = '/boot/config.txt.orig'
 
 overrides = {
     '32V3H-H6A': {'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True},
@@ -27,17 +31,16 @@ overrides = {
 
 
 def enforce_pi():
-    pi_detected = os.path.exists(tvservice_path) and os.path.exists(config_txt_path)
+    pi_detected = os.path.exists(tvservice_path) and \
+        os.path.exists(config_txt_path)
     if not pi_detected:
         logger.error('need to run on a Raspberry Pi')
         sys.exit()
 
 
-def check_model_present():
-    global model
-
+def check_model_present(model):
     if get_config_comment('kano_screen_used', model):
-        logger.error('monitor already set, exiting')
+        logger.info('The unit was configured for this model already, exiting.')
         sys.exit()
 
 
@@ -61,13 +64,15 @@ def calculate_is_monitor():
 def compare_and_set_mode():
     global edid, status
 
-    if status['group'] == edid['target_group'] and status['mode'] == edid['target_mode']:
-        logger.error('mode change not needed')
+    if status['group'] == edid['target_group'] and \
+       status['mode'] == edid['target_mode']:
+        logger.info('mode change not needed')
         return False
 
     else:
-        logger.error('mode change needed')
-        logger.error('setting mode: {} {}'.format(edid['target_group'], edid['target_mode']))
+        logger.info('mode change needed')
+        modes = '{} {}'.format(edid['target_group'], edid['target_mode'])
+        logger.info('setting mode: {}'.format(modes))
 
         set_hdmi_mode(edid['target_group'], edid['target_mode'])
         return True
@@ -77,12 +82,13 @@ def compare_and_set_full_range():
     global edid, status
 
     if status['full_range'] == edid['target_full_range']:
-        logger.error('fullrange change not needed')
+        logger.info('fullrange change not needed')
         return False
 
     else:
-        logger.error('fullrange change needed')
-        logger.error('setting fullrange to: {}'.format(edid['target_full_range']))
+        logger.info('fullrange change needed')
+        msg = 'setting fullrange to: {}'.format(edid['target_full_range'])
+        logger.info(msg)
 
         if edid['target_full_range']:
             set_config_value('hdmi_pixel_encoding', 2)
@@ -95,12 +101,12 @@ def compare_and_set_overscan():
     global edid, status
 
     if status['overscan'] == edid['target_overscan']:
-        logger.error('overscan change not needed')
+        logger.info('overscan change not needed')
         return False
 
     else:
-        logger.error('overscan change needed')
-        logger.error('setting overscan to: {}'.format(edid['target_overscan']))
+        logger.info('overscan change needed')
+        logger.info('setting overscan to: {}'.format(edid['target_overscan']))
 
         if edid['target_overscan']:
             set_config_value('disable_overscan', 0)
@@ -116,14 +122,71 @@ def compare_and_set_overscan():
         return True
 
 
+def safe_boot_requested():
+    """ Test whether the CTRL+ALT keys were pressed. """
+
+    _, _, rv = run_cmd("kano-keys-pressed")
+    return rv == 10
+
+
+def is_safe_boot():
+    """ Test whether the unit is booting in the safe mode already. """
+
+    return os.path.isfile(config_txt_backup_path)
+
+
 # main program
 enforce_pi()
 enforce_root('Need to be root!')
 
+
+if safe_boot_requested() and not is_safe_boot():
+    logger.warn("Safe boot requested")
+
+    # Backup the config file
+    shutil.copy2(config_txt_path, config_txt_backup_path)
+
+    set_config_value("hdmi_force_hotplug", 1)
+    set_config_value("config_hdmi_boost", 4)
+
+    set_config_value("hdmi_group", 2)
+    set_config_value("hdmi_mode", 16)
+
+    set_config_value("disable_overscan", 1)
+    set_config_value("overscan_left", 0)
+    set_config_value("overscan_right", 0)
+    set_config_value("overscan_top", 0)
+    set_config_value("overscan_bottom", 0)
+
+    run_cmd('reboot')
+    sys.exit()
+
+
+if is_safe_boot():
+    # Restore the config file
+    logger.info("In safe boot mode, restoring config.txt")
+    shutil.move(config_txt_backup_path, config_txt_path)
+
+    sys.exit()
+
+
 # model and model comment check
 model = get_model()
+logger.info('Screen model: {}'.format(model))
 if '--force' not in sys.argv:
-    check_model_present()
+    check_model_present(model)
+
+# If the hdmi_group and hdmi_mode values are set explicitely in the config
+# file, skip the detection.
+if get_config_value('hdmi_group') != 0 and get_config_value('hdmi_mode') != 0:
+    if not has_config_comment('kano_screen_used') or \
+       get_config_comment('kano_screen_used', model):
+        # The screen is either the same or not set at all
+        logger.info('Explicit HDMI configuration detected, exiting.')
+        sys.exit()
+    else:
+        # New screen detected, will reconfigure
+        logger.info('New screen was detected.')
 
 # read status
 status = get_status()
@@ -140,18 +203,19 @@ override_models()
 calculate_is_monitor()
 
 # output
-logger.error('model: {}'.format(model))
-logger.error(status)
-logger.error(edid)
+logger.debug(status)
+logger.debug(edid)
 
 # fix hdmi audio status
 if not edid['hdmi_audio'] and is_HDMI():
-    logger.error('hdmi audio not supported on this screen, changing to analogue')
+    msg = 'hdmi audio not supported on this screen, changing to analogue'
+    logger.info(msg)
     set_to_HDMI(False)
 
 
 # changes
-changes = compare_and_set_mode() or compare_and_set_full_range() or compare_and_set_overscan()
+changes = compare_and_set_mode() or compare_and_set_full_range() or \
+    compare_and_set_overscan()
 
 if changes:
     # write comment to config
@@ -159,6 +223,3 @@ if changes:
 
     # reboot
     run_cmd('reboot')
-
-
-

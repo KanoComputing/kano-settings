@@ -87,3 +87,16 @@ def get_config_comment(name, value):
 
     comment_str_full = '### {}: {}'.format(name, value)
     return comment_str_full in lines
+
+
+def has_config_comment(name):
+    lines = read_file_contents_as_lines(boot_config_path)
+    if not lines:
+        return False
+
+    comment_start = '### {}:'.format(name)
+    for l in lines:
+        if l.startswith(comment_start):
+            return True
+
+    return False
