@@ -2,6 +2,7 @@
 
 import os
 import sys
+import shutil
 
 if __name__ == '__main__' and __package__ is None:
     dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -20,6 +21,7 @@ logger.force_log_level('info')
 
 tvservice_path = '/usr/bin/tvservice'
 config_txt_path = '/boot/config.txt'
+config_txt_backup_path = '/boot/config.txt.orig'
 
 overrides = {
     '32V3H-H6A': {'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True},
@@ -120,9 +122,53 @@ def compare_and_set_overscan():
         return True
 
 
+def safe_boot_requested():
+    """ Test whether the CTRL+ALT keys were pressed. """
+
+    _, _, rv = run_cmd("kano-keys-pressed")
+    return rv == 10
+
+
+def is_safe_boot():
+    """ Test whether the unit is booting in the safe mode already. """
+
+    return os.path.isfile(config_txt_backup_path)
+
+
 # main program
 enforce_pi()
 enforce_root('Need to be root!')
+
+
+if safe_boot_requested() and not is_safe_boot():
+    logger.warn("Safe boot requested")
+
+    # Backup the config file
+    shutil.copy2(config_txt_path, config_txt_backup_path)
+
+    set_config_value("hdmi_force_hotplug", 1)
+    set_config_value("config_hdmi_boost", 4)
+
+    set_config_value("hdmi_group", 2)
+    set_config_value("hdmi_mode", 16)
+
+    set_config_value("disable_overscan", 1)
+    set_config_value("overscan_left", 0)
+    set_config_value("overscan_right", 0)
+    set_config_value("overscan_top", 0)
+    set_config_value("overscan_bottom", 0)
+
+    run_cmd('reboot')
+    sys.exit()
+
+
+if is_safe_boot():
+    # Restore the config file
+    logger.info("In safe boot mode, restoring config.txt")
+    shutil.move(config_txt_backup_path, config_txt_path)
+
+    sys.exit()
+
 
 # model and model comment check
 model = get_model()
