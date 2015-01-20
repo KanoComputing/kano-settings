@@ -3,6 +3,7 @@
 import os
 import sys
 import shutil
+import json
 
 if __name__ == '__main__' and __package__ is None:
     dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -22,6 +23,8 @@ logger.force_log_level('info')
 tvservice_path = '/usr/bin/tvservice'
 config_txt_path = '/boot/config.txt'
 config_txt_backup_path = '/boot/config.txt.orig'
+
+screen_log_path = '/boot/screen.log'
 
 overrides = {
     '32V3H-H6A': {'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True},
@@ -135,10 +138,28 @@ def is_safe_boot():
     return os.path.isfile(config_txt_backup_path)
 
 
+def get_screen_information():
+    """ Retrieves the information about the current screen.
+
+        The data will be logged to the bootpartition for
+        troubleshooting purposes.
+    """
+
+    info = {
+        "edid": get_edid(),
+        "model": get_model(),
+        "status": get_status()
+    }
+
+    with open(screen_log_path, 'w') as f:
+        json.dump(info, f, sort_keys=True, indent=4, separators=(',', ': '))
+
+    return info
+
+
 # main program
 enforce_pi()
 enforce_root('Need to be root!')
-
 
 if safe_boot_requested() and not is_safe_boot():
     logger.warn("Safe boot requested")
@@ -164,17 +185,30 @@ if safe_boot_requested() and not is_safe_boot():
 
 if is_safe_boot():
     # Restore the config file
-    logger.info("In safe boot mode, restoring config.txt")
+    logger.info("In safe boot mode, restoring config.txt, skipping autoconfig")
     shutil.move(config_txt_backup_path, config_txt_path)
 
     sys.exit()
 
 
+screen_data = get_screen_information()
+
 # model and model comment check
-model = get_model()
+model = screen_data['model']
 logger.info('Screen model: {}'.format(model))
 if '--force' not in sys.argv:
     check_model_present(model)
+
+# read status
+status = screen_data['status']
+if not status:
+    sys.exit(1)
+
+# get edid
+edid = screen_data['edid']
+if not edid:
+    sys.exit(1)
+
 
 # If the hdmi_group and hdmi_mode values are set explicitely in the config
 # file, skip the detection.
@@ -187,16 +221,6 @@ if get_config_value('hdmi_group') != 0 and get_config_value('hdmi_mode') != 0:
     else:
         # New screen detected, will reconfigure
         logger.info('New screen was detected.')
-
-# read status
-status = get_status()
-if not status:
-    sys.exit(1)
-
-# get edid
-edid = get_edid()
-if not edid:
-    sys.exit(1)
 
 # override modes, calculate is_monitor
 override_models()
