@@ -161,6 +161,10 @@ def get_screen_information():
 enforce_pi()
 enforce_root('Need to be root!')
 
+# Gather and log data about the current screen
+screen_data = get_screen_information()
+
+# Reconfigure and reboot if the user requested safe mode
 if safe_boot_requested() and not is_safe_boot():
     logger.warn("Safe boot requested")
 
@@ -179,19 +183,18 @@ if safe_boot_requested() and not is_safe_boot():
     set_config_value("overscan_top", 0)
     set_config_value("overscan_bottom", 0)
 
-    run_cmd('reboot')
+    run_cmd('reboot -f')
     sys.exit()
 
 
 if is_safe_boot():
-    # Restore the config file
     logger.info("In safe boot mode, restoring config.txt, skipping autoconfig")
+    
+    # Restore the config.txt file
     shutil.move(config_txt_backup_path, config_txt_path)
 
     sys.exit()
 
-
-screen_data = get_screen_information()
 
 # model and model comment check
 model = screen_data['model']
@@ -246,4 +249,4 @@ if changes:
     set_config_comment('kano_screen_used', model)
 
     # reboot
-    run_cmd('reboot')
+    run_cmd('reboot -f')
