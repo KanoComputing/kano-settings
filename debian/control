@@ -4,7 +4,7 @@ Section: admin
 Priority: optional
 Standards-Version: 3.9.2
 Build-Depends: debhelper (>= 9), build-essential, pkg-config, libgtk2.0-dev,
-               lxpanel (>= 0.7.0), libfm-gtk1, libfm-dev, libkdesk-dev
+               lxpanel (>= 0.7.0), libfm-dev, libkdesk-dev
 
 Package: kano-settings
 Architecture: any
