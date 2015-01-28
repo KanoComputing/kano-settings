@@ -2,7 +2,7 @@
 
 # set_overclock.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
+# Copyright (C) 2014, 2015 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
@@ -17,7 +17,8 @@ from kano_settings.system.overclock import change_overclock_value
 # 1 = Modest
 # 2 = Medium
 # 3 = High
-modes = ["None", "Modest", "Medium", "High"]
+# 4 = Turbo
+modes = ["None", "Modest", "Medium", "High", "Turbo"]
 
 
 class SetOverclock(RadioButtonTemplate):
@@ -40,12 +41,15 @@ class SetOverclock(RadioButtonTemplate):
         desc3 = self.data["DESCRIPTION_3"]
         option4 = self.data["OPTION_4"]
         desc4 = self.data["DESCRIPTION_4"]
+        option5 = self.data["OPTION_5"]
+        desc5 = self.data["DESCRIPTION_5"]
 
         RadioButtonTemplate.__init__(self, title, description, kano_label,
                                      [[option1, desc1],
                                       [option2, desc2],
                                       [option3, desc3],
-                                      [option4, desc4]])
+                                      [option4, desc4],
+                                      [option5, desc5]])
         self.win = win
         self.win.set_main_widget(self)
 
@@ -66,11 +70,12 @@ class SetOverclock(RadioButtonTemplate):
         # If enter key is pressed or mouse button is clicked
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
-            #  Mode      arm_freq    core_freq    sdram_freq   over_voltage
-            # "None"   "700MHz ARM, 250MHz core, 400MHz SDRAM, 0 overvolt"
-            # "Modest" "800MHz ARM, 300MHz core, 400MHz SDRAM, 0 overvolt"
-            # "Medium" "900MHz ARM, 333MHz core, 450MHz SDRAM, 2 overvolt"
-            # "High"   "950MHz ARM, 450MHz core, 450MHz SDRAM, 6 overvolt"
+            #  Mode      arm_freq       core_freq      sdram_freq   over_voltage
+            #  None;     700 MHz ARM,  250 MHz core, 400 MHz SDRAM, 0 overvolt
+            #  Modest;   800 MHz ARM,  250 MHz core, 400 MHz SDRAM, 0 overvolt
+            #  Medium;   900 MHz ARM,  250 MHz core, 450 MHz SDRAM, 2 overvolt
+            #  High;     950 MHz ARM,  250 MHz core, 450 MHz SDRAM, 6 overvolt
+            #  Turbo;    1000 MHz ARM, 500 MHz core, 600 MHz SDRAM, 6 overvolt
 
             # Mode has no changed
             if self.initial_button == self.selected_button:
@@ -85,16 +90,18 @@ class SetOverclock(RadioButtonTemplate):
             self.win.go_to_home()
 
     def current_setting(self):
-        freq = get_config_value('core_freq')
+        freq = get_config_value('arm_freq')
 
-        if freq == 250:
+        if freq == 700:
             self.initial_button = 0
-        elif freq == 300:
+        elif freq == 800:
             self.initial_button = 1
-        elif freq == 333:
+        elif freq == 900:
             self.initial_button = 2
-        elif freq == 450:
+        elif freq == 950:
             self.initial_button = 3
+        elif freq == 1000:
+            self.initial_button = 4
 
     def on_button_toggled(self, button):
 
@@ -108,3 +115,5 @@ class SetOverclock(RadioButtonTemplate):
                 self.selected_button = 2
             elif label == "High":
                 self.selected_button = 3
+            elif label == "Turbo":
+                self.selected_button = 4

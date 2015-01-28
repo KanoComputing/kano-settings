@@ -2,7 +2,7 @@
 
 # overclock.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
+# Copyright (C) 2014, 2015 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 # Backend overclock functions
@@ -15,11 +15,12 @@ from kano_settings.config_file import set_setting
 
 def change_overclock_value(config):
 
-    #  Mode      arm_freq    core_freq    sdram_freq   over_voltage
-    # "None"   "700MHz ARM, 250MHz core, 400MHz SDRAM, 0 overvolt"
-    # "Modest" "800MHz ARM, 300MHz core, 400MHz SDRAM, 0 overvolt"
-    # "Medium" "900MHz ARM, 333MHz core, 450MHz SDRAM, 2 overvolt"
-    # "High"   "950MHz ARM, 450MHz core, 450MHz SDRAM, 6 overvolt"
+    #  Mode      arm_freq       core_freq      sdram_freq   over_voltage
+    #  None;     700 MHz ARM,  250 MHz core, 400 MHz SDRAM, 0 overvolt
+    #  Modest;   800 MHz ARM,  250 MHz core, 400 MHz SDRAM, 0 overvolt
+    #  Medium;   900 MHz ARM,  250 MHz core, 450 MHz SDRAM, 2 overvolt
+    #  High;     950 MHz ARM,  250 MHz core, 450 MHz SDRAM, 6 overvolt
+    #  Turbo;    1000 MHz ARM, 500 MHz core, 600 MHz SDRAM, 6 overvolt
 
     # None configuration
     if config is "None":
@@ -30,20 +31,26 @@ def change_overclock_value(config):
     # Modest configuration
     elif config is "Modest":
         arm_freq = 800
-        core_freq = 300
+        core_freq = 250
         sdram_freq = 400
         over_voltage = 0
     # Medium configuration
     elif config is "Medium":
         arm_freq = 900
-        core_freq = 333
+        core_freq = 250
         sdram_freq = 450
         over_voltage = 2
     # High configuration
     elif config is "High":
         arm_freq = 950
-        core_freq = 450
+        core_freq = 250
         sdram_freq = 450
+        over_voltage = 6
+    # Turbo configuration
+    elif config is "Turbo":
+        arm_freq = 1000
+        core_freq = 500
+        sdram_freq = 600
         over_voltage = 6
     else:
         logger.error('kano-settings: set_overclock: SetOverclock: set_overclock(): ' +
