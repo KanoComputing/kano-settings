@@ -128,6 +128,10 @@ def compare_and_set_overscan():
 def safe_boot_requested():
     """ Test whether the CTRL+ALT keys were pressed. """
 
+    # Start a board LED blink in the background for a few seconds
+    # so the user knows it's time to press Ctrl-Alt
+    _, _, _ = run_cmd("/usr/bin/kano-led &")
+
     _, _, rv = run_cmd("kano-keys-pressed")
     return rv == 10
 
