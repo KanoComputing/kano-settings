@@ -13,7 +13,7 @@ from kano.gtk3.kano_combobox import KanoComboBox
 from kano.gtk3.heading import Heading
 import kano_settings.common as common
 from kano_settings.boot_config import set_config_comment
-from kano_settings.system.display import get_model, list_supported_modes, set_hdmi_mode, read_hdmi_mode, \
+from kano_settings.system.display import get_model, get_status, list_supported_modes, set_hdmi_mode, read_hdmi_mode, \
     find_matching_mode, get_overscan_status, write_overscan_values, set_overscan_status, launch_pipe
 from kano_settings.data import get_data
 
@@ -24,12 +24,19 @@ class SetDisplay(Template):
     def __init__(self, win):
         title = self.data["LABEL_1"]
         kano_label = self.data["KANO_BUTTON"]
-
-         # Get display name
+        
+        # Show the Display brand and model
         self.model = get_model()
-        reboot_message = " (Changing this requires a reboot)"
+        info_message = ' (Changing this requires a reboot)'
 
-        Template.__init__(self, title, self.model + reboot_message, kano_label)
+        # And the current display resolution
+        try:
+            current_resolution = get_status()['resolution']
+            info_message += '\n\nCurrent resolution: {}'.format(current_resolution)
+        except:
+            pass
+
+        Template.__init__(self, title, self.model + info_message, kano_label)
 
         self.win = win
         self.win.set_main_widget(self)
