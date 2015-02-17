@@ -10,7 +10,7 @@
 
 import os
 import sys
-import argparse
+from docopt import docopt
 
 if __name__ == '__main__' and __package__ is None:
     dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
@@ -18,6 +18,7 @@ if __name__ == '__main__' and __package__ is None:
         sys.path.insert(1, dir_path)
 
 from kano_settings.system.keyboard_config import set_saved_keyboard
+from kano_settings.config_file import get_setting
 
 verbose = False
 
@@ -25,96 +26,37 @@ def print_v(string):
     if verbose:
         print string
 
-
 def parse_args():
-    # Top-level parser
-    settings_parser = argparse.ArgumentParser(
-        description='Change settings on the Kano.')
-    settings_parser.add_argument('--reset', action='store_true',
-        help='Reset the setting')
-    settings_parser.add_argument('--verbose', '-v', action='store_true',
-        help='Verbose mode')
-    settings_subparsers = settings_parser.add_subparsers(
-        help='Set or retrieve a setting')
-
-    # Set parser
-    set_parser = settings_subparsers.add_parser('set', help='Set a setting')
-    set_parser.set_defaults(set_opt=True)
-    set_subparser = set_parser.add_subparsers(help="Setting to change")
-
-
-    # Audio
-    set_audio_parser = set_subparser.add_parser('audio', help='Set the audio')
-    set_audio_parser.set_defaults(audio_opt=True)
-    set_audio_parser_group = set_audio_parser.add_mutually_exclusive_group(
-        required=False)
-    set_audio_parser_group.add_argument('--hdmi', action='store_true',
-        help='Set the audio to HDMI')
-    set_audio_parser_group.add_argument('--analogue', action='store_true',
-        help='Set the audio to Analogue')
-
-    # Keyboard
-    set_kb_parser = set_subparser.add_parser('keyboard',
-        help='Set the keyboard')
-    set_kb_parser.set_defaults(keyboard_opt=True)
-    set_kb_parser_group = set_kb_parser.add_mutually_exclusive_group(
-        required=True)
-    set_kb_parser_group.add_argument('layout', nargs='?',
-        help='The keyboard layout code')
-    set_kb_parser_group.add_argument('--load', action='store_true',
-        help='Set the keyboard to the value saved by Kano-Settings')
-
-
-    # Get parser
-    get_parser = settings_subparsers.add_parser('get',
-        help='Retrieve a setting')
-    get_parser.set_defaults(get_opt=True)
-    get_subparser = get_parser.add_subparsers(help='Setting to get')
-
-
-    # Audio
-    get_audio_parser = get_subparser.add_parser('audio',
-        help='Get the audio')
-    get_audio_parser.set_defaults(audio_opt=True)
-
-    # Network
-    get_network_parser = get_subparser.add_parser('network',
-        help='Get the network')
-    get_network_parser.set_defaults(network_opt=True)
-
-    # Keyboard
-    get_kb_parser = get_subparser.add_parser('keyboard',
-        help='Get the keyboard')
-    get_kb_parser.set_defaults(keyboard_opt=True)
-
-
-    # Parsing the arguments
-    args = settings_parser.parse_args()
-
-    if args.verbose:
+    if args['-v'] or args['--verbose']:
         global verbose
         verbose = True
 
-    if 'set_opt' in args and args.set_opt:
-        # Need to be root to change settings
+    if args['set']:
+        # Need to b e root to change settings
         if os.environ['LOGNAME'] != 'root':
             exit("Error: Settings must be executed with root privileges")
 
-        if 'audio_opt' in args and args.audio_opt:
-            print_v('setting audio to {}'.format(args.hdmi))
-        elif 'keyboard_opt' in args and args.keyboard_opt:
-            if 'load' in args and args.load:
+        if args['audio']:
+            if args['hdmi']:
+                setting = 'hdmi'
+            elif args['analogue']:
+                setting = 'analogue'
+            else:
+                setting = 'default'
+            print_v('setting audio to {}'.format(setting))
+        elif args['keyboard']:
+            if args['--load']:
                 set_saved_keyboard()
                 print_v('Setting keyboard to value loaded from settings')
-    elif 'get_opt' in args and args.get_opt:
-        if 'audio_opt' in args and args.audio_opt:
+    elif args['get']:
+        if args['audio']:
             print_v(
                 'Audio settings:\n\n'
                 'Audio mode: {}'.format(
                     get_setting('Audio')
                 )
             )
-        elif 'network_opt' in args and args.network_opt:
+        elif args['network']:
             print_v(
                 'Network settings:\n\n'
                 'WiFi: {}, WiFi Connection Attempted: {},\n'
@@ -128,7 +70,7 @@ def parse_args():
                     get_setting('Proxy-type')
                 )
             )
-        elif 'keyboard_opt' in args and args.keyboard_opt:
+        elif args['keyboard']:
             print_v(
                 'Keyboard settings:\n\n'
                 'Continent: {}, Country: {}, Variant: {}\n'
@@ -143,4 +85,22 @@ def parse_args():
             )
 
 if __name__ == "__main__":
+    args = docopt("""
+    Usage:
+      kano-settings-cli [-v | --verbose] get audio
+      kano-settings-cli [-v | --verbose] set audio (hdmi | analogue | default)
+      kano-settings-cli [-v | --verbose] get keyboard
+      kano-settings-cli [-v | --verbose] set keyboard (--layout <layout_code> | --load)
+      kano-settings-cli [-v | --verbose] get network
+      kano-settings-cli -h | --help
+
+    Options:
+      hdmi      Set the audio to HDMI
+      analogue  Set the audio to use the headphone jack
+      layout    The keyboard layout code
+      load      Set the keyboard to the value saved by Kano-Settings
+      network   Get the network info
+      verbose   Verbose mode
+    """)
+
     parse_args()

@@ -16,7 +16,8 @@ from kano.utils import read_file_contents, write_file_contents, \
     read_file_contents_as_lines, read_json, write_json, ensure_dir, \
     get_user_unsudoed
 from kano.logging import logger
-from kano.network import set_dns
+from kano.network import set_dns, restore_dns_interfaces, \
+    clear_dns_interfaces, refresh_resolvconf
 
 password_file = "/etc/kano-parental-lock"
 hosts_file = '/etc/hosts'
@@ -191,9 +192,13 @@ def set_dns_parental(enabled):
     if enabled:
         logger.debug('Enabling parental DNS servers (OpenDNS servers)')
         set_dns(open_dns_servers)
+        clear_dns_interfaces()
     else:
         logger.debug('Disabling parental DNS servers (Google servers)')
         set_dns(google_servers)
+        restore_dns_interfaces()
+
+    refresh_resolvconf()
 
 
 def read_listed_sites():
