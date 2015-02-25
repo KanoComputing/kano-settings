@@ -13,7 +13,9 @@ from kano.gtk3.buttons import OrangeButton, KanoButton
 from kano_profile.paths import legal_dir
 from kano_settings.common import media
 from kano_settings.data import get_data
-from kano_settings.system.about import (get_current_version, get_space_available, get_temperature)
+from kano_settings.system.about import (
+    get_current_version, get_space_available, get_temperature, get_model_name
+)
 
 
 class SetAbout(Gtk.Box):
@@ -38,21 +40,26 @@ class SetAbout(Gtk.Box):
         version_align = self.create_version_align()
         space_available = get_space_available()
         temperature = get_temperature()
+        model_name = get_model_name()
 
         space_align = self.create_other_align(space_available)
         temperature_align = self.create_other_align(temperature)
+        model_align = self.create_other_align(model_name)
 
         terms_and_conditions = OrangeButton("Terms and conditions")
-        terms_and_conditions.connect("button_release_event", self.show_terms_and_conditions)
+        terms_and_conditions.connect(
+            "button_release_event", self.show_terms_and_conditions
+        )
 
         self.kano_button = KanoButton(kano_label)
         self.kano_button.pack_and_align()
 
-        image.set_margin_top(30)
+        image.set_margin_top(10)
         self.pack_start(image, False, False, 10)
         self.pack_start(version_align, False, False, 2)
-        self.pack_start(space_align, False, False, 2)
-        self.pack_start(temperature_align, False, False, 2)
+        self.pack_start(space_align, False, False, 1)
+        self.pack_start(temperature_align, False, False, 1)
+        self.pack_start(model_align, False, False, 1)
         self.pack_start(terms_and_conditions, False, False, 3)
         self.pack_start(self.kano_button.align, False, False, 10)
 

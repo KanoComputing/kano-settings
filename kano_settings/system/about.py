@@ -8,6 +8,7 @@
 # Contains the about screen backend functions
 
 import subprocess
+from kano.utils import is_model_a, is_model_b, is_model_b_plus, is_model_2_b
 
 
 def get_current_version():
@@ -34,3 +35,17 @@ def get_temperature():
                                      echo $cputemp1\".\"$cputemp", shell=True)
     output = output.strip()
     return "Temperature: " + output + degree_sign + "C"
+
+
+def get_model_name():
+    board_info = "Model: Raspberry Pi"
+    if is_model_a():
+        board_info += " A"
+    elif is_model_b():
+        board_info += " B"
+    elif is_model_b_plus():
+        board_info += " B+"
+    elif is_model_2_b():
+        board_info += " 2"
+
+    return board_info
