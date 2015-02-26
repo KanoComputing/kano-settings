@@ -51,8 +51,19 @@ class SetAbout(Gtk.Box):
             "button_release_event", self.show_terms_and_conditions
         )
 
+        launch_credits = OrangeButton("Meet the team")
+        launch_credits.connect(
+            "button_release_event", self.show_credits
+        )
+
         self.kano_button = KanoButton(kano_label)
         self.kano_button.pack_and_align()
+
+        hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
+        hbox.pack_start(terms_and_conditions, False, False, 4)
+        hbox.pack_start(launch_credits, False, False, 4)
+        hbutton_container = Gtk.Alignment(xalign=0.5, xscale=0, yalign=0, yscale=0)
+        hbutton_container.add(hbox)
 
         image.set_margin_top(10)
         self.pack_start(image, False, False, 10)
@@ -60,7 +71,7 @@ class SetAbout(Gtk.Box):
         self.pack_start(space_align, False, False, 1)
         self.pack_start(temperature_align, False, False, 1)
         self.pack_start(model_align, False, False, 1)
-        self.pack_start(terms_and_conditions, False, False, 3)
+        self.pack_start(hbutton_container, False, False, 3)
         self.pack_start(self.kano_button.align, False, False, 10)
 
         self.kano_button.connect("button-release-event", self.win.go_to_home)
@@ -99,3 +110,11 @@ class SetAbout(Gtk.Box):
                              scrolled_text=legal_text,
                              parent_window=self.win)
         kdialog.run()
+
+    def show_credits(self, widget, event):
+
+        os.system(
+            "/usr/bin/kano-launcher \"kdesk-blur 'urxvt -bg "
+            "rgba:0000/0000/0000/FFFF -title 'Credits' -e "
+            "/usr/bin/kano-credits'\""
+        )
