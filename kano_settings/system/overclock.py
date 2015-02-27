@@ -23,7 +23,6 @@ rpi1_modes = ["None", "Modest", "Medium", "High", "Turbo"]
 rpi1_overclock_values = {
     "None": {
         "arm_freq": 700,
-        "arm_freq": 700,
         "core_freq": 250,
         "sdram_freq": 400,
         "over_voltage": 0
@@ -54,22 +53,45 @@ rpi1_overclock_values = {
     }
 }
 
+rpi2_modes = ["Standard","Overclocked"]
+rpi2_overclock_values = {
+    "Standard": {
+        "arm_freq": 900,
+        "core_freq": 250,
+        "sdram_freq": 450,
+        "over_voltage": 0
+    },  # from https://github.com/asb/raspi-config/blob/
+        #         4ee1fde44ee544a7eade9ecf94141eb40aabab60/raspi-config#L288
+    "Overclocked": {
+        "arm_freq": 1000,
+        "core_freq": 500,
+        "sdram_freq": 500,
+        "over_voltage": 2
+    }
+}
 
-def change_overclock_value(config):
 
-    if config not in rpi1_overclock_values:
+def change_overclock_value(config,is_pi2):
+    if is_pi2:
+        overclock_values = rpi2_overclock_values
+    else:
+        overclock_values = rpi1_overclock_values
+
+
+    if config not in overclock_values:
         logger.error('kano-settings: set_overclock: SetOverclock: set_overclock(): ' +
                      'was called with an invalid self.selected_button={}'.format(config))
         return
 
-    overclock_values = rpi1_overclock_values[config]
+    values=overclock_values[config]
+
 
     logger.info('set_overclock / apply_changes: config:{} arm_freq:{arm_freq} core_freq:{core_freq} sdram_freq:{sdram_freq} over_voltage:{over_voltage}'.format(
-                config, **overclock_values))
+                config, **values))
 
     # Apply changes
-    for val in overclock_values:
-        set_config_value(val, overclock_values[val])
+    for val in values:
+        set_config_value(val, values[val])
 
     # Update config
     set_setting("Overclocking", config)

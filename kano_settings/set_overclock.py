@@ -11,7 +11,10 @@ from kano_settings.templates import RadioButtonTemplate
 import kano_settings.common as common
 from kano_settings.boot_config import get_config_value
 from kano_settings.data import get_data
-from kano_settings.system.overclock import change_overclock_value, rpi1_modes, rpi1_overclock_values
+from kano_settings.system.overclock import change_overclock_value
+from kano_settings.system.overclock import rpi1_modes, rpi1_overclock_values
+from kano_settings.system.overclock import rpi2_modes, rpi2_overclock_values
+from kano.utils import is_model_2_b
 
 # 0 = None
 # 1 = Modest
@@ -44,15 +47,28 @@ class SetOverclock(RadioButtonTemplate):
         option5 = self.data["OPTION_5"]
         desc5 = self.data["DESCRIPTION_5"]
 
-        self.modes = rpi1_modes
-        self.overclock_values = rpi1_overclock_values
+        option6 = self.data["OPTION_6"]
+        desc6 = self.data["DESCRIPTION_6"]
+        option7 = self.data["OPTION_7"]
+        desc7 = self.data["DESCRIPTION_7"]
 
-        RadioButtonTemplate.__init__(self, title, description, kano_label,
-                                     [[option1, desc1],
-                                      [option2, desc2],
-                                      [option3, desc3],
-                                      [option4, desc4],
-                                      [option5, desc5]])
+        self.is_pi2 = is_model_2_b()
+
+        if self.is_pi2:
+            self.modes = rpi2_modes
+            self.overclock_values = rpi2_overclock_values
+            RadioButtonTemplate.__init__(self, title, description, kano_label,
+                                         [[option6, desc6],
+                                          [option7, desc7]])
+        else:
+            self.modes = rpi1_modes
+            self.overclock_values = rpi1_overclock_values
+            RadioButtonTemplate.__init__(self, title, description, kano_label,
+                                         [[option1, desc1],
+                                          [option2, desc2],
+                                          [option3, desc3],
+                                          [option4, desc4],
+                                          [option5, desc5]])
         self.win = win
         self.win.set_main_widget(self)
 
@@ -78,7 +94,7 @@ class SetOverclock(RadioButtonTemplate):
                 self.win.go_to_home()
                 return
 
-            change_overclock_value(self.modes[self.selected_button])
+            change_overclock_value(self.modes[self.selected_button],self.is_pi2)
 
             # Tell user to reboot to see changes
             common.need_reboot = True
@@ -86,6 +102,8 @@ class SetOverclock(RadioButtonTemplate):
             self.win.go_to_home()
 
     def current_setting(self):
+        # The initial button defaults to zero (above) if the user has
+        # selected a different frequency
         freq = get_config_value('arm_freq')
 
         for x in self.modes:
