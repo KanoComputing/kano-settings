@@ -8,7 +8,7 @@
 # Backend overclock functions
 #
 
-from kano_settings.boot_config import set_config_value
+from kano_settings.boot_config import set_config_value, get_config_value
 from kano.logging import logger
 from kano_settings.config_file import set_setting
 
@@ -20,6 +20,9 @@ from kano_settings.config_file import set_setting
 #  Turbo;    1000 MHz ARM, 500 MHz core, 600 MHz SDRAM, 6 overvolt
 
 rpi1_modes = ["None", "Modest", "Medium", "High", "Turbo"]
+
+clock_keys = ["arm_freq", "core_freq","sdram_freq", "over_voltage"]
+
 rpi1_overclock_values = {
     "None": {
         "arm_freq": 700,
@@ -71,7 +74,40 @@ rpi2_overclock_values = {
 }
 
 
-def change_overclock_value(config,is_pi2):
+def values_equal(v1, v2):
+    return all([v1[x] == v2[x] for x in clock_keys])
+
+
+def match_overclock_value(is_pi2):
+    """ which overlock gui setting matches our current set of values?"""
+    curr = {}
+    for key in clock_keys:
+        curr[key] = get_config_value(key)
+
+    if is_pi2:
+        overclock_values = rpi2_overclock_values
+    else:
+        overclock_values = rpi1_overclock_values
+
+    for row in overclock_values:
+        if values_equal(overclock_values[row], curr):
+            return row
+    return None
+
+
+def backup_overclock_values(backup_config):
+    backup_config.ensure_exists()
+    for key in clock_keys:
+        backup_config.set_value(key, get_config_value(key))
+
+
+def restore_overclock_values(backup_config):
+
+    for key in clock_keys:
+        set_config_value(key, backup_config.get_value(key))
+
+
+def change_overclock_value(config, is_pi2):
     if is_pi2:
         overclock_values = rpi2_overclock_values
     else:
@@ -95,3 +131,10 @@ def change_overclock_value(config,is_pi2):
 
     # Update config
     set_setting("Overclocking", config)
+
+
+def set_default_overclock_values(is_pi2):
+    if is_pi2:
+        change_overclock_value("Standard", is_pi2)
+    else:
+        change_overclock_value("High", is_pi2)
