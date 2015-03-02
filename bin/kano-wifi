@@ -190,9 +190,12 @@ Returns true if online.
 
             online = is_gateway(wiface)
             if not online:
-                msg = '{{6 - }} {{5 Couldn\'t connect to }}{{2 %s }}.{{5 Do you want to re-enter the password? }} {{1 [Y]es/[n]o }} ' % essid
+                msg = '{{6 - }} {{5 Couldn\'t connect to }}{{2 %s }}' % essid
+                subprocess.call(['typewriter_echo', msg, '0', '1'])
+                msg = '{{6 - }} {{5 Do you want to re-enter the password? }} {{1 [Y]es/[n]o }} '
                 subprocess.call(['typewriter_echo', msg, '0', '0'])
                 retry_pass = raw_input().strip().upper()
+                print "\n"
             else:
                 break
 
