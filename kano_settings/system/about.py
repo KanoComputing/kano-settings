@@ -14,7 +14,7 @@ from kano.utils import is_model_a, is_model_b, is_model_b_plus, is_model_2_b
 def get_current_version():
     output = subprocess.check_output(["cat", "/etc/kanux_version"])
     version_number = output.split("-")[-1].strip()
-    return "Kano OS v." + version_number
+    return version_number
 
 
 def get_space_available():

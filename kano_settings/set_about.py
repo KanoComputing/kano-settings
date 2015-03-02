@@ -7,6 +7,7 @@
 #
 
 import os
+import webbrowser
 from gi.repository import Gtk
 from kano.gtk3.kano_dialog import KanoDialog
 from kano.gtk3.buttons import OrangeButton, KanoButton
@@ -51,9 +52,14 @@ class SetAbout(Gtk.Box):
             "button_release_event", self.show_terms_and_conditions
         )
 
-        launch_credits = OrangeButton("Meet the team")
-        launch_credits.connect(
+        credits_button = OrangeButton("Meet the team")
+        credits_button.connect(
             "button_release_event", self.show_credits
+        )
+
+        changelog_button = OrangeButton("Changelog")
+        changelog_button.connect(
+            "button_release_event", self.show_changelog
         )
 
         self.kano_button = KanoButton(kano_label)
@@ -61,8 +67,11 @@ class SetAbout(Gtk.Box):
 
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         hbox.pack_start(terms_and_conditions, False, False, 4)
-        hbox.pack_start(launch_credits, False, False, 4)
-        hbutton_container = Gtk.Alignment(xalign=0.5, xscale=0, yalign=0, yscale=0)
+        hbox.pack_start(credits_button, False, False, 4)
+        hbox.pack_start(changelog_button, False, False, 4)
+        hbutton_container = Gtk.Alignment(
+            xalign=0.5, xscale=0, yalign=0, yscale=0
+        )
         hbutton_container.add(hbox)
 
         image.set_margin_top(10)
@@ -81,8 +90,13 @@ class SetAbout(Gtk.Box):
         self.win.show_all()
 
     def create_version_align(self):
-        text = get_current_version()
-        label = Gtk.Label(text)
+        '''This is the widget (Gtk.Alignment) containing the version
+        information. This has different styling to the other information
+        '''
+
+        version_number = get_current_version()
+        version_long = "Kano OS v." + version_number
+        label = Gtk.Label(version_long)
         label.get_style_context().add_class("about_version")
 
         align = Gtk.Alignment(xalign=0.5, xscale=0, yalign=0, yscale=0)
@@ -91,6 +105,9 @@ class SetAbout(Gtk.Box):
         return align
 
     def create_other_align(self, text):
+        '''This is the default template for any other information
+        '''
+
         label = Gtk.Label(text)
         label.get_style_context().add_class("about_label")
 
@@ -100,6 +117,9 @@ class SetAbout(Gtk.Box):
         return align
 
     def show_terms_and_conditions(self, widget, event):
+        '''This is the dialog containing the terms and conditions - same as
+        shown before creating an account
+        '''
 
         legal_text = ''
         for file in os.listdir(legal_dir):
@@ -112,9 +132,27 @@ class SetAbout(Gtk.Box):
         kdialog.run()
 
     def show_credits(self, widget, event):
+        '''Launch the credits
+        '''
 
         os.system(
             "/usr/bin/kano-launcher \"kdesk-blur 'urxvt -bg "
             "rgba:0000/0000/0000/FFFF -title 'Credits' -e "
             "/usr/bin/kano-credits'\""
         )
+
+    def show_changelog(self, widget, event):
+        '''Launch chromium with the link of the relevent changelog
+        '''
+
+        # Assuming current_version is of the form 1.3.4
+        current_version = get_current_version()
+
+        # Full link should be analogous to
+        # http://world.kano.me/forum/topic/kanux-beta-v1.2.3
+        link = "http://world.kano.me/forum/topic/kanux-beta-v{}".format(
+            current_version
+        )
+
+        # Open in Chromium
+        webbrowser.open(link)
