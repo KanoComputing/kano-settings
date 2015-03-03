@@ -12,8 +12,12 @@
 # Disable the Kernel Magig System Request hotkey
 # http://en.wikipedia.org/wiki/Magic_SysRq_key
 
-# TODO: Re-enable when our kernel comes with the SysRq option
-#echo 0 > /proc/sys/kernel/sysrq
+# We forcibly disable the SYSRQ keyboard facility as it can do
+# a rather large number of magic nasty things to KanoOS
+#
+#  http://en.wikipedia.org/wiki/Magic_SysRq_key
+#
+echo 0 > /proc/sys/kernel/sysrq
 
 # Assign alias Ctrl-Alt-1, 2, 7 to switch virtual terminals from the consoles.
 new_keymaps="
