@@ -17,7 +17,10 @@
 #
 #  http://en.wikipedia.org/wiki/Magic_SysRq_key
 #
-echo 0 > /proc/sys/kernel/sysrq
+sysrq_flag=/proc/sys/kernel/sysrq
+if [ -f "$sysrq_flag" ]; then
+    echo 0 > /proc/sys/kernel/sysrq
+fi
 
 # Assign alias Ctrl-Alt-1, 2, 7 to switch virtual terminals from the consoles.
 new_keymaps="
