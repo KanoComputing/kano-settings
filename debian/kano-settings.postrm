@@ -23,7 +23,7 @@ case "$1" in
         rm -f /lib/arm-linux-gnueabihf/libc.so
 
         # remove kano-settings-onboot from startup
-        update-rc.d kano-hdmi remove
+        update-rc.d kano-settings remove
 
         ;;
 esac

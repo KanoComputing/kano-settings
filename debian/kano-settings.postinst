@@ -43,7 +43,7 @@ case "$1" in
         cp -r /usr/share/kano-settings/etc_override/* /etc
 
         # add kano-settings-onboot to startup
-        update-rc.d kano-hdmi defaults
+        update-rc.d kano-settings defaults
 
         ;;
 esac
