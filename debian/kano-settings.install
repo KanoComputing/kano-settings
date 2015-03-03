@@ -1,7 +1,7 @@
 bin/kano-settings /usr/bin
 bin/kano-settings-cli /usr/bin
 bin/startmouse /usr/bin
-bin/set-kano-hdmi /usr/bin
+bin/kano-settings-onboot /usr/bin
 bin/regenerate-ssh-keys /usr/bin
 
 kano_settings/* /usr/lib/python2.7/dist-packages/kano_settings

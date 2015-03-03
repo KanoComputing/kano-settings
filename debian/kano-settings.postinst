@@ -42,7 +42,7 @@ case "$1" in
 
         cp -r /usr/share/kano-settings/etc_override/* /etc
 
-        # add set-kano-hdmi to startup
+        # add kano-settings-onboot to startup
         update-rc.d kano-hdmi defaults
 
         ;;

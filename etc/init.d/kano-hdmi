@@ -8,4 +8,4 @@
 # Default-Stop:
 ### END INIT INFO
 
-/usr/bin/set-kano-hdmi
+/usr/bin/kano-settings-onboot
