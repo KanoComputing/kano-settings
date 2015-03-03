@@ -15,16 +15,10 @@ import kano_settings.common as common
 from kano_settings.boot_config import set_config_comment
 from kano_settings.system.display import get_model, get_status, list_supported_modes, set_hdmi_mode, read_hdmi_mode, \
     find_matching_mode, get_overscan_status, write_overscan_values, set_overscan_status, launch_pipe
-from kano_settings.data import get_data
 
 
 class SetDisplay(Template):
-    data = get_data("SET_DISPLAY")
-
     def __init__(self, win):
-        title = self.data["LABEL_1"]
-        kano_label = self.data["KANO_BUTTON"]
-        
         # Show the Display brand and model
         self.model = get_model()
         info_message = ' (Changing this requires a reboot)'
@@ -36,7 +30,12 @@ class SetDisplay(Template):
         except:
             pass
 
-        Template.__init__(self, title, self.model + info_message, kano_label)
+        Template.__init__(
+            self,
+            "Display",
+            self.model + info_message,
+            "APPLY CHANGES"
+        )
 
         self.win = win
         self.win.set_main_widget(self)
@@ -128,13 +127,10 @@ class SetDisplay(Template):
 
 
 class OverscanTemplate(Gtk.Box):
-    data = get_data("SET_OVERSCAN")
-
     def __init__(self, win, title, description, original_overscan=None):
         Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
 
-        kano_label = self.data["KANO_BUTTON"]
-        self.kano_button = KanoButton(kano_label)
+        self.kano_button = KanoButton("APPLY CHANGES")
         self.kano_button.connect("button-release-event", self.apply_changes)
         self.kano_button.pack_and_align()
 
@@ -196,12 +192,14 @@ class OverscanTemplate(Gtk.Box):
 
 
 class SetSimpleOverscan(OverscanTemplate):
-    data_simple = get_data("SET_OVERSCAN_SIMPLE")
-
     def __init__(self, win, original_overscan=None):
-        title = self.data_simple["LABEL_1"]
-        description = self.data_simple["LABEL_2"]
-        OverscanTemplate.__init__(self, win, title, description, original_overscan)
+        OverscanTemplate.__init__(
+            self,
+            win,
+            "Overscan",
+            "This setting lets you adjust your screen's size.",
+            original_overscan
+        )
 
         self.win.change_prev_callback(self.go_to_display)
 
@@ -283,12 +281,14 @@ class SetSimpleOverscan(OverscanTemplate):
 
 
 class SetAdvancedOverscan(OverscanTemplate):
-    data_advanced = get_data("SET_OVERSCAN_ADVANCED")
-
     def __init__(self, win, original_overscan):
-        title = self.data_advanced["LABEL_1"]
-        description = self.data_advanced["LABEL_2"]
-        OverscanTemplate.__init__(self, win, title, description, original_overscan)
+        OverscanTemplate.__init__(
+            self,
+            win,
+            "Overscan",
+            "This setting lets you adjust your screen's size, edge by edge.",
+            original_overscan
+        )
 
         self.win.change_prev_callback(self.go_to_display)
 
@@ -304,25 +304,25 @@ class SetAdvancedOverscan(OverscanTemplate):
         self.r_value = Gtk.Label()
 
         ## Top slider
-        t_value, self.t_scale, top_label = self.generate_slider_label("Top")
+        t_value, self.t_scale, top_label = self.generate_slider_label('top')
         grid.attach(self.t_scale, 1, 0, 1, 1)
         grid.attach(top_label, 0, 0, 1, 1)
         grid.attach(t_value, 2, 0, 1, 1)
 
         ## Bottom slider
-        b_value, self.b_scale, bottom_label = self.generate_slider_label("Bottom")
+        b_value, self.b_scale, bottom_label = self.generate_slider_label('bottom')
         grid.attach(self.b_scale, 1, 1, 1, 1)
         grid.attach(bottom_label, 0, 1, 1, 1)
         grid.attach(b_value, 2, 1, 1, 1)
 
         ## Left slider
-        l_value, self.l_scale, left_label = self.generate_slider_label("Left")
+        l_value, self.l_scale, left_label = self.generate_slider_label('left')
         grid.attach(self.l_scale, 1, 2, 1, 1)
         grid.attach(left_label, 0, 2, 1, 1)
         grid.attach(l_value, 2, 2, 1, 1)
 
         ## Right slider
-        r_value, self.r_scale, right_label = self.generate_slider_label("Right")
+        r_value, self.r_scale, right_label = self.generate_slider_label('right')
         grid.attach(right_label, 0, 3, 1, 1)
         grid.attach(self.r_scale, 1, 3, 1, 1)
         grid.attach(r_value, 2, 3, 1, 1)
@@ -339,21 +339,21 @@ class SetAdvancedOverscan(OverscanTemplate):
 
         self.win.show_all()
 
-    # direction = "top", "bottom", "right", "left"
+    # direction = 'top', 'bottom', 'right', 'left'
     def generate_slider_label(self, direction):
         value_label = Gtk.Label()
         value_label.get_style_context().add_class("slider_label")
         slider = Gtk.HScale.new_with_range(0, 100, 1)
-        slider.set_value(self.overscan_values[direction.lower()])
+        slider.set_value(self.overscan_values[direction])
         slider.set_size_request(400, 30)
-        slider.connect('value_changed', self.adjust, direction.lower())
+        slider.connect('value_changed', self.adjust, direction)
         slider.connect('value_changed', self.update_value, value_label)
         slider.set_value_pos(Gtk.PositionType.RIGHT)
         slider.set_draw_value(False)
         dir_label = Gtk.Label()
         dir_label.get_style_context().add_class("slider_label")
         dir_label.set_alignment(xalign=1, yalign=1)
-        dir_label.set_text(direction)
+        dir_label.set_text(direction.title())
         self.update_value(slider, value_label)
         return value_label, slider, dir_label
 

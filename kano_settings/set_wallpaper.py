@@ -12,7 +12,6 @@ from gi.repository import Gtk, GdkPixbuf
 from kano_settings.templates import ScrolledWindowTemplate
 from .config_file import get_setting, set_setting
 from kano_profile.badges import calculate_badges
-from kano_settings.data import get_data
 from kano_settings.config_file import username
 from kano_settings.system.wallpaper import change_wallpaper
 
@@ -23,14 +22,13 @@ name_pattern = "-4-3.png"
 
 
 class SetWallpaper(ScrolledWindowTemplate):
-    data = get_data("SET_WALLPAPER")
-
     def __init__(self, win):
-        title = self.data["LABEL_1"]
-        description = self.data["LABEL_2"]
-        kano_label = self.data["KANO_BUTTON"]
-
-        ScrolledWindowTemplate.__init__(self, title, description, kano_label)
+        ScrolledWindowTemplate.__init__(
+            self,
+            "Choose your background",
+            "",
+            "APPLY CHANGES"
+        )
 
         NUMBER_OF_ROWS = 2
         NUMBER_OF_COLUMNS = 4

@@ -56,7 +56,7 @@ rpi1_overclock_values = {
     }
 }
 
-rpi2_modes = ["Standard","Overclocked"]
+rpi2_modes = ["Standard", "Overclocked"]
 rpi2_overclock_values = {
     "Standard": {
         "arm_freq": 900,

@@ -10,18 +10,10 @@ from gi.repository import Gdk
 from kano_settings.templates import RadioButtonTemplate
 import kano_settings.common as common
 from kano_settings.boot_config import get_config_value
-from kano_settings.data import get_data
 from kano_settings.system.overclock import change_overclock_value
 from kano_settings.system.overclock import rpi1_modes, rpi1_overclock_values
 from kano_settings.system.overclock import rpi2_modes, rpi2_overclock_values
 from kano.utils import is_model_2_b
-
-# 0 = None
-# 1 = Modest
-# 2 = Medium
-# 3 = High
-# 4 = Turbo
-
 
 
 class SetOverclock(RadioButtonTemplate):
@@ -29,46 +21,37 @@ class SetOverclock(RadioButtonTemplate):
     initial_button = 0
     boot_config_file = "/boot/config.txt"
 
-    data = get_data("SET_OVERCLOCK")
-
     def __init__(self, win):
-
-        title = self.data["LABEL_1"]
-        description = self.data["LABEL_2"]
-        kano_label = self.data["KANO_BUTTON"]
-        option1 = self.data["OPTION_1"]
-        desc1 = self.data["DESCRIPTION_1"]
-        option2 = self.data["OPTION_2"]
-        desc2 = self.data["DESCRIPTION_2"]
-        option3 = self.data["OPTION_3"]
-        desc3 = self.data["DESCRIPTION_3"]
-        option4 = self.data["OPTION_4"]
-        desc4 = self.data["DESCRIPTION_4"]
-        option5 = self.data["OPTION_5"]
-        desc5 = self.data["DESCRIPTION_5"]
-
-        option6 = self.data["OPTION_6"]
-        desc6 = self.data["DESCRIPTION_6"]
-        option7 = self.data["OPTION_7"]
-        desc7 = self.data["DESCRIPTION_7"]
-
         self.is_pi2 = is_model_2_b()
 
         if self.is_pi2:
             self.modes = rpi2_modes
             self.overclock_values = rpi2_overclock_values
-            RadioButtonTemplate.__init__(self, title, description, kano_label,
-                                         [[option6, desc6],
-                                          [option7, desc7]])
         else:
             self.modes = rpi1_modes
             self.overclock_values = rpi1_overclock_values
-            RadioButtonTemplate.__init__(self, title, description, kano_label,
-                                         [[option1, desc1],
-                                          [option2, desc2],
-                                          [option3, desc3],
-                                          [option4, desc4],
-                                          [option5, desc5]])
+
+        options = []
+        for m in self.modes:
+            v = self.overclock_values.get(m)
+            options.append([
+                m,
+                "{}HZ ARM, {}HZ CORE, {}MHZ SDRAM, {} OVERVOLT".format(
+                    v['arm_freq'],
+                    v['core_freq'],
+                    v['sdram_freq'],
+                    v['over_voltage']
+                )
+            ])
+
+        RadioButtonTemplate.__init__(
+            self,
+            "Overclock your processor",
+            "Make your computer's brain think faster, but run hotter.",
+            "APPLY CHANGES",
+            options
+        )
+        
         self.win = win
         self.win.set_main_widget(self)
 
