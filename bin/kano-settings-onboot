@@ -1,5 +1,12 @@
 #!/usr/bin/env python
-
+# kano-settings-onboot
+#
+# Copyright (C) 2014, 2015 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+# Configure HDMI settings on boot.
+#
+# Also calls code to set clock config, to avoid need to an extra reboot.
 import os
 import sys
 import shutil
@@ -17,6 +24,7 @@ from kano_settings.system.display import get_status, get_model, set_hdmi_mode, \
 from kano_settings.boot_config import set_config_value, set_config_comment, \
     get_config_comment, get_config_value, has_config_comment
 from kano_settings.system.audio import is_HDMI, set_to_HDMI
+from kano_settings.system.overclock_chip_support import check_clock_config_matches_chip
 
 logger.force_log_level('info')
 
@@ -168,6 +176,16 @@ enforce_root('Need to be root!')
 # Gather and log data about the current screen
 screen_data = get_screen_information()
 
+# Shared reboot flag for reconfiguring for rpi1/2 and video
+reboot_now = False
+
+# Rpi1 and Rpi2 have different clock rate defaults, but only one
+# set of config options. Swap the config options if we have booted on the other
+# chip.
+
+if check_clock_config_matches_chip():
+    reboot_now = True
+
 # Reconfigure and reboot if the user requested safe mode
 if safe_boot_requested() and not is_safe_boot():
     logger.warn("Safe boot requested")
@@ -187,6 +205,12 @@ if safe_boot_requested() and not is_safe_boot():
     set_config_value("overscan_top", 0)
     set_config_value("overscan_bottom", 0)
 
+    # Trigger a reboot
+    reboot_now = True
+
+
+# If we need to set anything to do with config.txt, reboot
+if reboot_now:
     run_cmd('reboot -f')
     sys.exit()
 
