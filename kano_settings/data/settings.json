@@ -182,8 +182,10 @@
   "PARENTAL_CONFIG" : {
     "TITLE": "Parental lock",
     "DESCRIPTION": "Confirgure your parental lock settings",
+    "ULTIMATE": "Ultimate settings",
+    "ULTIMATE_DESC": "Only allow access to Kano World",
     "HIGH": "High Settings",
-    "HIGH_DESC": "Enable everything",
+    "HIGH_DESC": "Block Chromium incognito mode",
     "MEDIUM": "Medium Settings",
     "MEDIUM_DESC": "Switch to use filtering DNS servers",
     "LOW": "Low Settings",

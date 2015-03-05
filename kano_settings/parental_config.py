@@ -33,7 +33,7 @@ class ParentalConfig(Template):
         Template.__init__(self, title, description, kano_label)
 
         self.parental_level = Gtk.VScale(
-           adjustment= Gtk.Adjustment(value=0, lower=0, upper=2,
+            adjustment=Gtk.Adjustment(value=0, lower=0, upper=3,
                                       step_incr=1, page_incr=0, page_size=0))
         self.parental_level.set_draw_value(False)
         self.parental_level.set_round_digits(0)
@@ -47,19 +47,23 @@ class ParentalConfig(Template):
             (Gtk.Label(self.LANGUAGE['MEDIUM']),
              Gtk.Label(self.LANGUAGE['MEDIUM_DESC'])),
             (Gtk.Label(self.LANGUAGE['HIGH']),
-             Gtk.Label(self.LANGUAGE['HIGH_DESC']))
+             Gtk.Label(self.LANGUAGE['HIGH_DESC'])),
+            (Gtk.Label(self.LANGUAGE['ULTIMATE']),
+             Gtk.Label(self.LANGUAGE['ULTIMATE_DESC']))
         ]
 
         self._value_change_handler(self.parental_level)
 
         parental_level_grid = Gtk.Grid()
         parental_level_grid.attach(self.parental_level, 0, 0, 1, 6)
-        parental_level_grid.attach(self._parental_labels[2][0], 1, 0, 1, 1)
-        parental_level_grid.attach(self._parental_labels[2][1], 1, 1, 1, 1)
-        parental_level_grid.attach(self._parental_labels[1][0], 1, 2, 1, 1)
-        parental_level_grid.attach(self._parental_labels[1][1], 1, 3, 1, 1)
-        parental_level_grid.attach(self._parental_labels[0][0], 1, 4, 1, 1)
-        parental_level_grid.attach(self._parental_labels[0][1], 1, 5, 1, 1)
+        parental_level_grid.attach(self._parental_labels[3][0], 1, 0, 1, 1)
+        parental_level_grid.attach(self._parental_labels[3][1], 1, 1, 1, 1)
+        parental_level_grid.attach(self._parental_labels[2][0], 1, 2, 1, 1)
+        parental_level_grid.attach(self._parental_labels[2][1], 1, 3, 1, 1)
+        parental_level_grid.attach(self._parental_labels[1][0], 1, 4, 1, 1)
+        parental_level_grid.attach(self._parental_labels[1][1], 1, 5, 1, 1)
+        parental_level_grid.attach(self._parental_labels[0][0], 1, 6, 1, 1)
+        parental_level_grid.attach(self._parental_labels[0][1], 1, 7, 1, 1)
 
         blacklist_button = OrangeButton("Configure allowed/blocked")
         blacklist_button.connect("button-press-event",

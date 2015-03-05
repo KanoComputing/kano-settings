@@ -11,6 +11,8 @@
 import os
 import shutil
 import hashlib
+import subprocess
+import signal
 
 from kano.utils import read_file_contents, write_file_contents, \
     read_file_contents_as_lines, read_json, write_json, ensure_dir, \
@@ -22,6 +24,8 @@ from kano.network import set_dns, restore_dns_interfaces, \
 password_file = "/etc/kano-parental-lock"
 hosts_file = '/etc/hosts'
 chromium_policy_file = '/etc/chromium/policies/managed/policy.json'
+userpath = '/home/{}'.format(get_user_unsudoed())
+ultimate_parental_config = os.path.join(userpath, '.kano-settings/CONFIG')
 
 username = get_user_unsudoed()
 if username != 'root':
@@ -153,6 +157,100 @@ def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/P
             create_empty_hosts()
 
 
+# Ultimate parental lock functions
+####################################################
+
+def set_ultimate_parental(enable):
+    if enable:
+        # clear_eth0_file()
+        clear_dns_interfaces()
+        current_dir = os.path.dirname(os.path.realpath(__file__))
+        whitelist = os.path.join(current_dir, '../data/WHITELIST')
+
+        parse_whitelist_to_config_file(whitelist, ultimate_parental_config)
+        redirect_traffic_to_localhost()
+        launch_sentry_server(ultimate_parental_config)
+
+    else:
+        google_servers = [
+            '8.8.8.8',
+            '8.8.4.4'
+        ]
+        print "setting to google servers"
+        restore_dns_interfaces()
+        set_dns(google_servers)
+        refresh_resolvconf()
+        kill_server()
+
+
+def parse_whitelist_to_config_file(whitelist, config):
+    f = open(whitelist, 'r')
+
+    new_config = (
+        '{\n'
+        '    \"port\": 53,\n'
+        '    \"host\": \"127.0.0.1\",\n'
+        '    \"rules\": [\n'
+    )
+    for line in f:
+        line = line.strip()
+        allowed_url = (
+            "        \"resolve ^(.*){} using 8.8.8.8\",\n".format(line)
+        )
+        new_config += allowed_url
+
+    f.close()
+
+    block_everything_else = (
+        "        \"block ^(.*)\"\n"
+        '    ]\n'
+        '}'
+    )
+    new_config += block_everything_else
+
+    g = open(config, 'w+')
+    g.write(new_config)
+    g.close()
+
+
+def redirect_traffic_to_localhost():
+    set_dns(['127.0.0.1'])
+    refresh_resolvconf()
+
+
+def launch_sentry_server(filename):
+    subprocess.Popen(["sentry -c {}".format(filename)], shell=True)
+
+
+# This screws up the resolvconf package
+# Shouldn't be needed with clear_dns_interfaces
+def clear_eth0_file():
+    f = "/run/resolvconf/interface/eth0.udhcpc"
+    write_file_contents(f, "")
+
+
+def kill_server():
+    # Search for "sentry -c /home/$USERNAME/.kano-settings/CONFIG"
+    # in "ps aux | grep -r sentry" output
+    ps_cmd = ["ps", "-A"]
+    search_string = "sentry"
+
+    ps_process = subprocess.Popen(ps_cmd, stdout=subprocess.PIPE)
+    output, err = ps_process.communicate()
+    lines = output.split('\n')
+
+    # Could be very intensive
+    for line in lines:
+        # If the line contains the output we're looking for (i.e. is running
+        # the process we're interested in)
+        if search_string in line:
+            pid = int(filter(None, line.split(" "))[0])
+            os.kill(pid, signal.SIGKILL)
+            break
+
+####################################################
+
+
 def set_chromium_policies(policies):
     if not os.path.exists(chromium_policy_file):
         ensure_dir(os.path.dirname(chromium_policy_file))
@@ -223,7 +321,9 @@ def set_parental_level(level_setting):
         # Medium
         ['dns'],
         # High
-        ['chromium']
+        ['chromium'],
+        # Ultimate
+        ['ultimate']
     ]
 
     enabled = []
@@ -234,10 +334,13 @@ def set_parental_level(level_setting):
 
     logger.debug('Setting parental control to level {}'.format(level_setting))
 
-    set_chromium_parental('chromium' in enabled)
-    set_dns_parental('dns' in enabled)
+    if 'ultimate' in enabled:
+        set_ultimate_parental('ultimate' in enabled)
+    else:
+        set_chromium_parental('chromium' in enabled)
+        set_dns_parental('dns' in enabled)
+        set_ultimate_parental(False)
 
     blacklist, whitelist = read_listed_sites()
     set_hosts_blacklist('blacklist' in enabled,
                         blocked_sites=blacklist, allowed_sites=whitelist)
-
