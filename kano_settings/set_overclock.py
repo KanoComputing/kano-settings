@@ -12,13 +12,16 @@ import kano_settings.common as common
 from kano_settings.boot_config import get_config_value
 from kano_settings.data import get_data
 from kano_settings.system.overclock import change_overclock_value
+from kano_settings.system.overclock import rpi1_modes, rpi1_overclock_values
+from kano_settings.system.overclock import rpi2_modes, rpi2_overclock_values
+from kano.utils import is_model_2_b
 
 # 0 = None
 # 1 = Modest
 # 2 = Medium
 # 3 = High
 # 4 = Turbo
-modes = ["None", "Modest", "Medium", "High", "Turbo"]
+
 
 
 class SetOverclock(RadioButtonTemplate):
@@ -44,12 +47,28 @@ class SetOverclock(RadioButtonTemplate):
         option5 = self.data["OPTION_5"]
         desc5 = self.data["DESCRIPTION_5"]
 
-        RadioButtonTemplate.__init__(self, title, description, kano_label,
-                                     [[option1, desc1],
-                                      [option2, desc2],
-                                      [option3, desc3],
-                                      [option4, desc4],
-                                      [option5, desc5]])
+        option6 = self.data["OPTION_6"]
+        desc6 = self.data["DESCRIPTION_6"]
+        option7 = self.data["OPTION_7"]
+        desc7 = self.data["DESCRIPTION_7"]
+
+        self.is_pi2 = is_model_2_b()
+
+        if self.is_pi2:
+            self.modes = rpi2_modes
+            self.overclock_values = rpi2_overclock_values
+            RadioButtonTemplate.__init__(self, title, description, kano_label,
+                                         [[option6, desc6],
+                                          [option7, desc7]])
+        else:
+            self.modes = rpi1_modes
+            self.overclock_values = rpi1_overclock_values
+            RadioButtonTemplate.__init__(self, title, description, kano_label,
+                                         [[option1, desc1],
+                                          [option2, desc2],
+                                          [option3, desc3],
+                                          [option4, desc4],
+                                          [option5, desc5]])
         self.win = win
         self.win.set_main_widget(self)
 
@@ -70,19 +89,12 @@ class SetOverclock(RadioButtonTemplate):
         # If enter key is pressed or mouse button is clicked
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
-            #  Mode      arm_freq       core_freq      sdram_freq   over_voltage
-            #  None;     700 MHz ARM,  250 MHz core, 400 MHz SDRAM, 0 overvolt
-            #  Modest;   800 MHz ARM,  250 MHz core, 400 MHz SDRAM, 0 overvolt
-            #  Medium;   900 MHz ARM,  250 MHz core, 450 MHz SDRAM, 2 overvolt
-            #  High;     950 MHz ARM,  250 MHz core, 450 MHz SDRAM, 6 overvolt
-            #  Turbo;    1000 MHz ARM, 500 MHz core, 600 MHz SDRAM, 6 overvolt
-
             # Mode has no changed
             if self.initial_button == self.selected_button:
                 self.win.go_to_home()
                 return
 
-            change_overclock_value(modes[self.selected_button])
+            change_overclock_value(self.modes[self.selected_button],self.is_pi2)
 
             # Tell user to reboot to see changes
             common.need_reboot = True
@@ -90,30 +102,16 @@ class SetOverclock(RadioButtonTemplate):
             self.win.go_to_home()
 
     def current_setting(self):
+        # The initial button defaults to zero (above) if the user has
+        # selected a different frequency
         freq = get_config_value('arm_freq')
 
-        if freq == 700:
-            self.initial_button = 0
-        elif freq == 800:
-            self.initial_button = 1
-        elif freq == 900:
-            self.initial_button = 2
-        elif freq == 950:
-            self.initial_button = 3
-        elif freq == 1000:
-            self.initial_button = 4
+        for x in self.modes:
+            if self.overclock_values[x]['arm_freq'] == freq:
+                self.initial_button = self.modes.index(x)
 
     def on_button_toggled(self, button):
 
         if button.get_active():
             label = button.get_label()
-            if label == "None":
-                self.selected_button = 0
-            elif label == "Modest":
-                self.selected_button = 1
-            elif label == "Medium":
-                self.selected_button = 2
-            elif label == "High":
-                self.selected_button = 3
-            elif label == "Turbo":
-                self.selected_button = 4
+            self.selected_button = self.modes.index(label)

@@ -1,11 +1,11 @@
 #!/bin/sh
 
 ### BEGIN INIT INFO
-# Provides:         kano-hdmi
+# Provides:         kano-settings
 # Required-Start:
 # Required-Stop:
 # Default-Start:    2
 # Default-Stop:
 ### END INIT INFO
 
-/usr/bin/set-kano-hdmi
+/usr/bin/kano-settings-onboot
