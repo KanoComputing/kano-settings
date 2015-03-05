@@ -116,3 +116,12 @@ GtkTreeView:selected {
     color: #ffffff;
     background: @kano_orange;
 }
+
+.parental_slider {
+    background: #dddddd;
+    border-radius: 3px;
+}
+
+.parental_slider.slider {
+    background: @kano_green;
+}
