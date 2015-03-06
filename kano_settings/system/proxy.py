@@ -41,11 +41,11 @@ def set_chromium(enable, host=None, port=None):
     if enable:
         proxy_type = 'http'
 
-        strflags = '"--password-store=detect --proxy-server="%s:\/\/%s:%s""' % (proxy_type, host, port)
+        strflags = '"--password-store=detect --proxy-server="{}:\/\/{}:{}""'.format(proxy_type, host, port)
     else:
         strflags = '"--password-store=detect"'
 
-    cmd = "/bin/sed -i 's/CHROMIUM_FLAGS=.*/CHROMIUM_FLAGS=%s/g' %s" % (strflags, chromium_cfg)
+    cmd = "/bin/sed -i 's/CHROMIUM_FLAGS=.*/CHROMIUM_FLAGS={}/g' {}".format(strflags, chromium_cfg)
     run_cmd(cmd)
     return
 
