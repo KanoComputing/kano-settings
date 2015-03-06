@@ -33,15 +33,13 @@ class SetOverclock(RadioButtonTemplate):
 
         options = []
         for m in self.modes:
-            v = self.overclock_values.get(m)
             options.append([
                 m,
-                "{}HZ ARM, {}HZ CORE, {}MHZ SDRAM, {} OVERVOLT".format(
-                    v['arm_freq'],
-                    v['core_freq'],
-                    v['sdram_freq'],
-                    v['over_voltage']
-                )
+                "{arm_freq}HZ ARM, "
+                "{core_freq}HZ CORE, "
+                "{sdram_freq}MHZ SDRAM, "
+                "{over_voltage} OVERVOLT"
+                .format(**self.overclock_values.get(m))
             ])
 
         RadioButtonTemplate.__init__(
