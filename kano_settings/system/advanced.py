@@ -14,6 +14,7 @@ import hashlib
 import subprocess
 import signal
 
+from kano_settings.common import settings_dir
 from kano.utils import read_file_contents, write_file_contents, \
     read_file_contents_as_lines, read_json, write_json, ensure_dir, \
     get_user_unsudoed
@@ -24,12 +25,12 @@ from kano.network import set_dns, restore_dns_interfaces, \
 password_file = "/etc/kano-parental-lock"
 hosts_file = '/etc/hosts'
 chromium_policy_file = '/etc/chromium/policies/managed/policy.json'
-userpath = '/home/{}'.format(get_user_unsudoed())
-ultimate_parental_config = os.path.join(userpath, '.kano-settings/CONFIG')
+sentry_config = '/usr/share/kano-settings/config/sentry'
 
 username = get_user_unsudoed()
+
+# TODO: is this needed?
 if username != 'root':
-    settings_dir = os.path.join('/home', username, '.kano-settings')
     blacklist_file = os.path.join(settings_dir, 'blacklist')
     whitelist_file = os.path.join(settings_dir, 'whitelist')
 
@@ -162,21 +163,19 @@ def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/P
 
 def set_ultimate_parental(enable):
     if enable:
-        # clear_eth0_file()
         clear_dns_interfaces()
         current_dir = os.path.dirname(os.path.realpath(__file__))
         whitelist = os.path.join(current_dir, '../data/WHITELIST')
 
-        parse_whitelist_to_config_file(whitelist, ultimate_parental_config)
+        parse_whitelist_to_config_file(whitelist, sentry_config)
         redirect_traffic_to_localhost()
-        launch_sentry_server(ultimate_parental_config)
+        launch_sentry_server(sentry_config)
 
     else:
         google_servers = [
             '8.8.8.8',
             '8.8.4.4'
         ]
-        print "setting to google servers"
         restore_dns_interfaces()
         set_dns(google_servers)
         refresh_resolvconf()
@@ -193,11 +192,13 @@ def parse_whitelist_to_config_file(whitelist, config):
         '    \"rules\": [\n'
     )
     for line in f:
+        # Add line to whitelist if is non empty and doesn't start with a #
         line = line.strip()
-        allowed_url = (
-            "        \"resolve ^(.*){} using 8.8.8.8\",\n".format(line)
-        )
-        new_config += allowed_url
+        if line and not line.startswith('#'):
+            allowed_url = (
+                "        \"resolve ^(.*){} using 8.8.8.8\",\n".format(line)
+            )
+            new_config += allowed_url
 
     f.close()
 
@@ -220,13 +221,6 @@ def redirect_traffic_to_localhost():
 
 def launch_sentry_server(filename):
     subprocess.Popen(["sentry -c {}".format(filename)], shell=True)
-
-
-# This screws up the resolvconf package
-# Shouldn't be needed with clear_dns_interfaces
-def clear_eth0_file():
-    f = "/run/resolvconf/interface/eth0.udhcpc"
-    write_file_contents(f, "")
 
 
 def kill_server():

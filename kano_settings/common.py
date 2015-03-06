@@ -23,3 +23,6 @@ else:
 has_internet = False
 proxy_enabled = False
 need_reboot = False
+
+# directory where the configuration files are kept
+settings_dir = '/usr/share/kano-settings/config'
