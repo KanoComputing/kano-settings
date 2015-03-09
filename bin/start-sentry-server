@@ -1,0 +1,42 @@
+#!/usr/bin/env python
+
+# set-ultimate-parental
+#
+# Copyright (C) 2014 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+# Start the server on the first boot.
+#
+
+import sys
+import os
+from kano_settings.system.advanced import (sentry_config,
+                                           parse_whitelist_to_config_file,
+                                           launch_sentry_server)
+from kano_settings.common import settings_dir
+
+
+def check_config():
+    # Look at the setting to find the parental level
+    ultimate_parental = False
+
+    f = open(os.path.join(settings_dir, 'settings'), 'r')
+
+    # Check if the parental control is at the highest level 3.0
+    for line in f:
+        line = line.strip()
+        if line == '"Parental-level": 3.0':
+            ultimate_parental = True
+
+    # If the parental is at the highest level, start the sentry server
+    if ultimate_parental:
+        parse_whitelist_to_config_file(sentry_config)
+        launch_sentry_server(sentry_config)
+        sys.exit(0)
+
+    # If you don't switch on the parental lock, return 1
+    sys.exit(1)
+
+
+if __name__ == "__main__":
+    check_config()

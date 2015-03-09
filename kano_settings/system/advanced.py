@@ -13,6 +13,8 @@ import shutil
 import hashlib
 import subprocess
 import signal
+import urllib2
+from bs4 import BeautifulSoup
 
 from kano_settings.common import settings_dir
 from kano.utils import read_file_contents, write_file_contents, \
@@ -25,7 +27,7 @@ from kano.network import set_dns, restore_dns_interfaces, \
 password_file = "/etc/kano-parental-lock"
 hosts_file = '/etc/hosts'
 chromium_policy_file = '/etc/chromium/policies/managed/policy.json'
-sentry_config = '/usr/share/kano-settings/config/sentry'
+sentry_config = os.path.join(settings_dir, 'sentry')
 
 username = get_user_unsudoed()
 
@@ -163,27 +165,36 @@ def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/P
 
 def set_ultimate_parental(enable):
     if enable:
-        clear_dns_interfaces()
-        current_dir = os.path.dirname(os.path.realpath(__file__))
-        whitelist = os.path.join(current_dir, '../data/WHITELIST')
+        # if server is running, kill it and restart it
+        kill_server()
 
-        parse_whitelist_to_config_file(whitelist, sentry_config)
+        # this is to get the most up to date whitelist
+        restore_dns_interfaces()
+        redirect_traffic_to_google()
+        parse_whitelist_to_config_file(sentry_config)
+
+        # Now set resolv.conf to point to localhost
+        clear_dns_interfaces()
         redirect_traffic_to_localhost()
         launch_sentry_server(sentry_config)
 
     else:
-        google_servers = [
-            '8.8.8.8',
-            '8.8.4.4'
-        ]
         restore_dns_interfaces()
-        set_dns(google_servers)
-        refresh_resolvconf()
+        redirect_traffic_to_google()
         kill_server()
 
 
-def parse_whitelist_to_config_file(whitelist, config):
-    f = open(whitelist, 'r')
+def redirect_traffic_to_google():
+    google_servers = [
+        '8.8.8.8',
+        '8.8.4.4'
+    ]
+    set_dns(google_servers)
+    refresh_resolvconf()
+
+
+def parse_whitelist_to_config_file(config):
+    whitelist = get_whitelist()
 
     new_config = (
         '{\n'
@@ -191,27 +202,49 @@ def parse_whitelist_to_config_file(whitelist, config):
         '    \"host\": \"127.0.0.1\",\n'
         '    \"rules\": [\n'
     )
-    for line in f:
+    lines = whitelist.split('\n')
+    for line in lines:
         # Add line to whitelist if is non empty and doesn't start with a #
         line = line.strip()
         if line and not line.startswith('#'):
             allowed_url = (
-                "        \"resolve ^(.*){} using 8.8.8.8\",\n".format(line)
+                "        \"resolve ^(.*){} using 8.8.8.8, 8.8.4.4\",\n".format(line)
             )
             new_config += allowed_url
 
-    f.close()
-
     block_everything_else = (
         "        \"block ^(.*)\"\n"
-        '    ]\n'
-        '}'
+        "    ]\n"
+        "}"
     )
     new_config += block_everything_else
 
     g = open(config, 'w+')
     g.write(new_config)
     g.close()
+
+
+def get_whitelist():
+    # Try and get the whitelist from online.  If this fails,
+    # get it locally.
+    try:
+        online_whitelist = (
+            "https://raw.githubusercontent.com/KanoComputing/kano-settings/"
+            "ultimate-parental-control/kano_settings/data/WHITELIST"
+        )
+        html = urllib2.urlopen(online_whitelist).read()
+        text = BeautifulSoup(html).get_text().encode('ascii', 'ignore')
+        logger.debug('Using online whitelist')
+        return text
+    except:
+        # If there's an exception, possibly because there is no internet.
+        current_dir = os.path.dirname(os.path.realpath(__file__))
+        whitelist = os.path.join(current_dir, '../data/WHITELIST')
+        f = open(whitelist, 'r')
+        text = f.read()
+        f.close()
+        logger.debug('Using local whitelist')
+        return text
 
 
 def redirect_traffic_to_localhost():

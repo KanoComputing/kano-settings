@@ -9,6 +9,7 @@ amazonaws.com
 raspbian.org
 raspberrypi.org
 raspbian.mirror.uk.sargasso.net
+pypi.python.org
 
 # Feedback form
 docs.google.com
@@ -16,3 +17,6 @@ clients2.google.com
 
 # Clock
 pool.ntp.org
+
+# Check whitelist on github
+raw.githubusercontent.com
