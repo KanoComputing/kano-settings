@@ -14,6 +14,7 @@ from kano_settings.system.overclock import change_overclock_value
 from kano_settings.system.overclock import rpi1_modes, rpi1_overclock_values
 from kano_settings.system.overclock import rpi2_modes, rpi2_overclock_values
 from kano.utils import is_model_2_b
+from kano.gtk3.kano_dialog import KanoDialog
 
 
 class SetOverclock(RadioButtonTemplate):
@@ -75,12 +76,48 @@ class SetOverclock(RadioButtonTemplate):
                 self.win.go_to_home()
                 return
 
-            change_overclock_value(self.modes[self.selected_button],self.is_pi2)
+            config = self.modes[self.selected_button]
+            launch_warning = ""
+            change_overclock = True
 
-            # Tell user to reboot to see changes
-            common.need_reboot = True
+            if self.is_pi2:
+                launch_warning = "Overclocked"
+            else:
+                launch_warning = "Turbo"
 
-            self.win.go_to_home()
+            if config == launch_warning:
+
+                kdialog = KanoDialog(
+                    title_text="Warning",
+                    description_text=(
+                        "For a small percentage of users, this setting makes"
+                        " the Pi behave unpredictably.  Do you want to"
+                        " continue?"
+                    ),
+                    button_dict={
+                        "YES": {
+                            "color": "green",
+                            "return_value": "yes"
+                        },
+                        "NO": {
+                            "color": "red",
+                            "return_value": "no"
+                        }
+                    },
+                    parent_window=self.win
+                )
+                response = kdialog.run()
+
+                if response == "no":
+                    change_overclock = False
+
+            if change_overclock:
+                change_overclock_value(config, self.is_pi2)
+
+                # Tell user to reboot to see changes
+                common.need_reboot = True
+
+                self.win.go_to_home()
 
     def current_setting(self):
         # The initial button defaults to zero (above) if the user has
