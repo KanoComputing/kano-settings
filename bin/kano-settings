@@ -62,6 +62,8 @@ class MainWindow(ApplicationWindow):
         self.set_titlebar(self.top_bar)
         self.set_icon_name("kano-settings")
         self.connect("delete-event", Gtk.main_quit)
+        # In case we are called from kano-world-launcher, terminate splash
+        os.system('kano-stop-splash') 
         # Init to Home Screen
         HomeScreen(self, screen_number)
 

@@ -13,6 +13,7 @@ case "$1" in
     configure)
 
         # Create custom sudoers file
+        echo 'Defaults!/usr/bin/kano-settings env_keep += "SPLASH_PID SPLASH_START_TIME"' > $TMP_FILE
         echo "%sudo   ALL=(root) NOPASSWD: /usr/bin/kano-settings" > $TMP_FILE
         echo "%sudo   ALL=(root) NOPASSWD: /usr/bin/kano-settings-cli" >> $TMP_FILE
         echo "%sudo   ALL=(root) NOPASSWD: /usr/bin/regenerate-ssh-keys" >> $TMP_FILE
