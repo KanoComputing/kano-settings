@@ -14,23 +14,19 @@ from kano_settings.templates import Template, EditableList
 from kano.gtk3.buttons import OrangeButton
 from kano.gtk3.kano_dialog import KanoDialog
 
-from kano_settings.data import get_data
 from kano_settings.config_file import get_setting, set_setting
 from system.advanced import write_whitelisted_sites, write_blacklisted_sites, \
     read_listed_sites, set_parental_level, authenticate_parental_password
 
 
 class ParentalConfig(Template):
-
-    LANGUAGE = get_data('PARENTAL_CONFIG')
-
     def __init__(self, win):
-
-        title = self.LANGUAGE['TITLE']
-        description = self.LANGUAGE['DESCRIPTION']
-        kano_label = self.LANGUAGE['KANO_BUTTON']
-
-        Template.__init__(self, title, description, kano_label)
+        Template.__init__(
+            self,
+            "Parental lock",
+            "Configure your parental lock settings",
+            "APPLY CHANGES"
+        )
 
         self.parental_level = Gtk.VScale(
            adjustment= Gtk.Adjustment(value=0, lower=0, upper=2,
@@ -42,12 +38,18 @@ class ParentalConfig(Template):
         self.parental_level.connect('value-changed', self._value_change_handler)
 
         self._parental_labels = [
-            (Gtk.Label(self.LANGUAGE['LOW']),
-             Gtk.Label(self.LANGUAGE['LOW_DESC'])),
-            (Gtk.Label(self.LANGUAGE['MEDIUM']),
-             Gtk.Label(self.LANGUAGE['MEDIUM_DESC'])),
-            (Gtk.Label(self.LANGUAGE['HIGH']),
-             Gtk.Label(self.LANGUAGE['HIGH_DESC']))
+            (
+                Gtk.Label("Low Settings"),
+                Gtk.Label("Blocks blacklisted websites")
+            ),
+            (
+                Gtk.Label("Medium Settings"),
+                Gtk.Label("Switch to use filtering DNS servers")
+            ),
+            (
+                Gtk.Label("High Settings"),
+                Gtk.Label("Enable everything")
+            )
         ]
 
         self._value_change_handler(self.parental_level)
@@ -121,17 +123,15 @@ class SiteList(EditableList):
 
 
 class AllowedSites(Template):
-
-    LANGUAGE = get_data('PARENTAL_BLACKLIST')
-
     def __init__(self, win):
-        title = self.LANGUAGE['TITLE']
-        description = self.LANGUAGE['DESCRIPTION']
-        kano_label = self.LANGUAGE['KANO_BUTTON']
+        Template.__init__(
+            self,
+            "Allow and Block Sites",
+            "Add extra sites to block or allow",
+            "APPLY CHANGES"
+        )
 
         self.win = win
-
-        Template.__init__(self, title, description, kano_label)
 
         blacklist, whitelist = read_listed_sites()
 
@@ -150,10 +150,10 @@ class AllowedSites(Template):
         grid.set_column_spacing(40)
 
         grid.attach(
-            Gtk.Label(self.LANGUAGE['BLACKLIST']), 0, 0, 1, 1)
+            Gtk.Label("Add extra sites to block"), 0, 0, 1, 1)
         grid.attach(self.blacklist, 0, 1, 1, 1)
         grid.attach(
-            Gtk.Label(self.LANGUAGE['WHITELIST']), 1, 0, 1, 1)
+            Gtk.Label("Something blocked that shouldn't be?"), 1, 0, 1, 1)
         grid.attach(self.whitelist, 1, 1, 1, 1)
         self.box.pack_start(grid, False, False, 0)
 
