@@ -10,9 +10,7 @@ from gi.repository import Gdk
 from kano_settings.templates import RadioButtonTemplate
 import kano_settings.common as common
 from kano_settings.boot_config import get_config_value
-from kano_settings.system.overclock import change_overclock_value
-from kano_settings.system.overclock import rpi1_modes, rpi1_overclock_values
-from kano_settings.system.overclock import rpi2_modes, rpi2_overclock_values
+from kano_settings.system.overclock import CLOCK_MODES, change_overclock_value, is_dangerous_overclock_value
 from kano.utils import is_model_2_b
 from kano.gtk3.kano_dialog import KanoDialog
 
@@ -25,22 +23,15 @@ class SetOverclock(RadioButtonTemplate):
     def __init__(self, win):
         self.is_pi2 = is_model_2_b()
 
-        if self.is_pi2:
-            self.modes = rpi2_modes
-            self.overclock_values = rpi2_overclock_values
-        else:
-            self.modes = rpi1_modes
-            self.overclock_values = rpi1_overclock_values
-
         options = []
-        for m in self.modes:
+        for m in CLOCK_MODES[self.is_pi2]['modes']:
             options.append([
                 m,
                 "{arm_freq}HZ ARM, "
                 "{core_freq}HZ CORE, "
                 "{sdram_freq}MHZ SDRAM, "
                 "{over_voltage} OVERVOLT"
-                .format(**self.overclock_values.get(m))
+                .format(**CLOCK_MODES[self.is_pi2]['values'][m])
             ])
 
         RadioButtonTemplate.__init__(
@@ -76,40 +67,31 @@ class SetOverclock(RadioButtonTemplate):
                 self.win.go_to_home()
                 return
 
-            config = self.modes[self.selected_button]
-            launch_warning = ""
+            config = CLOCK_MODES[self.is_pi2]['modes'][self.selected_button]
             change_overclock = True
 
-            if self.is_pi2:
-                launch_warning = "Overclocked"
-            else:
-                launch_warning = "Turbo"
-
-            if config == launch_warning:
+            if is_dangerous_overclock_value(config, self.is_pi2):
 
                 kdialog = KanoDialog(
                     title_text="Warning",
                     description_text=(
-                        "For a small percentage of users, this setting makes"
-                        " the Pi behave unpredictably.  Do you want to"
-                        " continue?"
+                        "For a small percentage of users, this setting makes "
+                        "the Pi behave unpredictably. Do you want to "
+                        "continue?"
                     ),
                     button_dict={
                         "YES": {
                             "color": "green",
-                            "return_value": "yes"
+                            "return_value": True
                         },
                         "NO": {
                             "color": "red",
-                            "return_value": "no"
+                            "return_value": False
                         }
                     },
                     parent_window=self.win
                 )
-                response = kdialog.run()
-
-                if response == "no":
-                    change_overclock = False
+                change_overclock = kdialog.run()
 
             if change_overclock:
                 change_overclock_value(config, self.is_pi2)
@@ -124,12 +106,12 @@ class SetOverclock(RadioButtonTemplate):
         # selected a different frequency
         freq = get_config_value('arm_freq')
 
-        for x in self.modes:
-            if self.overclock_values[x]['arm_freq'] == freq:
-                self.initial_button = self.modes.index(x)
+        for x in CLOCK_MODES[self.is_pi2]['modes']:
+            if CLOCK_MODES[self.is_pi2]['values'][x]['arm_freq'] == freq:
+                self.initial_button = CLOCK_MODES[self.is_pi2]['modes'].index(x)
 
     def on_button_toggled(self, button):
 
         if button.get_active():
             label = button.get_label()
-            self.selected_button = self.modes.index(label)
+            self.selected_button = CLOCK_MODES[self.is_pi2]['modes'].index(label)
