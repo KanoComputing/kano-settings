@@ -12,7 +12,7 @@
 from kano.logging import logger
 import os
 
-kdeskrc_home = "/home/%s/.kdeskrc"
+kdeskrc_home = "/home/{user}/.kdeskrc"
 
 
 def change_wallpaper(path, name):
@@ -20,12 +20,12 @@ def change_wallpaper(path, name):
 
     # home directory
     USER = os.environ['SUDO_USER']
-    deskrc_path = kdeskrc_home % (USER)
+    deskrc_path = kdeskrc_home.format(user = USER)
 
     # Wallpaper selected
-    image_169 = "%s%s-16-9.png" % (path, name)
-    image_43 = "%s%s-4-3.png" % (path, name)
-    image_1024 = "%s%s-1024.png" % (path, name)
+    image_169 = "{}{}-16-9.png".format(path, name)
+    image_43 = "{}{}-4-3.png".format(path, name)
+    image_1024 = "{}{}-1024.png".format(path, name)
 
     # Look for the strings
     found = False
@@ -34,12 +34,12 @@ def change_wallpaper(path, name):
         newlines = []
         for line in f:
             if "Background.File-medium:" in line:
-                line = "  Background.File-medium: %s\n" % (image_1024)
+                line = "  Background.File-medium: {}\n".format(image_1024)
                 found = True
             elif "Background.File-4-3:" in line:
-                line = "  Background.File-4-3: %s\n" % (image_43)
+                line = "  Background.File-4-3: {}\n".format(image_43)
             elif "Background.File-16-9:" in line:
-                line = "  Background.File-16-9: %s\n" % (image_169)
+                line = "  Background.File-16-9: {}\n".format(image_169)
             newlines.append(line)
         f.close()
     if found:
@@ -52,11 +52,11 @@ def change_wallpaper(path, name):
     # If not found add it
     else:
         with open(deskrc_path, "a") as outfile:
-            outfile.write("  Background.File-medium: %s\n" % (image_1024))
-            outfile.write("  Background.File-4-3: %s\n" % (image_43))
-            outfile.write("  Background.File-16-9: %s\n" % (image_169))
+            outfile.write("  Background.File-medium: {}\n".format(image_1024))
+            outfile.write("  Background.File-4-3: {}\n".format(image_43))
+            outfile.write("  Background.File-16-9: {}\n".format(image_169))
 
     # Refresh the wallpaper
-    cmd = 'sudo -u %s kdesk -w' % USER
+    cmd = 'sudo -u {user} kdesk -w'.format(user = USER)
     os.system(cmd)
     return 0
