@@ -88,16 +88,14 @@ class RadioButtonTemplate(LabelledListTemplate):
     def __init__(self, title, description, button_text, text_array):
         LabelledListTemplate.__init__(self, title, description, button_text, text_array)
 
-        button = Gtk.RadioButton.new_with_label_from_widget(None, text_array[0][0])
-        self.buttons.append(button)
-        self.label_button_and_pack(button, text_array[0][0], text_array[0][1])
-        button.connect("toggled", self.on_button_toggled, 0)
-
-        for i in range(1, len(text_array)):
-            button = Gtk.RadioButton.new_from_widget(self.buttons[0])
+        for i in range(len(text_array)):
+            if i == 0:
+                button = Gtk.RadioButton.new_with_label_from_widget(None, text_array[0][0])
+            else:
+                button = Gtk.RadioButton.new_from_widget(self.buttons[0])
             self.buttons.append(button)
             self.label_button_and_pack(button, text_array[i][0], text_array[i][1])
-            button.connect("toggled", self.on_button_toggled, i)
+            button.connect('toggled', self.on_button_toggled, i)
 
     def on_button_toggled(self, widget=None, selected=0):
         pass
