@@ -80,12 +80,10 @@ def file_replace(fname, pat, s_after):
 def get_setting(variable):
     try:
         value = read_json(settings_file)[variable]
-        # print 'getting {} from json'.format(variable)
     except Exception:
         if variable not in defaults:
             logger.info('Defaults not found for variable: {}'.format(variable))
         value = defaults[variable]
-        # print 'getting {} from defaults'.format(variable)
     return value
 
 
@@ -101,4 +99,3 @@ def set_setting(variable, value):
     data[variable] = value
     write_json(settings_file, data)
     chown_path(settings_file)
-    # print 'setting {} to {}'.format(variable, value)

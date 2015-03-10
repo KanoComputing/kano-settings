@@ -230,7 +230,7 @@ def get_whitelist():
     try:
         online_whitelist = (
             "https://raw.githubusercontent.com/KanoComputing/kano-settings/"
-            "ultimate-parental-control/kano_settings/data/WHITELIST"
+            "master/kano_settings/data/WHITELIST"
         )
         html = urllib2.urlopen(online_whitelist).read()
         text = BeautifulSoup(html).get_text().encode('ascii', 'ignore')
