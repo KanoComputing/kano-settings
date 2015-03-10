@@ -24,7 +24,7 @@ import subprocess
 from kano.network import IWList, is_device, is_connected, connect, is_gateway, \
     is_internet, KwifiCache, reload_kernel_module, is_redirected, \
     launch_chromium
-from kano.utils import is_model_b_plus
+from kano.utils import is_model_a, is_model_b
 
 NETWORKS_PER_PAGE = 5
 
@@ -325,7 +325,7 @@ if __name__ == '__main__':
             sys.exit(0)
         subprocess.call(['/bin/sync'])  # Flush system IO buffers to disk to avoid corruption
         subprocess.call(['typewriter_echo', 'First, plug in your {{2wifi piece}}.', '0', '2'])
-        if not is_model_b_plus():
+        if is_model_a() or is_model_b():
             subprocess.call(['typewriter_echo', 'Please take into account that the system will automatically reboot.', '0', '2'])
             subprocess.call(['typewriter_echo', 'If you don\'t want to use WiFi, press {{1 ENTER }}.', '2', '0'])
             raw_input().strip()
