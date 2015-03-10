@@ -40,7 +40,7 @@ class SetWallpaper(ScrolledWindowTemplate):
         ICON_HEIGHT = 90
 
         self.win = win
-        self.win.set_main_widget(self)
+        # self.win.set_main_widget(self)
 
         self.kano_button.connect("button-release-event", self.apply_changes)
         self.kano_button.connect("key-release-event", self.apply_changes)
@@ -64,15 +64,18 @@ class SetWallpaper(ScrolledWindowTemplate):
         # using a separate list to account for ordering
         for name, attributes in self.wallpapers.iteritems():
             if 'background' in name:
-                self.add_wallpaper_to_table(name, ICON_WIDTH, ICON_HEIGHT, True)
+                self.add_wallpaper_to_table(name, ICON_WIDTH,
+                                            ICON_HEIGHT, True)
 
         for name, attributes in self.wallpapers.iteritems():
             if attributes['unlocked'] and 'background' not in name:
-                self.add_wallpaper_to_table(name, ICON_WIDTH, ICON_HEIGHT, True)
+                self.add_wallpaper_to_table(name, ICON_WIDTH, ICON_HEIGHT,
+                                            True)
 
         for name, attributes in self.wallpapers.iteritems():
             if not attributes['unlocked']:
-                self.add_wallpaper_to_table(name, ICON_WIDTH, ICON_HEIGHT, False)
+                self.add_wallpaper_to_table(name, ICON_WIDTH, ICON_HEIGHT,
+                                            False)
 
         # Attach to table
         row = 0
@@ -93,23 +96,29 @@ class SetWallpaper(ScrolledWindowTemplate):
         self.win.show_all()
 
     def add_wallpaper_to_table(self, name, width, height, unlocked):
-        
-        # create the wallpaper thumbnail
+
+        # Create the wallpaper thumbnail
         try:
-            wallpaper_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(self.get_path(name) + name + name_pattern, 120, 90)
-            cropped_wallpaper = wallpaper_pixbuf.new_subpixbuf(15, 0, width, height)
+            # The original picture is not square, so resize the picture to
+            # scale and then crop the picture
+            wallpaper_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
+                self.get_path(name) + name + name_pattern, 120, 90
+            )
+            cropped_wallpaper = wallpaper_pixbuf.new_subpixbuf(15, 0, width,
+                                                               height)
             image = Gtk.Image()
             image.set_from_pixbuf(cropped_wallpaper)
         except:
             return
 
-        # create the container for the thumbnails
+        # Create the container for the thumbnails
         container = Gtk.Fixed()
         container.put(image, 0, 0)
 
-        # add the padlock overlay on the thumbnail if it is locked
+        # Add the padlock overlay on the thumbnail if it is locked
         if not unlocked:
-            # recreate padlock overlay here becuase otherwise it's parent gets set by the class
+            # Recreate padlock overlay here becuase otherwise it's parent gets
+            # set by the class
             padlock_pixbuf = GdkPixbuf.Pixbuf.new_from_file(padlock_path)
             padlock_overlay = Gtk.Image()
             padlock_overlay.set_from_pixbuf(padlock_pixbuf)
@@ -120,12 +129,16 @@ class SetWallpaper(ScrolledWindowTemplate):
         backgroundbox.get_style_context().add_class('wallpaper_box')
         backgroundbox.add(container)
         image.set_padding(3, 3)
-        backgroundbox.connect('button_press_event', self.select_wallpaper, name)
+        backgroundbox.connect('button_press_event', self.select_wallpaper,
+                              name)
         self.buttons[name] = backgroundbox
         self.buttons_list.append(backgroundbox)
 
-    # Add class to wallpaper picture which displays border even when mouse is moved
     def select_wallpaper(self, widget=None, event=None, image_name=""):
+        '''Adds the css class that shows the wallpaper to be selected,
+        even when the mouse is moved away
+        '''
+
         for name, button in self.buttons.iteritems():
             style = button.get_style_context()
             style.remove_class("wallpaper_box_active")
@@ -168,12 +181,12 @@ class SetWallpaper(ScrolledWindowTemplate):
         self.get_wallpapers(wallpaper_path)
         self.get_wallpapers(kano_draw_path)
 
-        # To get info about which environments are unlocked we first calculate badges
-        # then we take the 'achieved' attribute of an environment and add it to
-        # the attribute of our local list of wallpapers
+        # To get info about which environments are unlocked we first calculate
+        # badges then we take the 'achieved' attribute of an environment and
+        # add it to the attribute of our local list of wallpapers
         #
-        #   NOTE: it realies on the wallpapers in kano-desktop to me named as their
-        #         respective rule in kano-profile with the following pattern:
+        #   NOTE: it relies on the wallpapers in kano-desktop to me named as
+        #   their respective rule in kano-profile with the following pattern:
         #
         #         [rule_name]-background[name_pattern]
         #         e.g. [arcade_hall]-background[-4-3.png]
@@ -207,4 +220,3 @@ class SetWallpaper(ScrolledWindowTemplate):
 
     def get_path(self, name):
         return self.wallpapers[name]['path']
-
