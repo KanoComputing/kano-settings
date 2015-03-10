@@ -110,8 +110,6 @@ class SetOverclock(RadioButtonTemplate):
             if CLOCK_MODES[self.is_pi2]['values'][x]['arm_freq'] == freq:
                 self.initial_button = CLOCK_MODES[self.is_pi2]['modes'].index(x)
 
-    def on_button_toggled(self, button):
-
+    def on_button_toggled(self, button, selected):
         if button.get_active():
-            label = button.get_label()
-            self.selected_button = CLOCK_MODES[self.is_pi2]['modes'].index(label)
+            self.selected_button = selected
