@@ -20,7 +20,7 @@ def add_user():
 
 # Needs sudo permission
 def delete_user():
-    os.system('kano-init deleteuser %s' % (get_user_unsudoed()))
+    os.system('kano-init deleteuser {}'.format(get_user_unsudoed()))
     # back up profile
     if has_token():
         os.system("kano-sync --sync --backup")
@@ -44,5 +44,5 @@ def verify_current_password(password):
 
 # Successfully changed password is returns 0, else is successful
 def change_password(new_password):
-    out, e, cmdvalue = run_cmd("echo $SUDO_USER:%s | chpasswd" % (new_password))
+    out, e, cmdvalue = run_cmd("echo $SUDO_USER:{} | chpasswd".format(new_password))
     return cmdvalue

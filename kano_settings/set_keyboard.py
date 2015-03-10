@@ -14,7 +14,6 @@ import kano_settings.system.keyboard_config as keyboard_config
 import kano_settings.common as common
 from kano_settings.templates import Template
 from kano_settings.config_file import get_setting, set_setting
-from kano_settings.data import get_data
 from kano.gtk3.buttons import OrangeButton
 from kano.gtk3.kano_combobox import KanoComboBox
 from kano.utils import detect_kano_keyboard
@@ -32,14 +31,13 @@ def choose_keyboard_screen(win):
 
 
 class SetKanoKeyboard(Template):
-    data = get_data("KANO_KEYBOARD")
-
     def __init__(self, win):
-        title = self.data["LABEL_1"]
-        description = self.data["LABEL_2"]
-        kano_label = self.data["KANO_BUTTON"]
-
-        Template.__init__(self, title, description, kano_label)
+        Template.__init__(
+            self,
+            "Keyboard",
+            "Kano keyboard detected",
+            "APPLY CHANGES"
+        )
 
         self.win = win
         self.win.set_main_widget(self)
@@ -82,14 +80,13 @@ class SetKeyboard(Template):
     continents = ['Africa', 'America', 'Asia', 'Australia', 'Europe', 'Others']
     kano_keyboard = True
 
-    data = get_data("SET_KEYBOARD")
-
     def __init__(self, win):
-        title = self.data["LABEL_1"]
-        description = self.data["LABEL_2"]
-        kano_label = self.data["KANO_BUTTON"]
-
-        Template.__init__(self, title, description, kano_label)
+        Template.__init__(
+            self,
+            "Keyboard",
+            "Where do you live? So I can set your keyboard.",
+            "APPLY CHANGES"
+        )
 
         self.win = win
         self.win.set_main_widget(self)

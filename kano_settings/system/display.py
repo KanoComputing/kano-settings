@@ -33,7 +33,7 @@ def switch_display_safe_mode():
          if resolution == safe_resolution:
             group=m.split()[0].split(':')[0]
             mode=m.split()[0].split(':')[1]
-            logger.info ('Switching display to safe resolution %s (group=%s mode=%s)' % (resolution, group, mode))
+            logger.info ('Switching display to safe resolution {} (group={} mode={})'.format(resolution, group, mode))
             set_hdmi_mode_live(group, mode)
    except:
       logger.error ('Error switching display to safe mode')
@@ -76,12 +76,12 @@ def list_supported_modes():
 
     for key in sorted(cea_modes):
         values = cea_modes[key]
-        string = "cea:%d  %s  %s  %s" % (key, values[0], values[1], values[2])
+        string = "cea:{:d}  {}  {}  {}".format(key, values[0], values[1], values[2])
         modes.append(string)
 
     for key in sorted(dmt_modes):
         values = dmt_modes[key]
-        string = "dmt:%d  %s  %s  %s" % (key, values[0], values[1], values[2])
+        string = "dmt:{:d}  {}  {}  {}".format(key, values[0], values[1], values[2])
         modes.append(string)
 
     return modes
@@ -93,12 +93,12 @@ def set_hdmi_mode_live(group=None, mode=None, drive='HDMI'):
         return success
 
     # ask tvservice to switch to the given mode immediately
-    status_str, _, rc = run_cmd(tvservice_path + ' -e "%s %s %s"' % (group, mode, drive))
+    status_str, _, rc = run_cmd(tvservice_path + ' -e "{} {} {}"'.format(group, mode, drive))
     if rc == 0 and os.path.exists(fbset_path) and os.path.exists(xrefresh_path):
         # refresh the Xserver screen because most probably it has become black as a result of the graphic mode switch.
         # we wait a tiny bit because on some occassions it happens to early and has no effect (leaves the screen black).
         time.sleep(2)
-        _, _, _ = run_cmd('%s -depth 8 ; %s -depth 16' % (fbset_path, fbset_path))
+        _, _, _ = run_cmd('{} -depth 8 ; {} -depth 16'.format(fbset_path, fbset_path))
         _, _, _ = run_cmd(xrefresh_path)
         success = True
 

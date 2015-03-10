@@ -18,5 +18,8 @@ clients2.google.com
 # Clock
 pool.ntp.org
 
+# Timezone Updater tool (tzupdate)
+api.ipinfodb.com
+
 # Check whitelist on github
 raw.githubusercontent.com

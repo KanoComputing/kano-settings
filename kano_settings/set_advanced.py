@@ -15,19 +15,15 @@ from kano_settings.templates import Template, LabelledListTemplate
 from system.advanced import get_parental_enabled, set_parental_enabled
 from parental_config import ParentalConfig
 
-from kano_settings.data import get_data
-
 
 class SetAdvanced(Template):
-    data = get_data("SET_ADVANCED")
-
     def __init__(self, win):
-
-        title = self.data["LABEL_1"]
-        description = self.data["LABEL_2"]
-        kano_label = self.data["KANO_BUTTON"]
-
-        Template.__init__(self, title, description, kano_label)
+        Template.__init__(
+            self,
+            "Advanced options",
+            "Toggle parental lock and debug mode",
+            "APPLY CHANGES"
+        )
 
         parental_box = self.create_parental_button()
         debug_box = self.create_debug_button()
@@ -55,22 +51,24 @@ class SetAdvanced(Template):
         self.win.show_all()
 
     def create_parental_button(self):
-        title = self.data["OPTION_1"]
-        desc_1 = self.data["DESCRIPTION_1_1"]
-        desc_2 = self.data["DESCRIPTION_1_2"]
-        desc_3 = self.data["DESCRIPTION_1_3"]
-        self.parental_button = Gtk.CheckButton()
-        box = LabelledListTemplate.label_button(self.parental_button,
-                                                title, desc_1)
+        desc = (
+            "This will:\n"
+            "- Block mature videos on YouTube\n"
+            "- Block mature websites in browser"
+        ).split('\n')
 
-        text_array = [desc_2, desc_3]
+        self.parental_button = Gtk.CheckButton()
+        box = LabelledListTemplate.label_button(
+            self.parental_button,
+            "Parental lock",
+            desc[0])
 
         grid = Gtk.Grid()
         grid.attach(box, 0, 0, 1, 1)
 
         i = 1
 
-        for text in text_array:
+        for text in desc[1:]:
             label = Gtk.Label(text)
             label.set_alignment(xalign=0, yalign=0.5)
             label.set_padding(xpad=25, ypad=0)
@@ -91,22 +89,24 @@ class SetAdvanced(Template):
         ParentalConfig(self.win)
 
     def create_debug_button(self):
-        title = self.data["OPTION_2"]
-        desc_1 = self.data["DESCRIPTION_2_1"]
-        desc_2 = self.data["DESCRIPTION_2_2"]
-        desc_3 = self.data["DESCRIPTION_2_3"]
+        desc = (
+            "Having problems?\n"
+            "1) Enable this mode\n"
+            "2) Report a bug with the ? tool on the Desktop"
+        ).split('\n')
         self.debug_button = Gtk.CheckButton()
-        box = LabelledListTemplate.label_button(self.debug_button,
-                                                title, desc_1)
-
-        text_array = [desc_2, desc_3]
+        box = LabelledListTemplate.label_button(
+            self.debug_button,
+            "Debug mode",
+            desc[0]
+        )
 
         grid = Gtk.Grid()
         grid.attach(box, 0, 0, 1, 1)
 
         i = 1
 
-        for text in text_array:
+        for text in desc[1:]:
             label = Gtk.Label(text)
             label.set_alignment(xalign=0, yalign=0.5)
             label.set_padding(xpad=25, ypad=0)
@@ -159,9 +159,6 @@ class SetAdvanced(Template):
 
 
 class SetPassword(Template):
-    data_lock = get_data("PARENTAL_LOCK")
-    data_unlock = get_data("PARENTAL_UNLOCK")
-
     def __init__(self, win):
 
         self.parental_enabled = get_parental_enabled()
@@ -173,35 +170,36 @@ class SetPassword(Template):
 
         # if enabled, turning off
         if self.parental_enabled:
-            title = self.data_unlock["LABEL_1"]
-            description = self.data_unlock["LABEL_2"]
-            kano_label = self.data_unlock["KANO_BUTTON"]
-            placeholder_1 = self.data_lock["PLACEHOLDER_1"]
+            Template.__init__(
+                self,
+                "Unlock the parental lock",
+                "Choose a password",
+                "UNLOCK"
+            )
 
-            Template.__init__(self, title, description, kano_label)
             self.entry = Gtk.Entry()
             self.entry.set_size_request(300, 44)
-            self.entry.props.placeholder_text = placeholder_1
+            self.entry.props.placeholder_text = "Enter your selected password"
             self.entry.set_visibility(False)
             self.entry.connect("key_release_event", self.enable_button)
             entry_container.attach(self.entry, 0, 0, 1, 1)
 
         # if disabled, turning on
         else:
-            title = self.data_lock["LABEL_1"]
-            description = self.data_lock["LABEL_2"]
-            kano_label = self.data_lock["KANO_BUTTON"]
-            placeholder_1 = self.data_lock["PLACEHOLDER_1"]
-            placeholder_2 = self.data_lock["PLACEHOLDER_2"]
+            Template.__init__(
+                self,
+                "Set up your parental lock",
+                "Enter your password",
+                "LOCK"
+            )
 
-            Template.__init__(self, title, description, kano_label)
             self.entry1 = Gtk.Entry()
             self.entry1.set_size_request(300, 44)
-            self.entry1.props.placeholder_text = placeholder_1
+            self.entry1.props.placeholder_text = "Select password"
             self.entry1.set_visibility(False)
 
             self.entry2 = Gtk.Entry()
-            self.entry2.props.placeholder_text = placeholder_2
+            self.entry2.props.placeholder_text = "Confirm password"
             self.entry2.set_visibility(False)
 
             self.entry1.connect("key_release_event", self.enable_button)
@@ -251,8 +249,6 @@ class SetPassword(Template):
                     password = self.entry1.get_text()
                     password2 = self.entry2.get_text()
                     passed_test = (password == password2)
-                    error_heading = self.data_lock["ERROR_LABEL_1"]
-                    error_description = self.data_lock["ERROR_LABEL_2"]
 
                 # if enabled, turning off
                 else:
@@ -265,7 +261,10 @@ class SetPassword(Template):
 
                 # else, display try again dialog
                 else:
-                    response = self.create_dialog(error_heading, error_description)
+                    response = self.create_dialog(
+                        "Careful",
+                        "The passwords don't match! Try again"
+                    )
                     if response == -1:
                         if not self.parental_enabled:
                             self.entry1.set_text("")

@@ -24,3 +24,5 @@ etc/init.d /etc
 etc_override /usr/share/kano-settings
 
 overscan/overscan /usr/bin
+
+WHITELIST /usr/share/kano-settings/config/

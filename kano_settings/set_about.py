@@ -13,7 +13,6 @@ from kano.gtk3.kano_dialog import KanoDialog
 from kano.gtk3.buttons import OrangeButton, KanoButton
 from kano_profile.paths import legal_dir
 from kano_settings.common import media
-from kano_settings.data import get_data
 from kano_settings.system.about import (
     get_current_version, get_space_available, get_temperature, get_model_name
 )
@@ -23,12 +22,7 @@ class SetAbout(Gtk.Box):
     selected_button = 0
     initial_button = 0
 
-    data = get_data("SET_ABOUT")
-
     def __init__(self, win):
-
-        kano_label = self.data["KANO_BUTTON"]
-
         Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
 
         self.win = win
@@ -38,14 +32,23 @@ class SetAbout(Gtk.Box):
 
         image = Gtk.Image.new_from_file(media + "/Graphics/about-screen.png")
 
-        version_align = self.create_version_align()
-        space_available = get_space_available()
-        temperature = get_temperature()
-        model_name = get_model_name()
-
-        space_align = self.create_other_align(space_available)
-        temperature_align = self.create_other_align(temperature)
-        model_align = self.create_other_align(model_name)
+        version_align = self.create_align(
+            "Kano OS v.{version}".format(version = get_current_version()),
+            'about_version'
+            )
+        space_align = self.create_align(
+            "Disk space used: {used}B / {total}B".format(**get_space_available())
+        )
+        try:
+            celsius = u"{:.1f}\N{DEGREE SIGN}C".format(get_temperature())
+        except ValueError:
+            celsius = "?"
+        temperature_align = self.create_align(
+            u"Temperature: {celsius}".format(celsius = celsius)
+        )
+        model_align = self.create_align(
+            "Model: {model}".format(model = get_model_name())
+        )
 
         terms_and_conditions = OrangeButton("Terms and conditions")
         terms_and_conditions.connect(
@@ -62,7 +65,7 @@ class SetAbout(Gtk.Box):
             "button_release_event", self.show_changelog
         )
 
-        self.kano_button = KanoButton(kano_label)
+        self.kano_button = KanoButton("BACK")
         self.kano_button.pack_and_align()
 
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
@@ -89,27 +92,12 @@ class SetAbout(Gtk.Box):
         # Refresh window
         self.win.show_all()
 
-    def create_version_align(self):
-        '''This is the widget (Gtk.Alignment) containing the version
-        information. This has different styling to the other information
-        '''
-
-        version_number = get_current_version()
-        version_long = "Kano OS v." + version_number
-        label = Gtk.Label(version_long)
-        label.get_style_context().add_class("about_version")
-
-        align = Gtk.Alignment(xalign=0.5, xscale=0, yalign=0, yscale=0)
-        align.add(label)
-
-        return align
-
-    def create_other_align(self, text):
-        '''This is the default template for any other information
+    def create_align(self, text, css_class='about_label'):
+        '''This styles the status information in the 'about' dialog
         '''
 
         label = Gtk.Label(text)
-        label.get_style_context().add_class("about_label")
+        label.get_style_context().add_class(css_class)
 
         align = Gtk.Alignment(xalign=0.5, xscale=0, yalign=0, yscale=0)
         align.add(label)
