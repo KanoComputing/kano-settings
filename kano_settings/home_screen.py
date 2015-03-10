@@ -120,10 +120,7 @@ class HomeScreen(Gtk.Box):
                 continue
 
             else:
-                label_info = get_setting(self.custom_info[x])
-                if len(label_info) > 13:
-                    label_info = label_info[:13] + "..."
-                self.labels[x].set_text(label_info)
+                self.labels[x].set_text(get_setting(self.custom_info[x]))
 
     # When clicking next in the default intro screen - takes you to the last level you visited
     def on_next(self, widget=None, arg2=None):
