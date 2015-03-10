@@ -29,8 +29,9 @@ class ParentalConfig(Template):
         )
 
         self.parental_level = Gtk.VScale(
-           adjustment= Gtk.Adjustment(value=0, lower=0, upper=2,
+            adjustment=Gtk.Adjustment(value=0, lower=0, upper=3,
                                       step_incr=1, page_incr=0, page_size=0))
+        self.parental_level.get_style_context().add_class('parental_slider')
         self.parental_level.set_draw_value(False)
         self.parental_level.set_round_digits(0)
         self.parental_level.set_inverted(True)
@@ -49,19 +50,25 @@ class ParentalConfig(Template):
             (
                 Gtk.Label("High Settings"),
                 Gtk.Label("Enable everything")
+            ),
+            (
+                Gtk.Label("Ultimate Settings"),
+                Gtk.Label("Only allow access to Kano World")
             )
         ]
 
         self._value_change_handler(self.parental_level)
 
         parental_level_grid = Gtk.Grid()
-        parental_level_grid.attach(self.parental_level, 0, 0, 1, 6)
-        parental_level_grid.attach(self._parental_labels[2][0], 1, 0, 1, 1)
-        parental_level_grid.attach(self._parental_labels[2][1], 1, 1, 1, 1)
-        parental_level_grid.attach(self._parental_labels[1][0], 1, 2, 1, 1)
-        parental_level_grid.attach(self._parental_labels[1][1], 1, 3, 1, 1)
-        parental_level_grid.attach(self._parental_labels[0][0], 1, 4, 1, 1)
-        parental_level_grid.attach(self._parental_labels[0][1], 1, 5, 1, 1)
+        parental_level_grid.attach(self.parental_level, 0, 0, 1, 7)
+        parental_level_grid.attach(self._parental_labels[3][0], 1, 0, 1, 1)
+        parental_level_grid.attach(self._parental_labels[3][1], 1, 1, 1, 1)
+        parental_level_grid.attach(self._parental_labels[2][0], 1, 2, 1, 1)
+        parental_level_grid.attach(self._parental_labels[2][1], 1, 3, 1, 1)
+        parental_level_grid.attach(self._parental_labels[1][0], 1, 4, 1, 1)
+        parental_level_grid.attach(self._parental_labels[1][1], 1, 5, 1, 1)
+        parental_level_grid.attach(self._parental_labels[0][0], 1, 6, 1, 1)
+        parental_level_grid.attach(self._parental_labels[0][1], 1, 7, 1, 1)
 
         blacklist_button = OrangeButton("Configure allowed/blocked")
         blacklist_button.connect("button-press-event",
@@ -83,7 +90,7 @@ class ParentalConfig(Template):
         self.win.show_all()
 
     def apply_changes(self, button, event):
-        pw_dialog = ParentalPasswordDialog()
+        pw_dialog = ParentalPasswordDialog(self.win)
         if not pw_dialog.verify():
             return
 
@@ -193,7 +200,7 @@ class AllowedSites(Template):
 
 class ParentalPasswordDialog(KanoDialog):
 
-    def __init__(self):
+    def __init__(self, win):
         entry = Gtk.Entry()
         entry.set_visibility(False)
         KanoDialog.__init__(
@@ -203,7 +210,7 @@ class ParentalPasswordDialog(KanoDialog):
             widget=entry,
             has_entry=True,
             global_style=True,
-            parent_window=None
+            parent_window=win
         )
 
     def verify(self):

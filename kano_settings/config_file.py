@@ -13,18 +13,18 @@ import re
 import shutil
 from kano.utils import ensure_dir, get_user_unsudoed, read_json, write_json, chown_path
 from kano.logging import logger
+from kano_settings.common import settings_dir
 
 USER = None
 USER_ID = None
 
 username = get_user_unsudoed()
 if username != 'root':
-    settings_dir = os.path.join('/home', username, '.kano-settings')
     if os.path.exists(settings_dir) and os.path.isfile(settings_dir):
         os.rename(settings_dir, settings_dir + '.bak')
     ensure_dir(settings_dir)
     chown_path(settings_dir)
-    settings_file = os.path.join(settings_dir, 'config')
+    settings_file = os.path.join(settings_dir, 'settings')
 
 defaults = {
     'Keyboard-continent-index': 1,
@@ -80,12 +80,10 @@ def file_replace(fname, pat, s_after):
 def get_setting(variable):
     try:
         value = read_json(settings_file)[variable]
-        # print 'getting {} from json'.format(variable)
     except Exception:
         if variable not in defaults:
             logger.info('Defaults not found for variable: {}'.format(variable))
         value = defaults[variable]
-        # print 'getting {} from defaults'.format(variable)
     return value
 
 
@@ -101,7 +99,3 @@ def set_setting(variable, value):
     data[variable] = value
     write_json(settings_file, data)
     chown_path(settings_file)
-    # print 'setting {} to {}'.format(variable, value)
-
-
-

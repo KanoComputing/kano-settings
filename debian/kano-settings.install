@@ -3,6 +3,7 @@ bin/kano-settings-cli /usr/bin
 bin/startmouse /usr/bin
 bin/kano-settings-onboot /usr/bin
 bin/regenerate-ssh-keys /usr/bin
+bin/start-sentry-server /usr/bin
 
 kano_settings/* /usr/lib/python2.7/dist-packages/kano_settings
 media/* /usr/share/kano-settings/media
@@ -23,3 +24,5 @@ etc/init.d /etc
 etc_override /usr/share/kano-settings
 
 overscan/overscan /usr/bin
+
+WHITELIST /usr/share/kano-settings/config/

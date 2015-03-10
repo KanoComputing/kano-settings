@@ -1,0 +1,25 @@
+# This is a list of all the endings of websites we allow througH the parental lock
+# We add ^(.*) to the beginning of every site
+# So kano.me, www.kano.me, dev.kano.me, api.kano.me are all allowed
+
+kano.me
+amazonaws.com
+
+# Updater
+raspbian.org
+raspberrypi.org
+raspbian.mirror.uk.sargasso.net
+pypi.python.org
+
+# Feedback form
+docs.google.com
+clients2.google.com
+
+# Clock
+pool.ntp.org
+
+# Timezone Updater tool (tzupdate)
+api.ipinfodb.com
+
+# Check whitelist on github
+raw.githubusercontent.com

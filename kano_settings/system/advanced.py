@@ -11,7 +11,12 @@
 import os
 import shutil
 import hashlib
+import subprocess
+import signal
+import urllib2
+from bs4 import BeautifulSoup
 
+from kano_settings.common import settings_dir
 from kano.utils import read_file_contents, write_file_contents, \
     read_file_contents_as_lines, read_json, write_json, ensure_dir, \
     get_user_unsudoed
@@ -22,10 +27,12 @@ from kano.network import set_dns, restore_dns_interfaces, \
 password_file = "/etc/kano-parental-lock"
 hosts_file = '/etc/hosts'
 chromium_policy_file = '/etc/chromium/policies/managed/policy.json'
+sentry_config = os.path.join(settings_dir, 'sentry')
 
 username = get_user_unsudoed()
+
+# TODO: is this needed?
 if username != 'root':
-    settings_dir = os.path.join('/home', username, '.kano-settings')
     blacklist_file = os.path.join(settings_dir, 'blacklist')
     whitelist_file = os.path.join(settings_dir, 'whitelist')
 
@@ -153,6 +160,123 @@ def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/P
             create_empty_hosts()
 
 
+# Ultimate parental lock functions
+####################################################
+
+def set_ultimate_parental(enable):
+    if enable:
+        # if server is running, kill it and restart it
+        kill_server()
+
+        # this is to get the most up to date whitelist
+        restore_dns_interfaces()
+        redirect_traffic_to_google()
+        parse_whitelist_to_config_file(sentry_config)
+
+        # Now set resolv.conf to point to localhost
+        clear_dns_interfaces()
+        redirect_traffic_to_localhost()
+        launch_sentry_server(sentry_config)
+
+    else:
+        restore_dns_interfaces()
+        redirect_traffic_to_google()
+        kill_server()
+
+
+def redirect_traffic_to_google():
+    google_servers = [
+        '8.8.8.8',
+        '8.8.4.4'
+    ]
+    set_dns(google_servers)
+    refresh_resolvconf()
+
+
+def parse_whitelist_to_config_file(config):
+    whitelist = get_whitelist()
+
+    new_config = (
+        '{\n'
+        '    \"port\": 53,\n'
+        '    \"host\": \"127.0.0.1\",\n'
+        '    \"rules\": [\n'
+    )
+    lines = whitelist.split('\n')
+    for line in lines:
+        # Add line to whitelist if is non empty and doesn't start with a #
+        line = line.strip()
+        if line and not line.startswith('#'):
+            allowed_url = (
+                "        \"resolve ^(.*){} using 8.8.8.8, 8.8.4.4\",\n".format(line)
+            )
+            new_config += allowed_url
+
+    block_everything_else = (
+        "        \"block ^(.*)\"\n"
+        "    ]\n"
+        "}"
+    )
+    new_config += block_everything_else
+
+    g = open(config, 'w+')
+    g.write(new_config)
+    g.close()
+
+
+def get_whitelist():
+    # Try and get the whitelist from online.  If this fails,
+    # get it locally.
+    try:
+        online_whitelist = (
+            "https://raw.githubusercontent.com/KanoComputing/kano-settings/"
+            "master/WHITELIST"
+        )
+        html = urllib2.urlopen(online_whitelist).read()
+        text = BeautifulSoup(html).get_text().encode('ascii', 'ignore')
+        logger.debug('Using online whitelist')
+        return text
+    except:
+        # If there's an exception, possibly because there is no internet.
+        whitelist = os.path.join(settings_dir, 'WHITELIST')
+        f = open(whitelist, 'r')
+        text = f.read()
+        f.close()
+        logger.debug('Using local whitelist')
+        return text
+
+
+def redirect_traffic_to_localhost():
+    set_dns(['127.0.0.1'])
+    refresh_resolvconf()
+
+
+def launch_sentry_server(filename):
+    subprocess.Popen(["sentry -c {}".format(filename)], shell=True)
+
+
+def kill_server():
+    # Search for "sentry -c /home/$USERNAME/.kano-settings/CONFIG"
+    # in "ps aux | grep -r sentry" output
+    ps_cmd = ["ps", "-A"]
+    search_string = "sentry"
+
+    ps_process = subprocess.Popen(ps_cmd, stdout=subprocess.PIPE)
+    output, err = ps_process.communicate()
+    lines = output.split('\n')
+
+    # Could be very intensive
+    for line in lines:
+        # If the line contains the output we're looking for (i.e. is running
+        # the process we're interested in)
+        if search_string in line:
+            pid = int(filter(None, line.split(" "))[0])
+            os.kill(pid, signal.SIGKILL)
+            break
+
+####################################################
+
+
 def set_chromium_policies(policies):
     if not os.path.exists(chromium_policy_file):
         ensure_dir(os.path.dirname(chromium_policy_file))
@@ -223,7 +347,9 @@ def set_parental_level(level_setting):
         # Medium
         ['dns'],
         # High
-        ['chromium']
+        ['chromium'],
+        # Ultimate
+        ['ultimate']
     ]
 
     enabled = []
@@ -234,10 +360,13 @@ def set_parental_level(level_setting):
 
     logger.debug('Setting parental control to level {}'.format(level_setting))
 
-    set_chromium_parental('chromium' in enabled)
-    set_dns_parental('dns' in enabled)
+    if 'ultimate' in enabled:
+        set_ultimate_parental('ultimate' in enabled)
+    else:
+        set_chromium_parental('chromium' in enabled)
+        set_dns_parental('dns' in enabled)
+        set_ultimate_parental(False)
 
     blacklist, whitelist = read_listed_sites()
     set_hosts_blacklist('blacklist' in enabled,
                         blocked_sites=blacklist, allowed_sites=whitelist)
-
