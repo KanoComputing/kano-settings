@@ -11,21 +11,19 @@ import kano_settings.common as common
 from kano_settings.templates import Template
 from kano.logging import logger
 from kano_settings.config_file import get_setting
-from kano_settings.data import get_data
 from kano_settings.system.audio import set_to_HDMI, is_HDMI, hdmi_supported
 
 
 class SetAudio(Template):
     HDMI = False
 
-    data = get_data("SET_AUDIO")
-
     def __init__(self, win):
-        title = self.data["LABEL_1"]
-        description = self.data["LABEL_2"]
-        kano_label = self.data["KANO_BUTTON"]
-
-        Template.__init__(self, title, description, kano_label)
+        Template.__init__(
+            self,
+            "Audio",
+            "Get sound from your speaker or your TV",
+            "APPLY CHANGES"
+        )
 
         self.win = win
         self.win.set_main_widget(self)

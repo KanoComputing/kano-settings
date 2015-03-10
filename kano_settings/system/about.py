@@ -12,40 +12,39 @@ from kano.utils import is_model_a, is_model_b, is_model_b_plus, is_model_2_b
 
 
 def get_current_version():
-    output = subprocess.check_output(["cat", "/etc/kanux_version"])
-    version_number = output.split("-")[-1].strip()
+    version_number = "?"
+    with open('/etc/kanux_version', 'r') as f:
+        output = f.read().strip()
+        version_number = output.split('-')[-1]
     return version_number
 
 
 def get_space_available():
     output = subprocess.check_output("df -h | grep rootfs", shell=True)
-    items = output.strip().split(" ")
+    items = output.strip().split(' ')
     items = filter(None, items)
-    total_space = items[1]
-    space_used = items[2]
-    return "Disk space used: " + space_used + "B / " + total_space + "B"
+    return {
+        'used': items[1],
+        'total': items[2]
+    }
 
 
 def get_temperature():
-    degree_sign = u'\N{DEGREE SIGN}'
-    output = subprocess.check_output("cputemp0=`cat /sys/class/thermal/thermal_zone0/temp`; \
-                                     cputemp1=$(($cputemp0/1000)); \
-                                     cputemp2=$(($cputemp0/100)); \
-                                     cputemp=$(($cputemp2%$cputemp1)); \
-                                     echo $cputemp1\".\"$cputemp", shell=True)
-    output = output.strip()
-    return "Temperature: " + output + degree_sign + "C"
+    temperature = None
+    with open('/sys/class/thermal/thermal_zone0/temp') as f:
+        output = f.read().strip()
+        temperature = int(output) / 1000.0
+    return temperature
 
 
 def get_model_name():
-    board_info = "Model: Raspberry Pi"
     if is_model_a():
-        board_info += " A"
+        model = "A"
     elif is_model_b():
-        board_info += " B"
+        model = "B"
     elif is_model_b_plus():
-        board_info += " B+"
+        model = "B+"
     elif is_model_2_b():
-        board_info += " 2"
+        model = "2"
 
-    return board_info
+    return "Raspberry Pi {}".format(model)

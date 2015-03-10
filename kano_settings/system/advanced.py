@@ -129,7 +129,7 @@ def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/P
             shutil.copyfile(hosts_file, hosts_file_backup)
 
             logger.debug('appending the blacklist`')
-            os.system('zcat %s >> %s' % (blacklist_file, hosts_file))
+            os.system('zcat {} >> {}'.format(blacklist_file, hosts_file))
 
             logger.debug('making the file root read-only')
             os.chmod(hosts_file, 0644)
@@ -230,7 +230,7 @@ def get_whitelist():
     try:
         online_whitelist = (
             "https://raw.githubusercontent.com/KanoComputing/kano-settings/"
-            "master/kano_settings/data/WHITELIST"
+            "master/WHITELIST"
         )
         html = urllib2.urlopen(online_whitelist).read()
         text = BeautifulSoup(html).get_text().encode('ascii', 'ignore')
@@ -238,8 +238,7 @@ def get_whitelist():
         return text
     except:
         # If there's an exception, possibly because there is no internet.
-        current_dir = os.path.dirname(os.path.realpath(__file__))
-        whitelist = os.path.join(current_dir, '../data/WHITELIST')
+        whitelist = os.path.join(settings_dir, 'WHITELIST')
         f = open(whitelist, 'r')
         text = f.read()
         f.close()

@@ -7,7 +7,7 @@
 #
 # This controls the button styling in the default introduction screen which shows all the settings
 
-from gi.repository import Gtk
+from gi.repository import Gtk, Pango
 import kano_settings.common as common
 import kano.gtk3.cursor as cursor
 
@@ -26,13 +26,9 @@ class Menu_button():
         self.title.set_alignment(xalign=0, yalign=0)
         self.title.props.margin_top = 10
 
-        # Replace some of the info displayed with whitespace so it fits
-        if description:
-            if len(description) >= 12:
-                description = description[0:12] + '...'
-
         self.description = Gtk.Label(description)
         self.description.get_style_context().add_class("menu_custom_label")
+        self.description.set_ellipsize(Pango.EllipsizeMode.END)
         self.description.set_size_request(130, 10)
         self.description.set_alignment(xalign=0, yalign=0)
         self.description.props.margin_bottom = 8
