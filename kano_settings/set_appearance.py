@@ -8,8 +8,9 @@
 # Functionality for the wallpapers and the screensavers
 
 from gi.repository import Gtk
-from kano_settings.set_wallpaper import SetWallpaper
-from kano_settings.set_screensaver import SetScreensaver
+# from kano_settings.set_wallpaper import SetWallpaper
+# from kano_settings.set_screensaver import SetScreensaver
+from kano_settings.set_image import SetWallpaper, SetScreensaver
 
 
 class SetAppearance(Gtk.Notebook):
@@ -18,19 +19,25 @@ class SetAppearance(Gtk.Notebook):
     def __init__(self, win):
 
         Gtk.Notebook.__init__(self)
-        self.win = win
-        self.win.set_main_widget(self)
 
-        self.connect("switch-page", self._switch_page)
+        self.win = win
+        background = Gtk.EventBox()
+        background.get_style_context().add_class('set_appearance_window')
+        background.add(self)
+
+        self.win.set_main_widget(background)
+
+        # self.connect("switch-page", self._switch_page)
 
         # Modify set_wallpaper so it doesn't add itself to the window
         wallpaper_widget = SetWallpaper(self.win)
         screensaver_widget = SetScreensaver(self.win)
 
-        # add the screensaver and wallpaper tabs
-        # self.append_page(screensaver_widget, 'Screensaver')
-        self.append_page(wallpaper_widget, 'Wallpaper')
-        self.append_page(screensaver_widget, 'Screensaver')
+        wallpaper_label = Gtk.Label('WALLPAPER')
+        screensaver_label = Gtk.Label('SCREENSAVER')
 
-    def _switch_page(self, notebook, page, page_num, data=None):
-        self._window.set_last_page(page_num)
+        # Add the screensaver and wallpaper tabs
+        self.append_page(wallpaper_widget, wallpaper_label)
+        self.append_page(screensaver_widget, screensaver_label)
+
+        self.win.show_all()

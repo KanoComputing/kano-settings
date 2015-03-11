@@ -117,11 +117,51 @@ GtkTreeView:selected {
     background: @kano_orange;
 }
 
-.parental_slider {
+GtkVScale, GtkScale {
     background: #dddddd;
     border-radius: 3px;
 }
 
-.parental_slider.slider {
+GtkScale.slider:insensitive {
+    background: #bbbbbb;
+}
+
+GtkVScale.slider, GtkScale.slider {
     background: @kano_green;
+}
+
+.checkbutton_label {
+    font: Bariol bold 14;
+    color: #333333;
+}
+
+.set_appearance_window {
+    background-color: #e1e1e1;
+}
+
+GtkNotebook {
+    background-color: #fff;
+    -GtkNotebook-tab-overlap: -12px;
+    -GtkWidget-focus-line-width: 0px;
+    -GtkNotebook-initial-gap: 28px;
+    padding: 0px;
+}
+
+GtkNotebook tab:active {
+    background-color: #fff;
+    border: 0px;
+}
+
+GtkNotebook tab {
+    border: none;
+    background-color: #d1d1d1;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+GtkNotebook tab GtkLabel {
+    font: Bariol bold 13;
+    color: #323232;
+    /* Preferably want inactive tab to have color writing #6e6e6e
+    but can't get it to work*/
 }

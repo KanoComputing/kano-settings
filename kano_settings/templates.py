@@ -11,7 +11,7 @@
 
 from gi.repository import Gtk
 
-from kano.gtk3.buttons import KanoButton
+from kano.gtk3.buttons import KanoButton, OrangeButton
 from kano.gtk3.heading import Heading
 from kano.gtk3.scrolled_window import ScrolledWindow
 
@@ -37,18 +37,35 @@ class Template(Gtk.Box):
 
 class ScrolledWindowTemplate(Gtk.Box):
 
-    def __init__(self, title, description, button_text):
+    def __init__(self, title, description, button_text, orange_button_text=None):
         Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
 
-        self.sw = ScrolledWindow(wide_scrollbar=True)
-        self.sw.set_size_request(630, 210)
+        self.sw = ScrolledWindow()
+        self.sw.apply_styling_to_widget(wide=False)
+
         self.title = Heading(title, description)
         self.kano_button = KanoButton(button_text)
         self.kano_button.pack_and_align()
 
         self.pack_start(self.title.container, False, False, 0)
         self.pack_start(self.sw, False, False, 0)
-        self.pack_start(self.kano_button.align, False, False, 0)
+
+        if orange_button_text:
+            box_align = Gtk.Alignment(xscale=0, xalign=0.5)
+            button_box = Gtk.ButtonBox(
+                orientation=Gtk.Orientation.HORIZONTAL, spacing=40
+            )
+
+            label = Gtk.Label('')
+            self.orange_button = OrangeButton(orange_button_text)
+            button_box.pack_start(label, False, False, 0)
+            button_box.pack_start(self.kano_button.align, False, False, 0)
+            button_box.pack_start(self.orange_button, False, False, 0)
+
+            box_align.add(button_box)
+            self.pack_start(box_align, False, False, 0)
+        else:
+            self.pack_start(self.kano_button.align, False, False, 0)
 
 
 class LabelledListTemplate(Template):
