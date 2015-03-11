@@ -13,22 +13,16 @@ import os
 from kano.logging import logger
 
 
-SPEED_SLOW = "1"
-SPEED_NORMAL = "default"
-SPEED_FAST = "10"
+SPEEDS = ['1', 'default', '10']
 
 
 def change_mouse_speed(configuration):
-    command = "xset m "
-    # Slow configuration
-    if configuration == 0:
-        command += SPEED_SLOW
-    # Modest configuration
-    elif configuration == 1:
-        command += SPEED_NORMAL
-    # Medium configuration
-    elif configuration == 2:
-        command += SPEED_FAST
+    try:
+        speed = SPEEDS[configuration]
+    except IndexError:
+        return
+
+    command = "xset m {}".format(speed)
 
     # Apply changes
     os.system(command)
