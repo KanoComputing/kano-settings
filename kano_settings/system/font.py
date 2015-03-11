@@ -24,10 +24,14 @@ config_file = os.path.join('/home', username, '.config/lxsession/LXDE/desktop.co
 
 # int configuration: 0 = small, 1 = normal, 2 = big
 def change_font_size(configuration):
+    try:
+        size = SIZES[configuration]
+    except IndexError:
+        return
 
     font = "sGtk/FontName=Bariol {}"
     pattern = font.format("[0-9]+")
-    replace = font.format(SIZES[configuration])
+    replace = font.format(size)
 
     # Apply changes
     file_replace(config_file, pattern, replace)

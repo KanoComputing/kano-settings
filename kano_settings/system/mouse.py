@@ -17,7 +17,12 @@ SPEEDS = ['1', 'default', '10']
 
 
 def change_mouse_speed(configuration):
-    command = "xset m {}".format(SPEEDS[configuration])
+    try:
+        speed = SPEEDS[configuration]
+    except IndexError:
+        return
+
+    command = "xset m {}".format(speed)
 
     # Apply changes
     os.system(command)
