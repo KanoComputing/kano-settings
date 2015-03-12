@@ -50,9 +50,6 @@ def set_kdesk_config(param_name, param_value):
 
     f = open(kdesk_config, 'r')
 
-    # Need the setting which wipes the original file clean
-    # g = open(kdesk_config_copy, 'w+')
-
     for line in f:
         if param_name in line:
             line = line.strip()
