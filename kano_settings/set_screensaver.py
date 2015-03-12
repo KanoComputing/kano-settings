@@ -107,7 +107,7 @@ class ScreensaverTable(ImageTable):
         self.attach_buttons_to_table(self.button_list)
 
     def create_image_dict(self):
-        '''Return list of screensavers of the form
+        '''Creates the member variable self.images with a structure of the form
         {
             name: {
                 'program': '/usr/bin/kdesk-eglsaver',
@@ -219,7 +219,7 @@ class SetScreensaverAdvanced(Template):
     def enable_screensaver_scale(self, button):
         '''This is the callback for the Turn On checkbutton
         Depending on the value of the checkbutton, this will turn on or off
-        the screensaver
+        the screensaver and disable the Gtk.Scale
         '''
         check_screensaver = button.get_active()
         self.scale.set_sensitive(check_screensaver)
