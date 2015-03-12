@@ -148,13 +148,16 @@ class ImageTable(Gtk.Table):
         self.images[image_name]['selected'] = True
 
     def get_selected(self):
-        '''Gets the current selected wallpaper
+        '''Gets the name of the current selected image
         '''
         for x in self.images:
             if self.images[x]['selected']:
                 return x
 
     def unselect_all(self):
+        '''Remove all styling on all images, and set the 'selected'
+        field to False
+        '''
         for x in self.images:
             self.images[x]['selected'] = False
         self.add_selected_css_class(None)

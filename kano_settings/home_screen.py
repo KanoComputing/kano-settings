@@ -109,7 +109,7 @@ class HomeScreen(Gtk.Box):
         self.scrolledwindow.get_style_context().add_class("app-grid")
         self.scrolledwindow.add_with_viewport(self.table)
 
-    # This is to update the introdction text, so that if the settings are
+    # This is to update the introduction text, so that if the settings are
     # modified and then we go back to the intro screen, the latest information
     # is shown
     def update_intro(self):

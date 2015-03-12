@@ -5,7 +5,7 @@
 # Copyright (C) 2015 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
-# Functionality for the wallpapers and the screensavers
+# This page has the screensaver and wallpaper options on different tabs
 
 from gi.repository import Gtk
 from kano_settings.set_wallpaper import SetWallpaper
