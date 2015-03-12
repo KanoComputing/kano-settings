@@ -12,7 +12,7 @@ from .config_file import set_setting
 from kano_profile.badges import calculate_badges
 from kano_settings.config_file import username
 from kano_settings.system.wallpaper import change_wallpaper
-from kano_settings.set_image import ImageTable
+from kano_settings.image_table import ImageTable
 from kano_settings.templates import ScrolledWindowTemplate
 
 wallpaper_path = "/usr/share/kano-desktop/wallpapers/"
