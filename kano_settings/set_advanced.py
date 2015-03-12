@@ -261,11 +261,11 @@ class SetPassword(Template):
 
                 # else, display try again dialog
                 else:
-                    response = self.create_dialog(
+                    do_try_again = self.create_dialog(
                         "Careful",
                         "The passwords don't match! Try again"
                     )
-                    if response == -1:
+                    if do_try_again:
                         if not self.parental_enabled:
                             self.entry1.set_text("")
                             self.entry2.set_text("")
@@ -291,15 +291,18 @@ class SetPassword(Template):
         kdialog = KanoDialog(
             message1,
             message2,
-            {
-                "TRY AGAIN": {
-                    "return_value": -1
+            [
+                {
+                    'label': "GO BACK",
+                    'color': 'red',
+                    'return_value': False
                 },
-                "GO BACK": {
-                    "return_value": 0,
-                    "color": "red"
+                {
+                    'label': "TRY AGAIN",
+                    'color': 'green',
+                    'return_value': True
                 }
-            },
+            ],
             parent_window=self.win
         )
 

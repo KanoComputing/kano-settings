@@ -90,22 +90,24 @@ class MainWindow(ApplicationWindow):
             kdialog = KanoDialog(
                 "Reboot?",
                 "Your Kano needs to reboot for changes to apply",
-                {
-                    "REBOOT NOW": {
-                        "return_value": 1,
-                        "color": "orange"
+                [
+                    {
+                        'label': "LATER",
+                        'color': 'grey',
+                        'return_value': False
                     },
-                    "LATER": {
-                        "return_value": 0,
-                        "color": "grey"
+                    {
+                        'label': "REBOOT NOW",
+                        'color': 'orange',
+                        'return_value': True
                     }
-                },
+                ],
                 parent_window=self.get_toplevel()
             )
 
             kdialog.set_action_background("grey")
-            response = kdialog.run()
-            if response == 1:
+            do_reboot_now = kdialog.run()
+            if do_reboot_now:
                 os.system("sudo reboot")
 
         Gtk.main_quit()
