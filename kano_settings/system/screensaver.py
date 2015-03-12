@@ -9,6 +9,7 @@
 
 import os
 from kano.logging import logger
+from kano_settings import common
 
 # These are the values we want to change the filepaths to
 kdesk_config = '/usr/share/kano-desktop/kdesk/.kdeskrc'
@@ -68,6 +69,10 @@ def set_kdesk_config(param_name, param_value):
             logger.info('Refresh kdesk')
             cmd = 'sudo -u {user} kdesk -w'.format(user=USER)
             os.system(cmd)
+
+            # For now, refreshing kdesk does not update the screensaver
+            # settings, so prompt the user for a reboot
+            common.need_reboot = True
 
     f.close()
 
