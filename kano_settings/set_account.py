@@ -177,17 +177,17 @@ class SetPassword(Template):
         self.entry1 = self.labelled_entries.get_entry(0)
         self.entry1.set_size_request(300, 44)
         self.entry1.set_visibility(False)
-        self.entry1.props.placeholder_text = entry_heading_1
+        self.entry1.props.placeholder_text = "Old password"
 
         self.entry2 = self.labelled_entries.get_entry(1)
         self.entry2.set_size_request(300, 44)
         self.entry2.set_visibility(False)
-        self.entry2.props.placeholder_text = entry_heading_2
+        self.entry2.props.placeholder_text = "New password"
 
         self.entry3 = self.labelled_entries.get_entry(2)
         self.entry3.set_size_request(300, 44)
         self.entry3.set_visibility(False)
-        self.entry3.props.placeholder_text = entry_heading_3
+        self.entry3.props.placeholder_text = "Repeat new password"
 
         self.entry1.connect("key_release_event", self.enable_button)
         self.entry2.connect("key_release_event", self.enable_button)
