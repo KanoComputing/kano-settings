@@ -37,7 +37,7 @@ class SetScreensaver(ScrolledWindowTemplate):
             'Advanced Options'
         )
 
-        self. win = win
+        self.win = win
 
         self.table = ScreensaverTable()
         self.orange_button.connect('button-release-event', self.go_to_advanced)
@@ -161,7 +161,6 @@ class ScreensaverTable(ImageTable):
 
 
 class SetScreensaverAdvanced(Template):
-    # get data here
 
     def __init__(self, win):
         title = 'Screensaver - advanced'
@@ -172,7 +171,7 @@ class SetScreensaverAdvanced(Template):
         self.win = win
         self.win.set_main_widget(self)
         self.win.top_bar.enable_prev()
-        self.win.change_prev_callback(self.win.go_to_home)
+        self.win.change_prev_callback(self.go_to_set_appearance)
 
         self.kano_button.connect("button-release-event", self.apply_changes)
         self.kano_button.connect("key-release-event", self.apply_changes)
@@ -217,13 +216,6 @@ class SetScreensaverAdvanced(Template):
 
         self.win.show_all()
 
-    def go_to_select_appearence(self):
-        '''This takes you back to the menu where you can change your
-        wallpaper and screensaver
-        '''
-        self.win.remove_main_widget()
-        self.win.go_to_home()
-
     def enable_screensaver_scale(self, button):
         '''This is the callback for the Turn On checkbutton
         Depending on the value of the checkbutton, this will turn on or off
@@ -242,7 +234,14 @@ class SetScreensaverAdvanced(Template):
             # This turns off the screensaver
             set_screensaver_timeout('0')
 
-        self.win.go_to_home()
+        self.go_to_set_appearance()
+
+    def go_to_set_appearance(self, widget=None, event=None):
+        '''Go to the Set Appearance screen
+        '''
+        self.win.remove_main_widget()
+        from kano_settings.set_appearance import SetAppearance
+        SetAppearance(self.win)
 
     def show_config_on_loading_page(self):
         '''Makes the relevent widgets sensitive depending on the kdesk

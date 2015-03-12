@@ -8,6 +8,7 @@
 # Contains the screensaver backend functions
 
 import os
+from kano.logging import logger
 
 # These are the values we want to change the filepaths to
 kdesk_config = '/usr/share/kano-desktop/kdesk/.kdeskrc'
@@ -42,9 +43,11 @@ def get_screensaver_program():
 
 
 def set_kdesk_config(param_name, param_value):
-    '''Given a param name and a param value, will set the kdesk_config
+    '''Given a param name and a param value, will set the .kdeskrc file
     accordingly
     '''
+    USER = os.environ['SUDO_USER']
+
     f = open(kdesk_config, 'r')
 
     # Need the setting which wipes the original file clean
@@ -62,8 +65,12 @@ def set_kdesk_config(param_name, param_value):
             sed_cmd = 'sed -i \'s/{}/{}/g\' {}'.format(
                 line, newline, kdesk_config
             )
-            print 'sed_cmd = {}'.format(sed_cmd)
+            logger.info('Applied the sed cmd: {}'.format(sed_cmd))
             os.system(sed_cmd)
+
+            logger.info('Refresh kdesk')
+            cmd = 'sudo -u {user} kdesk -w'.format(user=USER)
+            os.system(cmd)
 
     f.close()
 

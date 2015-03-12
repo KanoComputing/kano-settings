@@ -18,12 +18,14 @@ class SetAppearance(Gtk.Notebook):
 
         Gtk.Notebook.__init__(self)
 
-        self.win = win
         background = Gtk.EventBox()
         background.get_style_context().add_class('set_appearance_window')
         background.add(self)
 
+        self.win = win
         self.win.set_main_widget(background)
+        self.win.top_bar.enable_prev()
+        self.win.change_prev_callback(self.win.go_to_home)
 
         # Modify set_wallpaper so it doesn't add itself to the window
         wallpaper_widget = SetWallpaper(self.win)
