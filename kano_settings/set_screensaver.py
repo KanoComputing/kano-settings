@@ -6,9 +6,9 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
-from gi.repository import Gtk, Gdk
-from kano_settings.templates import Template
-from kano_settings.set_image import SetImage
+from gi.repository import Gtk, Gdk, GdkPixbuf
+from kano_settings.templates import Template, ScrolledWindowTemplate
+from kano_settings.image_table import ImageTable
 import os
 import sys
 
@@ -26,22 +26,87 @@ from kano_settings.system.screensaver import (
 screensaver_path = "/usr/share/kano-settings/media/ScreensaverIcons"
 
 
-class SetScreensaver(SetImage):
-    def __init__(self, win):
-        SetImage.__init__(self, win, 'Choose your screensaver',
-                          '', 'APPLY CHANGES', 'Advanced Settings')
-        self.create_screensaver_list()
-        self.setup_table()
-        self.attach_buttons_to_table()
+class SetScreensaver(ScrolledWindowTemplate):
 
+    def __init__(self, win):
+        ScrolledWindowTemplate.__init__(
+            self,
+            'Change your screensaver',
+            '',
+            'CHANGE SCREENSAVER',
+            'Advanced Options'
+        )
+
+        self. win = win
+
+        self.table = ScreensaverTable()
         self.orange_button.connect('button-release-event', self.go_to_advanced)
 
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        vbox.pack_start(self.table, False, False, 0)
-        self.sw.add_with_viewport(vbox)
+        # The image thumbnails will be inside a table which we put
+        # into a scrollable window
+        self.sw.add_with_viewport(self.table)
         self.adjust_size_of_sw()
 
-    def create_screensaver_list(self):
+        # Disable the Kano Button until they select a valid wallpaper
+        self.kano_button.set_sensitive(False)
+        self.table.connect('image_selected', self.enable_kano_button)
+        self.kano_button.connect('button-release-event', self.apply_changes)
+
+    def go_to_advanced(self, widget=None, event=None):
+        self.win.remove_main_widget()
+        SetScreensaverAdvanced(self.win)
+
+    def apply_changes(self, button, event):
+        # If enter key is pressed or mouse button is clicked
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
+
+            # Change program name in the kdesk config to change to the program
+            # name in the dictionary
+            name = self.table.get_selected()
+            program = self.table.images[name]['program']
+            set_screensaver_program(program)
+            self.table.unselect_all()
+            self.kano_button.set_sensitive(False)
+
+    def adjust_size_of_sw(self):
+        '''Make scrolled window tall enough to show a full number of rows and
+        columns, plus all the green highlighting around the selected item
+        '''
+
+        height = (
+            self.table.number_of_rows * (20 + self.table.icon_height) +
+            (self.table.number_of_rows + 2) * (self.table.row_padding)
+        )
+        self.sw.set_size_request(-1, height)
+
+    def enable_kano_button(self, widget=None, event=None):
+        selected = self.table.get_selected()
+        self.kano_button.set_sensitive(selected is not None)
+
+
+class ScreensaverTable(ImageTable):
+    icon_width = 90
+    icon_height = 90
+    row_padding = 0
+    column_padding = 5
+
+    number_of_rows = 2
+    number_of_columns = 4
+
+    def __init__(self):
+        ImageTable.__init__(
+            self, self.number_of_rows, self.number_of_columns,
+            self.row_padding, self.column_padding,
+            self.icon_width, self.icon_height
+        )
+
+        self.create_image_dict()
+        self.create_button_list()
+
+        # Pack the button list into the table
+        self.attach_buttons_to_table(self.button_list)
+
+    def create_image_dict(self):
         '''Return list of screensavers of the form
         {
             name: {
@@ -63,29 +128,36 @@ class SetScreensaver(SetImage):
             'unlocked': True
         }
 
-        self.add_to_button_list('orange-cube')
+    def create_button_list(self):
+        '''Decide on an order for the items in the table
+        '''
 
-    def format_image(self, name):
-        image_path = self.images[name]['path']
-        image = Gtk.Image.new_from_file(image_path)
-        return image
+        self.button_list = []
 
-    def go_to_advanced(self, widget=None, event=None):
-        self.win.remove_main_widget()
-        SetScreensaverAdvanced(self.win)
+        for item_name, item_dict in self.images.iteritems():
+            image = self.format_image(item_name)
+            button = self.create_button(item_name, image)
+            self.button_list.append(button)
+            self.images[item_name]['button'] = button
 
-    def apply_changes(self, button, event):
-        # If enter key is pressed or mouse button is clicked
-        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
+    def format_image(self, image_name):
+        '''Return an Gtk.Image self.icon_width by self.icon_height
+        '''
 
-            # Change program name in the kdesk config to change to the program
-            # name in the dictionary
-            name = self.get_selected()
-            program = self.images[name]['program']
-            set_screensaver_program(program)
+        path = self.images[image_name]['path']
 
-            # Go to home screen
-            self.win.go_to_home()
+        # Create the wallpaper thumbnail
+        try:
+            # The original picture is not square, so resize the picture to
+            # scale and then crop the picture
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
+                path, self.icon_width, self.icon_height
+            )
+            image = Gtk.Image()
+            image.set_from_pixbuf(pixbuf)
+            return image
+        except:
+            return None
 
 
 class SetScreensaverAdvanced(Template):
@@ -117,7 +189,6 @@ class SetScreensaverAdvanced(Template):
         checkbutton_box.pack_start(self.checkbutton, False, False, 0)
 
         self.checkbutton.connect('toggled', self.enable_screensaver_scale)
-        # self.scale = Gtk.Scale()
 
         scalebox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=20)
         label = Gtk.Label("Length of time before \nscreensaver launches")
@@ -141,6 +212,8 @@ class SetScreensaverAdvanced(Template):
 
         self.box.pack_start(vbox, True, True, 0)
         self.scale.set_sensitive(False)
+
+        self.show_config_on_loading_page()
 
         self.win.show_all()
 
@@ -179,5 +252,5 @@ class SetScreensaverAdvanced(Template):
         self.checkbutton.set_active(screensaver_on)
 
         if screensaver_on:
-            value = get_screensaver_timeout()
+            value = int(get_screensaver_timeout())
             self.scale.set_value(value)

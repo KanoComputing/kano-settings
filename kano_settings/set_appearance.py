@@ -2,19 +2,17 @@
 
 # set_appearence.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
+# Copyright (C) 2015 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 # Functionality for the wallpapers and the screensavers
 
 from gi.repository import Gtk
-# from kano_settings.set_wallpaper import SetWallpaper
-# from kano_settings.set_screensaver import SetScreensaver
-from kano_settings.set_image import SetWallpaper, SetScreensaver
+from kano_settings.set_wallpaper import SetWallpaper
+from kano_settings.set_screensaver import SetScreensaver
 
 
 class SetAppearance(Gtk.Notebook):
-    # get labels here
 
     def __init__(self, win):
 
@@ -26,8 +24,6 @@ class SetAppearance(Gtk.Notebook):
         background.add(self)
 
         self.win.set_main_widget(background)
-
-        # self.connect("switch-page", self._switch_page)
 
         # Modify set_wallpaper so it doesn't add itself to the window
         wallpaper_widget = SetWallpaper(self.win)

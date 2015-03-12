@@ -54,12 +54,15 @@ def set_kdesk_config(param_name, param_value):
         if param_name in line:
             line = line.strip()
             newline = '{}: {}'.format(param_name, param_value)
+            line = line.replace('/', '\/')
+            newline = newline.replace('/', '\/')
 
             # Replace the line in the original config with the newline in the
             # copy
             sed_cmd = 'sed -i \'s/{}/{}/g\' {}'.format(
                 line, newline, kdesk_config
             )
+            print 'sed_cmd = {}'.format(sed_cmd)
             os.system(sed_cmd)
 
     f.close()

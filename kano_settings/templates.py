@@ -67,6 +67,9 @@ class ScrolledWindowTemplate(Gtk.Box):
         else:
             self.pack_start(self.kano_button.align, False, False, 0)
 
+    def get_scrolled_window(self):
+        return self.sw
+
 
 class LabelledListTemplate(Template):
     @staticmethod
