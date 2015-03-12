@@ -19,8 +19,8 @@ name_pattern = "-4-3.png"
 # This is the grid of the images which can be selected
 class ImageTable(Gtk.Table):
 
-    # Define a "iamge_selected" signal which is emitted when an image is
-    # selectec
+    # Define a "image_selected" signal which is emitted when an image is
+    # selected
     # This is useful to unlock the button in this class's parent window.
     __gsignals__ = {
         'image_selected': (GObject.SIGNAL_RUN_FIRST, None, (bool,))
@@ -43,7 +43,7 @@ class ImageTable(Gtk.Table):
         self.set_row_spacings(self.row_padding)
         self.set_col_spacings(self.column_padding)
 
-        # The list of items if of the form
+        # The list of items of the form
         # Data structure of the wallpapers
         # self.images = {
         #   image_name: {
@@ -61,7 +61,7 @@ class ImageTable(Gtk.Table):
         self.button_list = []
 
     def attach_buttons_to_table(self, button_list):
-        '''Pack the buttons in the table
+        '''Pack all the buttons in the table
         '''
 
         # Attach to table
@@ -78,10 +78,8 @@ class ImageTable(Gtk.Table):
                 row += 1
 
     def add_selected_css_class(self, image_name):
-        '''Adds the css class that shows the image that has been selected,
+        '''Adds the CSS class that shows the image that has been selected,
         even when the mouse is moved away.
-        Takes the selected button, and all the other buttons as arguments.
-        If image_name = None, all styling is removed
         '''
 
         for name, img_dict in self.images.iteritems():
@@ -98,7 +96,9 @@ class ImageTable(Gtk.Table):
 
     def select_image_cb(self, widget, event, image_name):
         '''This is connected to the button-release-event when you click on a
-        button in the table
+        button in the table.
+        If the image is unlocked, add the css selected class, select the image
+        and emit a signal that the parent window can use
         '''
 
         if self.images[image_name]['unlocked']:
@@ -111,8 +111,8 @@ class ImageTable(Gtk.Table):
     def create_button(self, name, image, unlocked=True):
         '''This places the image onto a Gtk.Fixed so we can overlay a padlock
         on top (if the item is locked)
-        This is then put onto a Gtk.Button with the appropraite CSS class
-        Returns the button
+        This is then put onto a Gtk.Button with the appropriate CSS class.
+        Returns the button.
         '''
 
         # Create the container for the thumbnails
@@ -155,9 +155,10 @@ class ImageTable(Gtk.Table):
                 return x
 
     def unselect_all(self):
-        '''Remove all styling on all images, and set the 'selected'
+        '''Remove all styling on all images, and sets the 'selected'
         field to False
         '''
+
         for x in self.images:
             self.images[x]['selected'] = False
         self.add_selected_css_class(None)
