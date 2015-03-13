@@ -1,3 +1,10 @@
+#!/usr/bin/env python
+
+# home_screen.py
+#
+# Copyright (C) 2014 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
 
 from gi.repository import Gtk
 
@@ -13,7 +20,7 @@ from kano_settings.set_overclock import SetOverclock
 from kano_settings.set_account import SetAccount
 from kano_settings.set_about import SetAbout
 from kano_settings.set_advanced import SetAdvanced
-from kano_settings.set_wallpaper import SetWallpaper
+from kano_settings.set_appearance import SetAppearance
 
 import kano_settings.common as common
 from kano_settings.components.menu_button import Menu_button
@@ -25,10 +32,11 @@ from kano.utils import get_user_unsudoed
 
 class HomeScreen(Gtk.Box):
 
-    names = ["Keyboard", "Mouse", "Audio", "Display", "Wifi", "Overclocking", "Account", "Wallpaper", "Font",
-             "Advanced", "About", "Notifications"]
-    custom_info = ["Keyboard-country-human", "Mouse", "Audio", None, None, "Overclocking", None,
-                   "Wallpaper", "Font"]
+    names = ["Keyboard", "Mouse", "Audio", "Display", "Wifi", "Overclocking",
+             "Account", "Appearance", "Font", "Advanced", "About",
+             "Notifications"]
+    custom_info = ["Keyboard-country-human", "Mouse", "Audio", None, None,
+                   "Overclocking", None, "Wallpaper", "Font"]
 
     def __init__(self, win, screen_number=None):
         # Check if we want to initialise another window first
@@ -60,7 +68,8 @@ class HomeScreen(Gtk.Box):
         for x in range(len(self.names)):
             self.item = Menu_button(self.names[x], '')
             self.labels.append(self.item.description)
-            # Update the state of the button, so we know which button has been clicked on.
+            # Update the state of the button, so we know which button has been
+            # clicked on.
             self.item.button.state = x
             self.item.button.connect("clicked", self.go_to_level)
             buttons.append(self.item.button)
@@ -69,10 +78,11 @@ class HomeScreen(Gtk.Box):
         self.update_intro()
 
         # Create table
-        numRows = len(self.names) / self.number_of_columns
+        num_rows = len(self.names) / self.number_of_columns
         if len(self.names) % self.number_of_columns != 0:  # Odd number of elements
-            numRows += 1
-        self.table = Gtk.Table(numRows, self.number_of_columns, True, hexpand=True, vexpand=True)
+            num_rows += 1
+        self.table = Gtk.Table(num_rows, self.number_of_columns,
+                               True, hexpand=True, vexpand=True)
         self.table.props.margin = 0
 
         # Attach to table
@@ -99,8 +109,9 @@ class HomeScreen(Gtk.Box):
         self.scrolledwindow.get_style_context().add_class("app-grid")
         self.scrolledwindow.add_with_viewport(self.table)
 
-        # This is to update the introdction text, so that if the settings are modified and then we go back to the
-    # intro screen, the latest information is shown
+    # This is to update the introduction text, so that if the settings are
+    # modified and then we go back to the intro screen, the latest information
+    # is shown
     def update_intro(self):
         for x in range(len(self.custom_info)):
 
@@ -122,12 +133,14 @@ class HomeScreen(Gtk.Box):
             else:
                 self.labels[x].set_text(get_setting(self.custom_info[x]))
 
-    # When clicking next in the default intro screen - takes you to the last level you visited
+    # When clicking next in the default intro screen - takes you to the last
+    # level you visited
     def on_next(self, widget=None, arg2=None):
 
         self.state_to_widget(self.win.last_level_visited)(self.win)
         self.win.last_level_visited = self.win.state
-        # Do not do win.show_all() as will stop the combotextbox in set_keyboard being hidden properly
+        # Do not do win.show_all() as will stop the combotextbox in
+        # set_keyboard being hidden properly
 
     # On clicking a level button on default intro screen
     def go_to_level(self, widget):
@@ -167,7 +180,7 @@ class HomeScreen(Gtk.Box):
             4: SetWifi,
             5: SetOverclock,
             6: SetAccount,
-            7: SetWallpaper,
+            7: SetAppearance,
             8: SetFont,
             9: SetAdvanced,
             10: SetAbout,
