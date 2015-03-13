@@ -19,7 +19,7 @@
 # during the initial console boot messages, right after the alsa sound system is ready
 #
 
-bootup_sound="/usr/share/kano-settings/media/sounds/system_bootup.wav"
+bootup_sound="/usr/share/kano-settings/media/sounds/kano_init.wav"
 
 case "$1" in
     start)
