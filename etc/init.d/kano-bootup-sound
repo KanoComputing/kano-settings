@@ -1,0 +1,43 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:          kano-bootup-sound
+# Required-Start:    $alsa-utils
+# Required-Stop:
+# Default-Start:     2
+# Default-Stop:
+# Short-Description: Play a bootup sound
+# Description:       Announce the startup of the Kit with a sound, early in the bootup process
+### END INIT INFO
+
+# kano-bootup-sound
+#
+# Copyright (C) 2015 Kano Computing Ltd.
+# License:   http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+# This debian init script plays a sound very early in the bootup process
+# during the initial console boot messages, right after the alsa sound system is ready
+#
+
+bootup_sound="/usr/share/kano-settings/media/sounds/kano_init.wav"
+
+case "$1" in
+    start)
+
+        # Setup the sound output device (Analog/HDMI), as governed by kano-settings
+        /etc/rc.audio
+
+        # Ready to play the sound
+        aplay $bootup_sound & > /dev/null 2>1
+        rc=$?
+        log_end_msg $rc
+        ;;
+
+    status)
+        log_end_msg 0
+        ;;
+
+    stop)
+        log_end_msg 0
+        ;;
+esac

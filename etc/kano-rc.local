@@ -13,7 +13,10 @@
 # bits.
 #
 
-/etc/rc.audio
+# FIXME: Commenting /etc/rc.audio, it is now called by kano-bootup-sound,
+# because rc.audio is parsed and controlled by kano-settings
+#/etc/rc.audio
+
 /etc/rc.network
 /etc/rc.overclock
 /etc/rc.others
