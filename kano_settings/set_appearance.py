@@ -30,16 +30,16 @@ class SetAppearance(Gtk.Notebook):
         # Modify set_wallpaper so it doesn't add itself to the window
         wallpaper_widget = SetWallpaper(self.win)
         screensaver_widget = SetScreensaver(self.win)
-        reset_widget = SetResetDesktop(self.win)
+        # reset_widget = SetResetDesktop(self.win)
 
         wallpaper_label = Gtk.Label('WALLPAPER')
         screensaver_label = Gtk.Label('SCREENSAVER')
-        general_label = Gtk.Label('GENERAL')
+        # general_label = Gtk.Label('GENERAL')
 
         # Add the screensaver and wallpaper tabs
         self.append_page(wallpaper_widget, wallpaper_label)
         self.append_page(screensaver_widget, screensaver_label)
-        self.append_page(reset_widget, general_label)
+        # self.append_page(reset_widget, general_label)
 
         self.win.show_all()
 
