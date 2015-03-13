@@ -115,18 +115,22 @@ class SetAccount(Gtk.Box):
             kdialog = kano_dialog.KanoDialog(
                 "Are you sure you want to delete the current user?",
                 "You will lose all the data on this account!",
-                {
-                    "OK": {
-                        "return_value": -1
+                [
+                    {
+                        'label': "CANCEL",
+                        'color': 'red',
+                        'return_value': False
                     },
-                    "CANCEL": {
-                        "return_value": 0
+                    {
+                        'label': "OK",
+                        'color': 'green',
+                        'return_value': True
                     }
-                },
+                ],
                 parent_window=self.win
             )
-            response = kdialog.run()
-            if response == -1:
+            do_delete_user = kdialog.run()
+            if do_delete_user:
                 self.disable_buttons()
                 # Delete current user
                 delete_user()
@@ -134,19 +138,22 @@ class SetAccount(Gtk.Box):
                 kdialog = kano_dialog.KanoDialog(
                     "To finish removing this account, you need to reboot",
                     "Do you want to reboot?",
-                    {
-                        "YES": {
-                            "return_value": -1
+                    [
+                        {
+                            'label': "LATER",
+                            'color': 'grey',
+                            'return_value': False
                         },
-                        "NO": {
-                            "return_value": 0,
-                            "color": "red"
+                        {
+                            'label': "REBOOT NOW",
+                            'color': 'orange',
+                            'return_value': True
                         }
-                    },
+                    ],
                     parent_window=self.win
                 )
-                response = kdialog.run()
-                if response == -1:
+                do_reboot_now = kdialog.run()
+                if do_reboot_now:
                     os.system("sudo reboot")
 
     # Disables both buttons and makes the temp 'flag' folder
@@ -177,17 +184,17 @@ class SetPassword(Template):
         self.entry1 = self.labelled_entries.get_entry(0)
         self.entry1.set_size_request(300, 44)
         self.entry1.set_visibility(False)
-        self.entry1.props.placeholder_text = entry_heading_1
+        self.entry1.props.placeholder_text = "Old password"
 
         self.entry2 = self.labelled_entries.get_entry(1)
         self.entry2.set_size_request(300, 44)
         self.entry2.set_visibility(False)
-        self.entry2.props.placeholder_text = entry_heading_2
+        self.entry2.props.placeholder_text = "New password"
 
         self.entry3 = self.labelled_entries.get_entry(2)
         self.entry3.set_size_request(300, 44)
         self.entry3.set_visibility(False)
-        self.entry3.props.placeholder_text = entry_heading_3
+        self.entry3.props.placeholder_text = "Repeat new password"
 
         self.entry1.connect("key_release_event", self.enable_button)
         self.entry2.connect("key_release_event", self.enable_button)
@@ -239,15 +246,16 @@ class SetPassword(Template):
 
                 def done(title, description, success):
                     if success:
-                        response = create_success_dialog(title, description, self.win)
+                        create_success_dialog(title, description, self.win)
+                        do_try_again = False
                     else:
-                        response = create_error_dialog(title, description, self.win)
+                        do_try_again = create_error_dialog(title, description, self.win)
 
                     self.win.get_window().set_cursor(None)
                     self.kano_button.stop_spinner()
                     self.clear_text()
 
-                    if response == 0:
+                    if not do_try_again:
                         self.go_to_accounts()
 
                 GObject.idle_add(done, title, description, success)
@@ -291,18 +299,20 @@ class SetPassword(Template):
 
 def create_error_dialog(message1="Could not change password", message2="", win=None):
     kdialog = kano_dialog.KanoDialog(
-        message1, message2,
-        {
-            "TRY AGAIN":
+        message1,
+        message2,
+        [
             {
-                "return_value": -1
+                'label': "GO BACK",
+                'color': 'red',
+                'return_value': False
             },
-            "GO BACK":
             {
-                "return_value": 0,
-                "color": "red"
+                'label': "TRY AGAIN",
+                'color': 'green',
+                'return_value': True
             }
-        },
+        ],
         parent_window=win
     )
 
@@ -311,7 +321,10 @@ def create_error_dialog(message1="Could not change password", message2="", win=N
 
 
 def create_success_dialog(message1, message2, win):
-    kdialog = kano_dialog.KanoDialog(message1, message2,
-                                     parent_window=win)
+    kdialog = kano_dialog.KanoDialog(
+        message1,
+        message2,
+        parent_window=win
+    )
     response = kdialog.run()
     return response

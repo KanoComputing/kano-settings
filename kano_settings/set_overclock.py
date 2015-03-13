@@ -79,16 +79,18 @@ class SetOverclock(RadioButtonTemplate):
                         "the Pi behave unpredictably. Do you want to "
                         "continue?"
                     ),
-                    button_dict={
-                        "YES": {
-                            "color": "green",
-                            "return_value": True
+                    button_dict=[
+                        {
+                            'label': "NO",
+                            'color': 'red',
+                            'return_value': False
                         },
-                        "NO": {
-                            "color": "red",
-                            "return_value": False
+                        {
+                            'label': "YES",
+                            'color': 'green',
+                            'return_value': True
                         }
-                    },
+                    ],
                     parent_window=self.win
                 )
                 change_overclock = kdialog.run()

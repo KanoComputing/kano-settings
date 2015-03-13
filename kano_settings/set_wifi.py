@@ -311,12 +311,13 @@ class SetProxy(Gtk.Box):
                     kdialog = KanoDialog(
                         title,
                         description,
-                        {
-                            "OK":
+                        [
                             {
-                                "return_value": return_value
+                                'label': "OK",
+                                'color': 'green',
+                                'return_value': return_value
                             }
-                        },
+                        ],
                         parent_window=self.win
                     )
                     response = kdialog.run()

@@ -57,6 +57,10 @@ class ParentalConfig(Template):
             )
         ]
 
+        self.blacklist_button = OrangeButton("Configure allowed/blocked")
+        self.blacklist_button.connect("button-press-event",
+                                      self.go_to_blacklist)
+
         self._value_change_handler(self.parental_level)
 
         parental_level_grid = Gtk.Grid()
@@ -70,16 +74,11 @@ class ParentalConfig(Template):
         parental_level_grid.attach(self._parental_labels[0][0], 1, 6, 1, 1)
         parental_level_grid.attach(self._parental_labels[0][1], 1, 7, 1, 1)
 
-        blacklist_button = OrangeButton("Configure allowed/blocked")
-        blacklist_button.connect("button-press-event",
-                                 self.go_to_blacklist)
-
         self.box.set_spacing(20)
         self.box.pack_start(parental_level_grid, False, False, 0)
-        self.box.pack_start(blacklist_button, False, False, 0)
+        self.box.pack_start(self.blacklist_button, False, False, 0)
 
         self.win = win
-
         self.win.set_main_widget(self)
 
         self.win.change_prev_callback(self.win.go_to_home)
@@ -97,7 +96,22 @@ class ParentalConfig(Template):
         level = self.parental_level.get_value()
         set_parental_level(level)
         set_setting('Parental-level', level)
-        common.need_reboot = True
+
+        if level == 3.0:
+            # If on the highest parental control, prompt user to relaunch
+            # the browser
+            kdialog = KanoDialog(
+                title_text=(
+                    "If any browsers are open, please relaunch them for "
+                    "this setting to take effect"
+                ),
+                parent_window=self.win
+            )
+            kdialog.run()
+
+        else:
+            # Only reboot for the lower parental controls
+            common.need_reboot = True
 
         self.win.go_to_home()
 
@@ -110,6 +124,7 @@ class ParentalConfig(Template):
             style = title.get_style_context()
             if gtk_range.get_value() == level:
                 style.add_class('parental_activated')
+                self.blacklist_button.set_sensitive(not level == 3.0)
             else:
                 style.remove_class('parental_activated')
                 style.add_class('normal_label')
@@ -203,6 +218,7 @@ class ParentalPasswordDialog(KanoDialog):
     def __init__(self, win):
         entry = Gtk.Entry()
         entry.set_visibility(False)
+        self.win = win
         KanoDialog.__init__(
             self,
             title_text='Parental Authentication',
@@ -210,7 +226,7 @@ class ParentalPasswordDialog(KanoDialog):
             widget=entry,
             has_entry=True,
             global_style=True,
-            parent_window=win
+            parent_window=self.win
         )
 
     def verify(self):
@@ -222,7 +238,7 @@ class ParentalPasswordDialog(KanoDialog):
         fail = KanoDialog(
             title_text='Try again?',
             description_text='The password was incorrect. Not applying changes',
-            parent_window=self
+            parent_window=self.win
         )
         fail.run()
 
