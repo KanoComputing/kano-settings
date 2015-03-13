@@ -7,6 +7,11 @@
 #
 # This page has the screensaver and wallpaper options on different tabs
 
+import os
+import shutil
+
+from kano.utils import run_cmd
+
 from gi.repository import Gtk, Gdk
 from kano_settings.set_wallpaper import SetWallpaper
 from kano_settings.set_screensaver import SetScreensaver
@@ -30,16 +35,16 @@ class SetAppearance(Gtk.Notebook):
         # Modify set_wallpaper so it doesn't add itself to the window
         wallpaper_widget = SetWallpaper(self.win)
         screensaver_widget = SetScreensaver(self.win)
-        # reset_widget = SetResetDesktop(self.win)
+        reset_widget = SetResetDesktop(self.win)
 
         wallpaper_label = Gtk.Label('WALLPAPER')
         screensaver_label = Gtk.Label('SCREENSAVER')
-        # general_label = Gtk.Label('GENERAL')
+        general_label = Gtk.Label('GENERAL')
 
         # Add the screensaver and wallpaper tabs
         self.append_page(wallpaper_widget, wallpaper_label)
         self.append_page(screensaver_widget, screensaver_label)
-        # self.append_page(reset_widget, general_label)
+        self.append_page(reset_widget, general_label)
 
         self.win.show_all()
 
@@ -91,6 +96,23 @@ class SetResetDesktop(Gtk.Box):
             if response == 'yes':
                 self.reset_desktop()
 
+    def restore_lxpanel_configuration(self):
+        userid=os.getuid()
+        groupid=os.getgid()
+        original_lxpanel_path='/etc/skel/.config/lxpanel/'
+        user_lxpanel_path=os.path.join('/home/' + os.getenv('SUDO_USER'), '.config/lxpanel')
+
+        # remove the current local copy
+        shutil.rmtree(user_lxpanel_path, ignore_errors=True)
+
+        # re-create the copy from the skeleton
+        shutil.copytree(original_lxpanel_path, user_lxpanel_path, symlinks=False, ignore=None)
+        for root, dirs, files in os.walk(user_lxpanel_path):
+            for name in files:
+                os.chown(os.path.join(root, name), userid, groupid)
+                
+        _, _, _ = run_cmd('lxpanelctl restart')
+
     def reset_desktop(self):
         # Add functionality here
-        pass
+        self.restore_lxpanel_configuration()
