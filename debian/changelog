@@ -1,5 +1,11 @@
 kano-settings (1.3-2) unstable; urgency=low
 
+  * Added Option to restore users customized LXPanels to original settings
+
+ -- Team Kano <dev@kano.me>  Wed, 26 Nov 2014 14:45:00 +0000
+
+kano-settings (1.3-2) unstable; urgency=low
+
   * Allow kano-settings to close splash screens.
 
  -- Team Kano <dev@kano.me>  Wed, 26 Nov 2014 14:45:00 +0000
