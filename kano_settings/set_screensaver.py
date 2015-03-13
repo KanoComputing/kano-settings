@@ -145,19 +145,8 @@ class ScreensaverTable(ImageTable):
         '''
 
         path = self.images[image_name]['path']
-
-        # Create the wallpaper thumbnail
-        try:
-            # The original picture is not square, so resize the picture to
-            # scale and then crop the picture
-            pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                path, self.icon_width, self.icon_height
-            )
-            image = Gtk.Image()
-            image.set_from_pixbuf(pixbuf)
-            return image
-        except:
-            return None
+        image = Gtk.Image.new_from_file(path)
+        return image
 
 
 class SetScreensaverAdvanced(Template):
