@@ -96,7 +96,22 @@ class ParentalConfig(Template):
         level = self.parental_level.get_value()
         set_parental_level(level)
         set_setting('Parental-level', level)
-        common.need_reboot = True
+
+        if level == 3.0:
+            # If on the highest parental control, prompt user to relaunch
+            # the browser
+            kdialog = KanoDialog(
+                title_text=(
+                    "If any browsers are open, please relaunch them for "
+                    "this setting to take effect"
+                ),
+                parent_window=self.win
+            )
+            kdialog.run()
+
+        else:
+            # Only reboot for the lower parental controls
+            common.need_reboot = True
 
         self.win.go_to_home()
 
