@@ -179,7 +179,7 @@ class SetScreensaverAdvanced(Template):
         self.checkbutton.connect('toggled', self.enable_screensaver_scale)
 
         scalebox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=20)
-        label = Gtk.Label("Length of time before \nscreensaver launches")
+        label = Gtk.Label("Length of time in seconds\nbefore screensaver launches")
         label.get_style_context().add_class('checkbutton_label')
         label.set_margin_top(25)
         self.scale = Gtk.Scale.new_with_range(
