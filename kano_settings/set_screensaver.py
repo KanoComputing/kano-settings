@@ -123,7 +123,7 @@ class ScreensaverTable(ImageTable):
         # Currently we only return one screensaver
         self.images['orange-cube'] = {
             'program': '/usr/bin/kdesk-eglsaver',
-            'path': '/usr/share/kano-settings/media/orange-cube.png',
+            'path': os.path.join(screensaver_path, 'orange-cube.png'),
             'selected': True,
             'unlocked': True
         }
