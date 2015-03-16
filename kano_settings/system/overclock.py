@@ -138,7 +138,7 @@ def change_overclock_value(config, is_pi2):
 
 
 def set_default_overclock_values(is_pi2):
-    change_overclock_value(CLOCK_MODES[is_pi2]['standard'], is_pi2)
+    change_overclock_value(CLOCK_MODES[is_pi2]['default'], is_pi2)
 
 
 def is_dangerous_overclock_value(config, is_pi2):
