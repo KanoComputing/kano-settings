@@ -41,7 +41,7 @@ class SetOverclock(RadioButtonTemplate):
             "APPLY CHANGES",
             options
         )
-        
+
         self.win = win
         self.win.set_main_widget(self)
 
