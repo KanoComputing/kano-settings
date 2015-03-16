@@ -93,7 +93,7 @@ def match_overclock_value(is_pi2):
         curr[key] = get_config_value(key)
 
     for row in CLOCK_MODES[is_pi2]['values']:
-        if values_equal(overclock_values[row], curr):
+        if values_equal(CLOCK_MODES[is_pi2]['values'][row], curr):
             return row
     return None
 
@@ -138,7 +138,7 @@ def change_overclock_value(config, is_pi2):
 
 
 def set_default_overclock_values(is_pi2):
-    change_overclock(CLOCK_MODES[is_pi2]['standard'], is_pi2)
+    change_overclock_value(CLOCK_MODES[is_pi2]['default'], is_pi2)
 
 
 def is_dangerous_overclock_value(config, is_pi2):
