@@ -179,16 +179,16 @@ class SetScreensaverAdvanced(Template):
         self.checkbutton.connect('toggled', self.enable_screensaver_scale)
 
         scalebox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=20)
-        label = Gtk.Label("Length of time in seconds\nbefore screensaver launches")
+        label = Gtk.Label("Length of time in minutes\nbefore screensaver launches")
         label.get_style_context().add_class('checkbutton_label')
         label.set_margin_top(25)
         self.scale = Gtk.Scale.new_with_range(
             orientation=Gtk.Orientation.HORIZONTAL,
             min=1,
-            max=1000,
+            max=60,
             step=1
         )
-        self.scale.set_size_request(300, 1)
+        self.scale.set_size_request(200, 1)
 
         scalebox.pack_start(label, False, False, 0)
         scalebox.pack_start(self.scale, False, False, 0)
@@ -217,7 +217,8 @@ class SetScreensaverAdvanced(Template):
         '''Get all the modifications and modify the .kdeskrc file
         '''
         if self.checkbutton.get_active():
-            scale_value = int(self.scale.get_value())
+            # Convert the length of time from minutes to seconds
+            scale_value = 60 * int(self.scale.get_value())
             set_screensaver_timeout(scale_value)
         else:
             # This turns off the screensaver
