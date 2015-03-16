@@ -241,5 +241,5 @@ class SetScreensaverAdvanced(Template):
         self.checkbutton.set_active(screensaver_on)
 
         if screensaver_on:
-            value = int(get_screensaver_timeout() / 60)
+            value = int(get_screensaver_timeout()) / 60
             self.scale.set_value(value)
