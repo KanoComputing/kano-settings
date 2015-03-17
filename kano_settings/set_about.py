@@ -145,7 +145,12 @@ class SetAbout(Gtk.Box):
 
         # Specify where chromium should put its data.
         # We need this since we're running chromium as root.
-        chromium_dir = '/home/{}/.config/chromium'.format(get_user_unsudoed())
+        # Do not use the normal chromium folder ~/config/.chromium
+        # otherwise when opening chromium without sudo permissions
+        # you will get a warning, as all the config files require sudo
+        # permissions
+        user = get_user_unsudoed()
+        chromium_dir = '/home/{}/.config/sudo_chromium'.format(user)
 
         # Open in Chromium.
         subprocess.call(
