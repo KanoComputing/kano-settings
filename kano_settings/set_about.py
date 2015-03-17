@@ -7,7 +7,7 @@
 #
 
 import os
-import webbrowser
+import subprocess
 from gi.repository import Gtk
 from kano.gtk3.kano_dialog import KanoDialog
 from kano.gtk3.buttons import OrangeButton, KanoButton
@@ -16,6 +16,7 @@ from kano_settings.common import media
 from kano_settings.system.about import (
     get_current_version, get_space_available, get_temperature, get_model_name
 )
+from kano.utils import get_user_unsudoed
 
 
 class SetAbout(Gtk.Box):
@@ -33,9 +34,9 @@ class SetAbout(Gtk.Box):
         image = Gtk.Image.new_from_file(media + "/Graphics/about-screen.png")
 
         version_align = self.create_align(
-            "Kano OS v.{version}".format(version = get_current_version()),
+            "Kano OS v.{version}".format(version=get_current_version()),
             'about_version'
-            )
+        )
         space_align = self.create_align(
             "Disk space used: {used}B / {total}B".format(**get_space_available())
         )
@@ -44,10 +45,10 @@ class SetAbout(Gtk.Box):
         except ValueError:
             celsius = "?"
         temperature_align = self.create_align(
-            u"Temperature: {celsius}".format(celsius = celsius)
+            u"Temperature: {celsius}".format(celsius=celsius)
         )
         model_align = self.create_align(
-            "Model: {model}".format(model = get_model_name())
+            "Model: {model}".format(model=get_model_name())
         )
 
         terms_and_conditions = OrangeButton("Terms and conditions")
@@ -142,5 +143,15 @@ class SetAbout(Gtk.Box):
             current_version
         )
 
-        # Open in Chromium
-        webbrowser.open(link)
+        # Specify where chromium should put its data.
+        # We need this since we're running chromium as root.
+        chromium_dir = '/home/{}/.config/chromium'.format(get_user_unsudoed())
+
+        # Open in Chromium.
+        subprocess.call(
+            [
+                'chromium',
+                '--app={}'.format(link),
+                '--user-data-dir={}'.format(chromium_dir)
+            ]
+        )
