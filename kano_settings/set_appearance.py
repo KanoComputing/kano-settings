@@ -112,7 +112,7 @@ class SetResetDesktop(Gtk.Box):
             for name in files:
                 os.chown(os.path.join(root, name), userid, groupid)
 
-        _, _, _ = run_cmd('lxpanelctl restart')
+        run_cmd('lxpanelctl restart')
 
     def reset_desktop(self):
         # Add functionality here
