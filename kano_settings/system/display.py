@@ -22,21 +22,23 @@ xrefresh_path = '/usr/bin/xrefresh'
 
 
 def switch_display_safe_mode():
-   # Finds the first available display resolution that is safe
-   # and switches to this mode immediately
-   safe_resolution='1024x768'
+    # Finds the first available display resolution that is safe
+    # and switches to this mode immediately
+    safe_resolution = '1024x768'
 
-   try:
-      modes=list_supported_modes()
-      for m in modes:
-         resolution=m.split()[1]
-         if resolution == safe_resolution:
-            group=m.split()[0].split(':')[0]
-            mode=m.split()[0].split(':')[1]
-            logger.info ('Switching display to safe resolution {} (group={} mode={})'.format(resolution, group, mode))
+    try:
+        modes = list_supported_modes()
+        for m in modes:
+            resolution = m.split()[1]
+            if resolution == safe_resolution:
+                group = m.split()[0].split(':')[0]
+                mode = m.split()[0].split(':')[1]
+            logger.info(
+               'Switching display to safe resolution {} (group={} mode={})'
+               .format(resolution, group, mode))
             set_hdmi_mode_live(group, mode)
-   except:
-      logger.error ('Error switching display to safe mode')
+    except:
+        logger.error('Error switching display to safe mode')
 
 
 def launch_pipe():
