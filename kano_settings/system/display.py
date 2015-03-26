@@ -153,6 +153,24 @@ def get_status():
     return status
 
 
+def is_mode_fallback():
+    """ Is this the fallback mode which we get when the cable is unplugged?
+    """
+    status = get_status()
+    res = status['resolution']
+    parts = res.split('x')
+    if len(parts) != 2:
+        logger.error('Error parsing resolution')
+        return None
+    try:
+        (w, h) = map(int, parts)
+    except:
+        logger.error('Error parsing resolution')
+        return None
+
+    return w == 640 and h == 480
+
+
 def get_model():
     cmd = '/opt/vc/bin/tvservice -n'
     display_name, _, _ = run_cmd(cmd)

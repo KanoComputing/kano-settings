@@ -20,7 +20,7 @@ if __name__ == '__main__' and __package__ is None:
 from kano.utils import run_cmd, enforce_root
 from kano.logging import logger
 from kano_settings.system.display import get_status, get_model, set_hdmi_mode, \
-    get_edid
+    get_edid, is_mode_fallback
 from kano_settings.boot_config import set_config_value, set_config_comment, \
     get_config_comment, get_config_value, has_config_comment
 from kano_settings.system.audio import is_HDMI, set_to_HDMI
@@ -187,7 +187,8 @@ if check_clock_config_matches_chip():
     reboot_now = True
 
 # Reconfigure and reboot if the user requested safe mode
-if safe_boot_requested() and not is_safe_boot():
+# Or if the cable appears not to have been plugged in.
+if safe_boot_requested() and not is_safe_boot() or is_mode_fallback():
     logger.warn("Safe boot requested")
 
     # Backup the config file
@@ -211,6 +212,7 @@ if safe_boot_requested() and not is_safe_boot():
 
 # If we need to set anything to do with config.txt, reboot
 if reboot_now:
+    logger.sync()
     run_cmd('reboot -f')
     sys.exit()
 
@@ -275,6 +277,6 @@ changes = compare_and_set_mode() or compare_and_set_full_range() or \
 if changes:
     # write comment to config
     set_config_comment('kano_screen_used', model)
-
     # reboot
+    logger.sync()
     run_cmd('reboot -f')
