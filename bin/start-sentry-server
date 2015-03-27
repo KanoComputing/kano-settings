@@ -20,7 +20,11 @@ def check_config():
     # Look at the setting to find the parental level
     ultimate_parental = False
 
-    f = open(os.path.join(settings_dir, 'settings'), 'r')
+    settings_config = os.path.join(settings_dir, 'settings')
+    if not os.path.exists(settings_config):
+        sys.exit(1)
+
+    f = open(settings_config, 'r')
 
     # Check if the parental control is at the highest level 3.0
     for line in f:
