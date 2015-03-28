@@ -22,21 +22,23 @@ xrefresh_path = '/usr/bin/xrefresh'
 
 
 def switch_display_safe_mode():
-   # Finds the first available display resolution that is safe
-   # and switches to this mode immediately
-   safe_resolution='1024x768'
+    # Finds the first available display resolution that is safe
+    # and switches to this mode immediately
+    safe_resolution = '1024x768'
 
-   try:
-      modes=list_supported_modes()
-      for m in modes:
-         resolution=m.split()[1]
-         if resolution == safe_resolution:
-            group=m.split()[0].split(':')[0]
-            mode=m.split()[0].split(':')[1]
-            logger.info ('Switching display to safe resolution {} (group={} mode={})'.format(resolution, group, mode))
+    try:
+        modes = list_supported_modes()
+        for m in modes:
+            resolution = m.split()[1]
+            if resolution == safe_resolution:
+                group = m.split()[0].split(':')[0]
+                mode = m.split()[0].split(':')[1]
+            logger.info(
+               'Switching display to safe resolution {} (group={} mode={})'
+               .format(resolution, group, mode))
             set_hdmi_mode_live(group, mode)
-   except:
-      logger.error ('Error switching display to safe mode')
+    except:
+        logger.error('Error switching display to safe mode')
 
 
 def launch_pipe():
@@ -149,6 +151,24 @@ def get_status():
     status['hz'] = float(hz.strip()[:-2])
 
     return status
+
+
+def is_mode_fallback():
+    """ Is this the fallback mode which we get when the cable is unplugged?
+    """
+    status = get_status()
+    res = status['resolution']
+    parts = res.split('x')
+    if len(parts) != 2:
+        logger.error('Error parsing resolution')
+        return None
+    try:
+        (w, h) = map(int, parts)
+    except:
+        logger.error('Error parsing resolution')
+        return None
+
+    return w == 640 and h == 480
 
 
 def get_model():
