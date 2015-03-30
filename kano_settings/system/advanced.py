@@ -368,5 +368,14 @@ def set_parental_level(level_setting):
         set_ultimate_parental(False)
 
     blacklist, whitelist = read_listed_sites()
+
+    # SafeSearch: disabling google.com, until we have higher Chromium version
+    # that implements policy files.
+    if 'chromium' in enabled:
+        if blacklist:
+            blacklist.append('google.com')
+        else:
+            blacklist = [ 'google.com' ]
+
     set_hosts_blacklist('blacklist' in enabled,
                         blocked_sites=blacklist, allowed_sites=whitelist)
