@@ -27,6 +27,12 @@ from kano.gtk3.kano_combobox import KanoComboBox
 from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.gtk3.top_bar import TopBar
 from kano.gtk3.kano_dialog import KanoDialog
+from kano_profile.tracker import track_data
+
+from kano_settings.system.audio import is_HDMI
+from kano_settings.config_file import get_setting
+from kano_settings.system.display import get_status
+
 
 MAX_STATE = 6
 init_state = -1
@@ -84,6 +90,20 @@ class MainWindow(ApplicationWindow):
             self.top_bar.prev_button.disconnect(self.prev_handler)
             self.prev_handler = None
 
+    def _trigger_tracking_event(self):
+        """ Generate a tracker event with some hardware settings.
+
+            This will send a track_date event called 'user-settings'
+            with the audio setting, parental lock level and display
+            configuration.
+        """
+
+        track_data('user-settings', {
+            'audio': 'hdmi' if is_HDMI() else 'analog',
+            'parental-lock-level': get_setting('Parental-level'),
+            'display': get_status()
+        })
+
     # On closing window, will alert if any of the listed booleans are True
     def close_window(self, button, event):
         if common.need_reboot:
@@ -109,6 +129,8 @@ class MainWindow(ApplicationWindow):
             do_reboot_now = kdialog.run()
             if do_reboot_now:
                 os.system("sudo reboot")
+
+        self._trigger_tracking_event()
 
         Gtk.main_quit()
 
