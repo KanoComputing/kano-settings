@@ -15,6 +15,8 @@ import subprocess
 import signal
 import urllib2
 from bs4 import BeautifulSoup
+import pycountry
+import gzip
 
 from kano_settings.common import settings_dir
 from kano.utils import read_file_contents, write_file_contents, \
@@ -108,6 +110,15 @@ def create_empty_hosts():
     logger.debug('restoring original hosts permission')
     os.chmod(hosts_file, 0644)
 
+def add_safesearch_blacklist(hosts):
+    '''
+    Prevents google surfing by adding the worldwide sites to the blacklist
+    '''
+    for country in pycountry.countries:
+        hosts.append('127.0.0.1\twww.google.{}\n'.format(country.alpha2.lower()))
+        hosts.append('127.0.0.1\tgoogle.{}\n'.format(country.alpha2.lower()))
+
+    return hosts
 
 def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/Parental/parental-hosts-blacklist.gz',
         blocked_sites=None, allowed_sites=None):
@@ -128,9 +139,18 @@ def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/P
             logger.debug('making a backup of the original hosts file')
             shutil.copyfile(hosts_file, hosts_file_backup)
 
-            logger.debug('appending the blacklist`')
-            os.system('zcat {} >> {}'.format(blacklist_file, hosts_file))
+            logger.debug('appending the blacklist file')
+            zipped_blacklist=gzip.GzipFile(blacklist_file)
+            blacklist=zipped_blacklist.readlines()
 
+            logger.debug('Applying safesearch settings')
+            blacklist=add_safesearch_blacklist(blacklist)
+
+            # Append list of blacklisted hosts to system hostnames file
+            with open(hosts_file, 'a') as f:
+                for host_entry in blacklist:
+                    f.write(host_entry)
+            
             logger.debug('making the file root read-only')
             os.chmod(hosts_file, 0644)
 
@@ -368,14 +388,6 @@ def set_parental_level(level_setting):
         set_ultimate_parental(False)
 
     blacklist, whitelist = read_listed_sites()
-
-    # SafeSearch: disabling google.com, until we have higher Chromium version
-    # that implements policy files.
-    if 'chromium' in enabled:
-        if blacklist:
-            blacklist.append('google.com')
-        else:
-            blacklist = [ 'google.com' ]
 
     set_hosts_blacklist('blacklist' in enabled,
                         blocked_sites=blacklist, allowed_sites=whitelist)
