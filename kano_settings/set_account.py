@@ -2,8 +2,8 @@
 #
 # account.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2014, 2015 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Controls the UI of the account setting
 
@@ -20,10 +20,8 @@ from kano.utils import ensure_dir
 import kano_settings.common as common
 from kano_settings.templates import Template
 
-from kano_settings.system.account import add_user, delete_user, verify_current_password, change_password
-
-
-ADD_REMOVE_USER_PATH = '/tmp/kano-init/add-remove'
+from kano_settings.system.account import add_user, delete_user, \
+    verify_current_password, change_password, UserError
 
 
 class SetAccount(Gtk.Box):
@@ -70,10 +68,14 @@ class SetAccount(Gtk.Box):
             "Add or remove accounts"
         )
 
-        # Check if we already scheduled an account add or remove by checking the file
-        added_or_removed_account = os.path.exists(ADD_REMOVE_USER_PATH)
-        # Disable buttons if we already scheduled
-        if added_or_removed_account:
+        # Check if we already scheduled an account add or remove
+        # We import kano-init locally to avoid circular dependency
+        # the packages.
+	try:
+            from kano_init.utils import is_any_task_scheduled
+            if is_any_task_scheduled():
+                self.disable_buttons()
+        except ImportError:
             self.disable_buttons()
 
         self.pack_start(main_heading.container, False, False, 0)
@@ -91,25 +93,34 @@ class SetAccount(Gtk.Box):
 
     # Gets executed when ADD button is clicked
     def add_account(self, widget=None, event=None):
-
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
-            # Bring in message dialog box
-            kdialog = kano_dialog.KanoDialog(
-                "Reboot the system",
-                "A new account will be created next time you reboot.",
-                parent_window=self.win
-            )
+            kdialog = None
+
+            try:
+                # add new user command
+                add_user()
+            except UserError as e:
+                kdialog = kano_dialog.KanoDialog(
+                    "Error creating new user",
+                    str(e),
+                    parent_window=self.win
+                )   
+            else:
+                kdialog = kano_dialog.KanoDialog(
+                    "Reboot the system",
+                    "A new account will be created next time you reboot.",
+                    parent_window=self.win
+                )
+
+                # Tell user to reboot to see changes
+                common.need_reboot = True
+
             kdialog.run()
-            #
             self.disable_buttons()
-            # add new user command
-            add_user()
-            # Tell user to reboot to see changes
-            common.need_reboot = True
+
 
     # Gets executed when REMOVE button is clicked
     def remove_account_dialog(self, widget=None, event=None):
-
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
             # Bring in message dialog box
             kdialog = kano_dialog.KanoDialog(
@@ -132,8 +143,16 @@ class SetAccount(Gtk.Box):
             do_delete_user = kdialog.run()
             if do_delete_user:
                 self.disable_buttons()
-                # Delete current user
-                delete_user()
+                try:
+                    delete_user()
+                except UserError as e:
+                    kdialog = kano_dialog.KanoDialog(
+                        "Error deleting user",
+                        str(e),
+                        parent_window=self.win
+                    )
+                    return
+                    
 
                 kdialog = kano_dialog.KanoDialog(
                     "To finish removing this account, you need to reboot",
@@ -162,8 +181,6 @@ class SetAccount(Gtk.Box):
         self.add_button.set_sensitive(False)
         self.remove_button.set_sensitive(False)
         self.added_or_removed_account = True
-
-        ensure_dir(ADD_REMOVE_USER_PATH)
 
 
 class SetPassword(Template):

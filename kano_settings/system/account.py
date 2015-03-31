@@ -13,14 +13,29 @@ from kano.utils import get_user_unsudoed, run_cmd
 from kano_world.functions import has_token
 
 
+class UserError(Exception):
+    pass
+
+
 # Needs sudo permission
 def add_user():
-    os.system("kano-init newuser")
+    # Imported locally to avoid circular dependency
+    try:
+        from kano_init.tasks.add_user import schedule_add_user
+        schedule_add_user()
+    except ImportError:
+        raise UserError("Unable to create the user. kano-init not found.")
 
 
 # Needs sudo permission
 def delete_user():
-    os.system('kano-init deleteuser {}'.format(get_user_unsudoed()))
+    # Imported locally to avoid circular dependency
+    try:
+        from kano_init.tasks.delete_user import schedule_delete_user
+        schedule_delete_user()
+    except ImportError:
+        raise UserError("Unable to delete the user. kano-init not found.")
+
     # back up profile
     if has_token():
         os.system("kano-sync --sync --backup")
