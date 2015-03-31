@@ -49,7 +49,7 @@ class ParentalConfig(Template):
             ),
             (
                 Gtk.Label("High Settings"),
-                Gtk.Label("Enable all filters")
+                Gtk.Label("Enable all filters, no Google access")
             ),
             (
                 Gtk.Label("Ultimate Settings"),
