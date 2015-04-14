@@ -128,11 +128,7 @@ def add_safesearch_blacklist(hosts):
         'ac.at', 'co.hu', 'msk.ru', 'ac.ru', 'com.ru', 'com.fr', 'ac'
         ]
 
-    print 'i am here'
-
     for subdomain in second_domains:
-        print 'adding:', subdomain
-
         hosts.append(url_pattern.format(subdomain))
         hosts.append(www_pattern.format(subdomain))
 
