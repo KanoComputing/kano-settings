@@ -114,9 +114,27 @@ def add_safesearch_blacklist(hosts):
     '''
     Prevents google surfing by adding the worldwide sites to the blacklist
     '''
+    url_pattern='127.0.0.1\twww.google.{}\n'
+    www_pattern='127.0.0.1\tgoogle.{}\n'
+
     for country in pycountry.countries:
-        hosts.append('127.0.0.1\twww.google.{}\n'.format(country.alpha2.lower()))
-        hosts.append('127.0.0.1\tgoogle.{}\n'.format(country.alpha2.lower()))
+        hosts.append(url_pattern.format(country.alpha2.lower()))
+        hosts.append(www_pattern.format(country.alpha2.lower()))
+
+    # Add extra seconday-level domains in the list below
+    # http://en.wikipedia.org/wiki/Second-level_domain
+    second_domains=[
+        'co.uk', 'ac.uk', 'com.au', 'act.au', 'nsw.au', 'nt.au', 'qld.au', 'sa.au', 'tas.au', 'vic.au', 'wa.au', 'priv.at',
+        'ac.at', 'co.hu', 'msk.ru', 'ac.ru', 'com.ru', 'com.fr', 'ac'
+        ]
+
+    print 'i am here'
+
+    for subdomain in second_domains:
+        print 'adding:', subdomain
+
+        hosts.append(url_pattern.format(subdomain))
+        hosts.append(www_pattern.format(subdomain))
 
     return hosts
 
