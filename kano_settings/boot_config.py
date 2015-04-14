@@ -3,7 +3,7 @@
 # boot_config.py
 #
 # Copyright (C) 2014,2015 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU v2
 #
 # Functions controlling reading and writing to /boot/config.txt
 #
@@ -96,7 +96,7 @@ class BootConfig:
     def get_comment(self, name, value):
         lines = read_file_contents_as_lines(self.path)
         if not lines:
-            return
+            return False
 
         comment_str_full = '### {}: {}'.format(name, value)
         return comment_str_full in lines
@@ -132,8 +132,8 @@ def set_config_comment(name, value):
 
 
 def get_config_comment(name, value):
-    real_config.get_comment(name, value)
+    return real_config.get_comment(name, value)
 
 
 def has_config_comment(name):
-    real_config.has_comment(name)
+    return real_config.has_comment(name)
