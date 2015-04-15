@@ -2,8 +2,8 @@
 
 # kano-wifi-gui.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2015 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Provide a Gtk GUI frontend to wireless connections.
 # An alternative to kano-wifi console tool.
@@ -174,8 +174,8 @@ class KanoWifiGui(Gtk.Window):
         heading = Heading("Connect to {}".format(network_name),
                           "Enter the password")
 
-        padlock_path = os.path.join(common_images_dir, "padlock.png")
-        padlock_image = Gtk.Image.new_from_file(padlock_path)
+        image_path = common.media + "/Graphics/padlock.png"
+        padlock_image = Gtk.Image.new_from_file(image_path)
 
         entry = Gtk.Entry()
         entry.set_visibility(False)
@@ -228,7 +228,6 @@ class KanoWifiGui(Gtk.Window):
             self.password_screen()
 
     def _refresh_(self):
-        print 'scanning...'
 
         # disable the buttons
         self.refresh_btn.set_sensitive(False)
@@ -272,6 +271,9 @@ class KanoWifiGui(Gtk.Window):
         self.network_btns = []
         network_connection = is_connected(self.wiface)
 
+        image_path = common.media + "/Graphics/padlock.png"
+        padlock_image = Gtk.Image.new_from_file(image_path)
+
         for network in self.network_list:
 
             # Network selection must be able to receive events
@@ -293,12 +295,8 @@ class KanoWifiGui(Gtk.Window):
 
             network_btn.connect("clicked", self._select_network, network)
 
-            # TODO: if it requires a password, pack a padlock icon
             if network['encryption'] != 'off':
-                # TODO: Temporary file path
-                padlock_path = "/home/kano/padlock.png"
-                image = Gtk.Image.new_from_file(padlock_path)
-                box.pack_end(image, False, False, 0)
+                box.pack_end(padlock_image, False, False, 0)
 
             # Pack into the GUI for the networks
             self.network_box.pack_start(network_btn, False, False, 0)
