@@ -13,6 +13,7 @@ case "$1" in
 
         # Create custom sudoers file
         echo "%sudo   ALL=(root) NOPASSWD: /usr/bin/kano-wifi" > $TMP_FILE
+        echo "%sudo   ALL=(root) NOPASSWD: /usr/bin/kano-wifi-gui" >> $TMP_FILE
         echo "%sudo   ALL=(root) NOPASSWD: /usr/bin/kano-connect" >> $TMP_FILE
 
         # The owner and group for the sudoers file must both be 0
