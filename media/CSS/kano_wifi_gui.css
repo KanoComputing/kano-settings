@@ -1,0 +1,15 @@
+
+
+.network_btn {
+    background: #ffffff;
+}
+
+.network_btn.label {
+    font: Bariol 14;
+    color: #555555;
+    padding: 0px 10px;
+}
+
+.network_btn.selected {
+    background: #eeeeee;
+}
