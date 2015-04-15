@@ -22,6 +22,7 @@ if __name__ == '__main__' and __package__ is None:
     else:
         locale_path = None
 
+import kano_settings.common as common
 from kano.network import (IWList, connect, is_internet, is_connected,
                           launch_chromium)
 from kano.gtk3.heading import Heading
@@ -33,7 +34,7 @@ from kano.gtk3.apply_styles import (
     apply_common_to_screen, apply_styling_to_screen
 )
 
-from kano.paths import common_css_dir, common_images_dir
+from kano.paths import common_images_dir
 
 
 def tick_icon():
@@ -56,6 +57,7 @@ def tick_icon():
 
 
 class KanoWifiGui(Gtk.Window):
+    CSS_PATH = common.media + '/CSS/kano_wifi_gui.css'
 
     def __init__(self, wiface='wlan0'):
         Gtk.Window.__init__(self, title="Kano Wifi")
@@ -67,7 +69,7 @@ class KanoWifiGui(Gtk.Window):
         apply_common_to_screen()
 
         # Attach specific styling
-        apply_styling_to_screen(os.path.join(common_css_dir, "kano_wifi_gui.css"))
+        apply_styling_to_screen(self.CSS_PATH)
 
         # Only go through this stage if you don't have internet
         if is_internet():
