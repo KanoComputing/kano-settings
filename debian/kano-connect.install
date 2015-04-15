@@ -1,5 +1,6 @@
 bin/kano-connect usr/bin
 bin/kano-wifi usr/bin
+bin/kano-wifi-gui usr/bin
 
 icon/widget-no-internet.png /usr/share/kano-settings/icon
 icon/widget-wifi.png /usr/share/kano-settings/icon
