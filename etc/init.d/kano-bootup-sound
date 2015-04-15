@@ -30,7 +30,7 @@ case "$1" in
         /etc/rc.audio
 
         # Ready to play the sound
-        aplay $bootup_sound > /dev/null 2>1 &
+        aplay $bootup_sound > /dev/null 2>&1 &
         rc=$?
         log_end_msg $rc
         ;;
