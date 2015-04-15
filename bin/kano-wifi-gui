@@ -22,9 +22,7 @@ if __name__ == '__main__' and __package__ is None:
     else:
         locale_path = None
 
-import kano_settings.common as common
-from kano.network import (IWList, connect, is_internet, is_connected,
-                          launch_chromium)
+from kano.gtk3.application_window import ApplicationWindow
 from kano.gtk3.heading import Heading
 from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.gtk3.buttons import KanoButton, OrangeButton
@@ -34,50 +32,38 @@ from kano.gtk3.apply_styles import (
     apply_common_to_screen, apply_styling_to_screen
 )
 
+from kano.logging import logger
 from kano.paths import common_images_dir
+import kano_settings.common as common
+from kano.network import (IWList, connect, is_internet, is_connected,
+                          launch_chromium)
 
 
-def tick_icon():
-    '''This should return a tick image.  We use this to show which
-    wifi network is already selected
-    '''
-
-    width = 24
-    height = 24
-
-    icons_path = os.path.join(common_images_dir, 'icons.png')
-
-    tick_pixbuf = GdkPixbuf.Pixbuf.new_from_file(icons_path)
-
-    tick_pixbuf = tick_pixbuf.new_subpixbuf(5 * 24, 0, width, height)
-    tick_image = Gtk.Image()
-    tick_image.set_from_pixbuf(tick_pixbuf)
-
-    return tick_image
-
-
-class KanoWifiGui(Gtk.Window):
+class KanoWifiGui(ApplicationWindow):
     CSS_PATH = common.media + '/CSS/kano_wifi_gui.css'
+    width = 350
+    height = 405
 
     def __init__(self, wiface='wlan0'):
-        Gtk.Window.__init__(self, title="Kano Wifi")
-        self.wiface = 'wlan0'
-        self.set_size_request(350, 400)
-        self.set_border_width(0)
-
         # Default basic styling
         apply_common_to_screen()
-
         # Attach specific styling
         apply_styling_to_screen(self.CSS_PATH)
+        # Set window
+        ApplicationWindow.__init__(self, "Kano Wifi", self.width, self.height)
+        self.set_decorated(True)
+        self.top_bar = TopBar("Kano Wifi")
+        self.prev_handler = None
+        self.set_titlebar(self.top_bar)
+        self.set_icon_name("kano-settings")
 
         # Only go through this stage if you don't have internet
         if is_internet():
-            self.you_have_internet_screen()
+            self.you_have_internet_screen(wiface)
         else:
-            self.connect_to_wifi_screen()
+            ConnectWiFi(self, wiface)
 
-    def you_have_internet_screen(self):
+    def you_have_internet_screen(self, wiface):
         '''If user already has internet, let them know.
         '''
         kdialog = KanoDialog(
@@ -99,12 +85,30 @@ class KanoWifiGui(Gtk.Window):
         response = kdialog.run()
 
         if response == 'yes':
-            self.connect_to_wifi_screen()
+            ConnectWiFi(self, wiface)
         else:
             sys.exit(0)
 
-    def connect_to_wifi_screen(self):
-        '''Show the screen with the different wifi networks
+
+class ConnectWiFi(Gtk.Box):
+
+    def __init__(self, win, _wiface):
+        Gtk.Box.__init__(self)
+        self.win = win
+        self.wiface = _wiface
+        self.win.set_main_widget(self)
+        self.win.top_bar.disable_prev()
+
+        self.width = 350
+        self.height = 405
+
+        self.create_box()
+
+        self.win.show_all()
+
+    def create_box(self):
+        '''
+        Show the screen with the different wifi networks
         '''
 
         self.selected_network = {}
@@ -155,14 +159,11 @@ class KanoWifiGui(Gtk.Window):
 
         vbox.pack_start(hbox, False, False, 0)
 
-        # This is behaving very strangely
-        self.top_bar = TopBar('Kano Wifi')
-        self.set_titlebar(self.top_bar)
-
-        self.show_all()
+        self.win.show_all()
 
     def password_screen(self):
-        '''Show the screen with the option of adding a password
+        '''
+        Show the screen with the option of adding a password
         and connecting to a network
         '''
 
@@ -216,7 +217,8 @@ class KanoWifiGui(Gtk.Window):
         os.system("kano-settings 13")
 
     def first_time_connect(self, widget):
-        '''Check the selected network.  If a password is needed,
+        '''
+        Check the selected network.  If a password is needed,
         take the user to the password screen.  Otherwise, try and connect.
         '''
         if self.selected_network['encryption'] == "off":
@@ -259,7 +261,8 @@ class KanoWifiGui(Gtk.Window):
         self.network_list = []
 
         # Perform a network re-scan
-        self.network_list = IWList(self.wiface).getList(unsecure=False, first=False)
+        self.network_list = IWList(self.wiface).getList(unsecure=False,
+                                                        first=False)
 
     def _unpack_networks(self):
         for child in self.network_box.get_children():
@@ -290,7 +293,7 @@ class KanoWifiGui(Gtk.Window):
             box.pack_start(label, False, False, 0)
 
             if network['essid'] == network_connection[0]:
-                tick = tick_icon()
+                tick = self.tick_icon()
                 box.pack_start(tick, False, False, 0)
 
             network_btn.connect("clicked", self._select_network, network)
@@ -312,8 +315,7 @@ class KanoWifiGui(Gtk.Window):
         self.connect_btn.set_sensitive(True)
 
     def _connect_(self, ssid, passphrase, encryption):
-        print 'connecting to', ssid
-
+        logger.debug('Connecting to {}'.format(ssid))
         # disable the buttons
         self.refresh_btn.set_sensitive(False)
         self.connect_btn.set_sensitive(False)
@@ -326,12 +328,10 @@ class KanoWifiGui(Gtk.Window):
 
         t.daemon = False
         t.start()
-        print 'thread starting...'
 
     def _connect_thread_(self, ssid, encryption, passphrase):
-        print 'connecting to: ', ssid, encryption, passphrase
-
         success = connect(self.wiface, ssid, encryption, passphrase)
+        logger.debug('Connecting to {} {} {}. Sucessful: {}'.format(ssid, encryption, passphrase, success))
         GObject.idle_add(self._thread_finish, success)
 
     def _thread_finish(self, success):
@@ -370,8 +370,6 @@ class KanoWifiGui(Gtk.Window):
         else:
             Gtk.main_quit()
 
-        print 'exiting connection thread'
-
     def on_connect(self, widget, entry):
         essid = self.selected_network['essid']
         passphrase = entry.get_text()
@@ -384,6 +382,24 @@ class KanoWifiGui(Gtk.Window):
     def set_button_sensitive(self, widget, event):
         self.connect_btn.set_sensitive(True)
         self.connect_btn.show()
+
+    def tick_icon(self):
+        '''This should return a tick image.  We use this to show which
+        wifi network is already selected
+        '''
+
+        width = 24
+        height = 24
+
+        icons_path = os.path.join(common_images_dir, 'icons.png')
+
+        tick_pixbuf = GdkPixbuf.Pixbuf.new_from_file(icons_path)
+
+        tick_pixbuf = tick_pixbuf.new_subpixbuf(5 * 24, 0, width, height)
+        tick_image = Gtk.Image()
+        tick_image.set_from_pixbuf(tick_pixbuf)
+
+        return tick_image
 
 
 if __name__ == '__main__':
