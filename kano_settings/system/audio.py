@@ -54,13 +54,11 @@ def set_to_HDMI(HDMI):
     o, e, rc = run_cmd(amixer_cmd)
     if rc:
         logger.warning("error from amixer: {} {} {}".format(o, e, rc))
-    logger.debug("{} {}".format(o, e))
 
     # trigger alsa-utils to store the path in /var/lib/alsa/asound.state
     o, e, rc = run_cmd(store_cmd)
     if rc:
         logger.warning("error from alsa-utils: {} {} {}".format(o, e, rc))
-    logger.debug("{} {}".format(o, e))
 
     set_setting('Audio', config)
 
@@ -69,7 +67,8 @@ def set_to_HDMI(HDMI):
 def is_HDMI():
     # Find the audio setting
     amixer_string, e, rc = run_cmd(amixer_get_cmd)
-    logger.debug("{} {}".format(amixer_string, e))
+    if rc:
+        logger.warning("error from amixer: {} {} {}".format(amixer_string, e, rc))
 
     if amixer_string.find(analogue_string) != -1:
         # Make sure config file is up to date
