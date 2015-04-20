@@ -10,12 +10,18 @@
 
 from kano_settings.config_file import get_setting, set_setting, file_replace
 from kano_settings.boot_config import set_config_value
+from kano.utils import run_cmd
+from kano.logging import logger
 
 
-rc_local_path = "/etc/rc.audio"
-analogue_string = "amixer -c 0 cset numid=3 1"
-hdmi_string = "amixer -c 0 cset numid=3 2"
+analogue_cmd = "amixer -c 0 cset numid=3 1"
+analogue_string = ": values=1"
 
+hdmi_cmd = "amixer -c 0 cset numid=3 2"
+hdmi_string = ": values=2"
+
+store_cmd = "service alsa-utils restart"
+amixer_get_cmd = "amixer -c 0 cget numid=3"
 
 try:
     from kano_settings.system.display import get_edid
@@ -32,38 +38,46 @@ def set_to_HDMI(HDMI):
     # 1 analog
     # 2 hdmi
 
-    # Uncomment/comment out the line in /etc/rc.audio
-    amixer_from = "amixer -c 0 cset numid=3 [0-9]"
-
     # These are the changes we'll apply if they have changed from what they were
     if HDMI:
-        amixer_to = hdmi_string
+        amixer_cmd = hdmi_cmd
         set_config_value("hdmi_ignore_edid_audio", None)
         set_config_value("hdmi_drive", 2)
         config = "HDMI"
     else:
-        amixer_to = analogue_string
+        amixer_cmd = analogue_cmd
         set_config_value("hdmi_ignore_edid_audio", 1)
         set_config_value("hdmi_drive", None)
         config = "Analogue"
 
-    file_replace(rc_local_path, amixer_from, amixer_to)
+    # Set audio path in amixer
+    o, e, rc = run_cmd(amixer_cmd)
+    if rc:
+        logger.warning("error from amixer: {} {} {}".format(o, e, rc))
+    logger.debug("{} {}".format(o, e))
+
+    # trigger alsa-utils to store the path in /var/lib/alsa/asound.state
+    o, e, rc = run_cmd(store_cmd)
+    if rc:
+        logger.warning("error from alsa-utils: {} {} {}".format(o, e, rc))
+    logger.debug("{} {}".format(o, e))
+
     set_setting('Audio', config)
 
 
 # Returns is_HDMI = True or False
 def is_HDMI():
-    # Find the audio setting in the rc file
-    f = open(rc_local_path, 'r')
-    file_string = str(f.read())
+    # Find the audio setting
+    amixer_string, e, rc = run_cmd(amixer_get_cmd)
+    logger.debug("{} {}".format(amixer_string, e))
 
-    if file_string.find(analogue_string) != -1:
+    if amixer_string.find(analogue_string) != -1:
         # Make sure config file is up to date
         if get_setting('Audio') != 'Analogue':
             set_setting('Audio', "Analogue")
         return False
 
-    elif file_string.find(hdmi_string) != -1:
+    elif amixer_string.find(hdmi_string) != -1:
         # Make sure config file is up to date
         if get_setting('Audio') != 'HDMI':
             set_setting('Audio', "HDMI")
