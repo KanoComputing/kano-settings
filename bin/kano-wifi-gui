@@ -157,7 +157,7 @@ class SpinnerScreen(Gtk.Box):
         self.pack_start(title.container, False, False, 0)
 
         spinner = Gtk.Image()
-        filename = os.path.join(common.media, "wifi-spinner-smaller.gif")
+        filename = os.path.join(common.media, "Icons/kano-wifi-gui/wifi-spinner-smaller.gif")
         anim = GdkPixbuf.PixbufAnimation.new_from_file(filename)
         spinner.set_from_animation(anim)
         self.pack_start(spinner, False, False, 30)
@@ -171,8 +171,8 @@ class SpinnerScreen(Gtk.Box):
         network_list = IWList(self.wiface).getList(unsecure=False, first=False)
 
         # TODO: this is always 7.  Not sure it should be.
-        print "network_list = {}".format(network_list)
-        print len(network_list)
+        logger.debug("network_list = {}".format(network_list))
+        logger.debug("Network list length = {}".format(len(network_list)))
 
         GObject.idle_add(self.go_to_wifi_screen, network_list)
 
