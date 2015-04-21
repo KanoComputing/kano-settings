@@ -15,7 +15,6 @@ icon/settings-widget.png /usr/share/kano-settings
 lxpanel-plugin/kano_settings.so usr/lib/arm-linux-gnueabihf/lxpanel/plugins/
 
 etc/kano-rc.local /etc
-etc/rc.audio /etc
 etc/rc.network /etc
 etc/rc.overclock /etc
 etc/rc.others /etc
