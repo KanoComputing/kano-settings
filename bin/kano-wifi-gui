@@ -32,9 +32,7 @@ from kano.gtk3.apply_styles import (
     apply_common_to_screen, apply_styling_to_screen
 )
 from kano.gtk3.cursor import attach_cursor_events
-
 from kano_wifi_gui.misc import tick_icon
-
 from kano.logging import logger
 import kano_settings.common as common
 from kano.network import (IWList, connect, is_internet, is_connected,
