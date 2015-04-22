@@ -13,9 +13,9 @@
 # bits.
 #
 
-# FIXME: Commenting /etc/rc.audio, it is now called by kano-bootup-sound,
-# because rc.audio is parsed and controlled by kano-settings
-#/etc/rc.audio
+#
+# NB audio is no loger controlled here, we just rely on alsa-utils.
+#
 
 /etc/rc.network
 /etc/rc.overclock

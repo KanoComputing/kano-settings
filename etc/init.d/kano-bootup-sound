@@ -18,6 +18,7 @@
 # This debian init script plays a sound very early in the bootup process
 # during the initial console boot messages, right after the alsa sound system is ready
 #
+# alsa-utils, in the dependencies, sets volume and output device (Analog/HDMI)
 
 . /lib/lsb/init-functions
 
@@ -25,9 +26,6 @@ bootup_sound="/usr/share/kano-settings/media/sounds/kano_init.wav"
 
 case "$1" in
     start)
-
-        # Setup the sound output device (Analog/HDMI), as governed by kano-settings
-        /etc/rc.audio
 
         # Ready to play the sound
         aplay $bootup_sound > /dev/null 2>&1 &
