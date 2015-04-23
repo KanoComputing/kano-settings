@@ -2,7 +2,7 @@ bin/kano-connect usr/bin
 bin/kano-wifi usr/bin
 bin/kano-wifi-gui usr/bin
 
-kano_wifi_gui/* us/lib/python2.7/dist-packages/kano_wifi_gui
+kano_wifi_gui/* usr/lib/python2.7/dist-packages/kano_wifi_gui
 
 icon/widget-no-internet.png /usr/share/kano-settings/icon
 icon/widget-wifi.png /usr/share/kano-settings/icon
