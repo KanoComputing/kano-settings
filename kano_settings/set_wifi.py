@@ -153,9 +153,19 @@ class SetWifi(Template):
             self.kano_button.set_sensitive(True)
             self.wifi_connection_attempted = True
 
+            # Blur window
+            self.win.blur()
+            self.win.show_all()
+
+            # Force blur to be shown
+            while Gtk.events_pending():
+                Gtk.main_iteration()
+
             # Call WiFi config
-            os.system('rxvt -title \'WiFi Setup\' -e /usr/bin/kano-wifi')
+            os.system('/usr/bin/kano-wifi-gui')
+
             # Refresh window after WiFi Setup
+            self.win.unblur()
             self.win.clear_win()
             SetWifi(self.win)
 

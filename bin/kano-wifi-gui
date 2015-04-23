@@ -31,37 +31,75 @@ from kano.gtk3.kano_dialog import KanoDialog
 from kano.gtk3.apply_styles import (
     apply_common_to_screen, apply_styling_to_screen
 )
-
+from kano.gtk3.cursor import attach_cursor_events
+from kano_wifi_gui.misc import tick_icon
 from kano.logging import logger
-from kano.paths import common_images_dir
 import kano_settings.common as common
 from kano.network import (IWList, connect, is_internet, is_connected,
-                          launch_chromium)
+                          launch_chromium, is_ethernet_plugged, is_device)
 
 
 class KanoWifiGui(ApplicationWindow):
     CSS_PATH = common.media + '/CSS/kano_wifi_gui.css'
     width = 350
-    height = 405
+    height = 450
 
     def __init__(self, wiface='wlan0'):
+
+        self.wiface = wiface
+        self.network_list = []
+
         # Default basic styling
         apply_common_to_screen()
+
         # Attach specific styling
         apply_styling_to_screen(self.CSS_PATH)
+
         # Set window
         ApplicationWindow.__init__(self, "Kano Wifi", self.width, self.height)
         self.set_decorated(True)
         self.top_bar = TopBar("Kano Wifi")
+        self.top_bar.set_prev_callback(self.go_to_spinner_screen)
         self.prev_handler = None
         self.set_titlebar(self.top_bar)
+        self.top_bar.set_close_callback(Gtk.main_quit)
         self.set_icon_name("kano-settings")
 
         # Only go through this stage if you don't have internet
-        if is_internet():
-            self.you_have_internet_screen(wiface)
+        # check if a wifi dongle is plugged in
+        if is_device(self.wiface):
+
+            # The spinner screen takes user through to the ConnectWifi screen
+            self.go_to_spinner_screen()
+
         else:
-            ConnectWiFi(self, wiface)
+            if is_internet():
+                if is_ethernet_plugged():
+                    self.you_are_connected_via_ethernet()
+                else:
+                    # this will never be hit
+                    self.you_have_internet_screen(wiface)
+            else:
+                self.plug_in_wifi_dongle()
+
+    def go_to_spinner_screen(self, widget=None, event=None):
+        self.remove_main_widget()
+        SpinnerScreen(self, self.wiface)
+
+    def plug_in_wifi_dongle(self):
+        kdialog = KanoDialog(
+            "You don't seem to have a wifi dongle plugged in",
+            "Plug one in and try again"
+        )
+        kdialog.run()
+        sys.exit(0)
+
+    def you_are_connected_via_ethernet(self):
+        kdialog = KanoDialog(
+            "You are already connected via ethernet"
+        )
+        kdialog.run()
+        sys.exit(0)
 
     def you_have_internet_screen(self, wiface):
         '''If user already has internet, let them know.
@@ -85,197 +123,102 @@ class KanoWifiGui(ApplicationWindow):
         response = kdialog.run()
 
         if response == 'yes':
-            ConnectWiFi(self, wiface)
+            self.go_to_spinner_screen(self)
         else:
             sys.exit(0)
 
 
+class SpinnerScreen(Gtk.Box):
+
+    # wiface is only here to pass onto the ConnectWifi screen
+    def __init__(self, win, wiface):
+        self.win = win
+        self.win.top_bar.disable_prev()
+        self.wiface = wiface
+        self.show_spinner_screen_while_loading()
+
+    def show_spinner_screen_while_loading(self):
+
+        self.show_spinner_screen()
+
+        # check the wifi networks present here
+        t = threading.Thread(target=self.scan_networks)
+        t.start()
+
+    def show_spinner_screen(self):
+        Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
+        self.set_size_request(self.win.width, self.win.height)
+
+        self.win.set_main_widget(self)
+
+        title = Heading("Searching for networks", "Any minute now")
+        self.pack_start(title.container, False, False, 0)
+
+        spinner = Gtk.Image()
+        filename = os.path.join(common.media, "Icons/kano-wifi-gui/wifi-spinner-smaller.gif")
+        anim = GdkPixbuf.PixbufAnimation.new_from_file(filename)
+        spinner.set_from_animation(anim)
+        self.pack_start(spinner, False, False, 30)
+
+        self.win.show_all()
+
+    # TODO: this is repeated. Fix.
+    def scan_networks(self):
+
+        # Perform a network re-scan
+        network_list = IWList(self.wiface).getList(unsecure=False, first=False)
+
+        # TODO: this is always 7.  Not sure it should be.
+        logger.debug("network_list = {}".format(network_list))
+        logger.debug("Network list length = {}".format(len(network_list)))
+
+        GObject.idle_add(self.go_to_wifi_screen, network_list)
+
+    def go_to_wifi_screen(self, network_list):
+        self.win.remove_main_widget()
+        ConnectWiFi(self.win, self.wiface, network_list)
+
+
 class ConnectWiFi(Gtk.Box):
 
-    def __init__(self, win, _wiface):
-        Gtk.Box.__init__(self)
+    def __init__(self, win, _wiface, network_list):
+
+        Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
         self.win = win
         self.wiface = _wiface
+        self.set_size_request(self.win.width, self.win.height)
+
+        # Setting new window here
         self.win.set_main_widget(self)
+
+        # This could cause problems
+        self.network_list = network_list
         self.win.top_bar.disable_prev()
 
         self.width = 350
         self.height = 405
 
-        self.create_box()
+        box = self.create_box()
+        self.add(box)
 
         self.win.show_all()
 
-    def create_box(self):
+    def create_network_box(self):
+        '''Create the box containing the list of networks
         '''
-        Show the screen with the different wifi networks
-        '''
-
-        self.selected_network = {}
-
-        self.heading = Heading("Connect to WiFi", 'Choose a network')
-
         # Setting up the box in which the network elements are to be positioned
         self.network_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-
-        # This will store the list of wifi networks
-        self.network_list = []
-
-        self.connect_btn = KanoButton('CONNECT')
-        self._go_to_password_screen = self.connect_btn.connect(
-            'clicked', self.first_time_connect
-        )
-        self.connect_btn.set_sensitive(False)
-        self.connect_btn.pack_and_align()
-
-        self.refresh_btn = KanoButton('REFRESH', color="orange")
-        self.refresh_btn.connect('clicked', self.on_refresh)
-        self.refresh_btn.pack_and_align()
-
-        # refresh the list
-        self._refresh_()
-
-        # Pack all the elements into the window
-        # This box is to pack everything in the window
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.add(vbox)
-
-        sw = ScrolledWindow()
-        sw.apply_styling_to_widget()
-        sw.set_size_request(-1, 200)
-        sw.add(self.network_box)
-        sw.set_margin_right(30)
-        sw.set_margin_left(30)
-        sw.set_margin_bottom(30)
-
-        # Then pack all the elements into the vbox
-        vbox.pack_start(self.heading.container, False, False, 0)
-        vbox.pack_start(sw, False, False, 0)
-
-        # For now, show both connect and refresh buttons
-        hbox = Gtk.Box()
-        hbox.pack_start(self.connect_btn.align, True, False, 0)
-        hbox.pack_start(self.refresh_btn.align, True, False, 0)
-
-        vbox.pack_start(hbox, False, False, 0)
-
-        self.win.show_all()
-
-    def password_screen(self):
-        '''
-        Show the screen with the option of adding a password
-        and connecting to a network
-        '''
-
-        # Possibly not necessary, since main window only has one widget
-        for child in self.get_children():
-            self.remove(child)
-
-        network_name = self.selected_network['essid']
-        heading = Heading("Connect to {}".format(network_name),
-                          "Enter the password")
-
-        image_path = common.media + "/Graphics/padlock.png"
-        padlock_image = Gtk.Image.new_from_file(image_path)
-
-        entry = Gtk.Entry()
-        entry.set_visibility(False)
-        entry.set_margin_top(20)
-        entry.set_margin_left(60)
-        entry.set_margin_right(60)
-        entry.set_margin_bottom(20)
-        entry.connect("key-release-event", self.set_button_sensitive)
-
-        # TODO: fix this, this is largely repeated code
-        self.connect_btn = KanoButton("CONNECT")
-        self.connect_btn.connect('clicked', self.on_connect, entry)
-        self.connect_btn.set_sensitive(False)
-        self.connect_btn.pack_and_align()
-
-        browser_login = OrangeButton("Browser Login")
-        browser_login.connect("clicked", launch_chromium)
-        proxy_login = OrangeButton("Proxy")
-        proxy_login.connect("clicked", self.launch_proxy)
-
-        orange_link_box = Gtk.Box()
-        orange_link_box.pack_start(browser_login, True, False, 0)
-        orange_link_box.pack_start(proxy_login, True, False, 0)
-
-        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.add(vbox)
-
-        vbox.pack_start(heading.container, False, False, 0)
-        vbox.pack_start(padlock_image, False, False, 0)
-        vbox.pack_start(entry, False, False, 0)
-        vbox.pack_start(orange_link_box, False, False, 0)
-        vbox.pack_end(self.connect_btn.align, False, False, 0)
-        self.connect_btn.set_margin_bottom(30)
-
-        self.show_all()
-
-    def launch_proxy(self, widget):
-        os.system("kano-settings 13")
-
-    def first_time_connect(self, widget):
-        '''
-        Check the selected network.  If a password is needed,
-        take the user to the password screen.  Otherwise, try and connect.
-        '''
-        if self.selected_network['encryption'] == "off":
-            essid = self.selected_network['essid']
-            encryption = 'off'
-            passphrase = ''
-            self._connect_(essid, passphrase, encryption)
-        else:
-            self.password_screen()
-
-    def _refresh_(self):
-
-        # disable the buttons
-        self.refresh_btn.set_sensitive(False)
-        self.connect_btn.set_sensitive(False)
-
-        # TODO: add a spinner
-
-        # start thread
-        # t = threading.Thread(target=self._scan_thread_, args=())
-        # t.daemon=False
-        # t.start()
-        # print 'thread starting...'
-
-        # FIXME: Call _scan_thread()_ asynchronously.
-        # Currently it enters and endless loop filling the list
-        self._scan_thread_()
-
-        # unpack current set of networks and repack
-        self._unpack_networks()
         self._pack_networks()
 
-        # Make refresh button sensitive again
-        self.refresh_btn.set_sensitive(True)
-        if self.selected_network:
-            self.connect_btn.set_sensitive(True)
-
-    def _scan_thread_(self):
-        # Refresh the network list
-        self.network_list = []
-
-        # Perform a network re-scan
-        self.network_list = IWList(self.wiface).getList(unsecure=False,
-                                                        first=False)
-
-    def _unpack_networks(self):
-        for child in self.network_box.get_children():
-            self.network_box.remove(child)
-
     def _pack_networks(self):
-        # TODO: show check mark so we know which network we are connected to
+        '''Pack networks into the network_box
+        '''
 
         self.network_btns = []
         network_connection = is_connected(self.wiface)
 
-        image_path = common.media + "/Graphics/padlock.png"
-        padlock_image = Gtk.Image.new_from_file(image_path)
+        image_path = os.path.join(common.media,
+                                  "Icons/kano-wifi-gui/padlock.png")
 
         for network in self.network_list:
 
@@ -293,18 +236,124 @@ class ConnectWiFi(Gtk.Box):
             box.pack_start(label, False, False, 0)
 
             if network['essid'] == network_connection[0]:
-                tick = self.tick_icon()
+                tick = tick_icon()
                 box.pack_start(tick, False, False, 0)
 
             network_btn.connect("clicked", self._select_network, network)
 
+            # Add padlock to the
             if network['encryption'] != 'off':
+                padlock_image = Gtk.Image.new_from_file(image_path)
                 box.pack_end(padlock_image, False, False, 0)
 
             # Pack into the GUI for the networks
             self.network_box.pack_start(network_btn, False, False, 0)
             self.network_btns.append(network_btn)
             self.show_all()
+
+    def create_box(self):
+        '''Show the screen with the different wifi networks
+        '''
+
+        self.selected_network = {}
+        self.heading = Heading("Connect to WiFi", 'Choose a network')
+        self.create_network_box()
+
+        # This box is to pack everything in the window
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+
+        # For now, pack the network into a scrolled window
+        sw = ScrolledWindow()
+        sw.apply_styling_to_widget()
+        sw.set_size_request(-1, 200)
+        sw.add(self.network_box)
+        sw.set_margin_right(30)
+        sw.set_margin_left(30)
+        sw.set_margin_bottom(20)
+        sw.set_margin_top(10)
+
+        # Then pack all the elements into the vbox
+        vbox.pack_start(self.heading.container, False, False, 0)
+        vbox.pack_start(sw, False, False, 0)
+
+        # Pack in the refresh connect buttons
+        button_box = self.create_refresh_connect_buttons()
+        vbox.pack_end(button_box, False, False, 30)
+
+        return vbox
+
+    def create_refresh_connect_buttons(self):
+        self.connect_btn = KanoButton('CONNECT')
+        self.connect_btn.connect('clicked', self.first_time_connect)
+        self.connect_btn.set_sensitive(False)
+        self.refresh_btn = self.create_refresh_button()
+        blank_label = Gtk.Label("")
+
+        # For now, show both connect and refresh buttons
+        buttonbox = Gtk.ButtonBox()
+        buttonbox.set_layout(Gtk.ButtonBoxStyle.CENTER)
+        buttonbox.set_spacing(10)
+        buttonbox.pack_start(self.refresh_btn, False, False, 0)
+        buttonbox.pack_start(self.connect_btn, False, False, 0)
+        buttonbox.pack_start(blank_label, False, False, 0)
+
+        return buttonbox
+
+    def create_refresh_button(self):
+        # Modify the refresh button so it's an icon
+        refresh_icon_filepath = os.path.join(
+            common.media, "Icons/kano-wifi-gui/refresh.png"
+        )
+        refresh_icon = Gtk.Image.new_from_file(refresh_icon_filepath)
+        refresh_btn = Gtk.Button()
+        refresh_btn.get_style_context().add_class("refresh_btn")
+        refresh_btn.set_image(refresh_icon)
+        attach_cursor_events(refresh_btn)
+
+        # These are here in case we want to change the icon on mouse over
+        refresh_btn.connect("enter-notify-event", self.choose_selected_icon)
+        refresh_btn.connect("leave-notify-event", self.choose_unselected_icon)
+
+        refresh_btn.connect('clicked', self.go_to_spinner_screen)
+        return refresh_btn
+
+    # These are callbacks so we have extra arguments
+    def choose_selected_icon(self, widget=None, event=None):
+        selected_path = os.path.join(common.media, "Icons/kano-wifi-gui/rescan-hover.png")
+        image = Gtk.Image.new_from_file(selected_path)
+        self.refresh_btn.set_image(image)
+
+    def choose_unselected_icon(self, widget=None, event=None):
+        unselected_path = os.path.join(common.media, "Icons/kano-wifi-gui/refresh.png")
+        image = Gtk.Image.new_from_file(unselected_path)
+        self.refresh_btn.set_image(image)
+
+    def first_time_connect(self, widget=None):
+        '''
+        Check the selected network.  If a password is needed,
+        take the user to the password screen.  Otherwise, try and connect.
+        '''
+        if self.selected_network['encryption'] == "off":
+            essid = self.selected_network['essid']
+            encryption = 'off'
+            passphrase = ''
+            self._connect_(essid, passphrase, encryption)
+        else:
+            self.go_to_password_screen()
+
+    def go_to_spinner_screen(self, button=None, event=None):
+        '''Loading networks and showing the spinner screen.
+        '''
+        self.win.remove_main_widget()
+        SpinnerScreen(self.win, self.wiface)
+
+    def _unpack_networks(self):
+        for child in self.network_box.get_children():
+            self.network_box.remove(child)
+
+    def go_to_password_screen(self):
+        self.win.remove_main_widget()
+        PasswordScreen(self.win, self.wiface, self.selected_network)
 
     def _select_network(self, button, network):
         for network_btn in self.network_btns:
@@ -314,11 +363,22 @@ class ConnectWiFi(Gtk.Box):
         button.get_style_context().add_class("selected")
         self.connect_btn.set_sensitive(True)
 
+    def on_connect(self, widget, entry):
+        '''This is the cb attached to the button widget
+        '''
+        essid = self.selected_network['essid']
+        passphrase = entry.get_text()
+        wpa = self.selected_network['encryption']
+        self._connect_(essid, passphrase, wpa)
+
     def _connect_(self, ssid, passphrase, encryption):
+        '''This starts the _connect_thread_ thread
+        '''
         logger.debug('Connecting to {}'.format(ssid))
         # disable the buttons
         self.refresh_btn.set_sensitive(False)
         self.connect_btn.set_sensitive(False)
+        self.connect_btn.start_spinner()
 
         # start thread
         t = threading.Thread(
@@ -330,76 +390,159 @@ class ConnectWiFi(Gtk.Box):
         t.start()
 
     def _connect_thread_(self, ssid, encryption, passphrase):
+        '''This function runs in a thread so we can run a spinner alongside.
+        '''
         success = connect(self.wiface, ssid, encryption, passphrase)
         logger.debug('Connecting to {} {} {}. Sucessful: {}'.format(ssid, encryption, passphrase, success))
         GObject.idle_add(self._thread_finish, success)
 
     def _thread_finish(self, success):
-        self.refresh_btn.set_sensitive(True)
         self.connect_btn.set_sensitive(True)
+        self.connect_btn.stop_spinner()
+        self.refresh_btn.set_sensitive(False)
 
         if success:
             kdialog = KanoDialog(
                 "Excellent, you're connected!",
                 "You can talk to the world",
-                parent_window=self
+                parent_window=self.win
             )
+            kdialog.run()
+            Gtk.main_quit()
 
         else:
             kdialog = KanoDialog(
-                "Oops, that password wasn't correct",
-                "Do you want to try again?",
-                [
-                    {
-                        "label": "NO",
-                        "color": "red",
-                        "return_value": "no"
-                    },
-                    {
-                        "label": "YES",
-                        "color": "green",
-                        "return_value": "yes"
-                    }
-                ],
-                parent_window=self
+                "Cannot connect!",
+                "Maybe the signal was too weak to connect.",
+                parent_window=self.win
+            )
+            self.win.remove_main_widget()
+            ConnectWiFi(
+                self.win, self.wiface,
+                self.selected_network,
+                first_attempt=False
             )
 
-        response = kdialog.run()
-        if response == "yes":
-            self.password_screen()
-        else:
-            Gtk.main_quit()
 
+class PasswordScreen(Gtk.Box):
+    def __init__(self, win, wiface, selected_network, first_attempt=True):
+        '''
+        Show the screen with the option of adding a password
+        and connecting to a network
+        '''
+
+        Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
+        self.win = win
+        self.win.set_main_widget(self)
+        self.win.top_bar.enable_prev()
+        self.set_size_request(self.win.width, self.win.height)
+        self.wiface = wiface
+
+        self.selected_network = selected_network
+        network_name = self.selected_network['essid']
+        heading = Heading("Connect to {}".format(network_name),
+                          "Enter the password")
+
+        if first_attempt:
+            image_path = os.path.join(common.media, "Icons/kano-wifi-gui/password.png")
+        else:
+            image_path = os.path.join(common.media, "Icons/kano-wifi-gui/password-fail.png")
+
+        padlock_image = Gtk.Image.new_from_file(image_path)
+
+        entry = Gtk.Entry()
+        entry.set_visibility(False)
+        entry.set_margin_left(60)
+        entry.set_margin_right(60)
+        entry.connect("key-release-event", self.set_button_sensitive)
+
+        # TODO: fix this, this is largely repeated code
+        self.connect_btn = KanoButton("CONNECT")
+        self.connect_btn.connect('clicked', self.on_connect, entry)
+        self.connect_btn.set_sensitive(False)
+        self.connect_btn.set_margin_right(100)
+        self.connect_btn.set_margin_left(100)
+
+        browser_login = OrangeButton("Browser Login")
+        browser_login.connect("clicked", launch_chromium)
+        proxy_login = OrangeButton("Proxy")
+        proxy_login.connect("clicked", self.launch_proxy)
+
+        orange_link_box = Gtk.Box()
+        orange_link_box.pack_start(browser_login, True, False, 0)
+        orange_link_box.pack_start(proxy_login, True, False, 0)
+
+        vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.add(vbox)
+
+        vbox.set_spacing(20)
+        vbox.pack_start(heading.container, False, False, 0)
+        vbox.pack_start(padlock_image, False, False, 0)
+        vbox.pack_start(entry, False, False, 0)
+        vbox.pack_start(orange_link_box, False, False, 0)
+        vbox.pack_end(self.connect_btn, False, False, 40)
+
+        self.show_all()
+
+    def go_to_wifi_screen(self, widget=None, event=None):
+        self.win.remove_main_widget()
+        SpinnerScreen(self.win, self.wiface)
+
+    def launch_proxy(self, widget):
+        os.system("kano-settings 13")
+
+    # TODO: This is largely repeated code
     def on_connect(self, widget, entry):
+        '''This is the cb attached to the button widget
+        '''
         essid = self.selected_network['essid']
         passphrase = entry.get_text()
         wpa = self.selected_network['encryption']
         self._connect_(essid, passphrase, wpa)
 
-    def on_refresh(self, widget):
-        self._refresh_()
+    def _connect_(self, ssid, passphrase, encryption):
+        '''This starts the _connect_thread_ thread
+        '''
+        logger.debug('Connecting to {}'.format(ssid))
+        # disable the buttons
+        self.connect_btn.set_sensitive(False)
+        self.connect_btn.start_spinner()
+
+        # start thread
+        t = threading.Thread(
+            target=self._connect_thread_,
+            args=(ssid, encryption, passphrase,)
+        )
+
+        t.daemon = False
+        t.start()
+
+    def _connect_thread_(self, ssid, encryption, passphrase):
+        '''This function runs in a thread so we can run a spinner alongside.
+        '''
+        success = connect(self.wiface, ssid, encryption, passphrase)
+        logger.debug('Connecting to {} {} {}. Sucessful: {}'.format(ssid, encryption, passphrase, success))
+        GObject.idle_add(self._thread_finish, success)
 
     def set_button_sensitive(self, widget, event):
         self.connect_btn.set_sensitive(True)
-        self.connect_btn.show()
 
-    def tick_icon(self):
-        '''This should return a tick image.  We use this to show which
-        wifi network is already selected
-        '''
+    def _thread_finish(self, success):
+        self.connect_btn.set_sensitive(True)
+        self.connect_btn.stop_spinner()
 
-        width = 24
-        height = 24
+        if success:
+            kdialog = KanoDialog(
+                "Excellent, you're connected!",
+                "You can talk to the world",
+                parent_window=self.win
+            )
+            kdialog.run()
+            Gtk.main_quit()
 
-        icons_path = os.path.join(common_images_dir, 'icons.png')
-
-        tick_pixbuf = GdkPixbuf.Pixbuf.new_from_file(icons_path)
-
-        tick_pixbuf = tick_pixbuf.new_subpixbuf(5 * 24, 0, width, height)
-        tick_image = Gtk.Image()
-        tick_image.set_from_pixbuf(tick_pixbuf)
-
-        return tick_image
+        else:
+            self.win.remove_main_widget()
+            PasswordScreen(self.win, self.wiface, self.selected_network, first_attempt=False)
 
 
 if __name__ == '__main__':
@@ -412,5 +555,4 @@ if __name__ == '__main__':
 
     win = KanoWifiGui()
     win.connect("delete-event", Gtk.main_quit)
-    win.show_all()
     Gtk.main()

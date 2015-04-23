@@ -4,12 +4,26 @@
     background: #ffffff;
 }
 
-.network_btn.label {
-    font: Bariol 14;
-    color: #555555;
-    padding: 0px 10px;
+.network_btn GtkLabel {
+    font: Bariol Bold 14;
+    color: #222222;
+    padding: 5px 10px;
 }
 
 .network_btn.selected {
-    background: #eeeeee;
+    background: @kano_orange;
+}
+
+.network_btn.selected GtkLabel {
+    color: #ffffff;
+}
+
+.refresh_btn, .refresh_btn:hover {
+    background: transparent;
+}
+
+GtkScrolledWindow.border {
+    border-width: 2px;
+    border-color: #dddddd;
+    border-style: solid;
 }
