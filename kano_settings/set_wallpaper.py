@@ -22,15 +22,11 @@ name_pattern = "-4-3.png"
 
 
 class SetWallpaper(ScrolledWindowTemplate):
-    def __init__(self, win):
+    def __init__(self, win, header='Choose a background',
+                 subheader=''):
         # This simply is a Gtk.Box with a heading, scrolledwindow and green
         # kano button and optionally an orange link
-        ScrolledWindowTemplate.__init__(
-            self,
-            'Choose your Wallpaper',
-            '',
-            'CHANGE WALLPAPER'
-        )
+        ScrolledWindowTemplate.__init__(self, header, subheader, 'CHOOSE')
 
         self.win = win
 
@@ -186,11 +182,11 @@ class WallpaperTable(ImageTable):
         # In turn, add the default, unlocked, and finally locked wallpapers
         # using a separate list to account for ordering
         for name, attributes in self.images.iteritems():
-            if 'background' in name:
+            if 'kanux-background' in name:
                 self.add_to_button_list(name, True)
 
         for name, attributes in self.images.iteritems():
-            if attributes['unlocked'] and 'background' not in name:
+            if attributes['unlocked'] and 'kanux-background' not in name:
                 self.add_to_button_list(name, True)
 
         for name, attributes in self.images.iteritems():
@@ -234,3 +230,50 @@ class WallpaperTable(ImageTable):
 
     def get_path(self, name):
         return self.images[name]['path']
+
+
+class FirstBootSetWallpaper(SetWallpaper):
+    def __init__(self, win):
+        SetWallpaper.__init__(self, win,
+                              header='Yes! You built your desktop.',
+                              subheader='New backgrounds unlocked! Level up to get more.')
+        self.win.set_main_widget(self)
+
+        self.sw.set_margin_bottom(20)
+        self.sw.set_margin_top(25)
+        self.sw.set_margin_left(25)
+        self.sw.set_margin_right(25)
+        self.win.set_size_request(680, 600)
+
+        self.win.show_all()
+
+    def apply_changes(self, button, event):
+        SetWallpaper.apply_changes(self, button, event)
+        Gtk.main_quit()
+#
+#        Gtk.Notebook.__init__(self)
+#
+#        background = Gtk.EventBox()
+#        background.get_style_context().add_class('set_appearance_window')
+#        background.add(self)
+#
+#        self.win = win
+#        self.win.set_main_widget(background)
+#        self.win.top_bar.enable_prev()
+#        self.win.change_prev_callback(self.win.go_to_home)
+#
+#        # Modify set_wallpaper so it doesn't add itself to the window
+#        wallpaper_widget = SetWallpaper(self.win)
+#        screensaver_widget = SetScreensaver(self.win)
+#        reset_widget = SetResetDesktop(self.win)
+#
+#        wallpaper_label = Gtk.Label('WALLPAPER')
+#        screensaver_label = Gtk.Label('SCREENSAVER')
+#        general_label = Gtk.Label('GENERAL')
+#
+#        # Add the screensaver and wallpaper tabs
+#        self.append_page(wallpaper_widget, wallpaper_label)
+#        self.append_page(screensaver_widget, screensaver_label)
+#        self.append_page(reset_widget, general_label)
+#
+#        self.win.show_all()

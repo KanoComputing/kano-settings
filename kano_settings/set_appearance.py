@@ -37,7 +37,7 @@ class SetAppearance(Gtk.Notebook):
         screensaver_widget = SetScreensaver(self.win)
         reset_widget = SetResetDesktop(self.win)
 
-        wallpaper_label = Gtk.Label('WALLPAPER')
+        wallpaper_label = Gtk.Label('BACKGROUND')
         screensaver_label = Gtk.Label('SCREENSAVER')
         general_label = Gtk.Label('GENERAL')
 
