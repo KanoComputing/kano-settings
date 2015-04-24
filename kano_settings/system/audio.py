@@ -14,14 +14,16 @@ from kano.utils import run_cmd
 from kano.logging import logger
 
 
-analogue_cmd = "amixer -c 0 cset numid=3 1"
-analogue_string = ": values=1"
+amixer_control = "name='PCM Playback Route'"
 
-hdmi_cmd = "amixer -c 0 cset numid=3 2"
-hdmi_string = ": values=2"
+analogue_value = 1
+hdmi_value = 2
+hdmi_string = ": values={}".format(hdmi_value)
 
 store_cmd = "service alsa-utils restart"
-amixer_get_cmd = "amixer -c 0 cget numid=3"
+amixer_set_cmd = "amixer -c 0 cset {control} {value}".format(
+    control=amixer_control)
+amixer_get_cmd = "amixer -c 0 cget {control}".format(control=amixer_control)
 
 try:
     from kano_settings.system.display import get_edid
@@ -40,12 +42,12 @@ def set_to_HDMI(HDMI):
 
     # These are the changes we'll apply if they have changed from what they were
     if HDMI:
-        amixer_cmd = hdmi_cmd
+        amixer_cmd = amixer_set_cmd.format(value=hdmi_value)
         set_config_value("hdmi_ignore_edid_audio", None)
         set_config_value("hdmi_drive", 2)
         config = "HDMI"
     else:
-        amixer_cmd = analogue_cmd
+        amixer_cmd = amixer_set_cmd.format(value=analogue_value)
         set_config_value("hdmi_ignore_edid_audio", 1)
         set_config_value("hdmi_drive", None)
         config = "Analogue"
@@ -70,14 +72,15 @@ def is_HDMI():
     if rc:
         logger.warning("error from amixer: {} {} {}".format(amixer_string, e, rc))
 
-    if amixer_string.find(analogue_string) != -1:
-        # Make sure config file is up to date
-        if get_setting('Audio') != 'Analogue':
-            set_setting('Audio', "Analogue")
-        return False
-
-    elif amixer_string.find(hdmi_string) != -1:
+    if amixer_string.find(hdmi_string) != -1:
         # Make sure config file is up to date
         if get_setting('Audio') != 'HDMI':
             set_setting('Audio', "HDMI")
         return True
+
+    # Default to Analogue
+    else:
+        # Make sure config file is up to date
+        if get_setting('Audio') != 'Analogue':
+            set_setting('Audio', "Analogue")
+        return False
