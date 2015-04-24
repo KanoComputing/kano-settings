@@ -19,7 +19,7 @@ if __name__ == '__main__' and __package__ is None:
         sys.path.insert(1, dir_path)
 
 import kano_settings.common as common
-from kano_settings.home_screen import HomeScreen
+from kano_settings.home_screen import HomeScreen, UnknownScreenError
 from kano.network import is_internet
 from kano.gtk3.apply_styles import apply_styling_to_screen, apply_common_to_screen
 from kano.gtk3.application_window import ApplicationWindow
@@ -153,7 +153,7 @@ if __name__ == "__main__":
         try:
             init_state = int(sys.argv[1])
             main(init_state)
-        except:
+        except UnknownScreenError:
             exit("Error: incorrect argument")
 
     else:

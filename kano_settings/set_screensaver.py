@@ -51,6 +51,7 @@ class SetScreensaver(ScrolledWindowTemplate):
         self.kano_button.set_sensitive(False)
         self.table.connect('image_selected', self.enable_kano_button)
         self.kano_button.connect('button-release-event', self.apply_changes)
+        self.kano_button.set_margin(10, 0, 20, 0)
 
     def go_to_advanced(self, widget=None, event=None):
         self.win.remove_main_widget()

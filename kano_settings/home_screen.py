@@ -21,6 +21,7 @@ from kano_settings.set_account import SetAccount
 from kano_settings.set_about import SetAbout
 from kano_settings.set_advanced import SetAdvanced
 from kano_settings.set_appearance import SetAppearance
+from kano_settings.set_wallpaper import FirstBootSetWallpaper
 
 import kano_settings.common as common
 from kano_settings.components.menu_button import Menu_button
@@ -28,6 +29,10 @@ from kano_settings.config_file import get_setting
 
 from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.utils import get_user_unsudoed
+
+
+class UnknownScreenError(Exception):
+    pass
 
 
 class HomeScreen(Gtk.Box):
@@ -41,7 +46,11 @@ class HomeScreen(Gtk.Box):
     def __init__(self, win, screen_number=None):
         # Check if we want to initialise another window first
         if screen_number is not None:
-            self.state_to_widget(screen_number)(win)
+            try:
+                self.state_to_widget(screen_number)(win)
+            except KeyError:
+                msg = "State {} not recognised".format(screen_number)
+                raise UnknownScreenError(msg)
             return
 
         Gtk.Box.__init__(self)
@@ -187,4 +196,5 @@ class HomeScreen(Gtk.Box):
             11: SetNotifications,
             12: NoInternet,
             13: SetProxy,
+            14: FirstBootSetWallpaper
         }[x]

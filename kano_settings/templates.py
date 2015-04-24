@@ -48,7 +48,7 @@ class ScrolledWindowTemplate(Gtk.Box):
         self.kano_button.pack_and_align()
 
         self.pack_start(self.title.container, False, False, 0)
-        self.pack_start(self.sw, False, False, 0)
+        self.pack_start(self.sw, True, True, 0)
 
         if orange_button_text:
             box_align = Gtk.Alignment(xscale=0, xalign=0.5)
