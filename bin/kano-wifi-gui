@@ -496,14 +496,14 @@ class PasswordScreen(Gtk.Box):
         self.connect_btn.set_margin_right(100)
         self.connect_btn.set_margin_left(100)
 
-        browser_login = OrangeButton("Browser Login")
-        browser_login.connect("clicked", launch_chromium)
-        proxy_login = OrangeButton("Proxy")
-        proxy_login.connect("clicked", self.launch_proxy)
+        self.browser_login = OrangeButton("Browser Login")
+        self.browser_login.connect("clicked", launch_chromium)
+        self.proxy_login = OrangeButton("Proxy")
+        self.proxy_login.connect("clicked", self.launch_proxy)
 
         orange_link_box = Gtk.Box()
-        orange_link_box.pack_start(browser_login, True, False, 0)
-        orange_link_box.pack_start(proxy_login, True, False, 0)
+        orange_link_box.pack_start(self.browser_login, True, False, 0)
+        orange_link_box.pack_start(self.proxy_login, True, False, 0)
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.add(vbox)
@@ -542,6 +542,9 @@ class PasswordScreen(Gtk.Box):
         logger.debug('Connecting to {}'.format(ssid))
         # disable the buttons
         self.connect_btn.set_sensitive(False)
+        self.browser_login.set_sensitive(False)
+        self.proxy_login.set_sensitive(False)
+        self.win.top_bar.prev_button.set_sensitive(False)
         self.connect_btn.start_spinner()
 
         # start thread
@@ -566,6 +569,9 @@ class PasswordScreen(Gtk.Box):
     def _thread_finish(self, success):
         self.connect_btn.stop_spinner()
         self.connect_btn.set_sensitive(True)
+        self.browser_login.set_sensitive(True)
+        self.proxy_login.set_sensitive(True)
+        self.win.top_bar.prev_button.set_sensitive(True)
 
         if success:
             kdialog = KanoDialog(
