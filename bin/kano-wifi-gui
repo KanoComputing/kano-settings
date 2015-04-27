@@ -483,15 +483,15 @@ class PasswordScreen(Gtk.Box):
 
         padlock_image = Gtk.Image.new_from_file(image_path)
 
-        entry = Gtk.Entry()
-        entry.set_visibility(False)
-        entry.set_margin_left(60)
-        entry.set_margin_right(60)
-        entry.connect("key-release-event", self.set_button_sensitive)
+        self.password_entry = Gtk.Entry()
+        self.password_entry.set_visibility(False)
+        self.password_entry.set_margin_left(60)
+        self.password_entry.set_margin_right(60)
+        self.password_entry.connect("key-release-event", self.set_button_sensitive)
 
         # TODO: fix this, this is largely repeated code
         self.connect_btn = KanoButton("CONNECT")
-        self.connect_btn.connect('clicked', self.on_connect, entry)
+        self.connect_btn.connect('clicked', self.on_connect)
         self.connect_btn.set_sensitive(False)
         self.connect_btn.set_margin_right(100)
         self.connect_btn.set_margin_left(100)
@@ -505,20 +505,30 @@ class PasswordScreen(Gtk.Box):
         orange_link_box.pack_start(self.browser_login, True, False, 0)
         orange_link_box.pack_start(self.proxy_login, True, False, 0)
 
+        self.show_password = Gtk.CheckButton.new_with_label("Show password")
+        self.show_password.get_style_context().add_class("show_password")
+        self.show_password.connect("toggled", self.make_password_entry_visible)
+        self.show_password.set_margin_left(100)
+
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.add(vbox)
 
-        vbox.set_spacing(20)
-        vbox.pack_start(heading.container, False, False, 0)
-        vbox.pack_start(padlock_image, False, False, 0)
-        vbox.pack_start(entry, False, False, 0)
-        vbox.pack_start(orange_link_box, False, False, 0)
+        vbox.pack_start(heading.container, False, False, 10)
+        vbox.pack_start(padlock_image, False, False, 10)
+        vbox.pack_start(self.password_entry, False, False, 10)
+        # TODO: not convinced this is needed
+        # vbox.pack_start(orange_link_box, False, False, 10)
+        vbox.pack_start(self.show_password, False, False, 10)
         vbox.pack_end(self.connect_btn, False, False, 40)
 
         # Entry should have the keyboard focus
-        entry.grab_focus()
+        self.password_entry.grab_focus()
 
         self.show_all()
+
+    def make_password_entry_visible(self, widget):
+        visibility = self.show_password.get_active()
+        self.password_entry.set_visibility(visibility)
 
     def go_to_wifi_screen(self, widget=None, event=None):
         self.win.remove_main_widget()
@@ -528,11 +538,11 @@ class PasswordScreen(Gtk.Box):
         os.system("kano-settings 13")
 
     # TODO: This is largely repeated code
-    def on_connect(self, widget, entry):
+    def on_connect(self, widget):
         '''This is the cb attached to the button widget
         '''
         essid = self.selected_network['essid']
-        passphrase = entry.get_text()
+        passphrase = self.password_entry.get_text()
         wpa = self.selected_network['encryption']
         self._connect_(essid, passphrase, wpa)
 
