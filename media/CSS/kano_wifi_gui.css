@@ -27,3 +27,13 @@ GtkScrolledWindow.border {
     border-color: #dddddd;
     border-style: solid;
 }
+
+.grey {
+    color: #dddddd;
+    background: #dddddd;
+}
+
+.white {
+    color: #ffffff;
+    background: #ffffff;
+}

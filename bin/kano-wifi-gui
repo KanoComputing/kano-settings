@@ -267,20 +267,40 @@ class ConnectWiFi(Gtk.Box):
         sw.apply_styling_to_widget()
         sw.set_size_request(-1, 200)
         sw.add(self.network_box)
-        sw.set_margin_right(30)
-        sw.set_margin_left(30)
-        sw.set_margin_bottom(20)
-        sw.set_margin_top(10)
+
+        # Pack the scrolled window into an event box to give the illusion of a border
+        sw_border = self.add_border_to_widget(sw)
+        sw_border.set_margin_right(30)
+        sw_border.set_margin_left(30)
+        sw_border.set_margin_bottom(20)
+        sw_border.set_margin_top(10)
 
         # Then pack all the elements into the vbox
         vbox.pack_start(self.heading.container, False, False, 0)
-        vbox.pack_start(sw, False, False, 0)
+        vbox.pack_start(sw_border, False, False, 0)
 
         # Pack in the refresh connect buttons
         button_box = self.create_refresh_connect_buttons()
         vbox.pack_end(button_box, False, False, 30)
 
         return vbox
+
+    def add_border_to_widget(self, widget):
+        white_foreground = Gtk.EventBox()
+        white_foreground.get_style_context().add_class("white")
+        white_foreground.set_margin_left(3)
+        white_foreground.set_margin_bottom(3)
+        white_foreground.set_margin_top(3)
+        white_foreground.set_margin_right(3)
+
+        # Pack the scrolled window into an event box to give the illusion of a border
+        grey_border = Gtk.EventBox()
+        grey_border.get_style_context().add_class("grey")
+        grey_border.add(white_foreground)
+
+        white_foreground.add(widget)
+
+        return grey_border
 
     def create_refresh_connect_buttons(self):
         self.connect_btn = KanoButton('CONNECT')
