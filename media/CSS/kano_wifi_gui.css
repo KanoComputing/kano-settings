@@ -10,6 +10,11 @@
     padding: 5px 10px;
 }
 
+.no_networks_label {
+    font: Bariol Bold 16;
+    color: #222222;
+}
+
 .network_btn.selected {
     background: @kano_orange;
 }

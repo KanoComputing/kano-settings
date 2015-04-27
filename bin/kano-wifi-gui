@@ -220,6 +220,17 @@ class ConnectWiFi(Gtk.Box):
         image_path = os.path.join(common.media,
                                   "Icons/kano-wifi-gui/padlock.png")
 
+        # If the network list is empty, display a message to show it's not
+        # broken
+        if not len(self.network_list):
+            no_networks_label = Gtk.Label("No networks detected!")
+            no_networks_label.get_style_context().add_class('no_networks_label')
+            no_networks_label.set_margin_top(80)
+            self.network_box.pack_start(no_networks_label, False, False, 0)
+            self.show_all()
+            return
+
+        # Otherwise, pack the networks into the scrolled window
         for network in self.network_list:
 
             # Network selection must be able to receive events
