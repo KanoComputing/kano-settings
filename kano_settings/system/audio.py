@@ -21,7 +21,7 @@ hdmi_value = 2
 hdmi_string = ": values={}".format(hdmi_value)
 
 store_cmd = "service alsa-utils restart"
-amixer_set_cmd = "amixer -c 0 cset {control} {value}".format(
+amixer_set_cmd = "amixer -c 0 cset {control} {{value}}".format(
     control=amixer_control)
 amixer_get_cmd = "amixer -c 0 cget {control}".format(control=amixer_control)
 
