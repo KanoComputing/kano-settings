@@ -482,6 +482,9 @@ class PasswordScreen(Gtk.Box):
         vbox.pack_start(orange_link_box, False, False, 0)
         vbox.pack_end(self.connect_btn, False, False, 40)
 
+        # Entry should have the keyboard focus
+        entry.grab_focus()
+
         self.show_all()
 
     def go_to_wifi_screen(self, widget=None, event=None):
