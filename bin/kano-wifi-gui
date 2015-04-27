@@ -132,6 +132,7 @@ class SpinnerScreen(Gtk.Box):
 
     # wiface is only here to pass onto the ConnectWifi screen
     def __init__(self, win, wiface):
+
         self.win = win
         self.win.top_bar.disable_prev()
         self.wiface = wiface
@@ -276,10 +277,11 @@ class ConnectWiFi(Gtk.Box):
         # For now, pack the network into a scrolled window
         sw = ScrolledWindow()
         sw.apply_styling_to_widget()
-        sw.set_size_request(-1, 200)
+        sw.set_size_request(-1, 215)
         sw.add(self.network_box)
 
-        # Pack the scrolled window into an event box to give the illusion of a border
+        # Pack the scrolled window into an event box to give the illusion of a
+        # border
         sw_border = self.add_border_to_widget(sw)
         sw_border.set_margin_right(30)
         sw_border.set_margin_left(30)
@@ -428,9 +430,9 @@ class ConnectWiFi(Gtk.Box):
         GObject.idle_add(self._thread_finish, success)
 
     def _thread_finish(self, success):
-        self.connect_btn.set_sensitive(True)
         self.connect_btn.stop_spinner()
-        self.refresh_btn.set_sensitive(False)
+        self.connect_btn.set_sensitive(True)
+        self.refresh_btn.set_sensitive(True)
 
         if success:
             kdialog = KanoDialog(
@@ -562,8 +564,8 @@ class PasswordScreen(Gtk.Box):
         self.connect_btn.set_sensitive(True)
 
     def _thread_finish(self, success):
-        self.connect_btn.set_sensitive(True)
         self.connect_btn.stop_spinner()
+        self.connect_btn.set_sensitive(True)
 
         if success:
             kdialog = KanoDialog(
