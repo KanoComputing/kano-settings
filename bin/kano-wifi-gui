@@ -12,15 +12,7 @@
 import sys
 import os
 import threading
-
 from gi.repository import Gtk, GObject, GdkPixbuf
-
-if __name__ == '__main__' and __package__ is None:
-    dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-    if dir_path != '/usr':
-        sys.path.insert(0, dir_path)
-    else:
-        locale_path = None
 
 from kano.gtk3.application_window import ApplicationWindow
 from kano.gtk3.heading import Heading
@@ -40,7 +32,7 @@ from kano.network import (IWList, connect, is_internet, is_connected,
 
 
 class KanoWifiGui(ApplicationWindow):
-    CSS_PATH = common.media + '/CSS/kano_wifi_gui.css'
+    CSS_PATH = '/usr/lib/python2.7/dist-packages/kano_wifi_gui/CSS/kano_wifi_gui.css'
     width = 350
     height = 450
 
