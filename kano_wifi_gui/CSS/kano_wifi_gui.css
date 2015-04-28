@@ -33,6 +33,11 @@ GtkScrolledWindow.border {
     border-style: solid;
 }
 
+.password_entry {
+    font: Bariol Bold 15;
+    color: #222222;
+}
+
 .show_password GtkLabel {
     color: @kano_orange;
     font: Bariol bold 13;

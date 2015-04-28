@@ -17,7 +17,7 @@ from gi.repository import Gtk, GObject, GdkPixbuf
 from kano.gtk3.application_window import ApplicationWindow
 from kano.gtk3.heading import Heading
 from kano.gtk3.scrolled_window import ScrolledWindow
-from kano.gtk3.buttons import KanoButton, OrangeButton
+from kano.gtk3.buttons import KanoButton
 from kano.gtk3.top_bar import TopBar
 from kano.gtk3.kano_dialog import KanoDialog
 from kano.gtk3.apply_styles import (
@@ -28,10 +28,11 @@ from kano_wifi_gui.misc import tick_icon
 from kano.logging import logger
 import kano_settings.common as common
 from kano.network import (IWList, connect, is_internet, is_connected,
-                          launch_chromium, is_ethernet_plugged, is_device)
+                          is_ethernet_plugged, is_device)
 
 
 class KanoWifiGui(ApplicationWindow):
+    # Annoying hard coded path, remove this
     CSS_PATH = '/usr/lib/python2.7/dist-packages/kano_wifi_gui/CSS/kano_wifi_gui.css'
     width = 350
     height = 450
@@ -48,9 +49,9 @@ class KanoWifiGui(ApplicationWindow):
         apply_styling_to_screen(self.CSS_PATH)
 
         # Set window
-        ApplicationWindow.__init__(self, "Kano Wifi", self.width, self.height)
+        ApplicationWindow.__init__(self, "Kano WiFi", self.width, self.height)
         self.set_decorated(True)
-        self.top_bar = TopBar("Kano Wifi")
+        self.top_bar = TopBar("Kano WiFi")
         self.top_bar.set_prev_callback(self.go_to_spinner_screen)
         self.prev_handler = None
         self.set_titlebar(self.top_bar)
@@ -477,6 +478,7 @@ class PasswordScreen(Gtk.Box):
 
         self.password_entry = Gtk.Entry()
         self.password_entry.set_visibility(False)
+        self.password_entry.get_style_context().add_class("password_entry")
         self.password_entry.set_margin_left(60)
         self.password_entry.set_margin_right(60)
         self.password_entry.connect("key-release-event", self.set_button_sensitive)
@@ -488,18 +490,10 @@ class PasswordScreen(Gtk.Box):
         self.connect_btn.set_margin_right(100)
         self.connect_btn.set_margin_left(100)
 
-        self.browser_login = OrangeButton("Browser Login")
-        self.browser_login.connect("clicked", launch_chromium)
-        self.proxy_login = OrangeButton("Proxy")
-        self.proxy_login.connect("clicked", self.launch_proxy)
-
-        orange_link_box = Gtk.Box()
-        orange_link_box.pack_start(self.browser_login, True, False, 0)
-        orange_link_box.pack_start(self.proxy_login, True, False, 0)
-
         self.show_password = Gtk.CheckButton.new_with_label("Show password")
         self.show_password.get_style_context().add_class("show_password")
         self.show_password.connect("toggled", self.make_password_entry_visible)
+        self.show_password.set_active(True)
         self.show_password.set_margin_left(100)
 
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
@@ -508,8 +502,6 @@ class PasswordScreen(Gtk.Box):
         vbox.pack_start(heading.container, False, False, 10)
         vbox.pack_start(padlock_image, False, False, 10)
         vbox.pack_start(self.password_entry, False, False, 10)
-        # TODO: not convinced this is needed
-        # vbox.pack_start(orange_link_box, False, False, 10)
         vbox.pack_start(self.show_password, False, False, 10)
         vbox.pack_end(self.connect_btn, False, False, 40)
 
@@ -525,9 +517,6 @@ class PasswordScreen(Gtk.Box):
     def go_to_wifi_screen(self, widget=None, event=None):
         self.win.remove_main_widget()
         SpinnerScreen(self.win, self.wiface)
-
-    def launch_proxy(self, widget):
-        os.system("kano-settings 13")
 
     # TODO: This is largely repeated code
     def on_connect(self, widget):
