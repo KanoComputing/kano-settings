@@ -235,6 +235,7 @@ class ConnectWiFi(Gtk.Box):
             box = Gtk.Box()
             network_btn.add(box)
             network_btn.get_style_context().add_class("network_btn")
+            attach_cursor_events(network_btn)
 
             # Box must contain label of the network name
             label = Gtk.Label(network['essid'])
@@ -254,7 +255,8 @@ class ConnectWiFi(Gtk.Box):
             # Pack into the GUI for the networks
             self.network_box.pack_start(network_btn, False, False, 0)
             self.network_btns.append(network_btn)
-            self.show_all()
+
+        self.show_all()
 
     def create_box(self):
         '''Show the screen with the different wifi networks

@@ -10,6 +10,10 @@
     padding: 5px 10px;
 }
 
+.network_btn:hover {
+    background: #eeeeee;
+}
+
 .no_networks_label {
     font: Bariol Bold 16;
     color: #222222;
