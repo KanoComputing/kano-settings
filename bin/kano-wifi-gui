@@ -466,8 +466,10 @@ class PasswordScreen(Gtk.Box):
 
         self.selected_network = selected_network
         network_name = self.selected_network['essid']
-        heading = Heading("Connect to {}".format(network_name),
-                          "Enter the password")
+        heading = Heading("Connect to the network",
+                          network_name)
+        heading.container.set_margin_right(20)
+        heading.container.set_margin_left(20)
 
         if first_attempt:
             image_path = os.path.join(common.media, "Icons/kano-wifi-gui/password.png")
@@ -477,6 +479,7 @@ class PasswordScreen(Gtk.Box):
         padlock_image = Gtk.Image.new_from_file(image_path)
 
         self.password_entry = Gtk.Entry()
+        self.password_entry.set_placeholder_text("Password")
         self.password_entry.set_visibility(False)
         self.password_entry.get_style_context().add_class("password_entry")
         self.password_entry.set_margin_left(60)
