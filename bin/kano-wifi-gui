@@ -28,7 +28,7 @@ from kano_wifi_gui.misc import tick_icon
 from kano.logging import logger
 import kano_settings.common as common
 from kano.network import (IWList, connect, is_internet, is_connected,
-                          is_ethernet_plugged, is_device)
+                          is_ethernet_plugged, is_device, KwifiCache)
 
 
 class KanoWifiGui(ApplicationWindow):
@@ -421,7 +421,15 @@ class ConnectWiFi(Gtk.Box):
         '''This function runs in a thread so we can run a spinner alongside.
         '''
         success = connect(self.wiface, ssid, encryption, passphrase)
-        logger.debug('Connecting to {} {} {}. Sucessful: {}'.format(ssid, encryption, passphrase, success))
+
+        # save the connection in cache so it reconnects on next system boot
+        wificache = KwifiCache()
+        if success:
+            wificache.save(ssid, encryption, passphrase)
+        else:
+            wificache.empty()
+
+        logger.debug('Connecting to {} {} {}. Successful: {}'.format(ssid, encryption, passphrase, success))
         GObject.idle_add(self._thread_finish, success)
 
     def _thread_finish(self, success):
@@ -554,7 +562,15 @@ class PasswordScreen(Gtk.Box):
         '''This function runs in a thread so we can run a spinner alongside.
         '''
         success = connect(self.wiface, ssid, encryption, passphrase)
-        logger.debug('Connecting to {} {} {}. Sucessful: {}'.format(ssid, encryption, passphrase, success))
+
+        # save the connection in cache so it reconnects on next system boot
+        wificache = KwifiCache()
+        if success:
+            wificache.save(ssid, encryption, passphrase)
+        else:
+            wificache.empty()
+
+        logger.debug('Connecting to {} {} {}. Successful: {}'.format(ssid, encryption, passphrase, success))
         GObject.idle_add(self._thread_finish, success)
 
     def set_button_sensitive(self, widget, event):
