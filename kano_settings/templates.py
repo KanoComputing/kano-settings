@@ -217,3 +217,36 @@ class EditableList(Gtk.Grid):
         state = len(self.edit_list_store) != 0
 
         self._rm_btn.set_sensitive(state)
+
+
+class TwoButtonTemplate(Gtk.Box):
+    def __init__(self, title, description, left_btn_text, right_btn_text, buttons_shown):
+        Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
+
+        self.title = Heading(title, description)
+        self.title.container.set_margin_bottom(0)
+
+        self.sw = ScrolledWindow()
+        self.sw.apply_styling_to_widget(wide=False)
+
+        self.left_button = KanoButton(left_btn_text, color="orange")
+        self.right_button = KanoButton(right_btn_text, color="green")
+
+        kano_button_box = Gtk.ButtonBox()
+        kano_button_box.set_layout(Gtk.ButtonBoxStyle.CENTER)
+        kano_button_box.set_spacing(20)
+
+        if buttons_shown == 2:
+            kano_button_box.pack_start(self.left_button, False, False, 0)
+
+        kano_button_box.pack_start(self.right_button, False, False, 0)
+
+        self.pack_start(self.title.container, False, False, 0)
+        self.pack_start(self.sw, True, True, 0)
+        self.pack_end(kano_button_box, False, False, 0)
+
+    def get_right_button(self):
+        return self.right_button
+
+    def get_left_button(self):
+        return self.left_button
