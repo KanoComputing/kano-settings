@@ -8,12 +8,12 @@
 
 import os
 from gi.repository import Gtk, GdkPixbuf, Gdk
-from .config_file import set_setting
+from .config_file import set_setting, get_setting
 from kano_profile.badges import calculate_badges
 from kano_settings.config_file import username
 from kano_settings.system.wallpaper import change_wallpaper
 from kano_settings.image_table import ImageTable
-from kano_settings.templates import ScrolledWindowTemplate
+from kano_settings.templates import TwoButtonTemplate
 
 wallpaper_path = "/usr/share/kano-desktop/wallpapers/"
 kano_draw_path = os.path.join('/home', username, 'Draw-content/wallpapers/')
@@ -21,18 +21,24 @@ padlock_path = "/usr/share/kano-settings/media/Icons/padlock.png"  # needs to be
 name_pattern = "-4-3.png"
 
 
-class SetWallpaper(ScrolledWindowTemplate):
+class SetWallpaper(TwoButtonTemplate):
     def __init__(self, win, header='Choose a background',
-                 subheader=''):
+                 subheader='', buttons_shown=1):
         # This simply is a Gtk.Box with a heading, scrolledwindow and green
         # kano button and optionally an orange link
-        ScrolledWindowTemplate.__init__(self, header, subheader, 'CHOOSE')
+        TwoButtonTemplate.__init__(self, header, subheader, 'TRY', 'CHOOSE', buttons_shown)
 
         self.win = win
 
-        self.kano_button.connect("button-release-event", self.apply_changes)
-        self.kano_button.connect("key-release-event", self.apply_changes)
-        self.kano_button.set_margin(10, 0, 20, 0)
+        # This isn't that neccessary for this screen, but is useful for the
+        # the first screen
+        self.left_button.set_sensitive(False)
+        self.left_button.set_margin(10, 0, 20, 0)
+        self.left_button.connect("button-release-event", self.set_wallpaper)
+
+        self.right_button.set_margin(10, 0, 20, 0)
+        self.right_button.set_sensitive(False)
+        self.right_button.connect("button-release-event", self.apply_changes)
 
         # Initialise table
         self.table = WallpaperTable()
@@ -41,10 +47,7 @@ class SetWallpaper(ScrolledWindowTemplate):
         self.sw.add_with_viewport(self.table)
         self.adjust_size_of_sw()
 
-        # Disable the Kano Button until they select a valid wallpaper
-        self.kano_button.set_sensitive(False)
-
-        self.table.connect('image_selected', self.enable_kano_button)
+        self.table.connect('image_selected', self.enable_kano_buttons)
 
     def adjust_size_of_sw(self):
         '''Make scrolled window tall enough to show a full number of rows and
@@ -57,25 +60,33 @@ class SetWallpaper(ScrolledWindowTemplate):
         )
         self.sw.set_size_request(-1, height)
 
+    # This is the callback linked to the right button
     def apply_changes(self, button, event):
-        '''On clicking the APPLY CHANGES/ SET WALLPAPER button, this
-        is the the function that is called
-        '''
-
-        # If enter key is pressed or mouse button is clicked
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
-
-            image_name = self.get_selected()
-            path = self.table.get_path(image_name)
-            change_wallpaper(path, image_name)
             self.update_config()
+
+        self.set_wallpaper(button, event)
+
+    # This is the callback linked to the left button
+    def set_wallpaper(self, button, event):
+        if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
+            image_name = self.get_selected()
+            self.set_wallpaper_by_image_name(image_name)
             self.table.unselect_all()
-            self.kano_button.set_sensitive(False)
+            self.left_button.set_sensitive(False)
+            self.right_button.set_sensitive(False)
+
+    def reset_wallpaper(self):
+        image_name = get_setting('Wallpaper')
+        self.set_wallpaper_by_image_name(image_name)
+
+    def set_wallpaper_by_image_name(self, image_name):
+        path = self.table.get_path(image_name)
+        change_wallpaper(path, image_name)
 
     def update_config(self):
         '''Add new configurations to config file.
         '''
-
         selected = self.get_selected()
         if selected:
             set_setting("Wallpaper", selected)
@@ -93,9 +104,11 @@ class SetWallpaper(ScrolledWindowTemplate):
 
         return self.table.get_selected()
 
-    def enable_kano_button(self, widget=None, event=None):
+    def enable_kano_buttons(self, widget=None, event=None):
         selected = self.table.get_selected()
-        self.kano_button.set_sensitive(selected is not None)
+        # self.kano_button.set_sensitive(selected is not None)
+        self.left_button.set_sensitive(selected is not None)
+        self.right_button.set_sensitive(selected is not None)
 
 
 class WallpaperTable(ImageTable):
@@ -236,7 +249,8 @@ class FirstBootSetWallpaper(SetWallpaper):
     def __init__(self, win):
         SetWallpaper.__init__(self, win,
                               header='Yes! You built your desktop.',
-                              subheader='New backgrounds unlocked! Level up to get more.')
+                              subheader='New backgrounds unlocked! Level up to get more.',
+                              buttons_shown=2)
         self.win.set_main_widget(self)
 
         self.sw.set_margin_bottom(20)
@@ -250,3 +264,12 @@ class FirstBootSetWallpaper(SetWallpaper):
     def apply_changes(self, button, event):
         SetWallpaper.apply_changes(self, button, event)
         Gtk.main_quit()
+
+
+if __name__ == "__main__":
+    win = Gtk.Window()
+    wallpaper = FirstBootSetWallpaper()
+
+    win.connect('delete-event', Gtk.main_quit)
+    win.add(wallpaper)
+    win.show_all()
