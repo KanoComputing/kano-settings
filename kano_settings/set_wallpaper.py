@@ -8,7 +8,7 @@
 
 import os
 from gi.repository import Gtk, GdkPixbuf, Gdk
-from .config_file import set_setting, get_setting
+from kano_settings.config_file import set_setting, get_setting
 from kano_profile.badges import calculate_badges
 from kano_settings.config_file import username
 from kano_settings.system.wallpaper import change_wallpaper
@@ -62,19 +62,19 @@ class SetWallpaper(TwoButtonTemplate):
 
     # This is the callback linked to the right button
     def apply_changes(self, button, event):
+        self.set_wallpaper(button, event)
+
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
             self.update_config()
-
-        self.set_wallpaper(button, event)
+            self.table.unselect_all()
+            self.right_button.set_sensitive(False)
 
     # This is the callback linked to the left button
     def set_wallpaper(self, button, event):
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
             image_name = self.get_selected()
             self.set_wallpaper_by_image_name(image_name)
-            self.table.unselect_all()
             self.left_button.set_sensitive(False)
-            self.right_button.set_sensitive(False)
 
     def reset_wallpaper(self):
         image_name = get_setting('Wallpaper')
@@ -267,9 +267,12 @@ class FirstBootSetWallpaper(SetWallpaper):
 
 
 if __name__ == "__main__":
-    win = Gtk.Window()
-    wallpaper = FirstBootSetWallpaper()
+    from kano.gtk3.application_window import ApplicationWindow
+
+    win = ApplicationWindow("blah", 10, 10)
+    wallpaper = FirstBootSetWallpaper(win)
 
     win.connect('delete-event', Gtk.main_quit)
-    win.add(wallpaper)
     win.show_all()
+
+    Gtk.main()
