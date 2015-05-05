@@ -6,7 +6,7 @@ bin/regenerate-ssh-keys /usr/bin
 bin/start-sentry-server /usr/bin
 
 kano_settings/* /usr/lib/python2.7/dist-packages/kano_settings
-media/* /usr/share/kano-settings/media
+media/kano-settings/* /usr/share/kano-settings/media
 
 icon/settings.app /usr/share/applications/
 icon/kano-settings.png /usr/share/icons/Kano/66x66/apps/
