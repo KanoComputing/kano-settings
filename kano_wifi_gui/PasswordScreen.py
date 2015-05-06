@@ -173,5 +173,3 @@ class PasswordScreen(Gtk.Box):
 
         else:
             self.wrong_password_screen()
-            # self.win.remove_main_widget()
-            # PasswordScreen(self.win, self.wiface, self.selected_network, first_attempt=False)
