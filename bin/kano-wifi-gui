@@ -62,16 +62,16 @@ class KanoWifiGui(ApplicationWindow):
         # check if a wifi dongle is plugged in
         if is_device(self.wiface):
 
-            # The spinner screen takes user through to the ConnectWifi screen
-            self.go_to_spinner_screen()
+            if is_internet():
+                self.you_have_internet_screen(wiface)
+            else:
+                # The spinner screen takes user through to the ConnectWifi screen
+                self.go_to_spinner_screen()
 
         else:
             if is_internet():
                 if is_ethernet_plugged():
                     self.you_are_connected_via_ethernet()
-                else:
-                    # this will never be hit
-                    self.you_have_internet_screen(wiface)
             else:
                 self.plug_in_wifi_dongle()
 
@@ -81,15 +81,15 @@ class KanoWifiGui(ApplicationWindow):
 
     def plug_in_wifi_dongle(self):
         kdialog = KanoDialog(
-            "You don't seem to have a wifi dongle plugged in",
-            "Plug one in and try again"
+            "You don't seem to have a wifi dongle plugged in.",
+            "Plug one in and try again."
         )
         kdialog.run()
         sys.exit(0)
 
     def you_are_connected_via_ethernet(self):
         kdialog = KanoDialog(
-            "You are already connected via ethernet"
+            "You are already connected via ethernet."
         )
         kdialog.run()
         sys.exit(0)

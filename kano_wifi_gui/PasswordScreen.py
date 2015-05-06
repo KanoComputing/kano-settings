@@ -5,6 +5,8 @@
 # Copyright (C) 2015 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
+# This is the screen where the user has chosen a network and needs to enter a
+# password for the network.
 
 import os
 import threading
@@ -33,17 +35,19 @@ class PasswordScreen(Gtk.Box):
 
         self.selected_network = selected_network
         network_name = self.selected_network['essid']
-        heading = Heading("Connect to the network",
-                          network_name)
+        heading = Heading("Connect to the network", network_name)
         heading.container.set_margin_right(20)
         heading.container.set_margin_left(20)
 
+        # If the user did not enter the correct password the first time,
+        # this screen will reload
         if first_attempt:
             image_path = os.path.join(media_dir, "kano-wifi-gui/password.png")
         else:
-            image_path = os.path.join(media_dir, "kano-wifi-gui/password-fail.png")
+            image_path = os.path.join(media_dir,
+                                      "kano-wifi-gui/password-fail.png")
 
-        padlock_image = Gtk.Image.new_from_file(image_path)
+        self.padlock_image = Gtk.Image.new_from_file(image_path)
 
         self.password_entry = Gtk.Entry()
         self.password_entry.set_placeholder_text("Password")
@@ -51,7 +55,8 @@ class PasswordScreen(Gtk.Box):
         self.password_entry.get_style_context().add_class("password_entry")
         self.password_entry.set_margin_left(60)
         self.password_entry.set_margin_right(60)
-        self.password_entry.connect("key-release-event", self.set_button_sensitive)
+        self.password_entry.connect("key-release-event",
+                                    self.set_button_sensitive)
 
         # TODO: fix this, this is largely repeated code
         self.connect_btn = KanoButton("CONNECT")
@@ -62,7 +67,8 @@ class PasswordScreen(Gtk.Box):
 
         self.show_password = Gtk.CheckButton.new_with_label("Show password")
         self.show_password.get_style_context().add_class("show_password")
-        self.show_password.connect("toggled", self.make_password_entry_visible)
+        self.show_password.connect("toggled",
+                                   self.change_password_entry_visiblity)
         self.show_password.set_active(True)
         self.show_password.set_margin_left(100)
 
@@ -70,7 +76,7 @@ class PasswordScreen(Gtk.Box):
         self.add(vbox)
 
         vbox.pack_start(heading.container, False, False, 10)
-        vbox.pack_start(padlock_image, False, False, 10)
+        vbox.pack_start(self.padlock_image, False, False, 10)
         vbox.pack_start(self.password_entry, False, False, 10)
         vbox.pack_start(self.show_password, False, False, 10)
         vbox.pack_end(self.connect_btn, False, False, 40)
@@ -80,7 +86,19 @@ class PasswordScreen(Gtk.Box):
 
         self.show_all()
 
-    def make_password_entry_visible(self, widget):
+    def wrong_password_screen(self):
+        '''Change the large padlock image on the screen, clear the password
+        entry and bring the text focus to the password entry.
+        '''
+        image_path = os.path.join(media_dir, "kano-wifi-gui/password-fail.png")
+        self.padlock_image.set_from_file(image_path)
+        self.password_entry.set_text("")
+        self.password_entry.grab_focus()
+
+    def change_password_entry_visiblity(self, widget):
+        '''Depending on the checkbox, change the writing in the
+        password entry to be readable.
+        '''
         visibility = self.show_password.get_active()
         self.password_entry.set_visibility(visibility)
 
@@ -130,7 +148,11 @@ class PasswordScreen(Gtk.Box):
         else:
             wificache.empty()
 
-        logger.debug('Connecting to {} {} {}. Successful: {}'.format(ssid, encryption, passphrase, success))
+        logger.debug(
+            'Connecting to {} {} {}. Successful: {}'.format(
+                ssid, encryption, passphrase, success
+            )
+        )
         GObject.idle_add(self._thread_finish, success)
 
     def set_button_sensitive(self, widget, event):
@@ -151,5 +173,6 @@ class PasswordScreen(Gtk.Box):
             Gtk.main_quit()
 
         else:
-            self.win.remove_main_widget()
-            PasswordScreen(self.win, self.wiface, self.selected_network, first_attempt=False)
+            self.wrong_password_screen()
+            # self.win.remove_main_widget()
+            # PasswordScreen(self.win, self.wiface, self.selected_network, first_attempt=False)

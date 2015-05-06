@@ -1,10 +1,11 @@
 #!/usr/bin/env python
 
-# ConnectWifi.py
+# NetworkScreen.py
 #
 # Copyright (C) 2015 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
+# This is the screen which shows all the networks detected.
 
 import os
 import threading
@@ -17,9 +18,6 @@ from kano.gtk3.kano_dialog import KanoDialog
 from kano.gtk3.cursor import attach_cursor_events
 from kano_wifi_gui.misc import tick_icon
 from kano.logging import logger
-
-# TODO: does this mean we have a circular dependency of kano-connect
-# and kano-settings?  Perhaps this should be moved.
 from kano_wifi_gui.paths import media_dir
 from kano_wifi_gui.PasswordScreen import PasswordScreen
 from kano.network import connect, is_connected, KwifiCache
@@ -57,7 +55,8 @@ class NetworkScreen(Gtk.Box):
         self._pack_networks()
 
     def _pack_networks(self):
-        '''Pack networks into the network_box
+        '''Display the networks on buttons that the user can select.
+        Pack these buttons into a grid networks into a box.
         '''
 
         self.network_btns = []
@@ -65,7 +64,6 @@ class NetworkScreen(Gtk.Box):
 
         image_path = os.path.join(media_dir,
                                   "kano-wifi-gui/padlock.png")
-        print "{} {}".format(image_path, os.path.exists(image_path))
 
         # If the network list is empty, display a message to show it's not
         # broken
@@ -127,6 +125,7 @@ class NetworkScreen(Gtk.Box):
         sw.apply_styling_to_widget()
         sw.set_size_request(-1, 215)
         sw.add(self.network_box)
+        sw.set_policy(Gtk.PolicyType.NEVER, Gtk.PolicyType.AUTOMATIC)
 
         # Pack the scrolled window into an event box to give the illusion of a
         # border
@@ -147,6 +146,11 @@ class NetworkScreen(Gtk.Box):
         return vbox
 
     def add_border_to_widget(self, widget):
+        '''Add a grey border to the widget that is entered as an argument.
+        This is done by creating a grey event box and packing a white box with
+        a margin in it.
+        '''
+
         white_foreground = Gtk.EventBox()
         white_foreground.get_style_context().add_class("white")
         white_foreground.set_margin_left(3)
@@ -164,6 +168,11 @@ class NetworkScreen(Gtk.Box):
         return grey_border
 
     def create_refresh_connect_buttons(self):
+        '''Create the buttons used for the refresh button and the
+        to connect to a network, and pack them into a button box.
+        Returns the button box.
+        '''
+
         self.connect_btn = KanoButton('CONNECT')
         self.connect_btn.connect('clicked', self.first_time_connect)
         self.connect_btn.set_sensitive(False)
@@ -181,7 +190,11 @@ class NetworkScreen(Gtk.Box):
         return buttonbox
 
     def create_refresh_button(self):
-        # Modify the refresh button so it's an icon
+        '''Create the refresh button. This it quite involved as you have
+        to pack an image into the button which need to change when the
+        cursor hovers over it, and change the cursor to be a
+        hand over it.
+        '''
         refresh_icon_filepath = os.path.join(
             media_dir, "kano-wifi-gui/refresh.png"
         )
@@ -192,26 +205,30 @@ class NetworkScreen(Gtk.Box):
         attach_cursor_events(refresh_btn)
 
         # These are here in case we want to change the icon on mouse over
-        refresh_btn.connect("enter-notify-event", self.choose_selected_icon)
-        refresh_btn.connect("leave-notify-event", self.choose_unselected_icon)
+        refresh_btn.connect("enter-notify-event", self.set_hover_icon)
+        refresh_btn.connect("leave-notify-event", self.set_normal_icon)
 
         refresh_btn.connect('clicked', self.go_to_spinner_screen)
         return refresh_btn
 
-    # These are callbacks so we have extra arguments
-    def choose_selected_icon(self, widget=None, event=None):
+    # This is linked to enter-notify-event, hence the extra arguments
+    def set_hover_icon(self, widget=None, event=None):
+        '''Change the refresh button's icon to the hover icon.
+        '''
         selected_path = os.path.join(media_dir, "kano-wifi-gui/rescan-hover.png")
         image = Gtk.Image.new_from_file(selected_path)
         self.refresh_btn.set_image(image)
 
-    def choose_unselected_icon(self, widget=None, event=None):
+    # This is linked to leave-notify-event, hence the extra arguments
+    def set_normal_icon(self, widget=None, event=None):
+        '''Change the refresh button's icon to the norma icon.
+        '''
         unselected_path = os.path.join(media_dir, "kano-wifi-gui/refresh.png")
         image = Gtk.Image.new_from_file(unselected_path)
         self.refresh_btn.set_image(image)
 
     def first_time_connect(self, widget=None):
-        '''
-        Check the selected network.  If a password is needed,
+        '''Check the selected network.  If a password is needed,
         take the user to the password screen.  Otherwise, try and connect.
         '''
         if self.selected_network['encryption'] == "off":
@@ -284,10 +301,16 @@ class NetworkScreen(Gtk.Box):
         else:
             wificache.empty()
 
-        logger.debug('Connecting to {} {} {}. Successful: {}'.format(ssid, encryption, passphrase, success))
+        logger.debug('Connecting to {} {} {}. Successful: {}'.format(
+            ssid, encryption, passphrase, success)
+        )
         GObject.idle_add(self._thread_finish, success)
 
     def _thread_finish(self, success):
+        '''When the thread finishes, stop the spinner, enable the buttons
+        and launch a dialog with an appropriate message depending on whether
+        the user successfully connected to the internet.
+        '''
         self.connect_btn.stop_spinner()
         self.connect_btn.set_sensitive(True)
         self.refresh_btn.set_sensitive(True)
