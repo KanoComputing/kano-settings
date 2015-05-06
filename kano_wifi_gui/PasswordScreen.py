@@ -21,8 +21,7 @@ from kano.network import connect, KwifiCache
 
 class PasswordScreen(Gtk.Box):
     def __init__(self, win, wiface, selected_network, first_attempt=True):
-        '''
-        Show the screen with the option of adding a password
+        '''Show the screen with the option of adding a password
         and connecting to a network
         '''
 

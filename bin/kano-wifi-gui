@@ -65,7 +65,7 @@ class KanoWifiGui(ApplicationWindow):
             if is_internet():
                 self.you_have_internet_screen(wiface)
             else:
-                # The spinner screen takes user through to the ConnectWifi screen
+                # The spinner screen takes user through to the SpinnerScreen
                 self.go_to_spinner_screen()
 
         else:

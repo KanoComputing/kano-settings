@@ -11,13 +11,8 @@ import threading
 from gi.repository import Gtk, GObject, GdkPixbuf
 
 from kano.gtk3.heading import Heading
-from kano.logging import logger
-
-# TODO: does this mean we have a circular dependency of kano-connect
-# and kano-settings?  Perhaps this should be moved.
-from kano_wifi_gui.paths import media_dir
 from kano.network import IWList
-
+from kano_wifi_gui.paths import media_dir
 from kano_wifi_gui.NetworkScreen import NetworkScreen
 
 
@@ -56,16 +51,10 @@ class SpinnerScreen(Gtk.Box):
 
         self.win.show_all()
 
-    # TODO: this is repeated. Fix.
     def scan_networks(self):
 
         # Perform a network re-scan
         network_list = IWList(self.wiface).getList(unsecure=False, first=False)
-
-        # TODO: this is always 7.  Not sure it should be.
-        logger.debug("network_list = {}".format(network_list))
-        logger.debug("Network list length = {}".format(len(network_list)))
-
         GObject.idle_add(self.go_to_wifi_screen, network_list)
 
     def go_to_wifi_screen(self, network_list):
