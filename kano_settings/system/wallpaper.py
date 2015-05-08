@@ -12,51 +12,53 @@
 from kano.logging import logger
 import os
 
-kdeskrc_home = "/home/{user}/.kdeskrc"
+KDESKRC_HOME = "/home/{user}/.kdeskrc"
 
 
 def change_wallpaper(path, name):
     logger.info('set_wallpaper / change_wallpaper image_name:{}'.format(name))
 
     # home directory
-    USER = os.environ['SUDO_USER']
-    deskrc_path = kdeskrc_home.format(user = USER)
+    user = os.environ['SUDO_USER']
+    deskrc_path = KDESKRC_HOME.format(user=user)
 
-    # Wallpaper selected
-    image_169 = "{}{}-16-9.png".format(path, name)
-    image_43 = "{}{}-4-3.png".format(path, name)
-    image_1024 = "{}{}-1024.png".format(path, name)
+    wallpapers = [
+        ('medium', os.path.join(path, "{}-16-9.png".format(name))),
+        ('4-3', os.path.join(path, "{}-4-3.png".format(name))),
+        ('16-9', os.path.join(path, "{}-1024.png".format(name)))
+    ]
+    conf_param_template = 'Background.File-{size}'
+    conf_params = dict()
 
-    # Look for the strings
+    for size, image in wallpapers:
+        conf_param = conf_param_template.format(size=size)
+        conf_params[conf_param] = "  {param}: {image}".format(param=conf_param,
+                                                              image=image)
+
     found = False
+    newlines = []
+
     if os.path.isfile(deskrc_path):
-        f = open(deskrc_path, 'r')
-        newlines = []
-        for line in f:
-            if "Background.File-medium:" in line:
-                line = "  Background.File-medium: {}\n".format(image_1024)
-                found = True
-            elif "Background.File-4-3:" in line:
-                line = "  Background.File-4-3: {}\n".format(image_43)
-            elif "Background.File-16-9:" in line:
-                line = "  Background.File-16-9: {}\n".format(image_169)
-            newlines.append(line)
-        f.close()
+        with open(deskrc_path, 'r') as kdesk_conf:
+            for kdesk_conf_line in kdesk_conf:
+                for conf_param, conf_line in conf_params.iteritems():
+                    if conf_param in kdesk_conf_line:
+                        kdesk_conf_line = conf_line
+                        found = True
+
+                newlines.append(kdesk_conf_line)
+
     if found:
-
         # Overwrite config file with new lines
-        outfile = open(deskrc_path, 'w')
-        outfile.writelines(newlines)
-        outfile.close()
-
-    # If not found add it
+        with open(deskrc_path, 'w') as outfile:
+            outfile.writelines(newlines)
     else:
+        # Not found so add it
         with open(deskrc_path, "a") as outfile:
-            outfile.write("  Background.File-medium: {}\n".format(image_1024))
-            outfile.write("  Background.File-4-3: {}\n".format(image_43))
-            outfile.write("  Background.File-16-9: {}\n".format(image_169))
+            for conf_line in conf_params.itervalues():
+                outfile.write(conf_line)
 
     # Refresh the wallpaper
-    cmd = 'sudo -u {user} kdesk -w'.format(user = USER)
-    os.system(cmd)
+    os.system('sudo -u {user} kdesk -w'.format(user=user))
+
     return 0
