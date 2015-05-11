@@ -15,6 +15,7 @@ from kano.utils import run_cmd
 from gi.repository import Gtk, Gdk
 from kano_settings.set_wallpaper import SetWallpaper
 from kano_settings.set_screensaver import SetScreensaver
+from kano_settings.system.wallpaper import change_wallpaper
 
 
 class SetAppearance(Gtk.Notebook):
@@ -74,7 +75,7 @@ class SetResetDesktop(Gtk.Box):
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
             kdialog = KanoDialog(
-                title_text='This will reset all of your desktop changes',
+                title_text='This will reset your wallpaper and toolbar.',
                 description_text='Do you want to continue?',
                 button_dict=[
                     {
@@ -98,10 +99,10 @@ class SetResetDesktop(Gtk.Box):
                 self.win.go_to_home()
 
     def restore_lxpanel_configuration(self):
-        userid=os.getuid()
-        groupid=os.getgid()
-        original_lxpanel_path='/etc/skel/.config/lxpanel/'
-        user_lxpanel_path=os.path.join('/home/' + os.getenv('SUDO_USER'), '.config/lxpanel')
+        userid = os.getuid()
+        groupid = os.getgid()
+        original_lxpanel_path = '/etc/skel/.config/lxpanel/'
+        user_lxpanel_path = os.path.join('/home/' + os.getenv('SUDO_USER'), '.config/lxpanel')
 
         # remove the current local copy
         shutil.rmtree(user_lxpanel_path, ignore_errors=True)
@@ -114,6 +115,31 @@ class SetResetDesktop(Gtk.Box):
 
         run_cmd('lxpanelctl restart')
 
+    def restore_wallpaper(self):
+        '''Restore the wallpaper to the system default.
+        '''
+
+        kdesk_path = "/usr/share/kano-desktop/kdesk/.kdeskrc"
+        identifier = 'Background.File-medium: '
+
+        # We split the default paths into the containing directory of the
+        # wallpapers and the name of the file without the size.
+        # This is so we can pass these parameters into the change_wallpaper
+        # function, so it can decide the appropriate size to set the wallpaper.
+        with open(kdesk_path) as f:
+            for line in f:
+                line = line.strip()
+
+                if line.startswith(identifier):
+                    line = line.replace(identifier, '').replace('-1024.png', '')
+                    path = '/'.join(line.split('/')[:-1])
+                    name = line.split('/')[-1]
+                    change_wallpaper(path, name)
+
+                    # finish once we change the wallpaper
+                    return
+
     def reset_desktop(self):
         # Add functionality here
         self.restore_lxpanel_configuration()
+        self.restore_wallpaper()
