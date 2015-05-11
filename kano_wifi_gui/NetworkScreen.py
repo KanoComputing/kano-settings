@@ -9,7 +9,7 @@
 
 import os
 import threading
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, Gdk
 
 from kano.gtk3.heading import Heading
 from kano.gtk3.scrolled_window import ScrolledWindow
@@ -28,7 +28,7 @@ from kano.gtk3.buttons import OrangeButton
 def disconnect_dialog(wiface='wlan0', win=None):
     disconnect(wiface)
     kdialog = KanoDialog(
-        "Successfully disconnected from the InterWebs",
+        "Successfully disconnected from the internet",
         parent_window=win
     )
     kdialog.run()
@@ -205,7 +205,6 @@ class NetworkScreen(Gtk.Box):
             network_info_dict = network_info()
             network = network_info_dict.keys()[0]
             network_name = network_info_dict[network]["nice_name"]
-            print "network_info_dict = {}".format(network_info_dict)
 
         if has_internet and network_name is not "Ethernet":
             disconnect_button = OrangeButton("Disconnect")
@@ -218,8 +217,16 @@ class NetworkScreen(Gtk.Box):
         return buttonbox
 
     def launch_disconnect_dialog(self, widget=None):
+        watch_cursor = Gdk.Cursor(Gdk.CursorType.WATCH)
+        self.win.get_window().set_cursor(watch_cursor)
+
+        # Force the spinner to show on the window.
+        while Gtk.events_pending():
+            Gtk.main_iteration()
+
         disconnect_dialog(self.wiface, self.win)
 
+        self.win.get_window().set_cursor(None)
         # Reload networks - this is a lazy way of removing the tick next to the
         # connected network
         self.go_to_spinner_screen()
