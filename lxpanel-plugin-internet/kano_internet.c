@@ -31,6 +31,7 @@
 #define RECONNECT_CMD "sudo /usr/bin/kano-connect -c wlan0"
 #define SOUND_CMD "/usr/bin/aplay /usr/share/kano-media/sounds/kano_open_app.wav"
 #define PLUGIN_TOOLTIP "Internet status"
+#define DISCONNECT_CMD "sudo /usr/bin/kano-wifi-gui --disconnect"
 
 #define MINUTE 60
 
@@ -170,6 +171,14 @@ void connect_clicked(GtkWidget *widget)
     launch_cmd(SOUND_CMD, NULL);
 }
 
+void disconnect_clicked(GtkWidget *widget)
+{
+    /* Run disconnect script */
+    launch_cmd(DISCONNECT_CMD, "kano-wifi-gui");
+    /* Play sound */
+    launch_cmd(SOUND_CMD, NULL);
+}
+
 static gboolean show_menu(GtkWidget *widget, GdkEventButton *event, kano_internet_plugin_t *plugin)
 {
     GtkWidget *menu = gtk_menu_new();
@@ -197,7 +206,14 @@ static gboolean show_menu(GtkWidget *widget, GdkEventButton *event, kano_interne
         /* Internet working correctly */
         GtkWidget *internet_item = gtk_menu_item_new_with_label("Connected");
         gtk_menu_append(GTK_MENU(menu), internet_item);
+
+        /* Option to disconnect */
+        GtkWidget *disconnect_item = gtk_menu_item_new_with_label("Disconnect");
+        g_signal_connect(disconnect_item, "activate", G_CALLBACK(disconnect_clicked), NULL);
+        gtk_menu_append(GTK_MENU(menu), disconnect_item);
+
         gtk_widget_show(internet_item);
+        gtk_widget_show(disconnect_item);
     }
     else
     {
