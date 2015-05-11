@@ -2,7 +2,7 @@
 
 # set_keyboard.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
+# Copyright (C) 2014, 2015 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
@@ -250,7 +250,7 @@ class SetKeyboard(Template):
         self.variants_combo.set_selected_item_index(0)
 
     def set_variants_to_mac_layout(self):
-        
+
         # If the country is the United States, select the generic setting
         if self.selected_country_hr.upper() == "UNITED STATES":
             self.set_variants_to_generic()
@@ -302,7 +302,7 @@ class SetKeyboard(Template):
         if variants is not None:
             for v in variants:
                 self.variants_combo.append(v[0])
-        
+
         # if kano keyboard is connected, change to Mac layout
         kano_keyboard = detect_kano_keyboard()
 
