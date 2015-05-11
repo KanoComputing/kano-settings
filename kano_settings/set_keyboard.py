@@ -282,6 +282,10 @@ class SetKeyboard(Template):
         self.kano_button.set_sensitive(False)
         self.fill_countries_combo(self.selected_continent_hr)
 
+        # Use the first country as the default value for country combo
+        self.countries_combo.set_selected_item_index(0)
+        self.on_country_changed(self.countries_combo)
+
     def on_country_changed(self, combo):
 
         # making sure the country has been set
