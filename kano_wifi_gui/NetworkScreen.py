@@ -28,7 +28,8 @@ from kano.gtk3.buttons import OrangeButton
 def disconnect_dialog(wiface='wlan0', win=None):
     disconnect(wiface)
     kdialog = KanoDialog(
-        "Successfully disconnected from the internet",
+        # Text from the content team.
+        "Disconnect complete - you're now offline.",
         parent_window=win
     )
     kdialog.run()
