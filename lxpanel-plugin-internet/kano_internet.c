@@ -130,6 +130,21 @@ static gboolean internet_status(kano_internet_plugin_t *plugin) {
     } else {
         gtk_image_set_from_file(GTK_IMAGE(plugin->icon), NO_INTERNET_ICON);
         plugin->internet_available = "NOT CONNECTED";
+
+        // If there is no internet try to run kano-connect to reconnect
+
+        // skip if the wifi cache file is not present
+        if( access("/etc/kwifiprompt-cache.conf", F_OK) == -1 ) {
+            return TRUE;
+        }
+
+        // skip if the wireless dongle is not plugged in
+        if( access("/sys/class/net/wlan0", F_OK) == -1 ) {
+            return TRUE;
+        }
+
+        // run kano-connect if everything was OK
+        launch_cmd(RECONNECT_CMD, NULL);
     }
 
     return TRUE;
@@ -205,21 +220,21 @@ static gboolean show_menu(GtkWidget *widget, GdkEventButton *event, kano_interne
     gchar* internet = plugin->internet_available;
 
     if (strcmp(internet, "NOT CONNECTED") == 0) {
-        /* Internet not working */
+        /* Change the widget's picture and add the option to try and connect to internet */
         GtkWidget *internet_item = gtk_image_menu_item_new_with_label("Connect");
         g_signal_connect(internet_item, "activate", G_CALLBACK(connect_clicked), NULL);
         gtk_menu_append(GTK_MENU(menu), internet_item);
         gtk_widget_show(internet_item);
         gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(internet_item), get_resized_icon(WIFI_SETTING_ICON));
-    }
-    else {
-        /* Internet working correctly */
+
+    } else {
+        /* Internet working correctly, change the picture accordingly */
         GtkWidget *internet_item = gtk_menu_item_new_with_label("Connected");
         gtk_menu_append(GTK_MENU(menu), internet_item);
         gtk_widget_show(internet_item);
 
         if (strcmp(internet, "WIRELESS") == 0) {
-            /* Option to disconnect */
+            /* Add the option to disconnect in the menu */
             GtkWidget *disconnect_item = gtk_menu_item_new_with_label("Disconnect");
             g_signal_connect(disconnect_item, "activate", G_CALLBACK(disconnect_clicked), NULL);
             gtk_menu_append(GTK_MENU(menu), disconnect_item);
