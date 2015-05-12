@@ -229,10 +229,10 @@ static gboolean show_menu(GtkWidget *widget, GdkEventButton *event, kano_interne
 
     } else {
         /* Internet working correctly, change the picture accordingly */
-        GtkWidget *internet_item = gtk_menu_item_new_with_label("Connected");
+        GtkWidget *header_item = gtk_menu_item_new_with_label("Connected");
         gtk_widget_set_sensitive(header_item, FALSE);
-        gtk_menu_append(GTK_MENU(menu), internet_item);
-        gtk_widget_show(internet_item);
+        gtk_menu_append(GTK_MENU(menu), header_item);
+        gtk_widget_show(header_item);
 
         if (strcmp(internet, "WIRELESS") == 0) {
             /* Add the option to disconnect from the internet. */
