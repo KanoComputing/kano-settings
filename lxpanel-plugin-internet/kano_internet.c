@@ -114,7 +114,7 @@ static gboolean internet_status(kano_internet_plugin_t *plugin) {
      */
 
     // Execute is_internet command. 0 is internet, non zero means no internet
-    int internet = system(INTERNET_CMD);
+    int internet = WEXITSTATUS(system(INTERNET_CMD));
 
     if (internet == 0) {
         gtk_image_set_from_file(GTK_IMAGE(plugin->icon), WIFI_ICON);
