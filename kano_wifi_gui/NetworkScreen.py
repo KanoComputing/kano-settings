@@ -9,7 +9,7 @@
 
 import os
 import threading
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, Gdk
 
 from kano.gtk3.heading import Heading
 from kano.gtk3.scrolled_window import ScrolledWindow
@@ -20,7 +20,19 @@ from kano_wifi_gui.misc import tick_icon
 from kano.logging import logger
 from kano_wifi_gui.paths import media_dir
 from kano_wifi_gui.PasswordScreen import PasswordScreen
-from kano.network import connect, is_connected, KwifiCache
+from kano.network import (connect, is_connected, KwifiCache, disconnect,
+                          is_internet, network_info)
+from kano.gtk3.buttons import OrangeButton
+
+
+def disconnect_dialog(wiface='wlan0', win=None):
+    disconnect(wiface)
+    kdialog = KanoDialog(
+        # Text from the content team.
+        "Disconnect complete - you're now offline.",
+        parent_window=win
+    )
+    kdialog.run()
 
 
 class NetworkScreen(Gtk.Box):
@@ -177,7 +189,6 @@ class NetworkScreen(Gtk.Box):
         self.connect_btn.connect('clicked', self.first_time_connect)
         self.connect_btn.set_sensitive(False)
         self.refresh_btn = self.create_refresh_button()
-        blank_label = Gtk.Label("")
 
         # For now, show both connect and refresh buttons
         buttonbox = Gtk.ButtonBox()
@@ -185,9 +196,41 @@ class NetworkScreen(Gtk.Box):
         buttonbox.set_spacing(10)
         buttonbox.pack_start(self.refresh_btn, False, False, 0)
         buttonbox.pack_start(self.connect_btn, False, False, 0)
-        buttonbox.pack_start(blank_label, False, False, 0)
+
+        # If we are connected to the internet, add a diconnect option.
+        # Otherwise, leave it blank.
+        # Use is_connected to get details about whether connected to ethernet?
+        has_internet = is_internet()
+
+        if has_internet:
+            network_info_dict = network_info()
+            network = network_info_dict.keys()[0]
+            network_name = network_info_dict[network]["nice_name"]
+
+        if has_internet and network_name is not "Ethernet":
+            disconnect_button = OrangeButton("Disconnect")
+            disconnect_button.connect('clicked', self.launch_disconnect_dialog)
+            buttonbox.pack_start(disconnect_button, False, False, 0)
+        else:
+            blank_label = Gtk.Label("")
+            buttonbox.pack_start(blank_label, False, False, 0)
 
         return buttonbox
+
+    def launch_disconnect_dialog(self, widget=None):
+        watch_cursor = Gdk.Cursor(Gdk.CursorType.WATCH)
+        self.win.get_window().set_cursor(watch_cursor)
+
+        # Force the spinner to show on the window.
+        while Gtk.events_pending():
+            Gtk.main_iteration()
+
+        disconnect_dialog(self.wiface, self.win)
+
+        self.win.get_window().set_cursor(None)
+        # Reload networks - this is a lazy way of removing the tick next to the
+        # connected network
+        self.go_to_spinner_screen()
 
     def create_refresh_button(self):
         '''Create the refresh button. This it quite involved as you have

@@ -28,15 +28,17 @@
 
 #define INTERNET_CMD "/usr/bin/is_internet"
 #define SETTINGS_CMD "sudo /usr/bin/kano-settings 4"
+#define WIFI_CMD "sudo /usr/bin/kano-wifi-gui"
 #define RECONNECT_CMD "sudo /usr/bin/kano-connect -c wlan0"
 #define SOUND_CMD "/usr/bin/aplay /usr/share/kano-media/sounds/kano_open_app.wav"
 #define PLUGIN_TOOLTIP "Internet status"
+#define DISCONNECT_CMD "sudo /usr/bin/kano-wifi-gui --disconnect"
 
 #define MINUTE 60
 
 typedef struct
 {
-    int internet_available;
+    gchar* internet_available;
     GtkWidget *icon;
     guint timer;
 
@@ -57,7 +59,7 @@ static GtkWidget *plugin_constructor(LXPanel *panel, config_setting_t *settings)
     /* allocate our private structure instance */
     kano_internet_plugin_t *plugin = g_new0(kano_internet_plugin_t, 1);
     plugin->panel = panel;
-    plugin->internet_available = 0;
+    plugin->internet_available = "NOT CONNECTED";
     /* create an icon */
     GtkWidget *icon = gtk_image_new_from_file(WIFI_ICON);
     plugin->icon = icon;
@@ -105,16 +107,32 @@ static void plugin_destructor(gpointer user_data)
     g_free(plugin);
 }
 
-static gboolean internet_status(kano_internet_plugin_t *plugin)
-{
-    // Execute is_internet command
-    int internet = system(INTERNET_CMD);
-    plugin->internet_available = internet;
-    gtk_image_set_from_file(GTK_IMAGE(plugin->icon), internet == 0 ? WIFI_ICON : NO_INTERNET_ICON);
+static gboolean internet_status(kano_internet_plugin_t *plugin) {
+    /*
+     * Assigns "NOT CONNECTED", "WIRELESS" or "ETHERNET"
+     * depending on the internet connection.
+     */
 
-    /* If there is no internet try to run kano-connect to reconnect */
-    if (internet != 0)
-    {
+    // Execute is_internet command. 0 is internet, non zero means no internet
+    int internet = WEXITSTATUS(system(INTERNET_CMD));
+
+    if (internet == 0) {
+        gtk_image_set_from_file(GTK_IMAGE(plugin->icon), WIFI_ICON);
+
+        // Check if we're connected with ethernet
+        int rc = WEXITSTATUS(system("/usr/sbin/ifplugstatus eth0 >/dev/null 2>&1"));
+        if (rc == 2) {
+            plugin->internet_available = "ETHERNET";
+        } else {
+            plugin->internet_available = "WIRELESS";
+        }
+
+    } else {
+        gtk_image_set_from_file(GTK_IMAGE(plugin->icon), NO_INTERNET_ICON);
+        plugin->internet_available = "NOT CONNECTED";
+
+        // If there is no internet try to run kano-connect to reconnect
+
         // skip if the wifi cache file is not present
         if( access("/etc/kwifiprompt-cache.conf", F_OK) == -1 ) {
             return TRUE;
@@ -131,6 +149,7 @@ static gboolean internet_status(kano_internet_plugin_t *plugin)
 
     return TRUE;
 }
+
 
 static void launch_cmd(const char *cmd, const char *appname)
 {
@@ -165,7 +184,15 @@ static void launch_cmd(const char *cmd, const char *appname)
 void connect_clicked(GtkWidget *widget)
 {
     /* Launch settings*/
-    launch_cmd(SETTINGS_CMD, "kano-settings");
+    launch_cmd(WIFI_CMD, "kano-wifi-gui");
+    /* Play sound */
+    launch_cmd(SOUND_CMD, NULL);
+}
+
+void disconnect_clicked(GtkWidget *widget)
+{
+    /* Run disconnect script */
+    launch_cmd(DISCONNECT_CMD, "kano-wifi-gui");
     /* Play sound */
     launch_cmd(SOUND_CMD, NULL);
 }
@@ -180,33 +207,40 @@ static gboolean show_menu(GtkWidget *widget, GdkEventButton *event, kano_interne
         return FALSE;
     }
 
-    /* Create the menu items */
-    header_item = gtk_menu_item_new_with_label("Internet status");
-    gtk_widget_set_sensitive(header_item, FALSE);
-    gtk_menu_append(GTK_MENU(menu), header_item);
-    gtk_widget_show(header_item);
-
     // update the internet icon status
     internet_status(plugin);
 
     // find if we have internet, save status in the plugin
-    gboolean internet = plugin->internet_available;
+    gchar* internet = plugin->internet_available;
 
-    if (internet == 0)
-    {
-        /* Internet working correctly */
-        GtkWidget *internet_item = gtk_menu_item_new_with_label("Connected");
-        gtk_menu_append(GTK_MENU(menu), internet_item);
-        gtk_widget_show(internet_item);
-    }
-    else
-    {
-        /* Internet not working */
+    if (strcmp(internet, "NOT CONNECTED") == 0) {
+
+        /* Change the widget's picture, menu title and add the option to try and connect to internet */
+        header_item = gtk_menu_item_new_with_label("Not connected");
+        gtk_widget_set_sensitive(header_item, FALSE);
+        gtk_menu_append(GTK_MENU(menu), header_item);
+        gtk_widget_show(header_item);
+
         GtkWidget *internet_item = gtk_image_menu_item_new_with_label("Connect");
         g_signal_connect(internet_item, "activate", G_CALLBACK(connect_clicked), NULL);
         gtk_menu_append(GTK_MENU(menu), internet_item);
         gtk_widget_show(internet_item);
         gtk_image_menu_item_set_image(GTK_IMAGE_MENU_ITEM(internet_item), get_resized_icon(WIFI_SETTING_ICON));
+
+    } else {
+        /* Internet working correctly, change the picture accordingly */
+        GtkWidget *header_item = gtk_menu_item_new_with_label("Connected");
+        gtk_widget_set_sensitive(header_item, FALSE);
+        gtk_menu_append(GTK_MENU(menu), header_item);
+        gtk_widget_show(header_item);
+
+        if (strcmp(internet, "WIRELESS") == 0) {
+            /* Add the option to disconnect from the internet. */
+            GtkWidget *disconnect_item = gtk_menu_item_new_with_label("Disconnect");
+            g_signal_connect(disconnect_item, "activate", G_CALLBACK(disconnect_clicked), NULL);
+            gtk_menu_append(GTK_MENU(menu), disconnect_item);
+            gtk_widget_show(disconnect_item);
+        }
     }
 
     g_signal_connect(menu, "selection-done", G_CALLBACK(selection_done), NULL);
