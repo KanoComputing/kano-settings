@@ -239,17 +239,36 @@ class NetworkScreen(Gtk.Box):
     def launch_disconnect_dialog(self, widget=None):
         watch_cursor = Gdk.Cursor(Gdk.CursorType.WATCH)
         self.win.get_window().set_cursor(watch_cursor)
+        self.connect_btn.start_spinner()
+        self.connect_btn.set_sensitive(False)
 
         # Force the spinner to show on the window.
         while Gtk.events_pending():
             Gtk.main_iteration()
 
-        disconnect_dialog(self.wiface, self.win)
+        t = threading.Thread(target=self.threaded_disconnect)
+        t.start()
 
-        self.win.get_window().set_cursor(None)
-        # Reload networks - this is a lazy way of removing the tick next to the
-        # connected network
-        self.go_to_spinner_screen()
+    def threaded_disconnect(self):
+        '''This is needed so we can show a spinner while the user is
+        disconnecting
+        '''
+        disconnect(self.wiface)
+
+        def done():
+            kdialog = KanoDialog(
+                # Text from the content team.
+                "Disconnect complete - you're now offline.",
+                parent_window=self.win
+            )
+            kdialog.run()
+
+            self.win.get_window().set_cursor(None)
+            self.connect_btn.stop_spinner()
+            self.connect_btn.set_sensitive(True)
+            self.go_to_spinner_screen()
+
+        GObject.idle_add(done)
 
     def create_refresh_button(self):
         '''Create the refresh button. This it quite involved as you have
