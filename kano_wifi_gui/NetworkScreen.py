@@ -22,7 +22,6 @@ from kano_wifi_gui.paths import media_dir
 from kano_wifi_gui.PasswordScreen import PasswordScreen
 from kano.network import (connect, is_connected, KwifiCache, disconnect,
                           is_internet, network_info)
-from kano.gtk3.buttons import OrangeButton
 
 
 def disconnect_dialog(wiface='wlan0', win=None):
@@ -53,6 +52,23 @@ class NetworkScreen(Gtk.Box):
 
         self.width = 350
         self.height = 405
+
+        # Find out if connected to wireless, ethernet or not at all
+        # This determines the variable self.connection, which tells us
+        # the current internet connection.
+        has_internet = is_internet()
+
+        if has_internet:
+            network_info_dict = network_info()
+            network = network_info_dict.keys()[0]
+            network_name = network_info_dict[network]["nice_name"]
+
+            if network_name.upper() != "ETHERNET":
+                self.connection = "WIFI"
+            else:
+                self.connection = "ETHERNET"
+        else:
+            self.connection = "DISCONNECTED"
 
         box = self.create_box()
         self.add(box)
@@ -108,7 +124,9 @@ class NetworkScreen(Gtk.Box):
                 tick = tick_icon()
                 box.pack_start(tick, False, False, 0)
 
-            network_btn.connect("clicked", self._select_network, network)
+            network_btn.connect(
+                "clicked", self._select_network, network, network_connection
+            )
 
             # Add padlock to the
             if network['encryption'] != 'off':
@@ -186,7 +204,7 @@ class NetworkScreen(Gtk.Box):
         '''
 
         self.connect_btn = KanoButton('CONNECT')
-        self.connect_btn.connect('clicked', self.first_time_connect)
+        self.connect_handler = self.connect_btn.connect('clicked', self.first_time_connect)
         self.connect_btn.set_sensitive(False)
         self.refresh_btn = self.create_refresh_button()
 
@@ -197,25 +215,26 @@ class NetworkScreen(Gtk.Box):
         buttonbox.pack_start(self.refresh_btn, False, False, 0)
         buttonbox.pack_start(self.connect_btn, False, False, 0)
 
-        # If we are connected to the internet, add a diconnect option.
-        # Otherwise, leave it blank.
-        # Use is_connected to get details about whether connected to ethernet?
-        has_internet = is_internet()
-
-        if has_internet:
-            network_info_dict = network_info()
-            network = network_info_dict.keys()[0]
-            network_name = network_info_dict[network]["nice_name"]
-
-        if has_internet and network_name is not "Ethernet":
-            disconnect_button = OrangeButton("Disconnect")
-            disconnect_button.connect('clicked', self.launch_disconnect_dialog)
-            buttonbox.pack_start(disconnect_button, False, False, 0)
-        else:
-            blank_label = Gtk.Label("")
-            buttonbox.pack_start(blank_label, False, False, 0)
+        blank_label = Gtk.Label("")
+        buttonbox.pack_start(blank_label, False, False, 0)
 
         return buttonbox
+
+    def set_connect_btn_status(self, connect=True):
+        self.connect_btn.disconnect(self.connect_handler)
+
+        if connect:
+            self.connect_handler = self.connect_btn.connect(
+                'clicked', self.first_time_connect
+            )
+            self.connect_btn.set_color("green")
+            self.connect_btn.set_label("CONNECT")
+        else:
+            self.connect_handler = self.connect_btn.connect(
+                'clicked', self.launch_disconnect_dialog
+            )
+            self.connect_btn.set_color("red")
+            self.connect_btn.set_label("DISCONNECT")
 
     def launch_disconnect_dialog(self, widget=None):
         watch_cursor = Gdk.Cursor(Gdk.CursorType.WATCH)
@@ -298,12 +317,20 @@ class NetworkScreen(Gtk.Box):
         self.win.remove_main_widget()
         PasswordScreen(self.win, self.wiface, self.selected_network)
 
-    def _select_network(self, button, network):
+    def _select_network(self, button, network, network_connection=None):
         for network_btn in self.network_btns:
             network_btn.get_style_context().remove_class("selected")
 
         self.selected_network = network
         button.get_style_context().add_class("selected")
+
+        # If we are already connected to this network,
+        # offer option to disconnect.
+        if network['essid'] == network_connection[0]:
+            self.set_connect_btn_status(connect=False)
+        else:
+            self.set_connect_btn_status(connect=True)
+
         self.connect_btn.set_sensitive(True)
 
     def on_connect(self, widget, entry):
