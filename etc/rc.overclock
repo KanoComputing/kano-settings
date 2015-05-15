@@ -12,7 +12,7 @@
 # Ondemand cpu frequency will be enabled in the kernel. Setup the up-threshold now.
 
 threshold=70
-mode="performance"
+mode="ondemand"
 
 echo "$mode" > /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor
 
