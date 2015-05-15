@@ -56,7 +56,7 @@ def change_wallpaper(path, name):
         # Not found so add it
         with open(deskrc_path, "a") as outfile:
             for conf_line in conf_params.itervalues():
-                outfile.write(conf_line)
+                outfile.write(conf_line + '\n')
 
     # Refresh the wallpaper
     os.system('sudo -u {user} kdesk -w'.format(user=user))
