@@ -46,7 +46,7 @@ def change_wallpaper(path, name):
                         kdesk_conf_line = conf_line
                         found = True
 
-                newlines.append(kdesk_conf_line)
+                newlines.append(kdesk_conf_line + '\n')
 
     if found:
         # Overwrite config file with new lines
