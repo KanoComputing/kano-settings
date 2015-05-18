@@ -2,7 +2,7 @@
 
 # advanced.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
+# Copyright (C) 2014, 2015 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 # Contains the advanced backend functions
@@ -112,16 +112,18 @@ def create_empty_hosts():
 
 def add_safesearch_blacklist(hosts):
     '''
-    Prevents google surfing by adding the worldwide sites to the blacklist
+    Prevents surfing to generic search engine sites by adding them to the blacklist
     '''
-    url_pattern='127.0.0.1\twww.google.{}\n'
-    www_pattern='127.0.0.1\tgoogle.{}\n'
 
+    url_pattern='127.0.0.1\t{}\n'
+    www_pattern='127.0.0.1\twww.{}\n'
+
+    # Block Google sites associated to each country (ISO 3166-1 alpha-2)
     for country in pycountry.countries:
         hosts.append(url_pattern.format(country.alpha2.lower()))
         hosts.append(www_pattern.format(country.alpha2.lower()))
 
-    # Add extra seconday-level domains in the list below
+    # Add extra secondary-level Google domains not covered in ISO 3166
     # http://en.wikipedia.org/wiki/Second-level_domain
     # http://en.wikipedia.org/wiki/List_of_Google_domains
     second_domains=[
@@ -136,8 +138,37 @@ def add_safesearch_blacklist(hosts):
         ]
 
     for subdomain in second_domains:
-        hosts.append(url_pattern.format(subdomain))
-        hosts.append(www_pattern.format(subdomain))
+        hosts.append(url_pattern.format('google.' + subdomain))
+        hosts.append(www_pattern.format('google.' + subdomain))
+
+    # List of additional search sites to block
+    additional_search_sites=[
+        'bing.com',
+        'search.yahoo.com',
+        'ask.com',
+        'search.aol.com',
+        'wow.com',
+        'webcrawler.com',
+        'mywebsearch.com',
+        'home.mywebsearch.com',
+        'infospace.com',
+        'info.com',
+        'duckduckgo.com',
+        'blekko.com',
+        'contenko.com',
+        'dogpile.com',
+        'alhea.com'
+        ]
+
+    # Add the to the blacklist (simple and www urls)
+    for additional_site in additional_search_sites:
+        hosts.append(url_pattern.format(additional_site))
+        hosts.append(www_pattern.format(additional_site))
+
+    # Ask.com provides urls in the form [country].ask.com, block them here
+    for country in pycountry.countries:
+        hosts.append (url_pattern.format('{}.ask.com'.format(country.alpha2.lower())))
+        hosts.append (www_pattern.format('{}.ask.com'.format(country.alpha2.lower())))
 
     return hosts
 
