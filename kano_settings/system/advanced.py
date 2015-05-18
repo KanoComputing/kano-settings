@@ -152,7 +152,7 @@ def add_safesearch_blacklist(hosts):
         'aolsearch.com',
         'wow.com',
         'webcrawler.com',
-        'zoo.com' # Webcrawler sometimes redirects to zoo.com
+        'zoo.com', # Webcrawler sometimes redirects to zoo.com
         'mywebsearch.com',
         'home.mywebsearch.com',
         'infospace.com',
@@ -161,7 +161,7 @@ def add_safesearch_blacklist(hosts):
         'blekko.com',
         'contenko.com',
         'dogpile.com',
-        'alhea.com',        
+        'alhea.com'
         ]
 
     # Add the additional search sites
