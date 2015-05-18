@@ -110,39 +110,28 @@ def create_empty_hosts():
     logger.debug('restoring original hosts permission')
     os.chmod(hosts_file, 0644)
 
+
+def add_blacklist_host(hosts, site_url):
+    '''
+    Add a site url to the hosts blacklist
+    Both direct, and with "www." prefix
+    '''
+    url_pattern='127.0.0.1\t{}\n'
+    www_pattern='127.0.0.1\twww.{}\n'
+
+    hosts.append(url_pattern.format(site_url))
+    hosts.append(www_pattern.format(site_url))
+    return hosts
+
+
 def add_safesearch_blacklist(hosts):
     '''
     Prevents surfing to generic search engine sites by adding them to the blacklist
     '''
 
-    url_pattern='127.0.0.1\t{}\n'
-    www_pattern='127.0.0.1\twww.{}\n'
-
-    # Block Google sites associated to each country (ISO 3166-1 alpha-2)
-    for country in pycountry.countries:
-        hosts.append(url_pattern.format('google.{}'.format(country.alpha2.lower())))
-        hosts.append(www_pattern.format('google.{}'.format(country.alpha2.lower())))
-
-    # Add extra seconday-level Google domains not covered in ISO 3166
-    # http://en.wikipedia.org/wiki/Second-level_domain
-    # http://en.wikipedia.org/wiki/List_of_Google_domains
-    second_domains=[
-        'com.af', 'com.af', 'com.ag', 'com.ai', 'co.ao', 'com.ar', 'com.au', 'com.bd', 'com.bh', 'com.bn', 'com.bo', 'com.br',
-        'co.bw', 'com.bz', 'com.kh', 'co.ck', 'g.cn', 'com.co', 'co.cr', 'com.cu', 'com.cy', 'com.do', 'com.ec', 'com.eg',
-        'com.et', 'com.fj', 'com.gh', 'com.gi', 'com.gt', 'com.hk', 'co.id', 'co.il', 'co.in', 'com.jm', 'co.jp',
-        'co.ke', 'co.kr', 'com.kw', 'com.lb', 'com.lc', 'co.ls', 'com.ly', 'co.ma', 'com.mm', 'com.mt', 'com.mx',
-        'com.my', 'com.mz', 'com.na', 'com.nf', 'com.ng', 'com.ni', 'com.np', 'co.nz', 'com.om', 'com.pa', 'com.pe',
-        'com.ph', 'com.pk', 'com.pg', 'com.pr', 'com.py', 'com.qa', 'com.sa', 'com.sb', 'com.sg', 'com.sl', 'com.sv',
-        'co.th', 'com.tj', 'com.tn', 'com.tr', 'com.tw', 'co.tz', 'com.ua', 'co.ug', 'co.uk', 'com.uy', 'co.uz',
-        'com.vc', 'co.ve', 'co.vi', 'com.vn', 'co.za', 'co.zm', 'co.zw'
-        ]
-
-    for subdomain in second_domains:
-        hosts.append(url_pattern.format('google.{}'.format(subdomain)))
-        hosts.append(www_pattern.format('google.{}'.format(subdomain)))
-
-    # Block additional search sites
-    additional_search_sites=[
+    # Block search sites
+    search_sites=[
+        'google.com',
         'bing.com',
         'search.yahoo.com',
         'uk.search.yahoo.com',
@@ -164,34 +153,40 @@ def add_safesearch_blacklist(hosts):
         'alhea.com'
         ]
 
-    # Add the additional search sites
-    for additional_site in additional_search_sites:
-        hosts.append(url_pattern.format(additional_site))
-        hosts.append(www_pattern.format(additional_site))
+    # Blacklist major search engines
+    for site in search_sites:
+        add_blacklist_host(hosts, site)
 
-    # Add subdomains to the sites that need it
+    # Add subdomains only to those search engines that need it
     for country in pycountry.countries:
-        hosts.append (url_pattern.format('{}.ask.com'.format(country.alpha2.lower())))
-        hosts.append (www_pattern.format('{}.ask.com'.format(country.alpha2.lower())))
 
-        hosts.append (url_pattern.format('{}.search.yahoo.com'.format(country.alpha2.lower())))
-        hosts.append (www_pattern.format('{}.search.yahoo.com'.format(country.alpha2.lower())))
-
-        hosts.append (url_pattern.format('{}.wow.com'.format(country.alpha2.lower())))
-        hosts.append (www_pattern.format('{}.wow.com'.format(country.alpha2.lower())))
-
-        hosts.append (url_pattern.format('webcrawler.{}'.format(country.alpha2.lower())))
-        hosts.append (www_pattern.format('webcrawler.{}'.format(country.alpha2.lower())))
+        add_blacklist_host(hosts, 'google.{}'.format(country.alpha2.lower()))
+        add_blacklist_host(hosts, '{}.ask.com'.format(country.alpha2.lower()))
+        add_blacklist_host(hosts, '{}.search.yahoo.com'.format(country.alpha2.lower()))
+        add_blacklist_host(hosts, '{}.webcrawler.com'.format(country.alpha2.lower()))
 
         # Some search engines are redirecting to zoo.com and possibly [country]
-        hosts.append (url_pattern.format('zoo.{}'.format(country.alpha2.lower())))
-        hosts.append (www_pattern.format('zoo.{}'.format(country.alpha2.lower())))
+        add_blacklist_host(hosts, 'zoo.{}'.format(country.alpha2.lower()))
 
-        hosts.append (url_pattern.format('{}.info.com'.format(country.alpha2.lower())))
-        hosts.append (www_pattern.format('{}.info.com'.format(country.alpha2.lower())))
+        add_blacklist_host(hosts, '{}.info.com'.format(country.alpha2.lower()))
+        add_blacklist_host(hosts, '{}.alhea.com'.format(country.alpha2.lower()))
+    
+    # Google: Add extra seconday-level domains not covered in ISO 3166
+    # http://en.wikipedia.org/wiki/Second-level_domain
+    # http://en.wikipedia.org/wiki/List_of_Google_domains
+    second_level_domains=[
+        'com.af', 'com.af', 'com.ag', 'com.ai', 'co.ao', 'com.ar', 'com.au', 'com.bd', 'com.bh', 'com.bn', 'com.bo', 'com.br',
+        'co.bw', 'com.bz', 'com.kh', 'co.ck', 'g.cn', 'com.co', 'co.cr', 'com.cu', 'com.cy', 'com.do', 'com.ec', 'com.eg',
+        'com.et', 'com.fj', 'com.gh', 'com.gi', 'com.gt', 'com.hk', 'co.id', 'co.il', 'co.in', 'com.jm', 'co.jp',
+        'co.ke', 'co.kr', 'com.kw', 'com.lb', 'com.lc', 'co.ls', 'com.ly', 'co.ma', 'com.mm', 'com.mt', 'com.mx',
+        'com.my', 'com.mz', 'com.na', 'com.nf', 'com.ng', 'com.ni', 'com.np', 'co.nz', 'com.om', 'com.pa', 'com.pe',
+        'com.ph', 'com.pk', 'com.pg', 'com.pr', 'com.py', 'com.qa', 'com.sa', 'com.sb', 'com.sg', 'com.sl', 'com.sv',
+        'co.th', 'com.tj', 'com.tn', 'com.tr', 'com.tw', 'co.tz', 'com.ua', 'co.ug', 'co.uk', 'com.uy', 'co.uz',
+        'com.vc', 'co.ve', 'co.vi', 'com.vn', 'co.za', 'co.zm', 'co.zw'
+        ]
 
-        hosts.append (url_pattern.format('{}.alhea.com'.format(country.alpha2.lower())))
-        hosts.append (www_pattern.format('{}.alhea.com'.format(country.alpha2.lower())))
+    for subdomain in second_level_domains:
+        add_blacklist_host(hosts, 'google.{}'.format(country.alpha2.lower()))
 
     return hosts
 
