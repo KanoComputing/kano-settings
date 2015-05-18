@@ -120,10 +120,10 @@ def add_safesearch_blacklist(hosts):
 
     # Block Google sites associated to each country (ISO 3166-1 alpha-2)
     for country in pycountry.countries:
-        hosts.append(url_pattern.format(country.alpha2.lower()))
-        hosts.append(www_pattern.format(country.alpha2.lower()))
+        hosts.append(url_pattern.format('google.{}'.format(country.alpha2.lower())))
+        hosts.append(www_pattern.format('google.{}'.format(country.alpha2.lower())))
 
-    # Add extra secondary-level Google domains not covered in ISO 3166
+    # Add extra seconday-level Google domains not covered in ISO 3166
     # http://en.wikipedia.org/wiki/Second-level_domain
     # http://en.wikipedia.org/wiki/List_of_Google_domains
     second_domains=[
@@ -138,17 +138,21 @@ def add_safesearch_blacklist(hosts):
         ]
 
     for subdomain in second_domains:
-        hosts.append(url_pattern.format('google.' + subdomain))
-        hosts.append(www_pattern.format('google.' + subdomain))
+        hosts.append(url_pattern.format('google.{}'.format(subdomain)))
+        hosts.append(www_pattern.format('google.{}'.format(subdomain)))
 
-    # List of additional search sites to block
+    # Block additional search sites
     additional_search_sites=[
         'bing.com',
         'search.yahoo.com',
+        'uk.search.yahoo.com',
         'ask.com',
+        'uk.ask.com', # pycountry does not return "uk", but "gb"
         'search.aol.com',
+        'aolsearch.com',
         'wow.com',
         'webcrawler.com',
+        'zoo.com' # Webcrawler sometimes redirects to zoo.com
         'mywebsearch.com',
         'home.mywebsearch.com',
         'infospace.com',
@@ -157,18 +161,37 @@ def add_safesearch_blacklist(hosts):
         'blekko.com',
         'contenko.com',
         'dogpile.com',
-        'alhea.com'
+        'alhea.com',        
         ]
 
-    # Add the to the blacklist (simple and www urls)
+    # Add the additional search sites
     for additional_site in additional_search_sites:
         hosts.append(url_pattern.format(additional_site))
         hosts.append(www_pattern.format(additional_site))
 
-    # Ask.com provides urls in the form [country].ask.com, block them here
+    # Add subdomains to the sites that need it
     for country in pycountry.countries:
         hosts.append (url_pattern.format('{}.ask.com'.format(country.alpha2.lower())))
         hosts.append (www_pattern.format('{}.ask.com'.format(country.alpha2.lower())))
+
+        hosts.append (url_pattern.format('{}.search.yahoo.com'.format(country.alpha2.lower())))
+        hosts.append (www_pattern.format('{}.search.yahoo.com'.format(country.alpha2.lower())))
+
+        hosts.append (url_pattern.format('{}.wow.com'.format(country.alpha2.lower())))
+        hosts.append (www_pattern.format('{}.wow.com'.format(country.alpha2.lower())))
+
+        hosts.append (url_pattern.format('webcrawler.{}'.format(country.alpha2.lower())))
+        hosts.append (www_pattern.format('webcrawler.{}'.format(country.alpha2.lower())))
+
+        # Some search engines are redirecting to zoo.com and possibly [country]
+        hosts.append (url_pattern.format('zoo.{}'.format(country.alpha2.lower())))
+        hosts.append (www_pattern.format('zoo.{}'.format(country.alpha2.lower())))
+
+        hosts.append (url_pattern.format('{}.info.com'.format(country.alpha2.lower())))
+        hosts.append (www_pattern.format('{}.info.com'.format(country.alpha2.lower())))
+
+        hosts.append (url_pattern.format('{}.alhea.com'.format(country.alpha2.lower())))
+        hosts.append (www_pattern.format('{}.alhea.com'.format(country.alpha2.lower())))
 
     return hosts
 
