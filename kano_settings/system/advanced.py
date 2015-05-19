@@ -2,7 +2,7 @@
 
 # advanced.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
+# Copyright (C) 2014, 2015 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 # Contains the advanced backend functions
@@ -110,21 +110,77 @@ def create_empty_hosts():
     logger.debug('restoring original hosts permission')
     os.chmod(hosts_file, 0644)
 
+
+def add_blacklist_host(hosts, site_url):
+    '''
+    Add a site url to the hosts blacklist
+    Both direct, and with "www." prefix
+    '''
+    url_pattern='127.0.0.1\t{}\n'
+    www_pattern='127.0.0.1\twww.{}\n'
+
+    hosts.append(url_pattern.format(site_url))
+    hosts.append(www_pattern.format(site_url))
+    return hosts
+
+
 def add_safesearch_blacklist(hosts):
     '''
-    Prevents google surfing by adding the worldwide sites to the blacklist
+    Prevents surfing to generic search engine sites by adding them to the blacklist
     '''
-    url_pattern='127.0.0.1\twww.google.{}\n'
-    www_pattern='127.0.0.1\tgoogle.{}\n'
 
+    # Block search sites
+    search_sites=[
+        'google.com',
+        'bing.com',
+        'search.yahoo.com',
+        'uk.search.yahoo.com',
+        'ask.com',
+        'uk.ask.com', # pycountry does not return "uk", but "gb"
+        'search.aol.com',
+        'aolsearch.com',
+        'search.com',
+        'uk.search.com',
+        'wow.com',
+        'webcrawler.com',
+        'zoo.com', # Webcrawler sometimes redirects to zoo.com
+        'mywebsearch.com',
+        'home.mywebsearch.com',
+        'infospace.com',
+        'info.com',
+        'duckduckgo.com',
+        'blekko.com',
+        'contenko.com',
+        'dogpile.com',
+        'alhea.com',
+        'uk.alhea.com'
+        ]
+
+    # Blacklist major search engines
+    for site in search_sites:
+        add_blacklist_host(hosts, site)
+
+    # Add subdomains only to those search engines that need it
     for country in pycountry.countries:
-        hosts.append(url_pattern.format(country.alpha2.lower()))
-        hosts.append(www_pattern.format(country.alpha2.lower()))
 
-    # Add extra seconday-level domains in the list below
+        add_blacklist_host(hosts, 'google.{}'.format(country.alpha2.lower()))
+        add_blacklist_host(hosts, '{}.ask.com'.format(country.alpha2.lower()))
+        add_blacklist_host(hosts, '{}.search.yahoo.com'.format(country.alpha2.lower()))
+        add_blacklist_host(hosts, 'search.yahoo.{}'.format(country.alpha2.lower()))
+        add_blacklist_host(hosts, '{}.search.com'.format(country.alpha2.lower()))
+        add_blacklist_host(hosts, '{}.wow.com'.format(country.alpha2.lower()))
+        add_blacklist_host(hosts, '{}.webcrawler.com'.format(country.alpha2.lower()))
+
+        # Some search engines are redirecting to zoo.com and possibly [country]
+        add_blacklist_host(hosts, 'zoo.{}'.format(country.alpha2.lower()))
+
+        add_blacklist_host(hosts, '{}.info.com'.format(country.alpha2.lower()))
+        add_blacklist_host(hosts, '{}.alhea.com'.format(country.alpha2.lower()))
+    
+    # Google: Add extra seconday-level domains not covered in ISO 3166
     # http://en.wikipedia.org/wiki/Second-level_domain
     # http://en.wikipedia.org/wiki/List_of_Google_domains
-    second_domains=[
+    second_level_domains=[
         'com.af', 'com.af', 'com.ag', 'com.ai', 'co.ao', 'com.ar', 'com.au', 'com.bd', 'com.bh', 'com.bn', 'com.bo', 'com.br',
         'co.bw', 'com.bz', 'com.kh', 'co.ck', 'g.cn', 'com.co', 'co.cr', 'com.cu', 'com.cy', 'com.do', 'com.ec', 'com.eg',
         'com.et', 'com.fj', 'com.gh', 'com.gi', 'com.gt', 'com.hk', 'co.id', 'co.il', 'co.in', 'com.jm', 'co.jp',
@@ -135,9 +191,8 @@ def add_safesearch_blacklist(hosts):
         'com.vc', 'co.ve', 'co.vi', 'com.vn', 'co.za', 'co.zm', 'co.zw'
         ]
 
-    for subdomain in second_domains:
-        hosts.append(url_pattern.format(subdomain))
-        hosts.append(www_pattern.format(subdomain))
+    for subdomain in second_level_domains:
+        add_blacklist_host(hosts, 'google.{}'.format(country.alpha2.lower()))
 
     return hosts
 
