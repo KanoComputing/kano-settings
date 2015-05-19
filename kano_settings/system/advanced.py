@@ -139,6 +139,8 @@ def add_safesearch_blacklist(hosts):
         'uk.ask.com', # pycountry does not return "uk", but "gb"
         'search.aol.com',
         'aolsearch.com',
+        'search.com',
+        'uk.search.com',
         'wow.com',
         'webcrawler.com',
         'zoo.com', # Webcrawler sometimes redirects to zoo.com
@@ -150,7 +152,8 @@ def add_safesearch_blacklist(hosts):
         'blekko.com',
         'contenko.com',
         'dogpile.com',
-        'alhea.com'
+        'alhea.com',
+        'uk.alhea.com'
         ]
 
     # Blacklist major search engines
@@ -163,6 +166,9 @@ def add_safesearch_blacklist(hosts):
         add_blacklist_host(hosts, 'google.{}'.format(country.alpha2.lower()))
         add_blacklist_host(hosts, '{}.ask.com'.format(country.alpha2.lower()))
         add_blacklist_host(hosts, '{}.search.yahoo.com'.format(country.alpha2.lower()))
+        add_blacklist_host(hosts, 'search.yahoo.{}'.format(country.alpha2.lower()))
+        add_blacklist_host(hosts, '{}.search.com'.format(country.alpha2.lower()))
+        add_blacklist_host(hosts, '{}.wow.com'.format(country.alpha2.lower()))
         add_blacklist_host(hosts, '{}.webcrawler.com'.format(country.alpha2.lower()))
 
         # Some search engines are redirecting to zoo.com and possibly [country]
