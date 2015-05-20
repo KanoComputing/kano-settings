@@ -192,7 +192,7 @@ def add_safesearch_blacklist(hosts):
         ]
 
     for subdomain in second_level_domains:
-        add_blacklist_host(hosts, 'google.{}'.format(country.alpha2.lower()))
+        add_blacklist_host(hosts, 'google.{}'.format(subdomain))
 
     return hosts
 
