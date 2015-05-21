@@ -23,9 +23,9 @@ def change_wallpaper(path, name):
     deskrc_path = KDESKRC_HOME.format(user=user)
 
     wallpapers = [
-        ('medium', os.path.join(path, "{}-16-9.png".format(name))),
+        ('medium', os.path.join(path, "{}-1024.png".format(name))),
         ('4-3', os.path.join(path, "{}-4-3.png".format(name))),
-        ('16-9', os.path.join(path, "{}-1024.png".format(name)))
+        ('16-9', os.path.join(path, "{}-16-9.png".format(name)))
     ]
     conf_param_template = 'Background.File-{size}'
     conf_params = dict()
