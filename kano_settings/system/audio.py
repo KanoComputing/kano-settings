@@ -55,12 +55,12 @@ def set_to_HDMI(HDMI):
     # Set audio path in amixer
     o, e, rc = run_cmd(amixer_cmd)
     if rc:
-        logger.warning("error from amixer: {} {} {}".format(o, e, rc))
+        logger.warn("error from amixer: {} {} {}".format(o, e, rc))
 
     # trigger alsa-utils to store the path in /var/lib/alsa/asound.state
     o, e, rc = run_cmd(store_cmd)
     if rc:
-        logger.warning("error from alsa-utils: {} {} {}".format(o, e, rc))
+        logger.warn("error from alsa-utils: {} {} {}".format(o, e, rc))
 
     set_setting('Audio', config)
 
