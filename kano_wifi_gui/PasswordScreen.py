@@ -122,8 +122,7 @@ class PasswordScreen(Gtk.Box):
         logger.debug('Connecting to {}'.format(ssid))
 
         # disable the buttons
-        self.connect_btn.set_sensitive(False)
-        self.win.top_bar.prev_button.set_sensitive(False)
+        self._disable_widgets()
         self.connect_btn.start_spinner()
 
         # start thread
@@ -159,8 +158,7 @@ class PasswordScreen(Gtk.Box):
 
     def _thread_finish(self, success):
         self.connect_btn.stop_spinner()
-        self.connect_btn.set_sensitive(True)
-        self.win.top_bar.prev_button.set_sensitive(True)
+        self._enable_widgets()
 
         if success:
             kdialog = KanoDialog(
@@ -173,3 +171,15 @@ class PasswordScreen(Gtk.Box):
 
         else:
             self.wrong_password_screen()
+
+    def _disable_widgets(self):
+        self.connect_btn.set_sensitive(False)
+        self.win.top_bar.prev_button.set_sensitive(False)
+        self.password_entry.set_sensitive(False)
+        self.show_password.set_sensitive(False)
+
+    def _enable_widgets(self):
+        self.connect_btn.set_sensitive(True)
+        self.win.top_bar.prev_button.set_sensitive(True)
+        self.password_entry.set_sensitive(True)
+        self.show_password.set_sensitive(True)
