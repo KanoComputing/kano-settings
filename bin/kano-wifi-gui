@@ -74,6 +74,7 @@ class KanoWifiGui(ApplicationWindow):
         self.set_titlebar(self.top_bar)
         self.top_bar.set_close_callback(Gtk.main_quit)
         self.set_icon_name("kano-settings")
+        self.set_keep_above(True)
 
         # Only go through this stage if you don't have internet
         # check if a wifi dongle is plugged in
