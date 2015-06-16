@@ -120,7 +120,11 @@ class NetworkScreen(Gtk.Box):
             label = Gtk.Label(network['essid'])
             box.pack_start(label, False, False, 0)
 
-            if network['essid'] == network_connection[0]:
+            # If the network name of the button matches the last attempted
+            # connection, and we're connected to the internet, then
+            # put a tick next to the name.
+            if network['essid'] == network_connection[0] and \
+                    network_connection[3]:
                 tick = tick_icon()
                 box.pack_start(tick, False, False, 0)
 
