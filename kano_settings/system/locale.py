@@ -146,6 +146,8 @@ def set_locale_param(param, locale, skip_check=False):
 
 
 def set_locale(locale):
+    locale = ensure_utf_locale(locale)
+
     if not is_locale_installed(locale):
         install_locale(locale)
 
