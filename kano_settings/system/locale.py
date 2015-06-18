@@ -151,3 +151,7 @@ def set_locale(locale):
 
     for param in LOCALE_PARAMS:
         set_locale_param(param, locale, skip_check=True)
+
+
+def get_locale():
+    return os.environ['LANG']
