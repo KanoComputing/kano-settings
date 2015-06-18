@@ -25,7 +25,7 @@ class NoInternet(Gtk.Box):
         image = Gtk.Image.new_from_file(media + "/Graphics/no-internet-screen.png")
         # Orange button
         later_button = OrangeButton("Later")
-        later_button.connect("button_release_event", self.win.close_window)
+        later_button.connect("button-release-event", self.win.close_window)
         # Green button
         self.kano_button = KanoButton("CONNECT NOW")
         self.kano_button.pack_and_align()
