@@ -39,7 +39,7 @@ def get_first_username():
     real_users.sort(key=lambda x: x[pwd_field_id['pw_uid']])
 
     if len(real_users) > 0:
-        return real_users[0][pwd_field_id['pw_name']
+        return real_users[0][pwd_field_id['pw_name']]
     else:
         return None
 
