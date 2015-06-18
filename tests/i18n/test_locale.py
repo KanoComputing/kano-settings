@@ -48,6 +48,22 @@ class EnsureUTFLocale(unittest.TestCase):
                          'en_GB.UTF-8')
 
 
+class StripEncodingFromLocale(unittest.TestCase):
+
+    def test_with_utf_suffix(self):
+        self.assertEqual(
+            locale.strip_encoding_from_locale('en_GB.UTF-8'), 'en_GB'
+        )
+
+    def test_without_utf_suffix(self):
+        self.assertEqual(locale.strip_encoding_from_locale('en_GB'), 'en_GB')
+
+    def test_with_wrong_suffix(self):
+        self.assertEqual(
+            locale.strip_encoding_from_locale('en_GB.ISO-8859-1'), 'en_GB'
+        )
+
+
 class StandardLocaleToGenfileEntry(unittest.TestCase):
 
     def test(self):

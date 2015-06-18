@@ -74,6 +74,10 @@ def ensure_utf_locale(locale):
     return re.sub(r'^([a-z]{2}_[A-Z]{2})(?:\.|$).*', r'\1.UTF-8', locale)
 
 
+def strip_encoding_from_locale(locale):
+    return locale.split('.')[0]
+
+
 def standard_locale_to_genfile_entry(locale):
     '''
     The locale gen file (UTF-8) entries take the form
