@@ -43,6 +43,10 @@ from kano.network import IWList, is_device, is_gateway, connect, disconnect, is_
 # filename to keep our process semaphore
 pidfile = '/var/run/kano-connect.pid'
 
+# If this file is present, kano-connect will try to connect
+# even if the Ethernet cable is plugged in.
+file_multihomed=/var/opt/kano-connect/multihomed
+
 def remove_pid(filename):
     try:
         os.unlink(filename)
@@ -84,7 +88,7 @@ if __name__ == '__main__':
         sys.exit(1)
 
     # Check for ethernet cable
-    if is_ethernet_plugged():
+    if is_ethernet_plugged() and not os.path.isfile(file_multihomed):
         logger.info('ethernet cable is plugged in, exiting')
         sys.exit(0)
 

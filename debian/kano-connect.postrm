@@ -19,6 +19,8 @@ case "$1" in
 
         fi
 
+        # remove the control file to force kano-connect into multihomed
+        rm -rf /var/opt/kano-connect/
 
         ;;
 esac
