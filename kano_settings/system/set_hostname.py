@@ -13,7 +13,7 @@ import sys
 import re
 from kano.logging import logger
 import kano.utils
-from kano_settings.get_username import get_first_username
+from kano_settings.system.get_username import get_first_username
 
 
 def set_hostname_postinst():

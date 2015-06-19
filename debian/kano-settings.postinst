@@ -50,7 +50,7 @@ case "$1" in
         update-rc.d kano-bootup-sound defaults
 
 	# Check for default hostname and set to name of first user
-	python -c "from kano_settings.set_hostname import set_hostname_postinst; set_hostname_postinst()"
+	python -c "from kano_settings.system.set_hostname import set_hostname_postinst; set_hostname_postinst()"
 
         ;;
 esac
