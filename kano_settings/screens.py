@@ -28,6 +28,7 @@ from kano_settings.set_about import SetAbout
 from kano_settings.set_advanced import SetAdvanced
 from kano_settings.set_appearance import SetAppearance
 from kano_settings.set_wallpaper import FirstBootSetWallpaper
+from kano_settings.locale import LocaleConfig
 
 
 class Screen(object):
@@ -116,5 +117,9 @@ SCREENS = ScreenCollection([
            on_home_screen=False),
     Screen('proxy', 'proxy', SetProxy, screen_no=13, on_home_screen=False),
     Screen('first-boot-set-wallpaper', 'first-boot-set-wallpaper',
-           FirstBootSetWallpaper, screen_no=14, on_home_screen=False)
+           FirstBootSetWallpaper, screen_no=14, on_home_screen=False),
+    # TODO: Add 'Locale' screen to home screen when translations are available.
+    # TODO: Add icon for the 'Locale' screen.
+    Screen('locale', 'Locale', LocaleConfig, setting_param='Locale',
+           on_home_screen=False),
 ])

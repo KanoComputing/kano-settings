@@ -48,6 +48,22 @@ class EnsureUTFLocale(unittest.TestCase):
                          'en_GB.UTF-8')
 
 
+class StripEncodingFromLocale(unittest.TestCase):
+
+    def test_with_utf_suffix(self):
+        self.assertEqual(
+            locale.strip_encoding_from_locale('en_GB.UTF-8'), 'en_GB'
+        )
+
+    def test_without_utf_suffix(self):
+        self.assertEqual(locale.strip_encoding_from_locale('en_GB'), 'en_GB')
+
+    def test_with_wrong_suffix(self):
+        self.assertEqual(
+            locale.strip_encoding_from_locale('en_GB.ISO-8859-1'), 'en_GB'
+        )
+
+
 class StandardLocaleToGenfileEntry(unittest.TestCase):
 
     def test(self):
@@ -221,3 +237,18 @@ class SetLocale(unittest.TestCase):
                     self.assertFalse(True)
 
             self.assertTrue(True)
+
+
+class GetLocale(unittest.TestCase):
+
+    def test_get_locale(self):
+        locale_param = r'^LANG='
+        locale_regex = r'{}\(.*\)$'.format(locale_param)
+        locale_cmd = r'locale | grep "{locale_param}" | sed "s/{regex}/\1/g"'.format(locale_param=locale_param, regex=locale_regex)
+
+        locale_out, _, _ = utils.run_cmd(locale_cmd)
+        locale_test = locale_out.rstrip()
+
+        locale_setting = locale.get_locale()
+
+        self.assertEqual(locale_setting, locale_test)

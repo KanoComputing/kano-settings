@@ -40,7 +40,8 @@ defaults = {
     'Mouse': 'Normal',
     'Font': 'Normal',
     'Wallpaper': 'kanux-background',
-    'Parental-level': 0
+    'Parental-level': 0,
+    'Locale': 'en_US'
 }
 
 

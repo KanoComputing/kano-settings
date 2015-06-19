@@ -74,6 +74,10 @@ def ensure_utf_locale(locale):
     return re.sub(r'^([a-z]{2}_[A-Z]{2})(?:\.|$).*', r'\1.UTF-8', locale)
 
 
+def strip_encoding_from_locale(locale):
+    return locale.split('.')[0]
+
+
 def standard_locale_to_genfile_entry(locale):
     '''
     The locale gen file (UTF-8) entries take the form
@@ -142,8 +146,14 @@ def set_locale_param(param, locale, skip_check=False):
 
 
 def set_locale(locale):
+    locale = ensure_utf_locale(locale)
+
     if not is_locale_installed(locale):
         install_locale(locale)
 
     for param in LOCALE_PARAMS:
         set_locale_param(param, locale, skip_check=True)
+
+
+def get_locale():
+    return os.environ['LANG']
