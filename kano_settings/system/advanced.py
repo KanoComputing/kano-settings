@@ -141,14 +141,29 @@ def set_hostname(new_hostname):
 
     if new_hostname == '':
         logger.error('no letters left in username after removing illegal ones')
+        return
+
+    if new_hostname == 'kano':
+        logger.info(' not tryng to set hostname as it is the same as the default')
+        return
+
+    # check for missing hosts file
+    if not os.path.exists(hosts_file):
+        create_empty_hosts()
+
 
     # check if already done
     curr_hosts = read_file_contents_as_lines(hosts_file)
     if '127.0.0.1\tkano' not in curr_hosts:
         logger.warn('/etc/hosts already modified, not changing')
+        return
 
+    # actually edit the hosts file
     edit_hosts_file(hosts_file, new_hostname)
-    edit_hosts_file(hosts_file_backup, new_hostname)
+
+    # edit the backup file.
+    if os.path.exists(hosts_file_backup):
+        edit_hosts_file(hosts_file_backup, new_hostname)
 
     try:
         write_file_contents('/etc/hostname', new_hostname+'\n')
