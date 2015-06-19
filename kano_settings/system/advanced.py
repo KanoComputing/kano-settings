@@ -34,6 +34,8 @@ from kano.network import set_dns, restore_dns_interfaces, \
 
 password_file = "/etc/kano-parental-lock"
 hosts_file = '/etc/hosts'
+hosts_file_backup = '/etc/kano-hosts-parental-backup'
+
 chromium_policy_file = '/etc/chromium/policies/managed/policy.json'
 sentry_config = os.path.join(settings_dir, 'sentry')
 
@@ -114,6 +116,19 @@ def set_hostname_postinst():
     else:
         set_hostname(new_hostname)
 
+def edit_hosts_file(path, new_hostname):
+    try:
+        lines_changed = sed(
+            '127.0.0.1\s+(kano)',
+            '127.0.0.1\t{}'.format(new_hostname),
+            path,
+            True)
+        if lines_changed != 1:
+            logger.error("failed to change {}".format(path))
+    except:
+        logger.error("exception while changing change {}".format(path))
+
+
 
 def set_hostname(new_hostname):
     if os.environ['LOGNAME'] != 'root':
@@ -128,20 +143,12 @@ def set_hostname(new_hostname):
         logger.error('no letters left in username after removing illegal ones')
 
     # check if already done
-    curr_hosts = read_file_contents_as_lines('/etc/hosts')
+    curr_hosts = read_file_contents_as_lines(hosts_file)
     if '127.0.0.1\tkano' not in curr_hosts:
         logger.warn('/etc/hosts already modified, not changing')
 
-    try:
-        lines_changed = sed(
-                                      '127.0.0.1\s+(kano)',
-                                      '127.0.0.1\t{}'.format(new_hostname),
-                                      '/etc/hosts',
-                                      True)
-        if lines_changed != 1:
-            logger.error("failed to change /etc/hosts")
-    except:
-        logger.error("exception while changing change /etc/hosts")
+    edit_hosts_file(hosts_file, new_hostname)
+    edit_hosts_file(hosts_file_backup, new_hostname)
 
     try:
         write_file_contents('/etc/hostname', new_hostname+'\n')
@@ -250,7 +257,6 @@ def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/P
         blocked_sites=None, allowed_sites=None):
     logger.debug('set_hosts_blacklist: {}'.format(enable))
 
-    hosts_file_backup = '/etc/kano-hosts-parental-backup'
 
     if not os.path.exists(hosts_file):
         create_empty_hosts()
