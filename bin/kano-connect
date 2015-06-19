@@ -45,7 +45,7 @@ pidfile = '/var/run/kano-connect.pid'
 
 # If this file is present, kano-connect will try to connect
 # even if the Ethernet cable is plugged in.
-file_multihomed=/var/opt/kano-connect/multihomed
+file_multihomed='/var/opt/kano-connect/multihomed'
 
 def remove_pid(filename):
     try:
