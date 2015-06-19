@@ -1,3 +1,9 @@
+kano-settings (2.0-2) unstable; urgency=low
+
+  * Add ability to set hostname
+
+ -- Team Kano <dev@kano.me>  Fri, 24 Apr 2015 15:49:00 +0000
+
 kano-settings (2.0-1) unstable; urgency=low
 
   * Adding the new background selector for the initflow
