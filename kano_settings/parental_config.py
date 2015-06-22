@@ -209,8 +209,14 @@ class AllowedSites(Template):
         write_whitelisted_sites(whitelist)
         write_blacklisted_sites(blacklist)
 
-        set_parental_level(get_setting('Parental-level'))
+        level = get_setting('Parental-level')
+        set_parental_level(level)
         common.need_reboot = True
+
+        # track which parental control level people use
+        track_data("parental-control-level-changed", {
+            "level": level    
+        })
 
         self.win.go_to_home()
 
