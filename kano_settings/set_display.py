@@ -11,6 +11,8 @@ from kano_settings.templates import Template
 from kano.gtk3.buttons import OrangeButton, KanoButton
 from kano.gtk3.kano_combobox import KanoComboBox
 from kano.gtk3.heading import Heading
+from kano_profile.tracker import track_data
+
 import kano_settings.common as common
 from kano_settings.boot_config import set_config_comment
 from kano_settings.system.display import get_model, get_status, list_supported_modes, set_hdmi_mode, read_hdmi_mode, \
@@ -91,6 +93,11 @@ class SetDisplay(Template):
                 # Of the form "auto" or "cea:1" or "dmt:1" etc.
                 parse_mode = self.mode.split(" ")[0]
                 self.set_hdmi_mode_from_str(parse_mode)
+
+                # Track the user's screen resolution
+                track_data("screen-mode-changed", {
+                    "mode": parse_mode
+                })
 
                 common.need_reboot = True
 
