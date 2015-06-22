@@ -28,18 +28,18 @@ grp_field_id = {
     }
 
 def get_real_users():
-    users = grp.getgrnam('kanousers')[grp_field_id['gr_mem']]
-    user_data = [pwd.getpwnam(u) for u in users]
-    return user_data
-
+    try:
+        users = grp.getgrnam('kanousers')[grp_field_id['gr_mem']]
+        user_data = [pwd.getpwnam(u) for u in users]
+        return user_data
+    except:
+        return None
 
 def get_first_username():
     real_users = get_real_users()
+    if real_users:
+        real_users.sort(key=lambda x: x[pwd_field_id['pw_uid']])
+        if len(real_users) > 0:
+            return real_users[0][pwd_field_id['pw_name']]
 
-    real_users.sort(key=lambda x: x[pwd_field_id['pw_uid']])
-
-    if len(real_users) > 0:
-        return real_users[0][pwd_field_id['pw_name']]
-    else:
-        return None
-
+    return None
