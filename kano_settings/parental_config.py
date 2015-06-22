@@ -13,6 +13,7 @@ from kano_settings import common
 from kano_settings.templates import Template, EditableList
 from kano.gtk3.buttons import OrangeButton
 from kano.gtk3.kano_dialog import KanoDialog
+from kano_profile.tracker import track_data
 
 from kano_settings.config_file import get_setting, set_setting
 from system.advanced import write_whitelisted_sites, write_blacklisted_sites, \
@@ -96,6 +97,11 @@ class ParentalConfig(Template):
         level = self.parental_level.get_value()
         set_parental_level(level)
         set_setting('Parental-level', level)
+        
+        # track which parental control level people use
+        track_data("parental-control-level-changed", {
+            "level": level    
+        })
 
         if level == 3.0:
             # If on the highest parental control, prompt user to relaunch
