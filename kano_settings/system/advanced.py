@@ -113,7 +113,7 @@ def set_hostname_postinst():
     new_hostname = get_first_username()
 
     if new_hostname is None:
-        logger.warning("No first user")
+        logger.warn("No first user")
     else:
         set_hostname(new_hostname)
 
