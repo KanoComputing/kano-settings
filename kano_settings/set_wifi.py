@@ -15,7 +15,7 @@ from kano_settings.templates import Template
 from kano.gtk3.buttons import OrangeButton, KanoButton
 from kano.gtk3.heading import Heading
 from kano.gtk3.kano_dialog import KanoDialog
-from kano.network import is_internet, network_info, launch_chromium
+from kano.network import is_internet, network_info, launch_browser
 from kano_settings.system.proxy import get_all_proxies, set_all_proxies, test_proxy
 
 
@@ -90,7 +90,7 @@ class SetWifi(Template):
             status_box.pack_start(configure_container, False, False, 3)
 
             go_to_portal_button = OrangeButton("Browser Login")
-            go_to_portal_button.connect("button-press-event", launch_chromium)
+            go_to_portal_button.connect("button-press-event", launch_browser)
             configure_container.pack_start(go_to_portal_button, False, False, 0)
 
             divider_label = Gtk.Label("|")
@@ -115,7 +115,7 @@ class SetWifi(Template):
             internet_action.set_text(ip)
 
             go_to_portal_button = OrangeButton("Browser Login")
-            go_to_portal_button.connect("button-press-event", launch_chromium)
+            go_to_portal_button.connect("button-press-event", launch_browser)
             configure_container.pack_start(go_to_portal_button, False, False, 0)
 
             if network_text == 'Ethernet':
