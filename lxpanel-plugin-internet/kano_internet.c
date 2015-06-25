@@ -1,8 +1,8 @@
 /*
 * kano_internet.c
 *
-* Copyright (C) 2014 Kano Computing Ltd.
-* License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+* Copyright (C) 2014, 2015 Kano Computing Ltd.
+* License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 *
 */
 
@@ -26,6 +26,8 @@
 #define WIFI_ICON "/usr/share/kano-settings/icon/widget-wifi.png"
 #define WIFI_SETTING_ICON "/usr/share/kano-settings/media/Icons/Icon-Wifi.png"
 
+#define INTERNET_STATUS_FILE "/var/opt/internet_monitor"
+
 #define INTERNET_CMD "/usr/bin/is_internet"
 #define SETTINGS_CMD "sudo /usr/bin/kano-settings 4"
 #define WIFI_CMD "sudo /usr/bin/kano-wifi-gui"
@@ -41,8 +43,10 @@ typedef struct
     gchar* internet_available;
     GtkWidget *icon;
     guint timer;
-
     LXPanel *panel;
+
+    GFile *status_file;
+    GFileMonitor *monitor;
 } kano_internet_plugin_t;
 
 static gboolean show_menu(GtkWidget *, GdkEventButton *, kano_internet_plugin_t *);
@@ -53,6 +57,8 @@ static void menu_pos(GtkMenu *menu, gint *x, gint *y, gboolean *push_in,
                      GtkWidget *widget);
 static void launch_cmd(const char *cmd, const char *appname);
 static void plugin_destructor(gpointer user_data);
+void file_monitor_cb(GFileMonitor *monitor, GFile *first, GFile *second,
+             GFileMonitorEvent event, gpointer user_data);
 
 static GtkWidget *plugin_constructor(LXPanel *panel, config_setting_t *settings)
 {
@@ -92,6 +98,15 @@ static GtkWidget *plugin_constructor(LXPanel *panel, config_setting_t *settings)
 
     gtk_widget_set_sensitive(icon, TRUE);
 
+    /* Start watching the pipe for input. */
+    plugin->status_file = g_file_new_for_path(INTERNET_STATUS_FILE);
+    g_assert(plugin->status_file != NULL);
+
+    plugin->monitor = g_file_monitor(plugin->status_file, G_FILE_MONITOR_NONE, NULL, NULL);
+    g_assert(plugin->monitor != NULL);
+
+    g_signal_connect(plugin->monitor, "changed", G_CALLBACK(file_monitor_cb), (gpointer) plugin);
+
     /* show our widget */
     gtk_widget_show_all(pwid);
 
@@ -104,7 +119,17 @@ static void plugin_destructor(gpointer user_data)
     /* Disconnect the timer. */
     g_source_remove(plugin->timer);
 
+    /* Disconnect the monitor */
+    g_object_unref(plugin->monitor);
+
     g_free(plugin);
+}
+
+void file_monitor_cb(GFileMonitor *monitor, GFile *first, GFile *second,
+             GFileMonitorEvent event, gpointer user_data)
+{
+    kano_internet_plugin_t *plugin = (kano_internet_plugin_t *)user_data;
+    internet_status(plugin);
 }
 
 static gboolean internet_status(kano_internet_plugin_t *plugin) {
