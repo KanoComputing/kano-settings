@@ -57,23 +57,21 @@ def set_chromium(enable, host=None, port=None):
 def set_midori(enable, host=None, port=None, user_agent='Mozilla/5.0 (X11; Linux) AppleWebKit/535.22+ Midori/0.4'):
 
     # Read Midori configuration file in
-    with open(midori_cfg, 'r') as f:
-        config_lines=f.readlines()
+    try:
+        with open(midori_cfg, 'r') as f:
+            config_lines=f.readlines()
+    except:
+        return
 
     def conf_add_or_replace(item, value, config_lines):
         '''
         A function to simplify editing the configuration file values
         add the item if not found, replace its value otherwise
         '''
-        found=False
-        newitem = '{}={}\n'.format(item, value)
-        for idx, line in enumerate(config_lines):
-            if line.startswith(item):
-                config_lines[idx]=newitem
-                found=True
+        conf_remove(item, config_lines)
 
-        if not found:
-            config_lines.append(newitem)
+        newitem = '{}={}\n'.format(item, value)
+        config_lines.append(newitem)
 
         return newitem
 
@@ -107,8 +105,6 @@ def set_midori(enable, host=None, port=None, user_agent='Mozilla/5.0 (X11; Linux
     # Write the config file back to disk
     with open(midori_cfg, 'w') as f:
         f.writelines(config_lines)
-
-    return
 
 
 def set_curl(enable, host=None, port=None, username=None, password=None):
