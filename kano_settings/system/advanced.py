@@ -35,6 +35,7 @@ from kano.network import set_dns, restore_dns_interfaces, \
 password_file = "/etc/kano-parental-lock"
 hosts_file = '/etc/hosts'
 hosts_file_backup = '/etc/kano-hosts-parental-backup'
+hosts_mod_comment = '# Modified to add username'
 
 chromium_policy_file = '/etc/chromium/policies/managed/policy.json'
 sentry_config = os.path.join(settings_dir, 'sentry')
@@ -112,22 +113,19 @@ def set_hostname_postinst():
     new_hostname = get_first_username()
 
     if new_hostname is None:
-        logger.warning("No first user")
+        logger.warn("No first user")
     else:
         set_hostname(new_hostname)
 
+
 def edit_hosts_file(path, new_hostname):
     try:
-        lines_changed = sed(
-            '127.0.0.1\s+(kano)',
-            '127.0.0.1\t{}'.format(new_hostname),
-            path,
-            True)
-        if lines_changed != 1:
-            logger.error("failed to change {}".format(path))
+        hosts = read_file_contents(path)
+        hosts += '\n'+hosts_mod_comment+'\n'
+        hosts += '127.0.0.1\t{}\n'.format(new_hostname)
+        write_file_contents(path, hosts)
     except:
         logger.error("exception while changing change {}".format(path))
-
 
 
 def set_hostname(new_hostname):
@@ -154,7 +152,7 @@ def set_hostname(new_hostname):
 
     # check if already done
     curr_hosts = read_file_contents_as_lines(hosts_file)
-    if '127.0.0.1\tkano' not in curr_hosts:
+    if hosts_mod_comment in curr_hosts:
         logger.warn('/etc/hosts already modified, not changing')
         return
 
