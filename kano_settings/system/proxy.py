@@ -82,7 +82,7 @@ def set_midori(enable, host=None, port=None, user_agent='Mozilla/5.0 (X11; Linux
         Remove the configuration item from the configuration file
         '''
         removed=False
-        for idx, line in enumerate(config_lines):
+        for line in config_lines:
             if line.startswith(item):
                 config_lines.remove(line)
                 removed=True
