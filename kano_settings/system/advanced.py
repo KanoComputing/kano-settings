@@ -17,18 +17,15 @@ import urllib2
 from bs4 import BeautifulSoup
 import pycountry
 import gzip
-import sys
 import re
 
 from kano.logging import logger
-import kano.utils
 from kano_settings.system.get_username import get_first_username
 
 from kano_settings.common import settings_dir
 from kano.utils import read_file_contents, write_file_contents, \
     read_file_contents_as_lines, read_json, write_json, ensure_dir, \
-    get_user_unsudoed, sed
-from kano.logging import logger
+    get_user_unsudoed, chown_path
 from kano.network import set_dns, restore_dns_interfaces, \
     clear_dns_interfaces, refresh_resolvconf
 from kano_settings.config_file import get_setting
@@ -40,6 +37,13 @@ hosts_mod_comment = '# Modified to add username'
 
 chromium_policy_file = '/etc/chromium/policies/managed/policy.json'
 sentry_config = os.path.join(settings_dir, 'sentry')
+
+youtube_safe_cookie = '/usr/share/kano-video/cookies/youtube_safe/cookies.db'
+youtube_nosafe_cookie = '/usr/share/kano-video/cookies/youtube_nosafe/cookies.db'
+browser_safe_cookie = '/usr/share/kano-video/cookies/browser_safe/cookies.db'
+browser_nosafe_cookie = '/usr/share/kano-video/cookies/browser_nosafe/cookies.db'
+midori_cookie = '.config/midori'
+youtube_cookie = '.config/midori/youtube'
 
 username = get_user_unsudoed()
 
@@ -129,7 +133,7 @@ def set_hostname_postinst():
 def edit_hosts_file(path, new_hostname):
     try:
         hosts = read_file_contents(path)
-        hosts += '\n'+hosts_mod_comment+'\n'
+        hosts += '\n' + hosts_mod_comment + '\n'
         hosts += '127.0.0.1\t{}\n'.format(new_hostname)
         write_file_contents(path, hosts)
     except:
@@ -140,9 +144,7 @@ def set_hostname(new_hostname):
     if os.environ['LOGNAME'] != 'root':
         logger.error("Error: Settings must be executed with root privileges")
 
-
     # Check username chars
-
     new_hostname = re.sub('[^a-zA-Z0-9]', '', new_hostname).lower()
 
     if new_hostname == '':
@@ -156,7 +158,6 @@ def set_hostname(new_hostname):
     # check for missing hosts file
     if not os.path.exists(hosts_file):
         create_empty_hosts()
-
 
     # check if already done
     curr_hosts = read_file_contents_as_lines(hosts_file)
@@ -172,7 +173,7 @@ def set_hostname(new_hostname):
         edit_hosts_file(hosts_file_backup, new_hostname)
 
     try:
-        write_file_contents('/etc/hostname', new_hostname+'\n')
+        write_file_contents('/etc/hostname', new_hostname + '\n')
     except:
         logger.error("exception while changing change /etc/hostname")
 
@@ -194,8 +195,8 @@ def add_blacklist_host(hosts, site_url):
     Add a site url to the hosts blacklist
     Both direct, and with "www." prefix
     '''
-    url_pattern='127.0.0.1\t{}\n'
-    www_pattern='127.0.0.1\twww.{}\n'
+    url_pattern = '127.0.0.1\t{}\n'
+    www_pattern = '127.0.0.1\twww.{}\n'
 
     hosts.append(url_pattern.format(site_url))
     hosts.append(www_pattern.format(site_url))
@@ -208,20 +209,20 @@ def add_safesearch_blacklist(hosts):
     '''
 
     # Block search sites
-    search_sites=[
+    search_sites = [
         'google.com',
         'bing.com',
         'search.yahoo.com',
         'uk.search.yahoo.com',
         'ask.com',
-        'uk.ask.com', # pycountry does not return "uk", but "gb"
+        'uk.ask.com',  # pycountry does not return "uk", but "gb"
         'search.aol.com',
         'aolsearch.com',
         'search.com',
         'uk.search.com',
         'wow.com',
         'webcrawler.com',
-        'zoo.com', # Webcrawler sometimes redirects to zoo.com
+        'zoo.com',  # Webcrawler sometimes redirects to zoo.com
         'mywebsearch.com',
         'home.mywebsearch.com',
         'infospace.com',
@@ -231,8 +232,7 @@ def add_safesearch_blacklist(hosts):
         'contenko.com',
         'dogpile.com',
         'alhea.com',
-        'uk.alhea.com'
-        ]
+        'uk.alhea.com']
 
     # Blacklist major search engines
     for site in search_sites:
@@ -254,11 +254,11 @@ def add_safesearch_blacklist(hosts):
 
         add_blacklist_host(hosts, '{}.info.com'.format(country.alpha2.lower()))
         add_blacklist_host(hosts, '{}.alhea.com'.format(country.alpha2.lower()))
-    
+
     # Google: Add extra seconday-level domains not covered in ISO 3166
     # http://en.wikipedia.org/wiki/Second-level_domain
     # http://en.wikipedia.org/wiki/List_of_Google_domains
-    second_level_domains=[
+    second_level_domains = [
         'com.af', 'com.af', 'com.ag', 'com.ai', 'co.ao', 'com.ar', 'com.au', 'com.bd', 'com.bh', 'com.bn', 'com.bo', 'com.br',
         'co.bw', 'com.bz', 'com.kh', 'co.ck', 'g.cn', 'com.co', 'co.cr', 'com.cu', 'com.cy', 'com.do', 'com.ec', 'com.eg',
         'com.et', 'com.fj', 'com.gh', 'com.gi', 'com.gt', 'com.hk', 'co.id', 'co.il', 'co.in', 'com.jm', 'co.jp',
@@ -266,18 +266,17 @@ def add_safesearch_blacklist(hosts):
         'com.my', 'com.mz', 'com.na', 'com.nf', 'com.ng', 'com.ni', 'com.np', 'co.nz', 'com.om', 'com.pa', 'com.pe',
         'com.ph', 'com.pk', 'com.pg', 'com.pr', 'com.py', 'com.qa', 'com.sa', 'com.sb', 'com.sg', 'com.sl', 'com.sv',
         'co.th', 'com.tj', 'com.tn', 'com.tr', 'com.tw', 'co.tz', 'com.ua', 'co.ug', 'co.uk', 'com.uy', 'co.uz',
-        'com.vc', 'co.ve', 'co.vi', 'com.vn', 'co.za', 'co.zm', 'co.zw'
-        ]
+        'com.vc', 'co.ve', 'co.vi', 'com.vn', 'co.za', 'co.zm', 'co.zw']
 
     for subdomain in second_level_domains:
         add_blacklist_host(hosts, 'google.{}'.format(subdomain))
 
     return hosts
 
-def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/Parental/parental-hosts-blacklist.gz',
-        blocked_sites=None, allowed_sites=None):
-    logger.debug('set_hosts_blacklist: {}'.format(enable))
 
+def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/Parental/parental-hosts-blacklist.gz',
+                        blocked_sites=None, allowed_sites=None):
+    logger.debug('set_hosts_blacklist: {}'.format(enable))
 
     if not os.path.exists(hosts_file):
         create_empty_hosts()
@@ -293,17 +292,17 @@ def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/P
             shutil.copyfile(hosts_file, hosts_file_backup)
 
             logger.debug('appending the blacklist file')
-            zipped_blacklist=gzip.GzipFile(blacklist_file)
-            blacklist=zipped_blacklist.readlines()
+            zipped_blacklist = gzip.GzipFile(blacklist_file)
+            blacklist = zipped_blacklist.readlines()
 
             logger.debug('Applying safesearch settings')
-            blacklist=add_safesearch_blacklist(blacklist)
+            blacklist = add_safesearch_blacklist(blacklist)
 
             # Append list of blacklisted hosts to system hostnames file
             with open(hosts_file, 'a') as f:
                 for host_entry in blacklist:
                     f.write(host_entry)
-            
+
             logger.debug('making the file root read-only')
             os.chmod(hosts_file, 0644)
 
@@ -470,7 +469,7 @@ def set_chromium_parental(enabled):
         # Chromium_setting: (disabled_value, enabled_value),
         'IncognitoModeAvailability': (0, 1)
     }
-
+    # Set incognito mode availability for Chromium
     new_policy = [(key, policies[key][enabled]) for key in policies]
     set_chromium_policies(new_policy)
 
@@ -498,6 +497,63 @@ def set_dns_parental(enabled):
     refresh_resolvconf()
 
 
+def set_youtube_cookies(enabled):
+    # The cookie enables/disables safety mode in YouTube (Midori)
+    # The .db files are located in /usr/share/kano-video
+
+    # Get a list of all users in the system
+    home_dirs = []
+    for d in os.listdir("/home/"):
+        if os.path.isdir("/home/{}/".format(d)):
+            home_dirs.append("/home/{}/".format(d))
+
+    # Browser: Cookie needs to be copied to /home/USERNAME/.config/midori
+    if os.path.exists(browser_safe_cookie) and \
+       os.path.exists(browser_nosafe_cookie) and \
+       os.path.exists(midori_cookie):
+        if enabled:
+            logger.debug('Enabling YouTube Safety mode for browser')
+            # Change the cookie for every user
+            for d in home_dirs:
+                midori_cookie_path = '{}{}'.format(d, midori_cookie)
+                shutil.copy(browser_safe_cookie, midori_cookie_path)
+                # Fix permissions
+                user = d[6:-1]
+                chown_path('{}/cookie.db'.format(midori_cookie_path), user, user)
+        else:
+            logger.debug('Disabling YouTube Safety mode for browser')
+            # Change the cookie for every user
+            for d in home_dirs:
+                midori_cookie_path = '{}{}'.format(d, midori_cookie)
+                shutil.copy(browser_nosafe_cookie, midori_cookie_path)
+                # Fix permissions
+                user = d[6:-1]
+                chown_path('{}/cookie.db'.format(midori_cookie_path), user, user)
+
+    # YT: copy yo /home/USERNAME/.config/midori/youtube (kano-video-browser)
+    if os.path.exists(youtube_safe_cookie) and \
+       os.path.exists(youtube_nosafe_cookie) and \
+       os.path.exists(youtube_cookie):
+        if enabled:
+            logger.debug('Enabling YouTube Safety mode for kano-video-browser')
+            # Change the cookie for every user
+            for d in home_dirs:
+                youtube_cookie_path = '{}{}'.format(d, youtube_cookie)
+                shutil.copy(youtube_safe_cookie, youtube_cookie_path)
+                # Fix permissions
+                user = d[6:-1]
+                chown_path('{}/cookie.db'.format(youtube_cookie_path), user, user)
+        else:
+            logger.debug('Disabling YT Safety mode for kano-video-browser')
+            # Change the cookie for every user
+            for d in home_dirs:
+                youtube_cookie_path = '{}{}'.format(d, youtube_cookie)
+                shutil.copy(youtube_nosafe_cookie, youtube_cookie_path)
+                # Fix permissions
+                user = d[6:-1]
+                chown_path('{}/cookie.db'.format(youtube_cookie_path), user, user)
+
+
 def read_listed_sites():
     return (
         read_file_contents_as_lines(blacklist_file),
@@ -518,7 +574,7 @@ def set_parental_level(level_setting):
         # Low
         ['blacklist'],
         # Medium
-        ['dns'],
+        ['dns', 'youtube-cookies'],
         # High
         ['chromium'],
         # Ultimate
@@ -538,6 +594,7 @@ def set_parental_level(level_setting):
     else:
         set_chromium_parental('chromium' in enabled)
         set_dns_parental('dns' in enabled)
+        set_youtube_cookies('youtube-cookies' in enabled)
         set_ultimate_parental(False)
 
     blacklist, whitelist = read_listed_sites()
