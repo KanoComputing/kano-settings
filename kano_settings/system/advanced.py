@@ -534,7 +534,7 @@ def set_parental_level(level_setting):
         # Low
         ['blacklist'],
         # Medium
-        ['dns'],
+        ['dns', 'youtube-cookies'],
         # High
         ['chromium'],
         # Ultimate
@@ -554,7 +554,7 @@ def set_parental_level(level_setting):
     else:
         set_chromium_parental('chromium' in enabled)
         set_dns_parental('dns' in enabled)
-        set_youtube_cookies('dns' in enabled)
+        set_youtube_cookies('youtube-cookies' in enabled)
         set_ultimate_parental(False)
 
     blacklist, whitelist = read_listed_sites()
