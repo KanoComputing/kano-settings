@@ -31,6 +31,7 @@ from kano.utils import read_file_contents, write_file_contents, \
 from kano.logging import logger
 from kano.network import set_dns, restore_dns_interfaces, \
     clear_dns_interfaces, refresh_resolvconf
+from kano_settings.config_file import get_setting
 
 password_file = "/etc/kano-parental-lock"
 hosts_file = '/etc/hosts'
@@ -52,6 +53,13 @@ def get_parental_enabled():
     enabled = os.path.exists(password_file)
     logger.debug('get_parental_enabled: {}'.format(enabled))
     return enabled
+
+
+def get_parental_level():
+    if not get_parental_enabled():
+        return 0
+
+    return get_setting('Parental-level') + 1
 
 
 def set_parental_enabled(setting, _password):
