@@ -492,26 +492,46 @@ def set_dns_parental(enabled):
 def set_youtube_cookies(enabled):
     # The cookie enables/disables safety mode in YouTube (Midori)
     # The .db files are located in /usr/share/kano-video
-    # It needs to be copied to /home/USERNAME/.config/midori (browser) and
-    # /home/USERNAME/.config/midori/youtube (kano-video-browser)
 
-    midori_cookie_path = '/home/{}/{}'.format(username, midori_cookie)
-    youtube_cookie_path = '/home/{}/{}'.format(username, youtube_cookie)
-    if enabled:
-        logger.debug('Enabling YouTube Safety mode')
-        if os.path.exists(youtube_safe_cookie) and (browser_safe_cookie):
-            if os.path.exists(youtube_cookie_path):
-                shutil.copy(youtube_safe_cookie, youtube_cookie_path)
-            if os.path.exists(midori_cookie_path):
+    # Get a list of all users in the system
+    home_dirs = []
+    for d in os.listdir("/home/"):
+        if os.path.isdir("/home/{}/".format(d)):
+            home_dirs.append("/home/{}/".format(d))
+
+    # Browser: Cookie needs to be copied to /home/USERNAME/.config/midori
+    if os.path.exists(browser_safe_cookie) and \
+       os.path.exists(browser_nosafe_cookie) and \
+       os.path.exists(midori_cookie):
+        if enabled:
+            logger.debug('Enabling YouTube Safety mode for browser')
+            # Change the cookie for every user
+            for d in home_dirs:
+                midori_cookie_path = '/home/{}/{}'.format(d, midori_cookie)
                 shutil.copy(browser_safe_cookie, midori_cookie_path)
-
-    else:
-        logger.debug('Disabling YouTube Safety mode')
-        if os.path.exists(youtube_nosafe_cookie) and (browser_nosafe_cookie):
-            if os.path.exists(youtube_cookie_path):
-                shutil.copy(youtube_nosafe_cookie, youtube_cookie_path)
-            if os.path.exists(midori_cookie_path):
+        else:
+            logger.debug('Disabling YouTube Safety mode for browser')
+            # Change the cookie for every user
+            for d in home_dirs:
+                midori_cookie_path = '/home/{}/{}'.format(d, midori_cookie)
                 shutil.copy(browser_nosafe_cookie, midori_cookie_path)
+
+    # YT: copy yo /home/USERNAME/.config/midori/youtube (kano-video-browser)
+    if os.path.exists(youtube_safe_cookie) and \
+       os.path.exists(youtube_nosafe_cookie) and \
+       os.path.exists(youtube_cookie):
+        if enabled:
+            logger.debug('Enabling YouTube Safety mode for kano-video-browser')
+            # Change the cookie for every user
+            for d in home_dirs:
+                youtube_cookie_path = '/home/{}/{}'.format(d, youtube_cookie)
+                shutil.copy(youtube_safe_cookie, youtube_cookie_path)
+        else:
+            logger.debug('Disabling YouTube Safety mode for kano-video-browser')
+            # Change the cookie for every user
+            for d in home_dirs:
+                youtube_cookie_path = '/home/{}/{}'.format(d, youtube_cookie)
+                shutil.copy(youtube_nosafe_cookie, youtube_cookie_path)
 
 
 def read_listed_sites():
