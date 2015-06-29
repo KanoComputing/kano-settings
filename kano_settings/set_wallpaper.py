@@ -14,6 +14,7 @@ from kano_settings.config_file import username
 from kano_settings.system.wallpaper import change_wallpaper
 from kano_settings.image_table import ImageTable
 from kano_settings.templates import TwoButtonTemplate
+from kano_content.api import ContentManager
 
 wallpaper_path = "/usr/share/kano-desktop/wallpapers/"
 kano_draw_path = os.path.join('/home', username, 'Draw-content/wallpapers/')
@@ -156,6 +157,11 @@ class WallpaperTable(ImageTable):
         self.get_wallpapers(wallpaper_path)
         self.get_wallpapers(kano_draw_path)
 
+        cm = ContentManager.from_local()
+        for co in cm.list_local_objects(spec='wallpapers'):
+            wallpaper_dir = co.get_data('wallpapers').get_dir()
+            self.get_wallpapers(wallpaper_dir)
+
         # To get info about which environments are unlocked we first calculate
         # badges then we take the 'achieved' attribute of an environment and
         # add it to the attribute of our local list of wallpapers
@@ -230,8 +236,10 @@ class WallpaperTable(ImageTable):
         try:
             # The original picture is not square, so resize the picture to
             # scale and then crop the picture
+            wallpaper_name = name + name_pattern
+            wallpaper_path = os.path.join(self.get_path(name), wallpaper_name)
             wallpaper_pixbuf = GdkPixbuf.Pixbuf.new_from_file_at_size(
-                self.get_path(name) + name + name_pattern, 120, 90
+                wallpaper_path, 120, 90
             )
             cropped_wallpaper = wallpaper_pixbuf.new_subpixbuf(15, 0, width,
                                                                height)
