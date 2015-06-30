@@ -4,8 +4,28 @@
 # Provides:         kano-settings
 # Required-Start:
 # Required-Stop:
+# X-Start-Before:   lightdm
 # Default-Start:    2
 # Default-Stop:
 ### END INIT INFO
 
-/usr/bin/kano-settings-onboot
+. /lib/lsb/init-functions
+
+case "$1" in
+    start)
+	log_action_begin_msg "Running kano-settings-onboot"
+	/usr/bin/kano-settings-onboot
+	log_action_end_msg $?
+	;;
+    stop)
+	;;
+    restart|reload|force-reload|status)
+        echo "Error: argument '$1' not supported" >&2
+        exit 3
+	;;
+    *)
+      echo "Usage: kano-settings [start|stop]" >&2
+      exit 3
+      ;;
+esac
+qsudo reboot
