@@ -10,12 +10,16 @@
 
 import re
 import os
+import sys
+import shutil
 from kano.utils import read_file_contents_as_lines, is_number
 from kano.logging import logger
 
 boot_config_standard_path = "/boot/config.txt"
 boot_config_pi1_backup_path = "/boot/config_pi1_backup.txt"
 boot_config_pi2_backup_path = "/boot/config_pi2_backup.txt"
+tvservice_path = '/usr/bin/tvservice'
+boot_config_safemode_backup_path = '/boot/config.txt.orig'
 
 
 class BootConfig:
@@ -137,3 +141,26 @@ def get_config_comment(name, value):
 
 def has_config_comment(name):
     return real_config.has_comment(name)
+
+
+def enforce_pi():
+    pi_detected = os.path.exists(tvservice_path) and \
+        os.path.exists(boot_config_standard_path)
+    if not pi_detected:
+        logger.error('need to run on a Raspberry Pi')
+        sys.exit()
+
+
+def is_safe_boot():
+    """ Test whether the unit is booting in the safe mode already. """
+
+    return os.path.isfile(boot_config_safemode_backup_path)
+
+
+def safe_mode_backup_config():
+    shutil.copy2(boot_config_standard_path, boot_config_safemode_backup_path)
+
+
+def safe_mode_restore_config():
+    shutil.move(boot_config_safemode_backup_path, boot_config_standard_path)
+

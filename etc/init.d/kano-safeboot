@@ -1,10 +1,10 @@
 #!/bin/sh
 
 ### BEGIN INIT INFO
-# Provides:         kano-settings
+# Provides:         kano-safeboot
 # Required-Start:
 # Required-Stop:
-# X-Start-Before:   lightdm
+# X-Start-Before:   
 # Default-Start:    2
 # Default-Stop:
 ### END INIT INFO
@@ -13,8 +13,8 @@
 
 case "$1" in
     start)
-	log_action_begin_msg "Running kano-settings-onboot"
-	/usr/bin/kano-settings-onboot
+	log_action_begin_msg "Checking for kano-safeboot-mode"
+	/usr/bin/kano-safeboot-mode
 	log_action_end_msg $?
 	;;
     stop)
@@ -24,7 +24,7 @@ case "$1" in
         exit 3
 	;;
     *)
-      echo "Usage: kano-settings [start|stop]" >&2
+      echo "Usage: kano-safeboot [start|stop]" >&2
       exit 3
       ;;
 esac

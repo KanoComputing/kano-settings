@@ -122,6 +122,22 @@ def set_hdmi_mode(group=None, mode=None):
 
     set_config_value("hdmi_mode", mode)
 
+def set_safeboot_mode():
+    logger.warn("Safe boot requested")
+
+    set_config_value("hdmi_force_hotplug", 1)
+    set_config_value("config_hdmi_boost", 4)
+
+    set_config_value("hdmi_group", 2)
+    set_config_value("hdmi_mode", 16)
+
+    set_config_value("disable_overscan", 1)
+    set_config_value("overscan_left", 0)
+    set_config_value("overscan_right", 0)
+    set_config_value("overscan_top", 0)
+    set_config_value("overscan_bottom", 0)
+
+
 
 def get_status():
     status = dict()
