@@ -90,7 +90,7 @@ class SetWifi(Template):
             status_box.pack_start(configure_container, False, False, 3)
 
             go_to_portal_button = OrangeButton("Browser Login")
-            go_to_portal_button.connect("button-press-event", launch_browser)
+            go_to_portal_button.connect("button-press-event", self.cb_launch_browser)
             configure_container.pack_start(go_to_portal_button, False, False, 0)
 
             divider_label = Gtk.Label("|")
@@ -115,7 +115,7 @@ class SetWifi(Template):
             internet_action.set_text(ip)
 
             go_to_portal_button = OrangeButton("Browser Login")
-            go_to_portal_button.connect("button-press-event", launch_browser)
+            go_to_portal_button.connect("button-press-event", self.cb_launch_browser)
             configure_container.pack_start(go_to_portal_button, False, False, 0)
 
             if network_text == 'Ethernet':
@@ -142,6 +142,10 @@ class SetWifi(Template):
         self.title.title.set_text(title)
         self.title.description.set_text(description)
         self.win.show_all()
+
+    def cb_launch_browser(self, control, signal):
+        # start the default browser to visit the default page
+        launch_browser()
 
     def go_to_proxy(self, widget, event):
         self.win.clear_win()
