@@ -161,6 +161,6 @@ def safe_mode_backup_config():
     shutil.copy2(boot_config_standard_path, boot_config_safemode_backup_path)
 
 
-def safe_mode_restore_Config():
+def safe_mode_restore_config():
     shutil.move(boot_config_safemode_backup_path, boot_config_standard_path)
 
