@@ -46,6 +46,9 @@ case "$1" in
         # add kano-settings-onboot to startup
         update-rc.d kano-settings defaults
 
+        # add kano-safeboot-mode to startup
+        update-rc.d kano-safeboot defaults
+
         # add kano-bootup-sound to startup
         update-rc.d kano-bootup-sound defaults
 

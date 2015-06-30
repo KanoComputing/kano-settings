@@ -125,17 +125,6 @@ def compare_and_set_overscan():
         return True
 
 
-def safe_boot_requested():
-    """ Test whether the CTRL+ALT keys were pressed. """
-
-    # Start a board LED blink in the background for a few seconds
-    # so the user knows it's time to press Ctrl-Alt
-    _, _, _ = run_cmd("/usr/bin/kano-led &")
-
-    _, _, rv = run_cmd("kano-keys-pressed")
-    return rv == 10
-
-
 def get_screen_information():
     """ Retrieves the information about the current screen.
 
@@ -174,8 +163,8 @@ if check_clock_config_matches_chip():
 
 # Reconfigure and reboot if the user requested safe mode
 # Or if the cable appears not to have been plugged in.
-if safe_boot_requested() and not is_safe_boot() or is_mode_fallback():
-    logger.warn("Safe boot requested")
+if is_mode_fallback():
+    logger.warn("executing fallback boot")
 
     # Backup the config file
     safe_mode_backup_config()

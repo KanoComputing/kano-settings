@@ -1,0 +1,54 @@
+#!/usr/bin/env python
+# kano-settings-onboot
+#
+# Copyright (C) 2014, 2015 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+# Configure HDMI settings on boot.
+#
+# Also calls code to set clock config, to avoid need to an extra reboot.
+import os
+import sys
+
+if __name__ == '__main__' and __package__ is None:
+    dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+    if dir_path != '/usr':
+        sys.path.insert(1, dir_path)
+
+from kano.utils import run_cmd, enforce_root
+from kano.logging import logger
+from kano_settings.boot_config import enforce_pi, is_safe_boot, safe_mode_backup_config
+from kano_settings.system.display import set_safeboot_mode
+
+logger.force_log_level('info')
+
+def safe_boot_requested():
+    """ Test whether the CTRL+ALT keys were pressed. """
+
+    # Start a board LED blink in the background for a few seconds
+    # so the user knows it's time to press Ctrl-Alt
+    _, _, _ = run_cmd("/usr/bin/kano-led &")
+
+    _, _, rv = run_cmd("kano-keys-pressed")
+    return rv == 10
+
+
+# main program
+enforce_pi()
+enforce_root('Need to be root!')
+
+
+# Reconfigure and reboot if the user requested safe mode
+# Or if the cable appears not to have been plugged in.
+if safe_boot_requested() and not is_safe_boot():
+    logger.warn("Safe boot requested")
+
+    # Backup the config file
+    safe_mode_backup_config()
+
+    set_safeboot_mode()
+
+    # Trigger a reboot
+    logger.sync()
+    run_cmd('reboot -f')
+    sys.exit()
