@@ -19,8 +19,7 @@ boot_config_standard_path = "/boot/config.txt"
 boot_config_pi1_backup_path = "/boot/config_pi1_backup.txt"
 boot_config_pi2_backup_path = "/boot/config_pi2_backup.txt"
 tvservice_path = '/usr/bin/tvservice'
-config_txt_path = '/boot/config.txt'
-config_txt_backup_path = '/boot/config.txt.orig'
+boot_config_safemode_backup_path = '/boot/config.txt.orig'
 
 
 class BootConfig:
@@ -151,15 +150,17 @@ def enforce_pi():
         logger.error('need to run on a Raspberry Pi')
         sys.exit()
 
+
 def is_safe_boot():
     """ Test whether the unit is booting in the safe mode already. """
 
-    return os.path.isfile(config_txt_backup_path)
+    return os.path.isfile(boot_config_safemode_backup_path)
+
 
 def safe_mode_backup_config():
-    shutil.copy2(config_txt_path, config_txt_backup_path)
+    shutil.copy2(boot_config_standard_path, boot_config_safemode_backup_path)
 
 
 def safe_mode_restore_Config():
-    shutil.move(config_txt_backup_path, config_txt_path)
+    shutil.move(boot_config_safemode_backup_path, boot_config_standard_path)
 
