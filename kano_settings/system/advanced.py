@@ -497,14 +497,13 @@ def set_dns_parental(enabled):
     refresh_resolvconf()
 
 
-def set_everyone_youtube_cookies(enabled):
-
+def set_everyone_youtube_cookies():
     if get_parental_level() >= 2:
         # Traverse through all users home directories to apply Midoris parental settings
         username = []
         try:
             for username in os.listdir("/home/"):
-                set_user_youtube_cookies(enabled, username)
+                set_user_youtube_cookies(True, username)
         except:
             logger.error('Error applying Midori security to users ({})'.format(','.join(username)))
 
