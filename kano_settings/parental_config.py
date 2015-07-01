@@ -199,7 +199,7 @@ class AllowedSites(Template):
         self.win.show_all()
 
     def apply_changes(self, button, event):
-        pw_dialog = ParentalPasswordDialog()
+        pw_dialog = ParentalPasswordDialog(self.win)
         if not pw_dialog.verify():
             return
 
