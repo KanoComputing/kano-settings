@@ -498,15 +498,16 @@ def set_dns_parental(enabled):
 
 
 def set_everyone_youtube_cookies(enabled):
-    # Traverse through all users home directories to apply Midoris parental settings
-    homedir = []
-    try:
-        for homedir in os.listdir("/home/"):
-            set_user_youtube_cookies(homedir)
-    except:
-        logger.error('Error applying Midori security to users ({})'.format(','.join(homedir)))
-        raise
-     
+
+    if get_parental_level() >= 2:
+        # Traverse through all users home directories to apply Midoris parental settings
+        username = []
+        try:
+            for username in os.listdir("/home/"):
+                set_user_youtube_cookies(enabled, username)
+        except:
+            logger.error('Error applying Midori security to users ({})'.format(','.join(username)))
+
 
 def set_user_youtube_cookies(enabled, username):
     # The cookie enables/disables safety mode in YouTube (Midori)
@@ -543,14 +544,14 @@ def set_user_youtube_cookies(enabled, username):
             logger.debug('Enabling YouTube Safety mode for kano-video-browser on user {}'.format(username))
 
             # Copy cookie for this user and set permission
-            youtube_cookie_path = '{}{}'.format(d, youtube_cookie)
+            youtube_cookie_path = '{}{}'.format(homedir, youtube_cookie)
             shutil.copy(youtube_safe_cookie, youtube_cookie_path)
             chown_path('{}/cookie.db'.format(youtube_cookie_path), username, username)
         else:
             logger.debug('Disabling YT Safety mode for kano-video-browser on user {}'.format(username))
 
             # Copy cookie for this user and set permission
-            youtube_cookie_path = '{}{}'.format(d, youtube_cookie)
+            youtube_cookie_path = '{}{}'.format(homedir, youtube_cookie)
             shutil.copy(youtube_nosafe_cookie, youtube_cookie_path)
             chown_path('{}/cookie.db'.format(youtube_cookie_path), username, username)
 
