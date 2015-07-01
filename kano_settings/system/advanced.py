@@ -497,62 +497,62 @@ def set_dns_parental(enabled):
     refresh_resolvconf()
 
 
-def set_everyone_youtube_cookies():
-    if get_parental_level() >= 2:
-        # Traverse through all users home directories to apply Midoris parental settings
-        username = []
-        try:
-            for username in os.listdir("/home/"):
-                set_user_youtube_cookies(True, username)
-        except:
-            logger.error('Error applying Midori security to users ({})'.format(','.join(username)))
+def set_everyone_youtube_cookies(enabled=None):
+    if enabled is None:
+        enabled = get_parental_level() >= 2
+
+    username = []
+    try:
+        for username in os.listdir("/home/"):
+            set_user_youtube_cookies(enabled, username)
+    except:
+        logger.error('Error applying Midori security to users ({})'.format(','.join(username)))
 
 
-def set_user_youtube_cookies(enabled, username):
+def set_user_youtube_cookies(enabled=None, username=None):
+    if enabled is None:
+        enabled = get_parental_level() >= 2
+    if username is None:
+        return
+
     # The cookie enables/disables safety mode in YouTube (Midori)
     # The .db files are located in /usr/share/kano-video
     homedir = "/home/{}".format(username)
     if not os.path.isdir(homedir):
-        logger.error("Could not access user home directory: {}".format(homedir))
+        logger.error("Could not access user home dir: {}".format(homedir))
         return
 
     # Browser: Cookie needs to be copied to /home/USERNAME/.config/midori
     if os.path.exists(browser_safe_cookie) and \
        os.path.exists(browser_nosafe_cookie) and \
        os.path.exists(midori_cookie):
+        midori_cookie_path = '{}/{}'.format(homedir, midori_cookie)
         if enabled:
             logger.debug('Enabling YouTube Safety mode for browser on user {}'.format(username))
-
-            # Copy cookie for this user and set permission
-            midori_cookie_path = '{}{}'.format(homedir, midori_cookie)
-            shutil.copy(browser_safe_cookie, midori_cookie_path)
-            chown_path('{}/cookie.db'.format(midori_cookie_path), username, username)
+            browser_cookie = browser_safe_cookie
         else:
             logger.debug('Disabling YouTube Safety mode for browser on user {}'.format(username))
-
-            # Copy- cookie for this user and set permission
-            midori_cookie_path = '{}{}'.format(homedir, midori_cookie)
-            shutil.copy(browser_nosafe_cookie, midori_cookie_path)
-            chown_path('{}/cookie.db'.format(midori_cookie_path), username, username)
+            browser_cookie = browser_nosafe_cookie
+        # Copy cookie for this user
+        shutil.copy(browser_cookie, midori_cookie_path)
+        # Set correct permissions on file
+        chown_path('{}/cookie.db'.format(midori_cookie_path), username, username)
 
     # YT: copy yo /home/USERNAME/.config/midori/youtube (kano-video-browser)
     if os.path.exists(youtube_safe_cookie) and \
        os.path.exists(youtube_nosafe_cookie) and \
        os.path.exists(youtube_cookie):
+        youtube_cookie_path = '{}/{}'.format(homedir, youtube_cookie)
         if enabled:
             logger.debug('Enabling YouTube Safety mode for kano-video-browser on user {}'.format(username))
-
-            # Copy cookie for this user and set permission
-            youtube_cookie_path = '{}{}'.format(homedir, youtube_cookie)
-            shutil.copy(youtube_safe_cookie, youtube_cookie_path)
-            chown_path('{}/cookie.db'.format(youtube_cookie_path), username, username)
+            yt_cookie = youtube_safe_cookie
         else:
             logger.debug('Disabling YT Safety mode for kano-video-browser on user {}'.format(username))
-
-            # Copy cookie for this user and set permission
-            youtube_cookie_path = '{}{}'.format(homedir, youtube_cookie)
-            shutil.copy(youtube_nosafe_cookie, youtube_cookie_path)
-            chown_path('{}/cookie.db'.format(youtube_cookie_path), username, username)
+            yt_cookie = youtube_nosafe_cookie
+        # Copy cookie for this user
+        shutil.copy(yt_cookie, youtube_cookie_path)
+        # Set correct permissions on file
+        chown_path('{}/cookie.db'.format(youtube_cookie_path), username, username)
 
 
 def read_listed_sites():
