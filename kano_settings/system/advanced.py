@@ -79,8 +79,8 @@ def set_parental_enabled(setting, _password):
         logger.debug('making the file root read-only')
         os.chmod(password_file, 0400)
 
-        logger.debug('enabling hosts file')
-        set_hosts_blacklist(True)
+        logger.debug('enabling parental controls')
+        set_parental_level(get_parental_level())
 
         msg = "Parental lock enabled!"
         logger.debug(msg)
@@ -96,8 +96,8 @@ def set_parental_enabled(setting, _password):
             logger.debug('clearing password')
             os.remove(password_file)
 
-            logger.debug('disabling hosts file')
-            set_hosts_blacklist(False)
+            logger.debug('disabling parental controls')
+            set_parental_level(-1)
 
             msg = "Parental lock disabled!"
             logger.debug(msg)
@@ -577,6 +577,7 @@ def write_blacklisted_sites(blacklist):
 
 
 def set_parental_level(level_setting):
+    # NB, we pass -1 to disable all
     feature_levels = [
         # Low
         ['blacklist'],
