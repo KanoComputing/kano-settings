@@ -29,7 +29,7 @@ def check_config():
     # Check if the parental control is at the highest level 3.0
     for line in f:
         line = line.strip()
-        if line == '"Parental-level": 3.0':
+        if '"Parental-level": 3.0' in line:
             ultimate_parental = True
 
     # If the parental is at the highest level, start the sentry server
