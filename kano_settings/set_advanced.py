@@ -225,12 +225,17 @@ class SetPassword(Template):
         self.win.clear_win()
         SetAdvanced(self.win)
 
+    def go_to_parental_config(self, button=None, event=None):
+        self.win.clear_win()
+        ParentalConfig(self.win)
+
     def apply_changes(self, button, event):
         # If enter key is pressed or mouse button is clicked
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
             # Disable buttons and entry fields during validation
-            # we save the current parental state now because it will flip during this function
+            # we save the current parental state now because it will flip
+            # during this function
             is_locked = self.parental_enabled
             if is_locked:
                 self.entry.set_sensitive(False)
@@ -338,4 +343,9 @@ class SetPassword(Template):
         kdialog = KanoDialog(heading, msg, parent_window=self.win)
         kdialog.run()
 
-        self.go_to_advanced()
+        # If the user has just turned the parental control on, take them to
+        # the config screen.
+        if self.parental_enabled:
+            self.go_to_parental_config()
+        else:
+            self.go_to_advanced()
