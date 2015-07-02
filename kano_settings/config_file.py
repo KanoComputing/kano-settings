@@ -110,20 +110,17 @@ def get_pi_key():
 
 def get_setting(variable):
 
-    key = get_pi_key()
-
     try:
-        value = read_json(settings_file)[key][variable]
+        value = read_json(settings_file)[variable]
     except Exception:
-        if variable not in defaults:
+        key = get_pi_key()
+        if variable not in defaults[key]:
             logger.info('Defaults not found for variable: {}'.format(variable))
         value = defaults[key][variable]
     return value
 
 
 def set_setting(variable, value):
-
-    key = get_pi_key()
 
     if username == 'root':
         return
@@ -133,9 +130,7 @@ def set_setting(variable, value):
     data = read_json(settings_file)
     if not data:
         data = dict()
-        data["pi1"] = dict()
-        data["pi2"] = dict()
 
-    data[key][variable] = value
+    data[variable] = value
     write_json(settings_file, data)
     chown_path(settings_file)
