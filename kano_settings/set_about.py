@@ -13,6 +13,7 @@ from kano.gtk3.kano_dialog import KanoDialog
 from kano.gtk3.buttons import OrangeButton, KanoButton
 from kano_profile.paths import legal_dir
 from kano_settings.common import media
+from kano.network import launch_browser
 from kano_settings.system.about import (
     get_current_version, get_space_available, get_temperature, get_model_name
 )
