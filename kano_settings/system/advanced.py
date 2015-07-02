@@ -61,9 +61,9 @@ def get_parental_enabled():
 
 def get_parental_level():
     if not get_parental_enabled():
-        return 0
+        return -1
 
-    return get_setting('Parental-level') + 1
+    return get_setting('Parental-level')
 
 
 def set_parental_enabled(setting, _password):
