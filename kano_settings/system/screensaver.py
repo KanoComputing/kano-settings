@@ -10,9 +10,15 @@
 import os
 from kano.logging import logger
 from kano_settings import common
+from kano_settings.config_file import username
 
-# These are the values we want to change the filepaths to
-kdesk_config = '/usr/share/kano-desktop/kdesk/.kdeskrc'
+# These are where we write the user settings
+kdesk_config = os.path.join("/home", username, ".kdeskrc")
+
+# This is where the default kdesk settings are kept
+usr_kdesk_config = "/usr/share/kano-desktop/kdesk/.kdeskrc"
+
+error_msg = "Could not find in home kdesk"
 
 
 def is_screensaver_on():
@@ -47,32 +53,38 @@ def set_kdesk_config(param_name, param_value):
     '''Given a param name and a param value, will set the .kdeskrc file
     accordingly
     '''
-    USER = os.environ['SUDO_USER']
+    f = open(kdesk_config, 'a+')
 
-    f = open(kdesk_config, 'r')
+    # Check if we find the parameter in the file. If not, we need to
+    # add it manually
+    found = False
+
+    # This is the line we want to insert into the kdesk config
+    config_line = '{}: {}'.format(param_name, param_value)
 
     for line in f:
         if param_name in line:
             line = line.strip()
-            newline = '{}: {}'.format(param_name, param_value)
+
             line = line.replace('/', '\/')
-            newline = newline.replace('/', '\/')
+            config_line = config_line.replace('/', '\/')
 
             # Replace the line in the original config with the newline in the
             # copy
             sed_cmd = 'sed -i \'s/{}/{}/g\' {}'.format(
-                line, newline, kdesk_config
+                line, config_line, kdesk_config
             )
             logger.info('Applied the sed cmd: {}'.format(sed_cmd))
             os.system(sed_cmd)
 
-            logger.info('Refresh kdesk')
-            cmd = 'sudo -u {user} kdesk -w'.format(user=USER)
-            os.system(cmd)
+            found = True
 
-            # For now, refreshing kdesk does not update the screensaver
-            # settings, so prompt the user for a reboot
-            common.need_reboot = True
+    if not found:
+        f.write(config_line + "\n")
+
+    # For now, refreshing kdesk does not update the screensaver
+    # settings, so prompt the user for a reboot
+    common.need_reboot = True
 
     f.close()
 
@@ -89,12 +101,36 @@ def get_kdesk_config(param_name):
     ScreenSaverProgram: the path to the program to be started as the
     screensaver
     '''
+    # Create /home/user/.kdeskrc if it doesn't exist
+    if not os.path.exists(kdesk_config):
+        open(kdesk_config, "w+").close()
 
-    f = open(kdesk_config, 'r')
+    param = check_file_for_parameter(kdesk_config, param_name)
 
+    # If the home config file does not contain the parameter, check the
+    # default.
+    if param == error_msg:
+        param = check_file_for_parameter(usr_kdesk_config, param_name)
+
+    return param
+
+
+def check_file_for_parameter(filepath, param_name):
+    '''Check the specific file for the parameter.
+    This is because we may have to check two files for
+    the value of a parameter
+    '''
+
+    f = open(filepath, 'r')
     for line in f:
         if param_name in line:
             param_value = line.split(':')[1].strip()
+            f.close()
             return param_value
 
     f.close()
+
+    # If we cannot find a parameter, return a message.
+    # The parameter in the config could be None or 0, so we need a
+    # clear return value to show it's not in /home/user/.kdeskrc
+    return error_msg
