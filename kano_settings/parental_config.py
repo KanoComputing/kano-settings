@@ -2,13 +2,12 @@
 
 # parental_config.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2014, 2015 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 
 from gi.repository import Gtk
 
-from kano import logging
 from kano_settings import common
 from kano_settings.templates import Template, EditableList
 from kano.gtk3.buttons import OrangeButton
@@ -97,20 +96,19 @@ class ParentalConfig(Template):
         level = self.parental_level.get_value()
         set_parental_level(level)
         set_setting('Parental-level', level)
-        
+
         # track which parental control level people use
         track_data("parental-control-level-changed", {
-            "level": level    
+            "level": level
         })
 
         if level == 3.0:
             # If on the highest parental control, prompt user to relaunch
             # the browser
             kdialog = KanoDialog(
-                title_text=(
-                    "If any browsers are open, please relaunch them for "
-                    "this setting to take effect"
-                ),
+                title_text='Settings',
+                description_text=("If any browsers are open, please relaunch "
+                                  "them for this setting to take effect"),
                 parent_window=self.win
             )
             kdialog.run()
@@ -215,7 +213,7 @@ class AllowedSites(Template):
 
         # track which parental control level people use
         track_data("parental-control-level-changed", {
-            "level": level    
+            "level": level
         })
 
         self.win.go_to_home()
@@ -249,7 +247,7 @@ class ParentalPasswordDialog(KanoDialog):
 
         fail = KanoDialog(
             title_text='Try again?',
-            description_text='The password was incorrect. Not applying changes',
+            description_text='The password was incorrect. Changes not applied',
             parent_window=self.win
         )
         fail.run()
