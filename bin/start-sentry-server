@@ -14,6 +14,7 @@ from kano_settings.system.advanced import (sentry_config,
                                            parse_whitelist_to_config_file,
                                            launch_sentry_server)
 from kano_settings.common import settings_dir
+from kano_logging import logger
 
 
 def check_config():
@@ -22,6 +23,7 @@ def check_config():
 
     settings_config = os.path.join(settings_dir, 'settings')
     if not os.path.exists(settings_config):
+        logger.debug("Settings config file {} does not exist, not turning on parental control".format(settings_config))
         sys.exit(1)
 
     f = open(settings_config, 'r')
@@ -31,9 +33,13 @@ def check_config():
         line = line.strip()
         if '"Parental-level": 3.0' in line:
             ultimate_parental = True
+            logger.debug("Ultimate parental control set in line {}".format(line))
+        else:
+            logger.debug("Ultimate parental control is NOT set in line {}".format(line))
 
     # If the parental is at the highest level, start the sentry server
     if ultimate_parental:
+        # Functions contain logs
         parse_whitelist_to_config_file(sentry_config)
         launch_sentry_server(sentry_config)
         sys.exit(0)
