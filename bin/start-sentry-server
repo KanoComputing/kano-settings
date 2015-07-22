@@ -14,7 +14,7 @@ from kano_settings.system.advanced import (sentry_config,
                                            parse_whitelist_to_config_file,
                                            launch_sentry_server)
 from kano_settings.common import settings_dir
-from kano_logging import logger
+from kano.logging import logger
 
 
 def check_config():
