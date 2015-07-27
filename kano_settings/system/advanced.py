@@ -383,6 +383,7 @@ def parse_whitelist_to_config_file(config):
                 "        \"resolve ^(.*){} using 8.8.8.8, 8.8.4.4\",\n".format(line)
             )
             new_config += allowed_url
+            logger.debug("url {} being allowed in ultimate parental control".format(allowed_url))
 
     block_everything_else = (
         "        \"block ^(.*)\"\n"
@@ -391,9 +392,11 @@ def parse_whitelist_to_config_file(config):
     )
     new_config += block_everything_else
 
+    logger.debug('new ultimate parental control config: {}'.format(new_config))
     g = open(config, 'w+')
     g.write(new_config)
     g.close()
+    logger.debug("finished writing new ultimate parental control to {}".format(config))
 
 
 def get_whitelist():
@@ -546,7 +549,7 @@ def set_user_youtube_cookies(enabled=None, username=None):
     if os.path.exists(youtube_safe_cookie) and \
        os.path.exists(youtube_nosafe_cookie) and \
        os.path.exists(youtube_cookie_path):
-    
+
         if enabled:
             logger.debug('Enabling YouTube Safety mode for kano-video-browser on user {}'.format(username))
             yt_cookie = youtube_safe_cookie
