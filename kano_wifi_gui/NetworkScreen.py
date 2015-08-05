@@ -25,7 +25,13 @@ from kano.network import (connect, is_connected, KwifiCache, disconnect,
 
 
 def disconnect_dialog(wiface='wlan0', win=None):
+    '''
+    Disconnect and empty the cached credentials, to avoid an automatic reconnection
+    '''
     disconnect(wiface)
+    wificache = KwifiCache()
+    wificache.empty()
+
     kdialog = KanoDialog(
         # Text from the content team.
         "Disconnect complete - you're now offline.",
