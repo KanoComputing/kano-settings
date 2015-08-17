@@ -8,8 +8,24 @@
 # Kano Settings executable
 #
 
+"""
+ launches the application Terminal Quest at different points in the story
+
+Usage:
+  kano-settings [--plug=<socket-id>] [--id=<screen-id>|--label=<screen-label>|<screen>]
+
+Options:
+   -h, --help                   Show this message.
+   -p, --plug=<socket-id>       Launch application as a Gtk.Plug and point to the correct Socket.
+   -l, --label=<screen-label>   Launch on the right screen based on the label
+   -i, --id=<screen-id>         Launch on the right screen based on the number
+
+"""
+
 import os
 import sys
+import docopt
+
 from gi.repository import Gtk, GObject
 GObject.threads_init()
 
@@ -24,14 +40,19 @@ if __name__ == '__main__' and __package__ is None:
 import kano_i18n.init
 kano_i18n.init.install('kano-settings', LOCALE_PATH)
 
-from kano_settings.main_window import MainWindow
+from kano_settings.main_window import generate_main_window
 from kano_settings.home_screen import UnknownScreenError
 
 
-def main(screen_number=None, screen_name=None):
+def main(plug=False, socket_id=0, screen_id=None, screen_label=None):
 
-    # Create windown
-    MainWindow(screen_number=screen_number, screen_name=screen_name)
+    # Create window
+    generate_main_window(
+        plug=plug,
+        screen_id=screen_id,
+        screen_name=screen_label,
+        socket_id=socket_id
+    )
 
     # start the GTK+ processing loop
     Gtk.main()
@@ -42,16 +63,32 @@ if __name__ == "__main__":
     if os.environ['LOGNAME'] != 'root':
         exit("Error: Settings must be executed with root privileges")
 
-    if len(sys.argv) > 1:
-        try:
-            init_state = sys.argv[1]
+    args = docopt.docopt(__doc__)
 
-            if init_state.isdigit():
-                main(screen_number=int(init_state))
-            else:
-                main(screen_name=init_state)
-        except UnknownScreenError:
-            exit("Error: incorrect argument")
+    plug = args['--plug']
+    screen = args['<screen>']
+    screen_id = args['--id']
+    screen_label = args['--label']
+
+    if plug is None:
+        plug = False
+        socket_id = 0
+    else:
+        socket_id = plug
+        plug = True
+
+    if screen is not None:
+
+        if screen.isdigit():
+            main(screen_id=int(screen), plug=plug, socket_id=socket_id)
+        else:
+            main(screen_label=screen, plug=plug, socket_id=socket_id)
+
+    elif screen_id is not None and screen_id.isdigit():
+        main(screen_id=int(screen_id), plug=plug, socket_id=socket_id)
+
+    elif screen_label is not None:
+        main(screen_label=screen_label, plug=plug, socket_id=socket_id)
 
     else:
-        main()
+        main(plug=plug, socket_id=socket_id)
