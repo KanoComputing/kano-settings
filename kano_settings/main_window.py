@@ -7,6 +7,7 @@
 #
 
 import os
+import sys
 from gi.repository import Gtk
 
 from kano.network import is_internet
@@ -26,10 +27,12 @@ from kano_settings.system.display import get_status
 from kano_settings.get_window import get_window
 
 
-def generate_main_window(plug, socket_id, screen_id, screen_name):
+def generate_main_window(plug, socket_id, screen_id, screen_name,
+                         onescreen):
     base_class = get_window(plug)
     window_class = get_main_window(base_class)
-    window = window_class(screen_id, screen_name, plug, socket_id)
+    window = window_class(screen_id, screen_name, plug, socket_id,
+                          onescreen)
     window.show_all()
 
 
@@ -42,7 +45,8 @@ def get_main_window(base_class):
         height = 405
         CSS_PATH = os.path.join(common.css_dir, 'style.css')
 
-        def __init__(self, screen_number=None, screen_name=None, plug=False, socket_id=0):
+        def __init__(self, screen_number=None, screen_name=None, plug=False,
+                     socket_id=0, onescreen=False):
             # Check for internet, if screen is 12 means no internet
             if screen_number == 12 or screen_name == 'no-internet':
                 common.has_internet = False
@@ -70,6 +74,8 @@ def get_main_window(base_class):
             if not plug:
                 self.set_titlebar(self.top_bar)
 
+            self._onescreen = onescreen
+
             self.connect("delete-event", Gtk.main_quit)
             # In case we are called from kano-world-launcher, terminate splash
             os.system('kano-stop-splash')
@@ -81,6 +87,10 @@ def get_main_window(base_class):
 
         def go_to_home(self, widget=None, event=None):
             self.clear_win()
+
+            if self._onescreen:
+                sys.exit(0)
+
             HomeScreen(self)
 
         def change_prev_callback(self, callback):

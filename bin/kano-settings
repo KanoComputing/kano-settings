@@ -12,13 +12,14 @@
  launches the application Terminal Quest at different points in the story
 
 Usage:
-  kano-settings [--plug=<socket-id>] [--id=<screen-id>|--label=<screen-label>|<screen>]
+  kano-settings [--plug=<socket-id>] [--id=<screen-id>|--label=<screen-label>|<screen>] [--onescreen]
 
 Options:
    -h, --help                   Show this message.
    -p, --plug=<socket-id>       Launch application as a Gtk.Plug and point to the correct Socket.
    -l, --label=<screen-label>   Launch on the right screen based on the label
    -i, --id=<screen-id>         Launch on the right screen based on the number
+   -o, --onescreen              Close kano-settings after launching one application
 
 """
 
@@ -44,14 +45,16 @@ from kano_settings.main_window import generate_main_window
 from kano_settings.home_screen import UnknownScreenError
 
 
-def main(plug=False, socket_id=0, screen_id=None, screen_label=None):
+def main(plug=False, socket_id=0, screen_id=None, screen_label=None,
+         onescreen=False):
 
     # Create window
     generate_main_window(
         plug=plug,
         screen_id=screen_id,
         screen_name=screen_label,
-        socket_id=socket_id
+        socket_id=socket_id,
+        onescreen=onescreen
     )
 
     # start the GTK+ processing loop
@@ -69,6 +72,7 @@ if __name__ == "__main__":
     screen = args['<screen>']
     screen_id = args['--id']
     screen_label = args['--label']
+    onescreen = args['--onescreen']
 
     if plug is None:
         plug = False
@@ -80,15 +84,19 @@ if __name__ == "__main__":
     if screen is not None:
 
         if screen.isdigit():
-            main(screen_id=int(screen), plug=plug, socket_id=socket_id)
+            main(screen_id=int(screen), plug=plug, socket_id=socket_id,
+                 onescreen=onescreen)
         else:
-            main(screen_label=screen, plug=plug, socket_id=socket_id)
+            main(screen_label=screen, plug=plug, socket_id=socket_id,
+                 onescreen=onescreen)
 
     elif screen_id is not None and screen_id.isdigit():
-        main(screen_id=int(screen_id), plug=plug, socket_id=socket_id)
+        main(screen_id=int(screen_id), plug=plug, socket_id=socket_id,
+             onescreen=onescreen)
 
     elif screen_label is not None:
-        main(screen_label=screen_label, plug=plug, socket_id=socket_id)
+        main(screen_label=screen_label, plug=plug, socket_id=socket_id,
+             onescreen=onescreen)
 
     else:
-        main(plug=plug, socket_id=socket_id)
+        main(plug=plug, socket_id=socket_id, onescreen=onescreen)

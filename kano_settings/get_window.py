@@ -62,7 +62,8 @@ def application_window_wrapper(base_class):
 
             self._blurred = False
 
-            # TODO: Maybe handle the taskbar here to avoid even more code duplication?
+            # TODO: Maybe handle the taskbar here to avoid even more code
+            # duplication?
 
         def blur(self):
             if not self._blurred:
