@@ -31,7 +31,7 @@ def generate_main_window(plug, socket_id, screen_id, screen_name,
                          onescreen):
     base_class = get_window(plug)
     window_class = get_main_window(base_class)
-    window = window_class(screen_id, screen_name, plug, socket_id,
+    window = window_class(screen_id, screen_name, socket_id,
                           onescreen)
     window.show_all()
 
@@ -45,7 +45,7 @@ def get_main_window(base_class):
         height = 405
         CSS_PATH = os.path.join(common.css_dir, 'style.css')
 
-        def __init__(self, screen_number=None, screen_name=None, plug=False,
+        def __init__(self, screen_number=None, screen_name=None,
                      socket_id=0, onescreen=False):
             # Check for internet, if screen is 12 means no internet
             if screen_number == 12 or screen_name == 'no-internet':
@@ -71,7 +71,7 @@ def get_main_window(base_class):
             self.prev_handler = None
             self.set_icon_name("kano-settings")
 
-            if not plug:
+            if self._base_name == "Window":
                 self.set_titlebar(self.top_bar)
 
             self._onescreen = onescreen

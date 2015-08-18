@@ -31,9 +31,9 @@ def application_window_wrapper(base_class):
                      socket_id=0):
 
             base_class.__init__(self, title=title)
-            base_name = base_class.__name__
+            self._base_name = base_class.__name__
 
-            if base_name == "Plug":
+            if self._base_name == "Plug":
                 self.construct(int(socket_id))
 
             self.set_decorated(False)
