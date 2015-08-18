@@ -11,15 +11,16 @@
 
 
 """
-kano-wifi-gui shows the different screens for connecting and disconnecting to
-the internet.
+kano-wifi-gui shows the different screens for connecting and disconnecting to the internet.
 
 Usage:
-  kano-wifi-gui [-d]
-  kano-wifi-gui <screen>
+  kano-wifi-gui [--disconnect] [--plug=<socket-id>]
+
 Options:
-   -h, --help       Show this message.
-   -d, --disconnect
+   -h, --help              Show this message.
+   -d, --disconnect        Disconnect from the internet
+   -p, --plug=<socket-id>  Put the application in a Gtk.Plug
+
 """
 
 
@@ -34,8 +35,6 @@ if __name__ == '__main__' and __package__ is None:
     if dir_path != '/usr':
         sys.path.insert(1, dir_path)
 
-from kano.gtk3.application_window import ApplicationWindow
-
 from kano.gtk3.top_bar import TopBar
 from kano.gtk3.kano_dialog import KanoDialog
 from kano.gtk3.apply_styles import (
@@ -45,98 +44,123 @@ from kano_wifi_gui.SpinnerScreen import SpinnerScreen
 from kano_wifi_gui.NetworkScreen import disconnect_dialog
 from kano_wifi_gui.paths import css_dir
 from kano.network import is_internet, is_ethernet_plugged, is_device
+from kano_settings.get_window import get_window_class
 
 
-class KanoWifiGui(ApplicationWindow):
+def create_wifi_gui(is_plug, socket_id):
+    base_class = get_window_class(is_plug)
+    wifi_gui = get_wifi_gui(base_class)
+    win = wifi_gui(socket_id=socket_id)
+    win.show_all()
+    Gtk.main()
 
-    CSS_PATH = os.path.join(css_dir, 'kano_wifi_gui.css')
 
-    width = 350
-    height = 450
+def get_wifi_gui(base_class):
 
-    def __init__(self, wiface='wlan0'):
+    class KanoWifiGui(base_class):
 
-        self.wiface = wiface
-        self.network_list = []
+        CSS_PATH = os.path.join(css_dir, 'kano_wifi_gui.css')
+        width = 350
+        height = 450
 
-        # Default basic styling
-        apply_common_to_screen()
+        def __init__(self, wiface='wlan0', socket_id=0):
 
-        # Attach specific styling
-        apply_styling_to_screen(self.CSS_PATH)
+            self.wiface = wiface
+            self.network_list = []
 
-        # Set window
-        ApplicationWindow.__init__(self, "Kano WiFi", self.width, self.height)
-        self.set_decorated(True)
-        self.top_bar = TopBar("Kano WiFi")
-        self.top_bar.set_prev_callback(self.go_to_spinner_screen)
-        self.prev_handler = None
-        self.set_titlebar(self.top_bar)
-        self.top_bar.set_close_callback(Gtk.main_quit)
-        self.set_icon_name("kano-settings")
-        self.set_keep_above(True)
+            # Default basic styling
+            apply_common_to_screen()
 
-        # Only go through this stage if you don't have internet
-        # check if a wifi dongle is plugged in
-        if is_device(self.wiface):
+            # Attach specific styling
+            apply_styling_to_screen(self.CSS_PATH)
 
-            if is_internet():
-                self.you_have_internet_screen(wiface)
+            # Set window
+            base_class.__init__(
+                self,
+                "Kano WiFi",
+                self.width,
+                self.height,
+                socket_id
+            )
+
+            self.top_bar = TopBar("Kano WiFi")
+            self.top_bar.set_prev_callback(self.go_to_spinner_screen)
+            self.top_bar.set_close_callback(Gtk.main_quit)
+            self.prev_handler = None
+            self.connect("delete-event", Gtk.main_quit)
+            self.set_keep_above(True)
+            self.set_icon_name("kano-settings")
+            self.set_decorated(True)
+
+            if self._base_name == "Window":
+                self.set_titlebar(self.top_bar)
+
+            self.show_all()
+
+            # Only go through this stage if you don't have internet
+            # check if a wifi dongle is plugged in
+            if is_device(self.wiface):
+
+                if is_internet():
+                    self.you_have_internet_screen(wiface)
+                else:
+                    # The spinner screen takes user through to the
+                    # SpinnerScreen
+                    self.go_to_spinner_screen()
+
             else:
-                # The spinner screen takes user through to the SpinnerScreen
-                self.go_to_spinner_screen()
+                if is_internet():
+                    if is_ethernet_plugged():
+                        self.you_are_connected_via_ethernet()
+                else:
+                    self.plug_in_wifi_dongle()
 
-        else:
-            if is_internet():
-                if is_ethernet_plugged():
-                    self.you_are_connected_via_ethernet()
-            else:
-                self.plug_in_wifi_dongle()
+        def go_to_spinner_screen(self, widget=None, event=None):
+            self.remove_main_widget()
+            SpinnerScreen(self, self.wiface)
 
-    def go_to_spinner_screen(self, widget=None, event=None):
-        self.remove_main_widget()
-        SpinnerScreen(self, self.wiface)
-
-    def plug_in_wifi_dongle(self):
-        kdialog = KanoDialog(
-            "You don't seem to have a wifi dongle plugged in.",
-            "Plug one in and try again."
-        )
-        kdialog.run()
-        sys.exit(0)
-
-    def you_are_connected_via_ethernet(self):
-        kdialog = KanoDialog(
-            "You are already connected via ethernet."
-        )
-        kdialog.run()
-        sys.exit(0)
-
-    def you_have_internet_screen(self, wiface):
-        '''If user already has internet, let them know.
-        '''
-        kdialog = KanoDialog(
-            "You already have internet!",
-            "Do you want to change network?",
-            button_dict=[
-                {
-                    'label': 'NO',
-                    'color': 'red',
-                    'return_value': 'no'
-                },
-                {
-                    'label': 'YES',
-                    'color': 'green',
-                    'return_value': 'yes'
-                }
-            ]
-        )
-        response = kdialog.run()
-
-        if response == 'yes':
-            self.go_to_spinner_screen(self)
-        else:
+        def plug_in_wifi_dongle(self):
+            kdialog = KanoDialog(
+                "You don't seem to have a wifi dongle plugged in.",
+                "Plug one in and try again."
+            )
+            kdialog.run()
             sys.exit(0)
+
+        def you_are_connected_via_ethernet(self):
+            kdialog = KanoDialog(
+                "You are already connected via ethernet."
+            )
+            kdialog.run()
+            sys.exit(0)
+
+        def you_have_internet_screen(self, wiface):
+            '''If user already has internet, let them know.
+            '''
+            kdialog = KanoDialog(
+                "You already have internet!",
+                "Do you want to change network?",
+                button_dict=[
+                    {
+                        'label': 'NO',
+                        'color': 'red',
+                        'return_value': 'no'
+                    },
+                    {
+                        'label': 'YES',
+                        'color': 'green',
+                        'return_value': 'yes'
+                    }
+                ]
+            )
+            response = kdialog.run()
+
+            if response == 'yes':
+                self.go_to_spinner_screen(self)
+            else:
+                sys.exit(0)
+
+    return KanoWifiGui
 
 
 if __name__ == '__main__':
@@ -146,10 +170,11 @@ if __name__ == '__main__':
         sys.exit(1)
 
     args = docopt.docopt(__doc__)
+    socket_id = args["--plug"]
+    is_plug = (socket_id is not None)
+
     if args['--disconnect']:
         disconnect_dialog()
     else:
         GObject.threads_init()
-        win = KanoWifiGui()
-        win.connect("delete-event", Gtk.main_quit)
-        Gtk.main()
+        create_wifi_gui(is_plug, socket_id)

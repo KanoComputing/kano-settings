@@ -189,17 +189,19 @@ GtkNotebook tab GtkLabel {
 * Dark theme for Gtk.Plug
 ************************************************/
 
+@define-color plug_background #44423d;
+
 .plug .parental_activated{
     color: @kano_green;
 }
 
 .plug GtkEntry {
-    background: #44423d;
+    background: @plug_background;
     color: #ffffff;
 }
 
 .plug {
-    background: #44423d;
+    background: @plug_background;
 }
 
 .plug GtkLabel {
@@ -207,15 +209,20 @@ GtkNotebook tab GtkLabel {
 }
 
 .plug GtkCheckButton {
-    background: #44423d;
+    background: @plug_background;
 }
 
 .plug .title {
     color: #ffffff;
+    padding-top:30px;
+    font: Bariol Bold 20px;
 }
 
 .plug .description {
     color: #dedfde;
+    padding-left: 30px;
+    padding-right: 30px;
+    font: Bariol 14;
 }
 
 .plug GtkVScale.slider, .plug GtkScale.slider {

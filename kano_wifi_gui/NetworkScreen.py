@@ -11,7 +11,7 @@ import os
 import threading
 from gi.repository import Gtk, GObject, Gdk
 
-from kano.gtk3.heading import Heading
+from kano_settings.components.heading import Heading
 from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.gtk3.buttons import KanoButton
 from kano.gtk3.kano_dialog import KanoDialog
@@ -26,7 +26,8 @@ from kano.network import (connect, is_connected, KwifiCache, disconnect,
 
 def disconnect_dialog(wiface='wlan0', win=None):
     '''
-    Disconnect and empty the cached credentials, to avoid an automatic reconnection
+    Disconnect and empty the cached credentials, to avoid an automatic
+    reconnection
     '''
     disconnect(wiface)
     wificache = KwifiCache()

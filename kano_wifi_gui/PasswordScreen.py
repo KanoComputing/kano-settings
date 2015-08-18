@@ -11,9 +11,10 @@
 import os
 import threading
 from gi.repository import Gtk, GObject
+
 from kano_wifi_gui.paths import media_dir
 from kano.logging import logger
-from kano.gtk3.heading import Heading
+from kano_settings.components.heading import Heading
 from kano.gtk3.buttons import KanoButton
 from kano.gtk3.kano_dialog import KanoDialog
 from kano.network import connect, KwifiCache

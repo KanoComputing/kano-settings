@@ -24,12 +24,12 @@ from kano_settings.home_screen import HomeScreen
 from kano_settings.system.audio import is_HDMI
 from kano_settings.config_file import get_setting
 from kano_settings.system.display import get_status
-from kano_settings.get_window import get_window
+from kano_settings.get_window import get_window_class
 
 
 def generate_main_window(plug, socket_id, screen_id, screen_name,
                          onescreen):
-    base_class = get_window(plug)
+    base_class = get_window_class(plug)
     window_class = get_main_window(base_class)
     window = window_class(screen_id, screen_name, socket_id,
                           onescreen)

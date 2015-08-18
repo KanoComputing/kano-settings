@@ -13,11 +13,9 @@
 from gi.repository import Gtk, Gdk
 from kano.gtk3.apply_styles import apply_common_to_screen, apply_styling_to_screen
 from kano.logging import logger
-import kano_settings.common as common
-import os
 
 
-def get_window(plug=False):
+def get_window_class(plug=False):
     if plug:
         logger.debug("Launching as a Gtk.Plug")
         return application_window_wrapper(Gtk.Plug)
@@ -64,9 +62,6 @@ def application_window_wrapper(base_class):
             self._blur.get_style_context().add_class('blur')
 
             self._blurred = False
-
-            # TODO: Maybe handle the taskbar here to avoid even more code
-            # duplication?
 
         def add_plug_class(self, widget):
             if self._base_name == "Plug":
