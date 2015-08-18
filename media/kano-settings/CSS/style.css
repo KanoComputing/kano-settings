@@ -165,3 +165,64 @@ GtkNotebook tab GtkLabel {
     /* Preferably want inactive tab to have color writing #6e6e6e
     but can't get it to work*/
 }
+
+
+/***********************************************
+ * Migrate the Heading class to kano-settings
+ ***********************************************/
+
+/* The title of the current level*/
+.title {
+    color: #323232;
+    padding-top:30px;
+    font: Bariol Bold 20px;
+}
+/* Description of current project */
+.description {
+    color: #6e6e6e;
+    padding-left: 30px;
+    padding-right: 30px;
+    font: Bariol 14;
+}
+
+/************************************************
+* Dark theme for Gtk.Plug
+************************************************/
+
+.plug .parental_activated{
+    color: @kano_green;
+}
+
+.plug GtkEntry {
+    background: #44423d;
+    color: #ffffff;
+}
+
+.plug {
+    background: #44423d;
+}
+
+.plug GtkLabel {
+    color: #ffffff;
+}
+
+.plug GtkCheckButton {
+    background: #44423d;
+}
+
+.plug .title {
+    color: #ffffff;
+}
+
+.plug .description {
+    color: #dedfde;
+}
+
+.plug GtkVScale.slider, .plug GtkScale.slider {
+    background: @kano_green;
+}
+
+.plug GtkVScale, .plug GtkScale {
+    background: #222200;
+    border-radius: 3px;
+}

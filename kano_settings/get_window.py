@@ -11,8 +11,10 @@
 
 
 from gi.repository import Gtk, Gdk
-from kano.gtk3.apply_styles import apply_common_to_screen
+from kano.gtk3.apply_styles import apply_common_to_screen, apply_styling_to_screen
 from kano.logging import logger
+import kano_settings.common as common
+import os
 
 
 def get_window(plug=False):
@@ -27,6 +29,7 @@ def get_window(plug=False):
 def application_window_wrapper(base_class):
 
     class ApplicationWindow(base_class):
+
         def __init__(self, title="Application", width=None, height=None,
                      socket_id=0):
 
@@ -35,6 +38,9 @@ def application_window_wrapper(base_class):
 
             if self._base_name == "Plug":
                 self.construct(int(socket_id))
+                self.get_style_context().add_class("plug")
+            else:
+                self.set_position(Gtk.WindowPosition.CENTER)
 
             self.set_decorated(False)
             self.set_resizable(False)
@@ -49,10 +55,7 @@ def application_window_wrapper(base_class):
                 self._win_height = int(screen.get_height() * height)
             self.set_size_request(self._win_width, self._win_height)
 
-            self.set_position(Gtk.WindowPosition.CENTER)
             self.connect('delete-event', Gtk.main_quit)
-
-            apply_common_to_screen()
 
             self._overlay = Gtk.Overlay()
             self.add(self._overlay)
@@ -64,6 +67,10 @@ def application_window_wrapper(base_class):
 
             # TODO: Maybe handle the taskbar here to avoid even more code
             # duplication?
+
+        def add_plug_class(self, widget):
+            if self._base_name == "Plug":
+                widget.get_style_context().add_class("plug")
 
         def blur(self):
             if not self._blurred:

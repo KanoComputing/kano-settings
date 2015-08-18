@@ -1,4 +1,3 @@
-
 #!/usr/bin/env python
 
 # template.py
@@ -12,7 +11,7 @@
 from gi.repository import Gtk
 
 from kano.gtk3.buttons import KanoButton, OrangeButton
-from kano.gtk3.heading import Heading
+from kano_settings.components.heading import Heading
 from kano.gtk3.scrolled_window import ScrolledWindow
 
 

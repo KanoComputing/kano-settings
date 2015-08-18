@@ -13,7 +13,7 @@ import threading
 import kano_settings.common as common
 from kano_settings.templates import Template
 from kano.gtk3.buttons import OrangeButton, KanoButton
-from kano.gtk3.heading import Heading
+from kano_settings.components.heading import Heading
 from kano.gtk3.kano_dialog import KanoDialog
 from kano.network import is_internet, network_info, launch_browser
 from kano_settings.system.proxy import get_all_proxies, set_all_proxies, test_proxy

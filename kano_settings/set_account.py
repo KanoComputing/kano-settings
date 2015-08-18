@@ -11,7 +11,7 @@ from gi.repository import Gtk, Gdk, GObject
 import threading
 import os
 
-from kano.gtk3.heading import Heading
+from kano_settings.components.heading import Heading
 import kano.gtk3.kano_dialog as kano_dialog
 from kano.gtk3.buttons import KanoButton
 from kano.gtk3.labelled_entries import LabelledEntries
@@ -104,7 +104,7 @@ class SetAccount(Gtk.Box):
                     "Error creating new user",
                     str(e),
                     parent_window=self.win
-                )   
+                )
             else:
                 kdialog = kano_dialog.KanoDialog(
                     "Reboot the system",
@@ -152,7 +152,7 @@ class SetAccount(Gtk.Box):
                         parent_window=self.win
                     )
                     return
-                    
+
 
                 kdialog = kano_dialog.KanoDialog(
                     "To finish removing this account, you need to reboot",
