@@ -85,19 +85,6 @@ GtkScrolledWindow.border {
     background: @plug_background;
 }
 
-.plug .title {
-    color: #ffffff;
-    padding-top:30px;
-    font: Bariol Bold 20px;
-}
-
-.plug .description {
-    color: #dedfde;
-    padding-left: 30px;
-    padding-right: 30px;
-    font: Bariol 14;
-}
-
 .plug .white {
     color: @plug_background;
     background: @plug_background;
@@ -116,20 +103,20 @@ GtkScrolledWindow.border {
     background: @plug_background;
 }
 
-.network_btn GtkLabel {
+.plug .network_btn GtkLabel {
     font: Bariol Bold 14;
     color: #ffffff;
     padding: 5px 10px;
 }
 
-.network_btn:hover {
+.plug .network_btn:hover {
     background: #66654d;
 }
 
-.network_btn.selected {
+.plug .network_btn.selected {
     background: @kano_orange;
 }
 
-.network_btn.selected GtkLabel {
+.plug .network_btn.selected GtkLabel {
     color: #ffffff;
 }

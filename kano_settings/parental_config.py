@@ -25,7 +25,8 @@ class ParentalConfig(Template):
             self,
             "Parental lock",
             "Configure your parental lock settings",
-            "APPLY CHANGES"
+            "APPLY CHANGES",
+            win.is_plug()
         )
 
         self.parental_level = Gtk.VScale(
@@ -81,12 +82,19 @@ class ParentalConfig(Template):
         self.win = win
         self.win.set_main_widget(self)
 
+        self.set_prev_callback(self.go_to_advanced)
         self.win.change_prev_callback(self.win.go_to_home)
         self.win.top_bar.enable_prev()
 
         self.kano_button.connect('button-release-event', self.apply_changes)
         self.kano_button.connect('key-release-event', self.apply_changes)
         self.win.show_all()
+
+    def go_to_advanced(self, widget):
+        from kano_settings.set_advanced import SetAdvanced
+
+        self.win.clear_win()
+        SetAdvanced(self.win)
 
     def apply_changes(self, button, event):
         pw_dialog = ParentalPasswordDialog(self.win)
@@ -154,7 +162,8 @@ class AllowedSites(Template):
             self,
             "Allow and Block Sites",
             "Add extra sites to block or allow",
-            "APPLY CHANGES"
+            "APPLY CHANGES",
+            win.is_plug()
         )
 
         self.win = win
@@ -189,6 +198,7 @@ class AllowedSites(Template):
 
         self.win.top_bar.enable_prev()
         self.win.change_prev_callback(self.go_to_parental_config)
+        self.set_prev_callback(self.go_to_parental_config)
 
         self.kano_button.connect('button-release-event', self.apply_changes)
         self.kano_button.connect('key-release-event', self.apply_changes)

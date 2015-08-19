@@ -29,13 +29,20 @@ class PasswordScreen(Gtk.Box):
         Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
         self.win = win
         self.win.set_main_widget(self)
+
         self.win.top_bar.enable_prev()
         self.set_size_request(self.win.width, self.win.height)
         self.wiface = wiface
 
         self.selected_network = selected_network
         network_name = self.selected_network['essid']
-        heading = Heading("Connect to the network", network_name)
+
+        heading = Heading(
+            "Connect to the network",
+            network_name,
+            self.win.is_plug()
+        )
+        heading.set_prev_callback(self.win.go_to_spinner_screen)
         heading.container.set_margin_right(20)
         heading.container.set_margin_left(20)
 

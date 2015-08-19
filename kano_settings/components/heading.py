@@ -9,17 +9,41 @@
 
 from gi.repository import Gtk
 # import kano_settings.common as common
+import os
+from kano.gtk3.icons import set_from_name
+from kano.gtk3.apply_styles import apply_styling_to_screen
+from kano.gtk3.cursor import attach_cursor_events
+from kano_settings.common import css_dir
 
 
 class Heading():
-    def __init__(self, title, description):
+    def __init__(self, title, description, is_plug=False):
+        self.back_button = None
+        css_path = os.path.join(css_dir, "heading.css")
+        apply_styling_to_screen(css_path)
+
+        if is_plug:
+            self.back_button = Gtk.Button()
+            attach_cursor_events(self.back_button)
+            self.back_button.get_style_context().add_class("back_button")
+            # TODO: get better back icon
+            self.back_button.set_image(set_from_name("dark_left_arrow"))
+            self.back_button.set_margin_top(15)
+            title_hbox = Gtk.Box()
+            title_hbox.pack_start(self.back_button, True, False, 0)
 
         self.title = Gtk.Label(title)
-        self.title_style = self.title.get_style_context()
-        self.title_style.add_class('title')
+        self.title.get_style_context().add_class('title')
 
         self.container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
-        self.container.pack_start(self.title, False, False, 0)
+
+        if self.back_button:
+            title_hbox.pack_start(self.title, True, True, 0)
+            empty_label = Gtk.Label()
+            title_hbox.pack_end(empty_label, True, True, 0)
+            self.container.pack_start(title_hbox, False, False, 0)
+        else:
+            self.container.pack_start(self.title, False, False, 0)
 
         if description != "":
             self.description = Gtk.Label(description)
@@ -50,3 +74,7 @@ class Heading():
     def add_plug_styling(self):
         self.title.get_style_context().add_class("plug")
         self.description.get_style_context().add_class("plug")
+
+    def set_prev_callback(self, cb):
+        if self.back_button:
+            self.back_button.connect("clicked", cb)

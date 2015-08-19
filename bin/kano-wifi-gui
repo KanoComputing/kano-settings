@@ -95,8 +95,6 @@ def get_wifi_gui(base_class):
             if self._base_name == "Window":
                 self.set_titlebar(self.top_bar)
 
-            self.show_all()
-
             # Only go through this stage if you don't have internet
             # check if a wifi dongle is plugged in
             if is_device(self.wiface):

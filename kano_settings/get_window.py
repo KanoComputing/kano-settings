@@ -85,5 +85,8 @@ def application_window_wrapper(base_class):
             for w in self._overlay.get_children():
                 self._overlay.remove(w)
 
+        def is_plug(self):
+            return (self._base_name == "Plug")
+
     # Don't initialise the class
     return ApplicationWindow

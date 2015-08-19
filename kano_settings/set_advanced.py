@@ -43,6 +43,8 @@ class SetAdvanced(Template):
 
         self.win.set_main_widget(self)
 
+        # Add the callbacks to the top bar and to the extra back button
+        self.set_prev_callback(self.win.go_to_home)
         self.win.change_prev_callback(self.win.go_to_home)
         self.win.top_bar.enable_prev()
 
@@ -174,9 +176,9 @@ class SetPassword(Template):
                 self,
                 "Unlock the parental lock",
                 "Choose a password",
-                "UNLOCK"
+                "UNLOCK",
+                win.is_plug()
             )
-
             self.entry = Gtk.Entry()
             self.entry.set_size_request(300, 44)
             self.entry.props.placeholder_text = "Enter your selected password"
@@ -190,7 +192,8 @@ class SetPassword(Template):
                 self,
                 "Set up your parental lock",
                 "Enter your password",
-                "LOCK"
+                "LOCK",
+                win.is_plug()
             )
 
             self.entry1 = Gtk.Entry()
@@ -210,6 +213,7 @@ class SetPassword(Template):
 
         self.win = win
         self.win.set_main_widget(self)
+        self.set_prev_callback(self.go_to_advanced)
         self.win.change_prev_callback(self.go_to_advanced)
         self.win.top_bar.enable_prev()
 
