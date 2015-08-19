@@ -31,7 +31,6 @@ class PasswordScreen(Gtk.Box):
         self.win.set_main_widget(self)
 
         self.win.top_bar.enable_prev()
-        self.set_size_request(self.win.width, self.win.height)
         self.wiface = wiface
 
         self.selected_network = selected_network
@@ -71,6 +70,7 @@ class PasswordScreen(Gtk.Box):
         self.connect_btn.set_sensitive(False)
         self.connect_btn.set_margin_right(100)
         self.connect_btn.set_margin_left(100)
+        self.connect_btn.pack_and_align()
 
         self.show_password = Gtk.CheckButton.new_with_label("Show password")
         self.show_password.get_style_context().add_class("show_password")
@@ -86,7 +86,7 @@ class PasswordScreen(Gtk.Box):
         vbox.pack_start(self.padlock_image, False, False, 10)
         vbox.pack_start(self.password_entry, False, False, 10)
         vbox.pack_start(self.show_password, False, False, 10)
-        vbox.pack_end(self.connect_btn, False, False, 40)
+        vbox.pack_end(self.connect_btn.align, False, False, 40)
 
         # Entry should have the keyboard focus
         self.password_entry.grab_focus()
