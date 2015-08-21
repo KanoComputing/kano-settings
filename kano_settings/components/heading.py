@@ -8,7 +8,6 @@
 # Heading used frequently around kano-settings and kano-login
 
 from gi.repository import Gtk
-# import kano_settings.common as common
 import os
 from kano.gtk3.icons import set_from_name
 from kano.gtk3.apply_styles import apply_styling_to_screen
@@ -17,30 +16,40 @@ from kano_settings.common import css_dir
 
 
 class Heading():
-    def __init__(self, title, description, is_plug=False):
+    def __init__(self, title, description, is_plug=False, back_btn=False):
         self.back_button = None
         css_path = os.path.join(css_dir, "heading.css")
         apply_styling_to_screen(css_path)
+        title_hbox = None
 
         if is_plug:
-            self.back_button = Gtk.Button()
-            attach_cursor_events(self.back_button)
-            self.back_button.get_style_context().add_class("back_button")
-            # TODO: get better back icon
-            self.back_button.set_image(set_from_name("dark_left_arrow"))
-            self.back_button.set_margin_top(15)
             title_hbox = Gtk.Box()
-            title_hbox.pack_start(self.back_button, True, False, 0)
+            close_button = Gtk.Button()
+            close_button.set_image(set_from_name("cross"))
+            close_button.get_style_context().add_class("back_button")
+            close_button.connect("clicked", Gtk.main_quit)
+            close_button.set_margin_top(15)
+            attach_cursor_events(close_button)
+            title_hbox.pack_end(close_button, True, True, 0)
+
+            if back_btn:
+                self.back_button = Gtk.Button()
+                attach_cursor_events(self.back_button)
+                self.back_button.get_style_context().add_class("back_button")
+                # TODO: get better back icon
+                self.back_button.set_image(set_from_name("dark_left_arrow"))
+                self.back_button.set_margin_top(15)
+                title_hbox.pack_start(self.back_button, True, False, 0)
+
+            else:
+                title_hbox.pack_start(Gtk.Label(), True, False, 0)
 
         self.title = Gtk.Label(title)
         self.title.get_style_context().add_class('title')
-
         self.container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
 
-        if self.back_button:
+        if is_plug:
             title_hbox.pack_start(self.title, True, True, 0)
-            empty_label = Gtk.Label()
-            title_hbox.pack_end(empty_label, True, True, 0)
             self.container.pack_start(title_hbox, False, False, 0)
         else:
             self.container.pack_start(self.title, False, False, 0)

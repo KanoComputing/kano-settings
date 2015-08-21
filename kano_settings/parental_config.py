@@ -26,7 +26,8 @@ class ParentalConfig(Template):
             "Parental lock",
             "Configure your parental lock settings",
             "APPLY CHANGES",
-            win.is_plug()
+            win.is_plug(),
+            True
         )
 
         self.parental_level = Gtk.VScale(
@@ -163,7 +164,8 @@ class AllowedSites(Template):
             "Allow and Block Sites",
             "Add extra sites to block or allow",
             "APPLY CHANGES",
-            win.is_plug()
+            win.is_plug(),
+            True
         )
 
         self.win = win

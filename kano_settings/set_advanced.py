@@ -18,11 +18,14 @@ from parental_config import ParentalConfig
 
 class SetAdvanced(Template):
     def __init__(self, win):
+
         Template.__init__(
             self,
             "Advanced options",
             "Toggle parental lock and debug mode",
-            "APPLY CHANGES"
+            "APPLY CHANGES",
+            win.is_plug(),
+            back_btn=False
         )
 
         parental_box = self.create_parental_button()
@@ -177,7 +180,8 @@ class SetPassword(Template):
                 "Unlock the parental lock",
                 "Choose a password",
                 "UNLOCK",
-                win.is_plug()
+                win.is_plug(),
+                True
             )
             self.entry = Gtk.Entry()
             self.entry.set_size_request(300, 44)

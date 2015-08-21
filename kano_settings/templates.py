@@ -17,11 +17,18 @@ from kano.gtk3.scrolled_window import ScrolledWindow
 
 class Template(Gtk.Box):
 
-    def __init__(self, title, description, button_text, is_plug=False):
+    def __init__(
+        self,
+        title,
+        description,
+        button_text,
+        is_plug=False,
+        back_btn=False
+    ):
 
         Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
 
-        self.title = Heading(title, description, is_plug)
+        self.title = Heading(title, description, is_plug, back_btn)
         self.title.container.set_margin_bottom(0)
         self.box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.align = Gtk.Alignment(xscale=0, yscale=0, xalign=0.5, yalign=0.3)
@@ -40,8 +47,13 @@ class Template(Gtk.Box):
 
 class ScrolledWindowTemplate(Gtk.Box):
 
-    def __init__(self, title, description, button_text,
-                 orange_button_text=None):
+    def __init__(
+        self,
+        title,
+        description,
+        button_text,
+        orange_button_text=None
+    ):
 
         Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
 

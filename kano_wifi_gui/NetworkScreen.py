@@ -151,7 +151,12 @@ class NetworkScreen(Gtk.Box):
         '''
 
         self.selected_network = {}
-        self.heading = Heading("Connect to WiFi", 'Choose a network')
+        self.heading = Heading(
+            "Connect to WiFi",
+            'Choose a network',
+            self.win.is_plug(),
+            back_btn=False
+        )
         self.create_network_box()
 
         # This box is to pack everything in the window

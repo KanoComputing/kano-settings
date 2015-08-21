@@ -39,7 +39,8 @@ class PasswordScreen(Gtk.Box):
         heading = Heading(
             "Connect to the network",
             network_name,
-            self.win.is_plug()
+            self.win.is_plug(),
+            True
         )
         heading.set_prev_callback(self.win.go_to_spinner_screen)
         heading.container.set_margin_right(20)
