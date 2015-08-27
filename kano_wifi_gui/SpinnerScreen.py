@@ -10,7 +10,7 @@ import os
 import threading
 from gi.repository import Gtk, GObject, GdkPixbuf
 
-from kano.gtk3.heading import Heading
+from kano_settings.components.heading import Heading
 from kano.network import IWList
 from kano_wifi_gui.paths import media_dir
 from kano_wifi_gui.NetworkScreen import NetworkScreen

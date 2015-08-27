@@ -1,0 +1,34 @@
+/***********************************************
+ * Migrate the Heading class to kano-settings
+ ***********************************************/
+
+/* The title of the current level*/
+.title {
+    color: #323232;
+    /*padding-top:30px;*/
+    font: Bariol Bold 20px;
+}
+/* Description of current project */
+.description {
+    color: #6e6e6e;
+    /*padding-left: 30px;
+    padding-right: 30px;*/
+    font: Bariol 14;
+}
+
+.plug .title {
+    color: #ffffff;
+    /*padding-top:30px;*/
+    font: Bariol Bold 20px;
+}
+
+.plug .description {
+    color: #dedfde;
+    /*padding-left: 30px;
+    padding-right: 30px;*/
+    font: Bariol 14;
+}
+
+.plug .back_button {
+    background: transparent;
+}

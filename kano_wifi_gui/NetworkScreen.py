@@ -11,7 +11,7 @@ import os
 import threading
 from gi.repository import Gtk, GObject, Gdk
 
-from kano.gtk3.heading import Heading
+from kano_settings.components.heading import Heading
 from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.gtk3.buttons import KanoButton
 from kano.gtk3.kano_dialog import KanoDialog
@@ -26,7 +26,8 @@ from kano.network import (connect, is_connected, KwifiCache, disconnect,
 
 def disconnect_dialog(wiface='wlan0', win=None):
     '''
-    Disconnect and empty the cached credentials, to avoid an automatic reconnection
+    Disconnect and empty the cached credentials, to avoid an automatic
+    reconnection
     '''
     disconnect(wiface)
     wificache = KwifiCache()
@@ -47,7 +48,6 @@ class NetworkScreen(Gtk.Box):
         Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
         self.win = win
         self.wiface = _wiface
-        self.set_size_request(self.win.width, self.win.height)
 
         # Setting new window here
         self.win.set_main_widget(self)
@@ -55,9 +55,6 @@ class NetworkScreen(Gtk.Box):
         # This could cause problems
         self.network_list = network_list
         self.win.top_bar.disable_prev()
-
-        self.width = 350
-        self.height = 405
 
         # Find out if connected to wireless, ethernet or not at all
         # This determines the variable self.connection, which tells us
@@ -154,7 +151,12 @@ class NetworkScreen(Gtk.Box):
         '''
 
         self.selected_network = {}
-        self.heading = Heading("Connect to WiFi", 'Choose a network')
+        self.heading = Heading(
+            "Connect to WiFi",
+            'Choose a network',
+            self.win.is_plug(),
+            back_btn=False
+        )
         self.create_network_box()
 
         # This box is to pack everything in the window
@@ -214,6 +216,7 @@ class NetworkScreen(Gtk.Box):
         '''
 
         self.connect_btn = KanoButton('CONNECT')
+        self.connect_btn.pack_and_align()
         self.connect_handler = self.connect_btn.connect('clicked', self.first_time_connect)
         self.connect_btn.set_sensitive(False)
         self.refresh_btn = self.create_refresh_button()
@@ -223,7 +226,7 @@ class NetworkScreen(Gtk.Box):
         buttonbox.set_layout(Gtk.ButtonBoxStyle.CENTER)
         buttonbox.set_spacing(10)
         buttonbox.pack_start(self.refresh_btn, False, False, 0)
-        buttonbox.pack_start(self.connect_btn, False, False, 0)
+        buttonbox.pack_start(self.connect_btn.align, False, False, 0)
 
         blank_label = Gtk.Label("")
         buttonbox.pack_start(blank_label, False, False, 0)

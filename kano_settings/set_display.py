@@ -10,7 +10,7 @@ from gi.repository import Gtk, Gdk
 from kano_settings.templates import Template
 from kano.gtk3.buttons import OrangeButton, KanoButton
 from kano.gtk3.kano_combobox import KanoComboBox
-from kano.gtk3.heading import Heading
+from kano_settings.components.heading import Heading
 from kano_profile.tracker import track_data
 
 import kano_settings.common as common

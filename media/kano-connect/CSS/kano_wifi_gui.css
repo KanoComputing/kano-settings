@@ -14,17 +14,17 @@
     background: #eeeeee;
 }
 
-.no_networks_label {
-    font: Bariol Bold 16;
-    color: #222222;
-}
-
 .network_btn.selected {
     background: @kano_orange;
 }
 
 .network_btn.selected GtkLabel {
     color: #ffffff;
+}
+
+.no_networks_label {
+    font: Bariol Bold 16;
+    color: #222222;
 }
 
 .refresh_btn, .refresh_btn:hover {
@@ -60,4 +60,63 @@ GtkScrolledWindow.border {
 .white {
     color: #ffffff;
     background: #ffffff;
+}
+
+/************************************************
+* Dark theme for Gtk.Plug
+************************************************/
+
+@define-color plug_background #44423d;
+
+.plug GtkEntry {
+    background: @plug_background;
+    color: #ffffff;
+}
+
+.plug {
+    background: @plug_background;
+}
+
+.plug GtkLabel {
+    color: #ffffff;
+}
+
+.plug GtkCheckButton {
+    background: @plug_background;
+}
+
+.plug .white {
+    color: @plug_background;
+    background: @plug_background;
+}
+
+.plug .grey {
+    color: #cccccc;
+    background: #cccccc;
+}
+
+.plug .refresh_btn, .plug .refresh_btn:hover {
+    background: transparent;
+}
+
+.plug .network_btn {
+    background: @plug_background;
+}
+
+.plug .network_btn GtkLabel {
+    font: Bariol Bold 14;
+    color: #ffffff;
+    padding: 5px 10px;
+}
+
+.plug .network_btn:hover {
+    background: #66654d;
+}
+
+.plug .network_btn.selected {
+    background: @kano_orange;
+}
+
+.plug .network_btn.selected GtkLabel {
+    color: #ffffff;
 }
