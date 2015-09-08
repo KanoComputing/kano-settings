@@ -44,7 +44,11 @@ class SpinnerScreen(Gtk.Box):
         self.pack_start(title.container, False, False, 0)
 
         spinner = Gtk.Image()
-        filename = os.path.join(media_dir, "kano-wifi-gui/wifi-spinner-smaller.gif")
+
+        if self.win.is_plug():
+            filename = os.path.join(media_dir, "kano-wifi-gui/loading_bar.gif")
+        else:
+            filename = os.path.join(media_dir, "kano-wifi-gui/wifi-spinner-smaller.gif")
         anim = GdkPixbuf.PixbufAnimation.new_from_file(filename)
         spinner.set_from_animation(anim)
         self.pack_start(spinner, False, False, 30)

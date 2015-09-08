@@ -8,12 +8,13 @@
 # This is the screen which shows all the networks detected.
 
 import os
+import sys
 import threading
 from gi.repository import Gtk, GObject, Gdk
 
 from kano_settings.components.heading import Heading
 from kano.gtk3.scrolled_window import ScrolledWindow
-from kano.gtk3.buttons import KanoButton
+from kano.gtk3.buttons import KanoButton, OrangeButton
 from kano.gtk3.kano_dialog import KanoDialog
 from kano.gtk3.cursor import attach_cursor_events
 from kano_wifi_gui.misc import tick_icon
@@ -228,10 +229,20 @@ class NetworkScreen(Gtk.Box):
         buttonbox.pack_start(self.refresh_btn, False, False, 0)
         buttonbox.pack_start(self.connect_btn.align, False, False, 0)
 
-        blank_label = Gtk.Label("")
-        buttonbox.pack_start(blank_label, False, False, 0)
+        if self.win.is_plug():
+            skip_btn = OrangeButton("Skip")
+            buttonbox.pack_start(skip_btn, False, False, 0)
+            skip_btn.connect("clicked", self.skip)
+        else:
+            blank_label = Gtk.Label("")
+            buttonbox.pack_start(blank_label, False, False, 0)
 
         return buttonbox
+
+    def skip(self, skip_btn):
+        # Exit with an extreme exit code so the init-flow knows the user
+        # pressed SKIP
+        sys.exit(100)
 
     def set_connect_btn_status(self, connect=True):
         self.connect_btn.disconnect(self.connect_handler)
