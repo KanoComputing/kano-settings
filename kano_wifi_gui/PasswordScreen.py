@@ -27,6 +27,7 @@ class PasswordScreen(Gtk.Box):
         '''
 
         Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
+
         self.win = win
         self.win.set_main_widget(self)
 
@@ -36,15 +37,15 @@ class PasswordScreen(Gtk.Box):
         self.selected_network = selected_network
         network_name = self.selected_network['essid']
 
-        heading = Heading(
+        self.heading = Heading(
             "Connect to the network",
             network_name,
             self.win.is_plug(),
             True
         )
-        heading.set_prev_callback(self.win.go_to_spinner_screen)
-        heading.container.set_margin_right(20)
-        heading.container.set_margin_left(20)
+        self.heading.set_prev_callback(self.win.go_to_spinner_screen)
+        self.heading.container.set_margin_right(20)
+        self.heading.container.set_margin_left(20)
 
         # If the user did not enter the correct password the first time,
         # this screen will reload
@@ -83,7 +84,7 @@ class PasswordScreen(Gtk.Box):
         vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
         self.add(vbox)
 
-        vbox.pack_start(heading.container, False, False, 10)
+        vbox.pack_start(self.heading.container, False, False, 10)
         vbox.pack_start(self.padlock_image, False, False, 10)
         vbox.pack_start(self.password_entry, False, False, 10)
         vbox.pack_start(self.show_password, False, False, 10)
@@ -98,10 +99,20 @@ class PasswordScreen(Gtk.Box):
         '''Change the large padlock image on the screen, clear the password
         entry and bring the text focus to the password entry.
         '''
+        # Add more text here
+        wrong_password = self._create_wrong_password_label()
+        self.heading.container.pack_start(wrong_password, True, True, 0)
+
         image_path = os.path.join(media_dir, "kano-wifi-gui/password-fail.png")
         self.padlock_image.set_from_file(image_path)
         self.password_entry.set_text("")
         self.password_entry.grab_focus()
+        self.show_all()
+
+    def _create_wrong_password_label(self):
+        label = Gtk.Label("Password incorrect")
+        label.get_style_context().add_class("wrong_password_label")
+        return label
 
     def change_password_entry_visiblity(self, widget):
         '''Depending on the checkbox, change the writing in the

@@ -62,6 +62,11 @@ GtkScrolledWindow.border {
     background: #ffffff;
 }
 
+.wrong_password_label {
+    font: Bariol bold 15px;
+    color: #e57273;
+}
+
 /************************************************
 * Dark theme for Gtk.Plug
 ************************************************/
@@ -77,8 +82,23 @@ GtkScrolledWindow.border {
     background: @plug_background;
 }
 
+/* This hits too many things */
+/*
 .plug GtkLabel {
     color: #ffffff;
+}
+*/
+
+/* This is for the Gtk.Heading - should probably be moved to toolset? */
+
+.plug .title, .plug .description {
+    color: #ffffff;
+}
+
+/* label with different color */
+.plug .wrong_password_label {
+    font: Bariol bold 15px;
+    color: #e57273;
 }
 
 .plug GtkCheckButton {
