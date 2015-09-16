@@ -25,7 +25,7 @@ from kano_settings.no_internet_screen import NoInternet
 from kano_settings.set_overclock import SetOverclock
 from kano_settings.set_account import SetAccount
 from kano_settings.set_about import SetAbout
-from kano_settings.set_advanced import SetAdvanced
+from kano_settings.set_advanced import SetAdvanced, SetPassword
 from kano_settings.set_appearance import SetAppearance
 from kano_settings.set_wallpaper import FirstBootSetWallpaper
 from kano_settings.locale import LocaleConfig
@@ -118,6 +118,8 @@ SCREENS = ScreenCollection([
     Screen('proxy', 'proxy', SetProxy, screen_no=13, on_home_screen=False),
     Screen('first-boot-set-wallpaper', 'first-boot-set-wallpaper',
            FirstBootSetWallpaper, screen_no=14, on_home_screen=False),
+    Screen('set-parental-password', 'set-parental-password', SetPassword,
+           screen_no=15, on_home_screen=False),
     # TODO: Add 'Locale' screen to home screen when translations are available.
     # TODO: Add icon for the 'Locale' screen.
     Screen('locale', 'Locale', LocaleConfig, setting_param='Locale',
