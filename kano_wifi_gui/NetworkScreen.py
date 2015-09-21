@@ -148,7 +148,7 @@ class NetworkScreen(Gtk.Box):
         self.show_all()
 
     def create_box(self):
-        '''Show the screen with the different wifi networks
+        '''Show the screen with the different WiFi networks
         '''
 
         self.selected_network = {}

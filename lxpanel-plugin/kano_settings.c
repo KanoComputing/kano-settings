@@ -26,7 +26,7 @@
 #define MOUSE_ICON "/usr/share/kano-settings/media/Icons/Icon-Mouse.png"
 #define AUDIO_ICON "/usr/share/kano-settings/media/Icons/Icon-Audio.png"
 #define DISPLAY_ICON "/usr/share/kano-settings/media/Icons/Icon-Display.png"
-#define WIFI_ICON "/usr/share/kano-settings/media/Icons/Icon-Wifi.png"
+#define WIFI_ICON "/usr/share/kano-settings/media/Icons/Icon-WiFi.png"
 
 #define SETTINGS_CMD "sudo kano-settings "
 #define SOUND_CMD "/usr/bin/aplay /usr/share/kano-media/sounds/kano_open_app.wav"
