@@ -122,6 +122,17 @@ def set_hdmi_mode(group=None, mode=None):
 
     set_config_value("hdmi_mode", mode)
 
+# flip screen 180
+def set_flip(display_rotate=None):
+    if not display_rotate:
+        set_config_value("display_rotate", 0)
+        return
+
+    if display_rotate:
+        set_config_value("display_rotate", 2)
+    else:
+        set_config_value("display_rotate", 0)
+
 def set_safeboot_mode():
     logger.warn("Safe boot requested")
 
@@ -359,3 +370,4 @@ def get_edid():
         return
 
     return parse_edid(edid_txt)
+    
