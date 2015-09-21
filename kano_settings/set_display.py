@@ -14,9 +14,9 @@ from kano_settings.components.heading import Heading
 from kano_profile.tracker import track_data
 
 import kano_settings.common as common
-from kano_settings.boot_config import set_config_comment
+from kano_settings.boot_config import set_config_comment, get_config_value
 from kano_settings.system.display import get_model, get_status, list_supported_modes, set_hdmi_mode, read_hdmi_mode, \
-    find_matching_mode, get_overscan_status, write_overscan_values, set_overscan_status, launch_pipe
+    find_matching_mode, get_overscan_status, write_overscan_values, set_overscan_status, launch_pipe, set_flip
 
 
 class SetDisplay(Template):
@@ -45,7 +45,6 @@ class SetDisplay(Template):
         self.win.top_bar.enable_prev()
         self.win.change_prev_callback(self.win.go_to_home)
 
-        self.kano_button.set_sensitive(False)
         self.kano_button.connect("button-release-event", self.apply_changes)
         self.kano_button.connect("key-release-event", self.apply_changes)
 
@@ -71,12 +70,23 @@ class SetDisplay(Template):
         active_item = find_matching_mode(modes, saved_group, saved_mode)
         self.mode_combo.set_selected_item_index(active_item)
         self.init_item = active_item
+        self.mode_index = active_item
         # Overscan button
         overscan_button = OrangeButton("Overscan")
         horizontal_container.pack_end(overscan_button, False, False, 0)
         overscan_button.connect("button-release-event", self.go_to_overscan)
 
         self.box.pack_start(horizontal_container, False, False, 0)
+
+        # Create Flip 180 checkbox 
+        flip_button = Gtk.CheckButton("Flip Screen")
+        flip_button.set_can_focus(False)
+        flip_button.props.valign = Gtk.Align.CENTER
+        flip_button.set_active(get_config_value("display_rotate") == 2)
+        flip_button.connect("clicked", self.flip)
+
+        self.box.pack_start(flip_button, False, False, 0)
+        self.kano_button.set_sensitive(False)
 
         # Add apply changes button under the main settings content
         self.win.show_all()
@@ -132,6 +142,13 @@ class SetDisplay(Template):
         else:
             SetSimpleOverscan(self.win, overscan_values)
 
+    def flip(self, button):
+        set_flip(button.get_active())
+        self.kano_button.set_sensitive(True)
+        if int(button.get_active()):
+            common.need_reboot = True
+        else:
+            common.need_reboot = True
 
 class OverscanTemplate(Gtk.Box):
     def __init__(self, win, title, description, original_overscan=None):
