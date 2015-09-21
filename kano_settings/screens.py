@@ -103,7 +103,7 @@ SCREENS = ScreenCollection([
     Screen('mouse', 'Mouse', SetMouse, screen_no=1, setting_param='Mouse'),
     Screen('audio', 'Audio', SetAudio, screen_no=2, setting_param='Audio'),
     Screen('display', 'Display', SetDisplay, screen_no=3),
-    Screen('wifi', 'Wifi', SetWifi, screen_no=4),
+    Screen('wifi', 'WiFi', SetWifi, screen_no=4),
     Screen('overclocking', 'Overclocking', SetOverclock, screen_no=5,
            setting_param='Overclocking'),
     Screen('account', 'Account', SetAccount, screen_no=6),

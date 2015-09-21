@@ -7,7 +7,7 @@ from kano.paths import common_images_dir
 
 def tick_icon():
     '''This should return a tick image.  We use this to show which
-    wifi network is already selected
+    WiFi network is already selected
     '''
 
     width = 24
