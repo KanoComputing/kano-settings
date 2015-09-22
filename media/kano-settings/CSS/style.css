@@ -105,6 +105,7 @@
 
 .parental_activated {
     color: @kano_green;
+    font-weight:bold;
 }
 
 GtkTreeView:hover {
