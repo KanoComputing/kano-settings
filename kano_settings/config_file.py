@@ -41,8 +41,7 @@ defaults = {
     'Font': 'Normal',
     'Wallpaper': 'kanux-background',
     'Parental-level': 0,
-    'Locale': 'en_US',
-    'display_rotate': 0
+    'Locale': 'en_US'
 }
 
 
