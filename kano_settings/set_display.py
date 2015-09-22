@@ -45,8 +45,6 @@ class SetDisplay(Template):
         self.win.top_bar.enable_prev()
         self.win.change_prev_callback(self.win.go_to_home)
 
-        #self.kano_button.set_sensitive(False)
-
         self.kano_button.connect("button-release-event", self.apply_changes)
         self.kano_button.connect("key-release-event", self.apply_changes)
 
