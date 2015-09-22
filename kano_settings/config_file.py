@@ -101,4 +101,3 @@ def set_setting(variable, value):
     data[variable] = value
     write_json(settings_file, data)
     chown_path(settings_file)
-    

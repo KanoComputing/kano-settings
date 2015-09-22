@@ -45,6 +45,8 @@ class SetDisplay(Template):
         self.win.top_bar.enable_prev()
         self.win.change_prev_callback(self.win.go_to_home)
 
+        #self.kano_button.set_sensitive(False)
+
         self.kano_button.connect("button-release-event", self.apply_changes)
         self.kano_button.connect("key-release-event", self.apply_changes)
 
@@ -145,10 +147,7 @@ class SetDisplay(Template):
     def flip(self, button):
         set_flip(button.get_active())
         self.kano_button.set_sensitive(True)
-        if int(button.get_active()):
-            common.need_reboot = True
-        else:
-            common.need_reboot = True
+        common.need_reboot = True
 
 class OverscanTemplate(Gtk.Box):
     def __init__(self, win, title, description, original_overscan=None):

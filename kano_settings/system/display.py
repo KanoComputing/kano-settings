@@ -124,10 +124,6 @@ def set_hdmi_mode(group=None, mode=None):
 
 # flip screen 180
 def set_flip(display_rotate=None):
-    if not display_rotate:
-        set_config_value("display_rotate", 0)
-        return
-
     if display_rotate:
         set_config_value("display_rotate", 2)
     else:
@@ -370,4 +366,3 @@ def get_edid():
         return
 
     return parse_edid(edid_txt)
-    
