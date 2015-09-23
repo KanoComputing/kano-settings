@@ -208,6 +208,7 @@ def add_safesearch_blacklist(hosts):
     Prevents surfing to generic search engine sites by adding them to the blacklist
     '''
 
+    logger.debug('Applying safesearch settings')
     # Block search sites
     search_sites = [
         'google.com',
@@ -274,7 +275,8 @@ def add_safesearch_blacklist(hosts):
     return hosts
 
 
-def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/Parental/parental-hosts-blacklist.gz',
+def set_hosts_blacklist(enable, block_search,
+                        blacklist_file='/usr/share/kano-settings/media/Parental/parental-hosts-blacklist.gz',
                         blocked_sites=None, allowed_sites=None):
     logger.debug('set_hosts_blacklist: {}'.format(enable))
 
@@ -295,8 +297,8 @@ def set_hosts_blacklist(enable, blacklist_file='/usr/share/kano-settings/media/P
             zipped_blacklist = gzip.GzipFile(blacklist_file)
             blacklist = zipped_blacklist.readlines()
 
-            logger.debug('Applying safesearch settings')
-            blacklist = add_safesearch_blacklist(blacklist)
+            if block_search:
+                blacklist = add_safesearch_blacklist(blacklist)
 
             # Append list of blacklisted hosts to system hostnames file
             with open(hosts_file, 'a') as f:
@@ -500,19 +502,19 @@ def set_dns_parental(enabled):
     refresh_resolvconf()
 
 
-def set_everyone_youtube_cookies(enabled=None):
+def set_everyone_cookies(enabled=None):
     if enabled is None:
         enabled = get_parental_level() >= 2
 
     username = []
     try:
         for username in os.listdir("/home/"):
-            set_user_youtube_cookies(enabled, username)
+            set_user_cookies(enabled, username)
     except:
         logger.error('Error applying Midori security to users ({})'.format(','.join(username)))
 
 
-def set_user_youtube_cookies(enabled=None, username=None):
+def set_user_cookies(enabled=None, username=None):
     if enabled is None:
         enabled = get_parental_level() >= 2
     if username is None:
@@ -583,11 +585,11 @@ def set_parental_level(level_setting):
     # NB, we pass -1 to disable all
     feature_levels = [
         # Low
-        ['blacklist'],
+        ['blacklist', 'cookies'],
         # Medium
-        ['dns', 'youtube-cookies'],
+        ['dns'],
         # High
-        ['chromium'],
+        ['chromium', 'search_engines'],
         # Ultimate
         ['ultimate']
     ]
@@ -605,10 +607,11 @@ def set_parental_level(level_setting):
     else:
         set_chromium_parental('chromium' in enabled)
         set_dns_parental('dns' in enabled)
-        set_everyone_youtube_cookies('youtube-cookies' in enabled)
+        set_everyone_cookies('cookies' in enabled)
         set_ultimate_parental(False)
 
+    # Blacklist setup
     blacklist, whitelist = read_listed_sites()
 
-    set_hosts_blacklist('blacklist' in enabled,
+    set_hosts_blacklist('blacklist' in enabled, 'search_engines' in enabled,
                         blocked_sites=blacklist, allowed_sites=whitelist)
