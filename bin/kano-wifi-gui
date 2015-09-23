@@ -208,10 +208,7 @@ def get_wifi_gui(base_class):
                 self._plug_in_wifi_dongle()
 
         def _template(self, title, description, buttons):
-            print "template hit"
-
             heading = Heading(title, description)
-
             bbox = Gtk.ButtonBox()
             bbox.set_spacing(20)
             bbox.set_layout(Gtk.ButtonBoxStyle.CENTER)

@@ -113,6 +113,10 @@ class NetworkScreen(Gtk.Box):
         self._network_btns = []
         network_connection = is_connected(self._wiface)
 
+        # The network connection
+        network_name = network_connection[0]
+        connected = network_connection[3]
+
         image_path = os.path.join(media_dir, "kano-wifi-gui/padlock.png")
 
         # If the network list is empty, display a message to show it's not
@@ -148,8 +152,8 @@ class NetworkScreen(Gtk.Box):
 
             # TODO: This is unreliable, maybe remove this aspect
             # or dig into a bit more.
-            if network['essid'] == network_connection[0] and \
-                    network_connection[3]:
+            if network['essid'] == network_name and \
+                    connected:
                 tick = tick_icon()
                 box.pack_start(tick, False, False, 0)
 
@@ -338,12 +342,6 @@ class NetworkScreen(Gtk.Box):
         self._win.remove_main_widget()
         SpinnerScreen(self._win, self._wiface)
 
-    '''
-    def _unpack_networks(self):
-        for child in self._network_box.get_children():
-            self._network_box.remove(child)
-    '''
-
     def _go_to_password_screen(self):
         self._win.remove_main_widget()
         PasswordScreen(self._win, self._wiface, self._selected_network)
@@ -352,13 +350,15 @@ class NetworkScreen(Gtk.Box):
         for network_btn in self._network_btns:
             network_btn.get_style_context().remove_class("selected")
 
+        network_name = network_connection[0]
+        connected = network_connection[3]
+
         self._selected_network = network
         button.get_style_context().add_class("selected")
 
         # If we are already connected to this network,
         # offer option to disconnect.
-        print "network_connection = {}".format(network_connection)
-        if network['essid'] == network_connection[0]:
+        if network['essid'] == network_name and connected:
             self._set_connect_btn_status(connect=False)
         else:
             self._set_connect_btn_status(connect=True)
