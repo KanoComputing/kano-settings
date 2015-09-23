@@ -47,7 +47,7 @@ class ParentalConfig(Template):
             ),
             (
                 Gtk.Label("Medium Settings"),
-                Gtk.Label("Use safe DNS servers to filter all traffic.")
+                Gtk.Label("Use safe DNS servers to filter all traffic")
             ),
             (
                 Gtk.Label("High Settings"),
@@ -138,12 +138,12 @@ class ParentalConfig(Template):
             style_desc = desc.get_style_context()
             if gtk_range.get_value() == level:
                 style_title.add_class('parental_activated')
-                style_desc.add_class('checkbutton_label')
+                style_desc.add_class('parental_desc_activated')
                 self.blacklist_button.set_sensitive(not level == 3.0)
             else:
                 style_title.remove_class('parental_activated')
                 style_title.add_class('normal_label')
-                style_desc.remove_class('checkbutton_label')
+                style_desc.remove_class('parental_desc_activated')
                 style_desc.add_class('normal_label')
 
 

@@ -108,6 +108,10 @@
     font-weight:bold;
 }
 
+.parental_desc_activated {
+    color: @title_color;
+}
+
 GtkTreeView:hover {
     color: #ffffff;
     background: @kano_orange_lighter;
