@@ -605,10 +605,10 @@ def set_parental_level(level_setting):
     if 'ultimate' in enabled:
         set_ultimate_parental('ultimate' in enabled)
     else:
+        set_ultimate_parental(False)
         set_chromium_parental('chromium' in enabled)
         set_dns_parental('dns' in enabled)
         set_everyone_cookies('cookies' in enabled)
-        set_ultimate_parental(False)
 
     # Blacklist setup
     blacklist, whitelist = read_listed_sites()
