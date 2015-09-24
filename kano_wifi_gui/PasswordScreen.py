@@ -16,8 +16,8 @@ from kano_wifi_gui.paths import media_dir
 from kano.logging import logger
 from kano_settings.components.heading import Heading
 from kano.gtk3.buttons import KanoButton
-from kano.gtk3.kano_dialog import KanoDialog
 from kano.network import connect, KwifiCache
+from kano_wifi_gui.Template import Template
 
 
 class PasswordScreen(Gtk.Box):
@@ -166,6 +166,7 @@ class PasswordScreen(Gtk.Box):
                 ssid, encryption, passphrase, success
             )
         )
+
         GObject.idle_add(self._thread_finish, success)
 
     def _set_button_sensitive(self, widget, event):
@@ -176,16 +177,24 @@ class PasswordScreen(Gtk.Box):
         self._enable_widgets()
 
         if success:
-            kdialog = KanoDialog(
-                "Excellent, you're connected!",
-                "You can talk to the world",
-                parent_window=self._win
-            )
-            kdialog.run()
-            Gtk.main_quit()
-
+            self._success_screen()
         else:
             self._wrong_password_screen()
+
+    def _success_screen(self):
+        self._win.remove_main_widget()
+
+        title = "Excellent, you're connected!"
+        description = "You can talk to the world"
+        buttons = [
+            {
+                "label": "OK",
+                "color": "green",
+                "type": "KanoButton",
+                "callback": Gtk.main_quit
+            }
+        ]
+        self._win.set_main_widget(Template(title, description, buttons))
 
     def _disable_widgets(self):
         self._connect_btn.set_sensitive(False)

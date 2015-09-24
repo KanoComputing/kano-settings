@@ -39,13 +39,11 @@ from kano.gtk3.top_bar import TopBar
 from kano.gtk3.apply_styles import (
     apply_common_to_screen, apply_styling_to_screen
 )
-from kano.gtk3.buttons import KanoButton, OrangeButton
 from kano_wifi_gui.SpinnerScreen import SpinnerScreen
-from kano_wifi_gui.NetworkScreen import disconnect_dialog
 from kano_wifi_gui.paths import css_dir
 from kano.network import is_internet, is_ethernet_plugged, is_device
 from kano_settings.get_window import get_window_class
-from kano.gtk3.heading import Heading
+from kano_wifi_gui.Template import Template
 
 
 def create_wifi_gui(is_plug, socket_id):
@@ -151,7 +149,7 @@ def get_wifi_gui(base_class):
                 }
             ]
 
-            screen = self._template(title, description, buttons)
+            screen = Template(title, description, buttons)
             self.set_main_widget(screen)
             screen.show_all()
 
@@ -174,7 +172,7 @@ def get_wifi_gui(base_class):
                 }
             ]
 
-            screen = self._template(title, description, buttons)
+            screen = Template(title, description, buttons)
             self.set_main_widget(screen)
             screen.show_all()
 
@@ -197,7 +195,7 @@ def get_wifi_gui(base_class):
                 }
             ]
 
-            screen = self._template(title, description, buttons)
+            screen = Template(title, description, buttons)
             self.set_main_widget(screen)
             screen.show_all()
 
@@ -206,39 +204,6 @@ def get_wifi_gui(base_class):
                 self._go_to_spinner_screen()
             else:
                 self._plug_in_wifi_dongle()
-
-        def _template(self, title, description, buttons):
-            heading = Heading(title, description)
-            bbox = Gtk.ButtonBox()
-            bbox.set_spacing(20)
-            bbox.set_layout(Gtk.ButtonBoxStyle.CENTER)
-
-            for b in buttons:
-                label = b["label"]
-
-                if not label:
-                    gtk_button = Gtk.Label()
-
-                else:
-                    button_type = b["type"]
-                    callback = b["callback"]
-
-                    if button_type == "KanoButton":
-                        color = b["color"]
-                        gtk_button = KanoButton(label, color=color)
-                    elif button_type == "OrangeButton":
-                        gtk_button = OrangeButton(label)
-
-                    gtk_button.connect("clicked", callback)
-                bbox.pack_start(gtk_button, False, False, 0)
-
-            vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-
-            vbox.pack_start(heading.container, False, False, 0)
-            vbox.pack_end(bbox, False, False, 30)
-            vbox.show_all()
-
-            return vbox
 
     return KanoWifiGui
 
@@ -254,7 +219,18 @@ if __name__ == '__main__':
     is_plug = (socket_id is not None)
 
     if args['--disconnect']:
-        disconnect_dialog()
+        from kano.network import KwifiCache, disconnect
+        from kano.gtk3.kano_dialog import KanoDialog
+
+        disconnect('wlan0')
+        wificache = KwifiCache()
+        wificache.empty()
+
+        kdialog = KanoDialog(
+            # Text from the content team.
+            "Disconnect complete - you're now offline.",
+        )
+        kdialog.run()
     else:
         GObject.threads_init()
         create_wifi_gui(is_plug, socket_id)

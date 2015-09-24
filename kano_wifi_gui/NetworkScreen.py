@@ -15,31 +15,14 @@ from gi.repository import Gtk, GObject, Gdk
 from kano_settings.components.heading import Heading
 from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.gtk3.buttons import KanoButton, OrangeButton
-from kano.gtk3.kano_dialog import KanoDialog
 from kano.gtk3.cursor import attach_cursor_events
 from kano_wifi_gui.misc import tick_icon
 from kano.logging import logger
 from kano_wifi_gui.paths import media_dir
 from kano_wifi_gui.PasswordScreen import PasswordScreen
+from kano_wifi_gui.Template import Template
 from kano.network import (connect, is_connected, KwifiCache, disconnect,
                           is_internet, network_info)
-
-
-def disconnect_dialog(wiface='wlan0', win=None):
-    '''
-    Disconnect and empty the cached credentials, to avoid an automatic
-    reconnection
-    '''
-    disconnect(wiface)
-    wificache = KwifiCache()
-    wificache.empty()
-
-    kdialog = KanoDialog(
-        # Text from the content team.
-        "Disconnect complete - you're now offline.",
-        parent_window=win
-    )
-    kdialog.run()
 
 
 class NetworkScreen(Gtk.Box):
@@ -244,13 +227,13 @@ class NetworkScreen(Gtk.Box):
 
         else:
             self.connect_handler = self._connect_btn.connect(
-                'clicked', self._launch_disconnect_dialog
+                'clicked', self._launch_disconnect_thread
             )
             self._connect_btn.set_color("red")
             self._connect_btn.set_label("DISCONNECT")
 
     # This should be replaced with a different disconnect dialog
-    def _launch_disconnect_dialog(self, widget=None):
+    def _launch_disconnect_thread(self, widget=None):
         watch_cursor = Gdk.Cursor(Gdk.CursorType.WATCH)
         self._win.get_window().set_cursor(watch_cursor)
         self._connect_btn.start_spinner()
@@ -263,24 +246,48 @@ class NetworkScreen(Gtk.Box):
         t = threading.Thread(target=self._threaded_disconnect)
         t.start()
 
+    def _disconnect_screen(self):
+        self._win.remove_main_widget()
+        title = "Disconnect complete."
+        description = "You're now offline"
+        buttons = [
+            {
+                "label": "CLOSE",
+                "type": "KanoButton",
+                "color": "red",
+                "callback": Gtk.main_quit
+            },
+            {
+                "label": "SELECT NEW NETWORK",
+                "type": "KanoButton",
+                "color": "green",
+                "callback": self._go_to_spinner_screen
+            }
+        ]
+        self._win.set_main_widget(Template(title, description, buttons))
+
     def _threaded_disconnect(self):
-        '''This is needed so we can show a spinner while the user is
+        '''
+        This is needed so we can show a spinner while the user is
         disconnecting
         '''
         disconnect(self._wiface)
 
         def done():
+            '''
             kdialog = KanoDialog(
                 # Text from the content team.
                 "Disconnect complete - you're now offline.",
                 parent_window=self._win
             )
             kdialog.run()
+            '''
+            self._disconnect_screen()
 
             self._win.get_window().set_cursor(None)
             self._connect_btn.stop_spinner()
             self._connect_btn.set_sensitive(True)
-            self._go_to_spinner_screen()
+            # self._go_to_spinner_screen()
 
         GObject.idle_add(done)
 
@@ -380,7 +387,7 @@ class NetworkScreen(Gtk.Box):
             args=(ssid, encryption, passphrase,)
         )
 
-        # TODO: This was originally a daemon thread.
+        # TODO: This originally wasn't a daemon thread.
         t.daemon = True
         t.start()
 
@@ -411,22 +418,60 @@ class NetworkScreen(Gtk.Box):
         self._refresh_btn.set_sensitive(True)
 
         if success:
-            kdialog = KanoDialog(
-                "Excellent, you're connected!",
-                "You can talk to the world",
-                parent_window=self._win
-            )
-            kdialog.run()
-            Gtk.main_quit()
+            self._success_screen()
 
         else:
-            kdialog = KanoDialog(
-                "Cannot connect!",
-                "Maybe the signal was too weak to connect.",
-                parent_window=self._win
+            self._fail_screen()
+
+    def _success_screen(self):
+        self._win.remove_main_widget()
+        title = "Excellent, you're connected!"
+        description = "You can talk to the world"
+        buttons = [
+            {
+                "label": "OK",
+                "type": "KanoButton",
+                "color": "green",
+                "callback": Gtk.main_quit
+            }
+        ]
+
+        self._win.set_main_widget(
+            Template(
+                title,
+                description,
+                buttons
             )
-            self._win.remove_main_widget()
-            self._go_to_spinner_screen()
+        )
+
+    def _fail_screen(self):
+        self._win.remove_main_widget()
+        title = "Cannot connect!"
+        description = "Maybe the signal was too weak to connect."
+        buttons = [
+            {
+                "label": ""
+            },
+            {
+                "label": "TRY AGAIN",
+                "type": "KanoButton",
+                "color": "green",
+                "callback": self._go_to_spinner_screen
+            },
+            {
+                "label": "QUIT",
+                "type": "OrangeButton",
+                "callback": Gtk.main_quit
+            }
+        ]
+
+        self._win.set_main_widget(
+            Template(
+                title,
+                description,
+                buttons
+            )
+        )
 
     def _disable_widgets(self):
         self._set_sensitivity_of_buttons(False)
