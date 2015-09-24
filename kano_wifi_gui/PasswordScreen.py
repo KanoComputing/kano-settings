@@ -3,21 +3,19 @@
 # PasswordScreen.py
 #
 # Copyright (C) 2015 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # This is the screen where the user has chosen a network and needs to enter a
 # password for the network.
 
 import os
-import threading
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk
 
 from kano_wifi_gui.paths import media_dir
-from kano.logging import logger
 from kano_settings.components.heading import Heading
 from kano.gtk3.buttons import KanoButton
-from kano.network import connect, KwifiCache
 from kano_wifi_gui.Template import Template
+from kano_wifi_gui.connect_functions import launch_connect_thread
 
 
 class PasswordScreen(Gtk.Box):
@@ -121,60 +119,23 @@ class PasswordScreen(Gtk.Box):
         self._win.remove_main_widget()
         SpinnerScreen(self._win, self._wiface)
 
-    # TODO: This is largely repeated code
     def _on_connect(self, widget):
         '''This is the cb attached to the button widget
         '''
         essid = self._selected_network['essid']
         passphrase = self._password_entry.get_text()
         wpa = self._selected_network['encryption']
-        self._connect_(essid, passphrase, wpa)
-
-    def _connect_(self, ssid, passphrase, encryption):
-        '''This disables the buttons on the application,
-        starts and spinner and starts the _connect_thread_ thread
-        '''
-        logger.debug('Connecting to {}'.format(ssid))
-
-        # disable the buttons
-        self._disable_widgets()
-        self._connect_btn.start_spinner()
-
-        # start thread
-        t = threading.Thread(
-            target=self._connect_thread_,
-            args=(ssid, encryption, passphrase,)
+        launch_connect_thread(
+            self._wiface, essid, passphrase, wpa,
+            self._disable_widgets_start_spinner,
+            self._thread_finish
         )
-
-        t.daemon = False
-        t.start()
-
-    def _connect_thread_(self, ssid, encryption, passphrase):
-        '''This function runs in a thread so we can run a spinner alongside.
-        '''
-        success = connect(self._wiface, ssid, encryption, passphrase)
-
-        # save the connection in cache so it reconnects on next system boot
-        wificache = KwifiCache()
-        if success:
-            wificache.save(ssid, encryption, passphrase)
-        else:
-            wificache.empty()
-
-        logger.debug(
-            'Connecting to {} {} {}. Successful: {}'.format(
-                ssid, encryption, passphrase, success
-            )
-        )
-
-        GObject.idle_add(self._thread_finish, success)
 
     def _set_button_sensitive(self, widget, event):
         self._connect_btn.set_sensitive(True)
 
     def _thread_finish(self, success):
-        self._connect_btn.stop_spinner()
-        self._enable_widgets()
+        self._enable_widgets_stop_spinner()
 
         if success:
             self._success_screen()
@@ -196,13 +157,15 @@ class PasswordScreen(Gtk.Box):
         ]
         self._win.set_main_widget(Template(title, description, buttons))
 
-    def _disable_widgets(self):
+    def _disable_widgets_start_spinner(self):
+        self._connect_btn.start_spinner()
         self._connect_btn.set_sensitive(False)
         self._win.top_bar.prev_button.set_sensitive(False)
         self._password_entry.set_sensitive(False)
         self._show_password.set_sensitive(False)
 
-    def _enable_widgets(self):
+    def _enable_widgets_stop_spinner(self):
+        self._connect_btn.stop_spinner()
         self._connect_btn.set_sensitive(True)
         self._win.top_bar.prev_button.set_sensitive(True)
         self._password_entry.set_sensitive(True)

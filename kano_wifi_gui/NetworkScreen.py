@@ -17,12 +17,11 @@ from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.gtk3.buttons import KanoButton, OrangeButton
 from kano.gtk3.cursor import attach_cursor_events
 from kano_wifi_gui.misc import tick_icon
-from kano.logging import logger
 from kano_wifi_gui.paths import media_dir
 from kano_wifi_gui.PasswordScreen import PasswordScreen
 from kano_wifi_gui.Template import Template
-from kano.network import (connect, is_connected, KwifiCache, disconnect,
-                          is_internet, network_info)
+from kano.network import is_connected, disconnect
+from kano_wifi_gui.connect_functions import launch_connect_thread
 
 
 class NetworkScreen(Gtk.Box):
@@ -133,8 +132,9 @@ class NetworkScreen(Gtk.Box):
             # connection, and we're connected to the internet, then
             # put a tick next to the name.
 
-            # TODO: This is unreliable, maybe remove this aspect
-            # or dig into a bit more.
+            # TODO: Since connected shows if you're connected to internet
+            # you can be connected to ethernet and thus be shown to be
+            # connected to the wrong network.
             if network['essid'] == network_name and \
                     connected:
                 tick = tick_icon()
@@ -232,7 +232,6 @@ class NetworkScreen(Gtk.Box):
             self._connect_btn.set_color("red")
             self._connect_btn.set_label("DISCONNECT")
 
-    # This should be replaced with a different disconnect dialog
     def _launch_disconnect_thread(self, widget=None):
         watch_cursor = Gdk.Cursor(Gdk.CursorType.WATCH)
         self._win.get_window().set_cursor(watch_cursor)
@@ -274,20 +273,10 @@ class NetworkScreen(Gtk.Box):
         disconnect(self._wiface)
 
         def done():
-            '''
-            kdialog = KanoDialog(
-                # Text from the content team.
-                "Disconnect complete - you're now offline.",
-                parent_window=self._win
-            )
-            kdialog.run()
-            '''
             self._disconnect_screen()
-
             self._win.get_window().set_cursor(None)
             self._connect_btn.stop_spinner()
             self._connect_btn.set_sensitive(True)
-            # self._go_to_spinner_screen()
 
         GObject.idle_add(done)
 
@@ -337,7 +326,11 @@ class NetworkScreen(Gtk.Box):
             essid = self._selected_network['essid']
             encryption = 'off'
             passphrase = ''
-            self._connect_(essid, passphrase, encryption)
+            launch_connect_thread(
+                self._wiface, essid, encryption, passphrase,
+                self._disable_widgets_start_spinner,
+                self._thread_finish
+            )
         else:
             self._go_to_password_screen()
 
@@ -372,54 +365,15 @@ class NetworkScreen(Gtk.Box):
 
         self._connect_btn.set_sensitive(True)
 
-    def _connect_(self, ssid, passphrase, encryption):
-        '''This starts the _connect_thread_ thread
-        '''
-        logger.debug('Connecting to {}'.format(ssid))
-        # disable the buttons
-        self._refresh_btn.set_sensitive(False)
-        self._connect_btn.set_sensitive(False)
-        self._connect_btn.start_spinner()
-
-        # start thread
-        t = threading.Thread(
-            target=self._connect_thread_,
-            args=(ssid, encryption, passphrase,)
-        )
-
-        # TODO: This originally wasn't a daemon thread.
-        t.daemon = True
-        t.start()
-
-    def _connect_thread_(self, ssid, encryption, passphrase):
-        '''This function runs in a thread so we can run a spinner alongside.
-        '''
-        success = connect(self._wiface, ssid, encryption, passphrase)
-
-        # save the connection in cache so it reconnects on next system boot
-        wificache = KwifiCache()
-        if success:
-            wificache.save(ssid, encryption, passphrase)
-        else:
-            wificache.empty()
-
-        logger.debug('Connecting to {} {} {}. Successful: {}'.format(
-            ssid, encryption, passphrase, success)
-        )
-        GObject.idle_add(self._thread_finish, success)
-
     def _thread_finish(self, success):
         '''When the thread finishes, stop the spinner, enable the buttons
         and launch a dialog with an appropriate message depending on whether
         the user successfully connected to the internet.
         '''
-        self._connect_btn.stop_spinner()
-        self._connect_btn.set_sensitive(True)
-        self._refresh_btn.set_sensitive(True)
+        self._enable_widgets_stop_spinner()
 
         if success:
             self._success_screen()
-
         else:
             self._fail_screen()
 
@@ -473,10 +427,19 @@ class NetworkScreen(Gtk.Box):
             )
         )
 
+    def _disable_widgets_start_spinner(self):
+        self._connect_btn.start_spinner()
+        self._disable_widgets()
+
+    def _enable_widgets_stop_spinner(self):
+        self._connect_btn.stop_spinner()
+        self._enable_widgets()
+
     def _disable_widgets(self):
         self._set_sensitivity_of_buttons(False)
 
     def _enable_widgets(self):
+        self._connect_btn.stop_spinner()
         self._set_sensitivity_of_buttons(True)
 
     def _set_sensitivity_of_buttons(self, sensitivity):
