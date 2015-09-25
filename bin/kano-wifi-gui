@@ -149,7 +149,12 @@ def get_wifi_gui(base_class):
                 }
             ]
 
-            screen = Template(title, description, buttons)
+            screen = Template(
+                title,
+                description,
+                buttons,
+                self.is_plug()
+            )
             self.set_main_widget(screen)
             screen.show_all()
 
@@ -172,7 +177,12 @@ def get_wifi_gui(base_class):
                 }
             ]
 
-            screen = Template(title, description, buttons)
+            screen = Template(
+                title,
+                description,
+                buttons,
+                self.is_plug()
+            )
             self.set_main_widget(screen)
             screen.show_all()
 
@@ -195,7 +205,12 @@ def get_wifi_gui(base_class):
                 }
             ]
 
-            screen = Template(title, description, buttons)
+            screen = Template(
+                title,
+                description,
+                buttons,
+                self.is_plug()
+            )
             self.set_main_widget(screen)
             screen.show_all()
 

@@ -15,10 +15,15 @@ from kano.gtk3.buttons import KanoButton, OrangeButton
 
 class Template(Gtk.Box):
 
-    def __init__(self, title, description, buttons):
+    def __init__(self, title, description, buttons, is_plug):
         super(Template, self).__init__(orientation=Gtk.Orientation.VERTICAL)
 
-        heading = Heading(title, description)
+        heading = Heading(
+            title,
+            description,
+            is_plug,
+            back_btn=False
+        )
         bbox = Gtk.ButtonBox()
         bbox.set_spacing(20)
         bbox.set_layout(Gtk.ButtonBoxStyle.CENTER)
