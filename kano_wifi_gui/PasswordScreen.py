@@ -155,7 +155,14 @@ class PasswordScreen(Gtk.Box):
                 "callback": Gtk.main_quit
             }
         ]
-        self._win.set_main_widget(Template(title, description, buttons))
+        self._win.set_main_widget(
+            Template(
+                title,
+                description,
+                buttons,
+                self._win.is_plug()
+            )
+        )
 
     def _disable_widgets_start_spinner(self):
         self._connect_btn.start_spinner()
