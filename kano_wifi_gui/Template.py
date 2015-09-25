@@ -47,6 +47,11 @@ class Template(Gtk.Box):
                 gtk_button.connect("clicked", callback)
             bbox.pack_start(gtk_button, False, False, 0)
 
-        self.pack_start(heading.container, False, False, 0)
-        self.pack_end(bbox, False, False, 30)
+        self.pack_start(heading.container, False, False, 10)
+
+        if is_plug:
+            self.pack_end(bbox, False, False, 130)
+        else:
+            self.pack_end(bbox, False, False, 30)
+
         self.show_all()
