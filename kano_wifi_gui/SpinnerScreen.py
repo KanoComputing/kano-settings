@@ -30,7 +30,7 @@ class SpinnerScreen(Gtk.Box):
 
         self.show_spinner_screen()
 
-        # check the wifi networks present here
+        # check the WiFi networks present here
         t = threading.Thread(target=self.scan_networks)
         t.start()
 

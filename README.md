@@ -22,7 +22,7 @@ Audio output can be set to Analog (speaker or headphones) or HDMI (tv).
 
 The resolution of the display can be configured from this setting. The list of modes offered depend directly on the screen/monitor used.
 
-### Wifi
+### WiFi
 
 Tool to configure your internet connection: ethernet, wifi or smartphone USB tethering.
 

@@ -45,7 +45,7 @@ class NetworkScreen(Gtk.Box):
         self._win.show_all()
 
     def _create_main_box(self, network_list):
-        '''Show the screen with the different wifi networks
+        '''Show the screen with the different WiFi networks
         '''
 
         heading = Heading(

@@ -57,9 +57,9 @@ class SetAdvanced(Template):
 
     def create_parental_button(self):
         desc = (
-            "This will:\n"
-            "- Block mature videos on YouTube\n"
-            "- Block mature websites in browser"
+            "Use different levels to:\n"
+            "- Block mature content in browser and YouTube\n"
+            "- Or restrict internet access to only Kano World activity"
         ).split('\n')
 
         self.parental_button = Gtk.CheckButton()

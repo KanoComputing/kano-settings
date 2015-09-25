@@ -43,19 +43,19 @@ class ParentalConfig(Template):
         self._parental_labels = [
             (
                 Gtk.Label("Low Settings"),
-                Gtk.Label("Blocks blacklisted websites")
+                Gtk.Label("Block predefined blacklisted websites and\nactivates SafeSearch on Google and Youtube")
             ),
             (
                 Gtk.Label("Medium Settings"),
-                Gtk.Label("Switch to use filtering DNS servers")
+                Gtk.Label("Use safe DNS servers to filter all traffic")
             ),
             (
                 Gtk.Label("High Settings"),
-                Gtk.Label("Enable all filters, no Google access")
+                Gtk.Label("Enable all filters and restrict search engine access")
             ),
             (
                 Gtk.Label("Ultimate Settings"),
-                Gtk.Label("Only allow access to Kano World")
+                Gtk.Label("Only allow access to Kano World activities")
             )
         ]
 
@@ -134,13 +134,17 @@ class ParentalConfig(Template):
 
     def _value_change_handler(self, gtk_range):
         for level, (title, desc) in enumerate(self._parental_labels):
-            style = title.get_style_context()
+            style_title = title.get_style_context()
+            style_desc = desc.get_style_context()
             if gtk_range.get_value() == level:
-                style.add_class('parental_activated')
+                style_title.add_class('parental_activated')
+                style_desc.add_class('parental_desc_activated')
                 self.blacklist_button.set_sensitive(not level == 3.0)
             else:
-                style.remove_class('parental_activated')
-                style.add_class('normal_label')
+                style_title.remove_class('parental_activated')
+                style_title.add_class('normal_label')
+                style_desc.remove_class('parental_desc_activated')
+                style_desc.add_class('normal_label')
 
 
 class SiteList(EditableList):
