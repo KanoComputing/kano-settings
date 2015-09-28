@@ -48,6 +48,8 @@ class Template(Gtk.Box):
             bbox.pack_start(gtk_button, False, False, 0)
 
         self.pack_start(heading.container, False, False, 10)
+        heading.container.set_margin_right(15)
+        heading.container.set_margin_left(15)
 
         if is_plug:
             self.pack_end(bbox, False, False, 130)

@@ -162,6 +162,9 @@ def get_wifi_gui(base_class):
             self.remove_main_widget()
             title = "You are already connected via ethernet."
             description = "Do you still want to connect with WiFi?"
+
+            # Decide which callback to use depending on if wifi dongle is
+            # plugged in
             buttons = [
                 {
                     "label": "NAH",
@@ -172,7 +175,7 @@ def get_wifi_gui(base_class):
                 {
                     "label": "YEAH!",
                     "color": "green",
-                    "callback": self._go_to_spinner_screen,
+                    "callback": self._ethernet_next_step,
                     "type": "KanoButton"
                 }
             ]
@@ -185,6 +188,13 @@ def get_wifi_gui(base_class):
             )
             self.set_main_widget(screen)
             screen.show_all()
+
+        def _ethernet_next_step(self, widget=None):
+            dongle_is_plugged_in = is_device(self.wiface)
+            if dongle_is_plugged_in:
+                self._go_to_spinner_screen()
+            else:
+                self._plug_in_wifi_dongle()
 
         def _you_have_internet_screen(self, wiface):
             self.remove_main_widget()
