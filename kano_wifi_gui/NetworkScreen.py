@@ -15,6 +15,7 @@ from gi.repository import Gtk, GObject, Gdk
 from kano_settings.components.heading import Heading
 from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.gtk3.buttons import KanoButton, OrangeButton
+from kano_wifi_gui.WhiteButton import WhiteButton
 from kano.gtk3.cursor import attach_cursor_events
 from kano_wifi_gui.misc import tick_icon
 from kano_wifi_gui.paths import media_dir
@@ -200,7 +201,7 @@ class NetworkScreen(Gtk.Box):
         buttonbox.pack_start(self._connect_btn.align, False, False, 0)
 
         if self._win.is_plug():
-            self._skip_btn = OrangeButton("Skip")
+            self._skip_btn = WhiteButton("Skip")
             buttonbox.pack_start(self._skip_btn, False, False, 0)
             self._skip_btn.connect("clicked", self.skip)
         else:
