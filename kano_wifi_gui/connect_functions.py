@@ -40,7 +40,7 @@ def launch_connect_thread(wiface, ssid, passphrase, encryption,
         args=(wiface, ssid, passphrase, encryption, thread_finish_cb)
     )
 
-    t.daemon = False
+    t.daemon = True
     t.start()
 
 
