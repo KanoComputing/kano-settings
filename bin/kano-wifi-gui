@@ -40,7 +40,7 @@ from kano.gtk3.apply_styles import (
     apply_common_to_screen, apply_styling_to_screen
 )
 from kano_wifi_gui.SpinnerScreen import SpinnerScreen
-from kano_wifi_gui.paths import css_dir
+from kano_wifi_gui.paths import css_dir, img_dir
 from kano.network import is_internet, is_ethernet_plugged, is_device
 from kano_settings.get_window import get_window_class
 from kano_wifi_gui.Template import Template
@@ -149,11 +149,14 @@ def get_wifi_gui(base_class):
                 }
             ]
 
+            img_path = os.path.join(img_dir, "dongle.png")
+
             screen = Template(
                 title,
                 description,
                 buttons,
-                self.is_plug()
+                self.is_plug(),
+                img_path
             )
             self.set_main_widget(screen)
             screen.show_all()
@@ -180,11 +183,14 @@ def get_wifi_gui(base_class):
                 }
             ]
 
+            img_path = os.path.join(img_dir, "ethernet.png")
+
             screen = Template(
                 title,
                 description,
                 buttons,
-                self.is_plug()
+                self.is_plug(),
+                img_path
             )
             self.set_main_widget(screen)
             screen.show_all()
@@ -214,12 +220,14 @@ def get_wifi_gui(base_class):
                     "type": "KanoButton"
                 }
             ]
+            img_path = os.path.join(img_dir, "internet.png")
 
             screen = Template(
                 title,
                 description,
                 buttons,
-                self.is_plug()
+                self.is_plug(),
+                img_path
             )
             self.set_main_widget(screen)
             screen.show_all()
