@@ -264,7 +264,14 @@ class NetworkScreen(Gtk.Box):
                 "callback": self._go_to_spinner_screen
             }
         ]
-        self._win.set_main_widget(Template(title, description, buttons))
+        self._win.set_main_widget(
+            Template(
+                title,
+                description,
+                buttons,
+                self._win.is_plug()
+            )
+        )
 
     def _threaded_disconnect(self):
         '''
@@ -395,7 +402,8 @@ class NetworkScreen(Gtk.Box):
             Template(
                 title,
                 description,
-                buttons
+                buttons,
+                self._win.is_plug()
             )
         )
 
@@ -424,7 +432,8 @@ class NetworkScreen(Gtk.Box):
             Template(
                 title,
                 description,
-                buttons
+                buttons,
+                self._win.is_plug()
             )
         )
 
