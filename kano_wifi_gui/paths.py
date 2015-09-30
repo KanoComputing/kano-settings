@@ -24,3 +24,4 @@ else:
     sys.exit('Kano connect media folder missing!')
 
 css_dir = os.path.join(media_dir, "CSS")
+img_dir = os.path.join(media_dir, "kano-wifi-gui")

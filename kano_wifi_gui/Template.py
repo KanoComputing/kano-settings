@@ -15,7 +15,7 @@ from kano.gtk3.buttons import KanoButton, OrangeButton
 
 class Template(Gtk.Box):
 
-    def __init__(self, title, description, buttons, is_plug):
+    def __init__(self, title, description, buttons, is_plug=False, img_path=None):
         super(Template, self).__init__(orientation=Gtk.Orientation.VERTICAL)
 
         heading = Heading(
@@ -27,6 +27,8 @@ class Template(Gtk.Box):
         bbox = Gtk.ButtonBox()
         bbox.set_spacing(20)
         bbox.set_layout(Gtk.ButtonBoxStyle.CENTER)
+        bbox.set_margin_right(10)
+        bbox.set_margin_left(10)
 
         for b in buttons:
             label = b["label"]
@@ -50,6 +52,10 @@ class Template(Gtk.Box):
         self.pack_start(heading.container, False, False, 10)
         heading.container.set_margin_right(15)
         heading.container.set_margin_left(15)
+
+        if img_path:
+            image = Gtk.Image.new_from_file(img_path)
+            self.pack_start(image, False, False, 20)
 
         if is_plug:
             self.pack_end(bbox, False, False, 130)

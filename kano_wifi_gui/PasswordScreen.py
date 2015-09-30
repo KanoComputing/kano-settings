@@ -11,7 +11,7 @@
 import os
 from gi.repository import Gtk
 
-from kano_wifi_gui.paths import media_dir
+from kano_wifi_gui.paths import img_dir
 from kano_settings.components.heading import Heading
 from kano.gtk3.buttons import KanoButton
 from kano_wifi_gui.Template import Template
@@ -44,7 +44,7 @@ class PasswordScreen(Gtk.Box):
         self._heading.set_prev_callback(self._go_to_spinner_screen)
         self._heading.container.set_margin_right(20)
         self._heading.container.set_margin_left(20)
-        image_path = os.path.join(media_dir, "kano-wifi-gui/password.png")
+        image_path = os.path.join(img_dir, "password.png")
         self._padlock_image = Gtk.Image.new_from_file(image_path)
 
         self._password_entry = Gtk.Entry()
@@ -94,7 +94,7 @@ class PasswordScreen(Gtk.Box):
         wrong_password = self._create_wrong_password_label()
         self._heading.container.pack_start(wrong_password, True, True, 0)
 
-        image_path = os.path.join(media_dir, "kano-wifi-gui/password-fail.png")
+        image_path = os.path.join(img_dir, "password-fail.png")
         self._padlock_image.set_from_file(image_path)
         self._password_entry.set_text("")
         self._password_entry.grab_focus()
@@ -155,12 +155,15 @@ class PasswordScreen(Gtk.Box):
                 "callback": Gtk.main_quit
             }
         ]
+        img_path = os.path.join(img_dir, "internet.png")
+
         self._win.set_main_widget(
             Template(
                 title,
                 description,
                 buttons,
-                self._win.is_plug()
+                self._win.is_plug(),
+                img_path
             )
         )
 

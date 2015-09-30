@@ -14,11 +14,11 @@ from gi.repository import Gtk, GObject, Gdk
 
 from kano_settings.components.heading import Heading
 from kano.gtk3.scrolled_window import ScrolledWindow
-from kano.gtk3.buttons import KanoButton, OrangeButton
+from kano.gtk3.buttons import KanoButton
 from kano_wifi_gui.WhiteButton import WhiteButton
 from kano.gtk3.cursor import attach_cursor_events
 from kano_wifi_gui.misc import tick_icon
-from kano_wifi_gui.paths import media_dir
+from kano_wifi_gui.paths import img_dir
 from kano_wifi_gui.PasswordScreen import PasswordScreen
 from kano_wifi_gui.Template import Template
 from kano.network import is_connected, disconnect
@@ -100,7 +100,7 @@ class NetworkScreen(Gtk.Box):
         network_name = network_connection[0]
         connected = network_connection[3]
 
-        image_path = os.path.join(media_dir, "kano-wifi-gui/padlock.png")
+        image_path = os.path.join(img_dir, "padlock.png")
 
         # If the network list is empty, display a message to show it's not
         # broken
@@ -109,8 +109,7 @@ class NetworkScreen(Gtk.Box):
             no_networks_label.get_style_context().add_class('no_networks_label')
             no_networks_label.set_margin_top(80)
             network_box.pack_start(no_networks_label, False, False, 0)
-            self.show_all()
-            return
+            return network_box
 
         # Otherwise, pack the networks into the scrolled window
         for network in network_list:
@@ -258,18 +257,20 @@ class NetworkScreen(Gtk.Box):
                 "callback": Gtk.main_quit
             },
             {
-                "label": "SELECT NEW NETWORK",
+                "label": "CONNECT",
                 "type": "KanoButton",
                 "color": "green",
                 "callback": self._go_to_spinner_screen
             }
         ]
+        img_path = os.path.join(img_dir, "no-wifi.png")
         self._win.set_main_widget(
             Template(
                 title,
                 description,
                 buttons,
-                self._win.is_plug()
+                self._win.is_plug(),
+                img_path
             )
         )
 
@@ -294,9 +295,7 @@ class NetworkScreen(Gtk.Box):
         cursor hovers over it, and change the cursor to be a
         hand over it.
         '''
-        refresh_icon_filepath = os.path.join(
-            media_dir, "kano-wifi-gui/refresh.png"
-        )
+        refresh_icon_filepath = os.path.join(img_dir, "refresh.png")
         refresh_icon = Gtk.Image.new_from_file(refresh_icon_filepath)
         refresh_btn = Gtk.Button()
         refresh_btn.get_style_context().add_class("refresh_btn")
@@ -314,7 +313,7 @@ class NetworkScreen(Gtk.Box):
     def _set_refresh_hover_icon(self, widget=None, event=None):
         '''Change the refresh button's icon to the hover icon.
         '''
-        selected_path = os.path.join(media_dir, "kano-wifi-gui/rescan-hover.png")
+        selected_path = os.path.join(img_dir, "rescan-hover.png")
         image = Gtk.Image.new_from_file(selected_path)
         self._refresh_btn.set_image(image)
 
@@ -322,7 +321,7 @@ class NetworkScreen(Gtk.Box):
     def _set_refresh_normal_icon(self, widget=None, event=None):
         '''Change the refresh button's icon to the normal icon.
         '''
-        unselected_path = os.path.join(media_dir, "kano-wifi-gui/refresh.png")
+        unselected_path = os.path.join(img_dir, "refresh.png")
         image = Gtk.Image.new_from_file(unselected_path)
         self._refresh_btn.set_image(image)
 
@@ -397,13 +396,15 @@ class NetworkScreen(Gtk.Box):
                 "callback": Gtk.main_quit
             }
         ]
+        img_path = os.path.join(img_dir, "internet.png")
 
         self._win.set_main_widget(
             Template(
                 title,
                 description,
                 buttons,
-                self._win.is_plug()
+                self._win.is_plug(),
+                img_path
             )
         )
 
@@ -427,13 +428,15 @@ class NetworkScreen(Gtk.Box):
                 "callback": Gtk.main_quit
             }
         ]
+        img_path = os.path.join(img_dir, "no-wifi.png")
 
         self._win.set_main_widget(
             Template(
                 title,
                 description,
                 buttons,
-                self._win.is_plug()
+                self._win.is_plug(),
+                img_path
             )
         )
 
