@@ -257,18 +257,20 @@ class NetworkScreen(Gtk.Box):
                 "callback": Gtk.main_quit
             },
             {
-                "label": "SELECT NEW NETWORK",
+                "label": "CONNECT",
                 "type": "KanoButton",
                 "color": "green",
                 "callback": self._go_to_spinner_screen
             }
         ]
+        img_path = os.path.join(img_dir, "no-wifi.png")
         self._win.set_main_widget(
             Template(
                 title,
                 description,
                 buttons,
-                self._win.is_plug()
+                self._win.is_plug(),
+                img_path
             )
         )
 

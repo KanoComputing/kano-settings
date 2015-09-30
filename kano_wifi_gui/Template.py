@@ -27,6 +27,8 @@ class Template(Gtk.Box):
         bbox = Gtk.ButtonBox()
         bbox.set_spacing(20)
         bbox.set_layout(Gtk.ButtonBoxStyle.CENTER)
+        bbox.set_margin_right(10)
+        bbox.set_margin_left(10)
 
         for b in buttons:
             label = b["label"]

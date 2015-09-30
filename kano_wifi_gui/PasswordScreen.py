@@ -155,7 +155,7 @@ class PasswordScreen(Gtk.Box):
                 "callback": Gtk.main_quit
             }
         ]
-        img_path = os.path.join(img_dir, "ethernet.png")
+        img_path = os.path.join(img_dir, "internet.png")
 
         self._win.set_main_widget(
             Template(
