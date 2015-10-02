@@ -32,6 +32,10 @@ class PasswordScreen(Gtk.Box):
         self._win.top_bar.enable_prev()
         self._wiface = wiface
 
+        # Keep track if the user has already entered the wrong password before
+        # so that we only pack the "password incorrect" label once
+        self._wrong_password_used_before = False
+
         self._selected_network = selected_network
         network_name = self._selected_network['essid']
 
@@ -90,9 +94,12 @@ class PasswordScreen(Gtk.Box):
         Change the large padlock image on the screen, clear the password
         entry and bring the text focus to the password entry.
         '''
-        # Add more text here
-        wrong_password = self._create_wrong_password_label()
-        self._heading.container.pack_start(wrong_password, True, True, 0)
+
+        if not self._wrong_password_used_before:
+            self._wrong_password_used_before = True
+            # Add more text here
+            wrong_password = self._create_wrong_password_label()
+            self._heading.container.pack_start(wrong_password, True, True, 0)
 
         image_path = os.path.join(img_dir, "password-fail.png")
         self._padlock_image.set_from_file(image_path)
