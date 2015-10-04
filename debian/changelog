@@ -1,3 +1,15 @@
+kano-settings (2.2-2) unstable; urgency=low
+
+  * Changes on Parental Control
+
+ -- Team Kano <dev@kano.me>  Thu, 24 Sep 2015 17:22:00 +0000
+
+kano-settings (2.2-1) unstable; urgency=low
+
+  * Adding Gtk.Plug support
+
+ -- Team Kano <dev@kano.me>  Wed, 26 Aug 2015 17:22:00 +0000
+
 kano-settings (2.0-3) unstable; urgency=low
 
   * Add Midori/Youtube cookie functionality

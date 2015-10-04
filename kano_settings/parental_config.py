@@ -2,13 +2,12 @@
 
 # parental_config.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2014, 2015 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 
 from gi.repository import Gtk
 
-from kano import logging
 from kano_settings import common
 from kano_settings.templates import Template, EditableList
 from kano.gtk3.buttons import OrangeButton
@@ -26,7 +25,9 @@ class ParentalConfig(Template):
             self,
             "Parental lock",
             "Configure your parental lock settings",
-            "APPLY CHANGES"
+            "APPLY CHANGES",
+            win.is_plug(),
+            True
         )
 
         self.parental_level = Gtk.VScale(
@@ -42,19 +43,19 @@ class ParentalConfig(Template):
         self._parental_labels = [
             (
                 Gtk.Label("Low Settings"),
-                Gtk.Label("Blocks blacklisted websites")
+                Gtk.Label("Block predefined blacklisted websites and\nactivates SafeSearch on Google and Youtube")
             ),
             (
                 Gtk.Label("Medium Settings"),
-                Gtk.Label("Switch to use filtering DNS servers")
+                Gtk.Label("Use safe DNS servers to filter all traffic")
             ),
             (
                 Gtk.Label("High Settings"),
-                Gtk.Label("Enable all filters, no Google access")
+                Gtk.Label("Enable all filters and restrict search engine access")
             ),
             (
                 Gtk.Label("Ultimate Settings"),
-                Gtk.Label("Only allow access to Kano World")
+                Gtk.Label("Only allow access to Kano World activities")
             )
         ]
 
@@ -82,12 +83,19 @@ class ParentalConfig(Template):
         self.win = win
         self.win.set_main_widget(self)
 
+        self.set_prev_callback(self.go_to_advanced)
         self.win.change_prev_callback(self.win.go_to_home)
         self.win.top_bar.enable_prev()
 
         self.kano_button.connect('button-release-event', self.apply_changes)
         self.kano_button.connect('key-release-event', self.apply_changes)
         self.win.show_all()
+
+    def go_to_advanced(self, widget):
+        from kano_settings.set_advanced import SetAdvanced
+
+        self.win.clear_win()
+        SetAdvanced(self.win)
 
     def apply_changes(self, button, event):
         pw_dialog = ParentalPasswordDialog(self.win)
@@ -97,20 +105,19 @@ class ParentalConfig(Template):
         level = self.parental_level.get_value()
         set_parental_level(level)
         set_setting('Parental-level', level)
-        
+
         # track which parental control level people use
         track_data("parental-control-level-changed", {
-            "level": level    
+            "level": level
         })
 
         if level == 3.0:
             # If on the highest parental control, prompt user to relaunch
             # the browser
             kdialog = KanoDialog(
-                title_text=(
-                    "If any browsers are open, please relaunch them for "
-                    "this setting to take effect"
-                ),
+                title_text='Settings',
+                description_text=("If any browsers are open, please relaunch "
+                                  "them for this setting to take effect"),
                 parent_window=self.win
             )
             kdialog.run()
@@ -127,13 +134,17 @@ class ParentalConfig(Template):
 
     def _value_change_handler(self, gtk_range):
         for level, (title, desc) in enumerate(self._parental_labels):
-            style = title.get_style_context()
+            style_title = title.get_style_context()
+            style_desc = desc.get_style_context()
             if gtk_range.get_value() == level:
-                style.add_class('parental_activated')
+                style_title.add_class('parental_activated')
+                style_desc.add_class('parental_desc_activated')
                 self.blacklist_button.set_sensitive(not level == 3.0)
             else:
-                style.remove_class('parental_activated')
-                style.add_class('normal_label')
+                style_title.remove_class('parental_activated')
+                style_title.add_class('normal_label')
+                style_desc.remove_class('parental_desc_activated')
+                style_desc.add_class('normal_label')
 
 
 class SiteList(EditableList):
@@ -156,7 +167,9 @@ class AllowedSites(Template):
             self,
             "Allow and Block Sites",
             "Add extra sites to block or allow",
-            "APPLY CHANGES"
+            "APPLY CHANGES",
+            win.is_plug(),
+            True
         )
 
         self.win = win
@@ -191,6 +204,7 @@ class AllowedSites(Template):
 
         self.win.top_bar.enable_prev()
         self.win.change_prev_callback(self.go_to_parental_config)
+        self.set_prev_callback(self.go_to_parental_config)
 
         self.kano_button.connect('button-release-event', self.apply_changes)
         self.kano_button.connect('key-release-event', self.apply_changes)
@@ -215,7 +229,7 @@ class AllowedSites(Template):
 
         # track which parental control level people use
         track_data("parental-control-level-changed", {
-            "level": level    
+            "level": level
         })
 
         self.win.go_to_home()
@@ -249,7 +263,7 @@ class ParentalPasswordDialog(KanoDialog):
 
         fail = KanoDialog(
             title_text='Try again?',
-            description_text='The password was incorrect. Not applying changes',
+            description_text='The password was incorrect. Changes not applied',
             parent_window=self.win
         )
         fail.run()

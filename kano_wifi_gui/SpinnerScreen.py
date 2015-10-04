@@ -10,7 +10,7 @@ import os
 import threading
 from gi.repository import Gtk, GObject, GdkPixbuf
 
-from kano.gtk3.heading import Heading
+from kano_settings.components.heading import Heading
 from kano.network import IWList
 from kano_wifi_gui.paths import media_dir
 from kano_wifi_gui.NetworkScreen import NetworkScreen
@@ -30,7 +30,7 @@ class SpinnerScreen(Gtk.Box):
 
         self.show_spinner_screen()
 
-        # check the wifi networks present here
+        # check the WiFi networks present here
         t = threading.Thread(target=self.scan_networks)
         t.start()
 
@@ -44,7 +44,11 @@ class SpinnerScreen(Gtk.Box):
         self.pack_start(title.container, False, False, 0)
 
         spinner = Gtk.Image()
-        filename = os.path.join(media_dir, "kano-wifi-gui/wifi-spinner-smaller.gif")
+
+        if self.win.is_plug():
+            filename = os.path.join(media_dir, "kano-wifi-gui/loading_bar.gif")
+        else:
+            filename = os.path.join(media_dir, "kano-wifi-gui/wifi-spinner-smaller.gif")
         anim = GdkPixbuf.PixbufAnimation.new_from_file(filename)
         spinner.set_from_animation(anim)
         self.pack_start(spinner, False, False, 30)

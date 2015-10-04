@@ -49,7 +49,6 @@ class HomeScreen(Gtk.Box):
 
         self.win.show_all()
 
-
     def _generate_grid(self):
         row_count = int(math.ceil(
             float(len(self._DISPLAYED_SCREENS)) / self._col_count)

@@ -105,6 +105,11 @@
 
 .parental_activated {
     color: @kano_green;
+    font-weight:bold;
+}
+
+.parental_desc_activated {
+    color: @title_color;
 }
 
 GtkTreeView:hover {
@@ -164,4 +169,40 @@ GtkNotebook tab GtkLabel {
     color: #323232;
     /* Preferably want inactive tab to have color writing #6e6e6e
     but can't get it to work*/
+}
+
+/************************************************
+* Dark theme for Gtk.Plug
+************************************************/
+
+@define-color plug_background #44423d;
+
+.plug .parental_activated{
+    color: @kano_green;
+}
+
+.plug GtkEntry {
+    background: @plug_background;
+    color: #ffffff;
+}
+
+.plug {
+    background: @plug_background;
+}
+
+.plug GtkLabel {
+    color: #ffffff;
+}
+
+.plug GtkCheckButton {
+    background: @plug_background;
+}
+
+.plug GtkVScale.slider, .plug GtkScale.slider {
+    background: @kano_green;
+}
+
+.plug GtkVScale, .plug GtkScale {
+    background: #222200;
+    border-radius: 3px;
 }

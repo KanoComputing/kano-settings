@@ -18,11 +18,14 @@ from parental_config import ParentalConfig
 
 class SetAdvanced(Template):
     def __init__(self, win):
+
         Template.__init__(
             self,
             "Advanced options",
             "Toggle parental lock and debug mode",
-            "APPLY CHANGES"
+            "APPLY CHANGES",
+            win.is_plug(),
+            back_btn=False
         )
 
         parental_box = self.create_parental_button()
@@ -43,6 +46,8 @@ class SetAdvanced(Template):
 
         self.win.set_main_widget(self)
 
+        # Add the callbacks to the top bar and to the extra back button
+        self.set_prev_callback(self.win.go_to_home)
         self.win.change_prev_callback(self.win.go_to_home)
         self.win.top_bar.enable_prev()
 
@@ -52,9 +57,9 @@ class SetAdvanced(Template):
 
     def create_parental_button(self):
         desc = (
-            "This will:\n"
-            "- Block mature videos on YouTube\n"
-            "- Block mature websites in browser"
+            "Use different levels to:\n"
+            "- Block mature content in browser and YouTube\n"
+            "- Or restrict internet access to only Kano World activity"
         ).split('\n')
 
         self.parental_button = Gtk.CheckButton()
@@ -174,9 +179,10 @@ class SetPassword(Template):
                 self,
                 "Unlock the parental lock",
                 "Choose a password",
-                "UNLOCK"
+                "UNLOCK",
+                win.is_plug(),
+                True
             )
-
             self.entry = Gtk.Entry()
             self.entry.set_size_request(300, 44)
             self.entry.props.placeholder_text = "Enter your selected password"
@@ -190,7 +196,8 @@ class SetPassword(Template):
                 self,
                 "Set up your parental lock",
                 "Enter your password",
-                "LOCK"
+                "LOCK",
+                win.is_plug()
             )
 
             self.entry1 = Gtk.Entry()
@@ -210,6 +217,7 @@ class SetPassword(Template):
 
         self.win = win
         self.win.set_main_widget(self)
+        self.set_prev_callback(self.go_to_advanced)
         self.win.change_prev_callback(self.go_to_advanced)
         self.win.top_bar.enable_prev()
 

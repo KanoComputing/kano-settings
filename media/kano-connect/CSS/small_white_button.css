@@ -1,0 +1,18 @@
+.small_white_button {
+    background: transparent;
+    padding: 0px;
+}
+
+.small_white_button GtkLabel {
+    color: #ffffff;
+    font: Bariol Bold 13px;
+}
+
+.small_white_button GtkLabel:insensitive {
+    color: @kano_grey;
+    background: transparent;
+}
+
+.small_white_button:hover {
+    background: transparent;
+}
