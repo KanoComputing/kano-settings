@@ -70,7 +70,7 @@ def is_HDMI():
     # Find the audio setting
     amixer_string, e, rc = run_cmd(amixer_get_cmd)
     if rc:
-        logger.warning("error from amixer: {} {} {}".format(amixer_string, e, rc))
+        logger.warn("error from amixer: {} {} {}".format(amixer_string, e, rc))
 
     if amixer_string.find(hdmi_string) != -1:
         # Make sure config file is up to date
