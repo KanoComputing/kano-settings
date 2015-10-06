@@ -49,17 +49,18 @@ class Template(Gtk.Box):
                 gtk_button.connect("clicked", callback)
             bbox.pack_start(gtk_button, False, False, 0)
 
-        self.pack_start(heading.container, False, False, 10)
+        self.pack_start(heading.container, False, False, 0)
         heading.container.set_margin_right(15)
         heading.container.set_margin_left(15)
 
         if img_path:
             image = Gtk.Image.new_from_file(img_path)
-            self.pack_start(image, False, False, 20)
 
         if is_plug:
-            self.pack_end(bbox, False, False, 130)
+            self.pack_start(image, False, False, 10)
+            self.pack_start(bbox, False, False, 30)
         else:
+            self.pack_start(image, False, False, 20)
             self.pack_end(bbox, False, False, 30)
 
         self.show_all()

@@ -183,7 +183,7 @@ def get_wifi_gui(base_class):
                 }
             ]
 
-            img_path = os.path.join(img_dir, "ethernet.png")
+            img_path = os.path.join(img_dir, "ethernet-2.png")
 
             screen = Template(
                 title,
