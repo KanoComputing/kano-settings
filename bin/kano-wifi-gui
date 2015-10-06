@@ -170,13 +170,13 @@ def get_wifi_gui(base_class):
             # plugged in
             buttons = [
                 {
-                    "label": "NAH",
+                    "label": "NO",
                     "color": "red",
                     "callback": Gtk.main_quit,
                     "type": "KanoButton"
                 },
                 {
-                    "label": "YEAH!",
+                    "label": "YES",
                     "color": "green",
                     "callback": self._ethernet_next_step,
                     "type": "KanoButton"
@@ -208,13 +208,13 @@ def get_wifi_gui(base_class):
             description = "Do you want to change network?"
             buttons = [
                 {
-                    "label": "NAH",
+                    "label": "NO",
                     "color": "red",
                     "callback": Gtk.main_quit,
                     "type": "KanoButton"
                 },
                 {
-                    "label": "YEAH!",
+                    "label": "YES",
                     "color": "green",
                     "callback": self._go_to_spinner_screen,
                     "type": "KanoButton"
