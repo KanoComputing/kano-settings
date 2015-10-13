@@ -33,6 +33,11 @@ class BootConfig:
         if not self.exists():
             f = open(self.path, "w")
             print >>f, "#"  # otherwise set_value thinks the file should not be written to
+
+            # make sure changes go to disk
+            f.flush()
+            os.fsync(f.fileno())
+
             f.close()  # make file, even if empty
 
     def set_value(self, name, value=None):
@@ -63,6 +68,10 @@ class BootConfig:
 
             if not was_found and value is not None:
                 boot_config_file.write(str(name) + "=" + str(value) + "\n")
+
+            # flush changes to disk
+            boot_config_file.flush()
+            os.fsync(boot_config_file.fileno())
 
     def get_value(self, name):
         lines = read_file_contents_as_lines(self.path)
@@ -96,6 +105,10 @@ class BootConfig:
                     continue
 
                 boot_config_file.write(line + '\n')
+
+            # make sure changes go to disk
+            boot_config_file.flush()
+            os.fsync(boot_config_file.fileno())
 
     def get_comment(self, name, value):
         lines = read_file_contents_as_lines(self.path)
@@ -163,4 +176,3 @@ def safe_mode_backup_config():
 
 def safe_mode_restore_config():
     shutil.move(boot_config_safemode_backup_path, boot_config_standard_path)
-
