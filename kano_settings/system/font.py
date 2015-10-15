@@ -33,8 +33,7 @@ def change_font_size(configuration):
     pattern = font.format("[0-9]+")
     replace = font.format(size)
 
-    # Apply changes
+    # Apply changes: For jessie, this is automatically reloaded by lxsession 
     file_replace(config_file, pattern, replace)
-    # Reload lxsession
-    os.system("lxsession -r")
+
     logger.debug('set_font / change_font_size: selected_button:{}'.format(configuration))
