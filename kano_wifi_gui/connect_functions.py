@@ -13,8 +13,10 @@ from kano.logging import logger
 import threading
 
 
+# Added extra window argument
 def launch_connect_thread(wiface, ssid, passphrase, encryption,
-                          disable_widget_cb, thread_finish_cb):
+                          disable_widget_cb, thread_finish_cb,
+                          win):
 
     '''
     This disables the buttons on the application,
@@ -31,10 +33,7 @@ def launch_connect_thread(wiface, ssid, passphrase, encryption,
 
     logger.debug('Connecting to {}'.format(ssid))
 
-    # disable the buttons
-    disable_widget_cb()
-
-    # start thread
+    # Start thread
     t = threading.Thread(
         target=_connect_thread_,
         args=(wiface, ssid, passphrase, encryption, thread_finish_cb)

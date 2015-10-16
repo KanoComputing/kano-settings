@@ -15,11 +15,19 @@ from kano_wifi_gui.paths import img_dir
 from kano_settings.components.heading import Heading
 from kano.gtk3.buttons import KanoButton
 from kano_wifi_gui.Template import Template
-from kano_wifi_gui.connect_functions import launch_connect_thread
+from kano_wifi_gui.ConnectToNetwork import ConnectToNetwork
 
 
 class PasswordScreen(Gtk.Box):
-    def __init__(self, win, wiface, selected_network):
+    def __init__(
+        self,
+        win,
+        wiface,
+        network_name,
+        encryption,
+        wrong_password=False
+    ):
+
         '''
         Show the screen with the option of adding a password
         and connecting to a network
@@ -31,24 +39,31 @@ class PasswordScreen(Gtk.Box):
         self._win.set_main_widget(self)
         self._win.top_bar.enable_prev()
         self._wiface = wiface
+        self._network_name = network_name
+        self._encryption = encryption
 
         # Keep track if the user has already entered the wrong password before
         # so that we only pack the "password incorrect" label once
         self._wrong_password_used_before = False
 
-        self._selected_network = selected_network
-        network_name = self._selected_network['essid']
-
         self._heading = Heading(
             "Connect to the network",
-            network_name,
+            self._network_name,
             self._win.is_plug(),
             True
         )
-        self._heading.set_prev_callback(self._go_to_spinner_screen)
+
+        self._heading.set_prev_callback(self._refresh_networks)
         self._heading.container.set_margin_right(20)
         self._heading.container.set_margin_left(20)
-        image_path = os.path.join(img_dir, "password.png")
+
+        if wrong_password:
+            image_path = os.path.join(img_dir, "password-fail.png")
+            wrong_password = self._create_wrong_password_label()
+            self._heading.container.pack_start(wrong_password, True, True, 0)
+        else:
+            image_path = os.path.join(img_dir, "password.png")
+
         self._padlock_image = Gtk.Image.new_from_file(image_path)
 
         self._password_entry = Gtk.Entry()
@@ -60,7 +75,6 @@ class PasswordScreen(Gtk.Box):
         self._password_entry.connect("key-release-event",
                                      self._set_button_sensitive)
 
-        # TODO: fix this, this is largely repeated code
         self._connect_btn = KanoButton("CONNECT")
         self._connect_btn.connect('clicked', self._on_connect)
         self._connect_btn.set_sensitive(False)
@@ -89,24 +103,6 @@ class PasswordScreen(Gtk.Box):
 
         self.show_all()
 
-    def _wrong_password_screen(self):
-        '''
-        Change the large padlock image on the screen, clear the password
-        entry and bring the text focus to the password entry.
-        '''
-
-        if not self._wrong_password_used_before:
-            self._wrong_password_used_before = True
-            # Add more text here
-            wrong_password = self._create_wrong_password_label()
-            self._heading.container.pack_start(wrong_password, True, True, 0)
-
-        image_path = os.path.join(img_dir, "password-fail.png")
-        self._padlock_image.set_from_file(image_path)
-        self._password_entry.set_text("")
-        self._password_entry.grab_focus()
-        self.show_all()
-
     def _create_wrong_password_label(self):
         label = Gtk.Label("Password incorrect")
         label.get_style_context().add_class("wrong_password_label")
@@ -120,29 +116,23 @@ class PasswordScreen(Gtk.Box):
         visibility = self._show_password.get_active()
         self._password_entry.set_visibility(visibility)
 
-    def _go_to_spinner_screen(self, widget=None, event=None):
-        from kano_wifi_gui.SpinnerScreen import SpinnerScreen
+    def _refresh_networks(self):
+        from kano_wifi_gui.RefreshNetworks import RefreshNetworks
+        RefreshNetworks(self._win)
 
-        self._win.remove_main_widget()
-        SpinnerScreen(self._win, self._wiface)
-
-    def _on_connect(self, widget):
-        '''This is the cb attached to the button widget
-        '''
-        essid = self._selected_network['essid']
+    def _on_connect(self, network):
         passphrase = self._password_entry.get_text()
-        wpa = self._selected_network['encryption']
-        launch_connect_thread(
-            self._wiface, essid, passphrase, wpa,
-            self._disable_widgets_start_spinner,
-            self._thread_finish
+        ConnectToNetwork(
+            self._win,
+            self._network_name,
+            passphrase,
+            self._encryption
         )
 
     def _set_button_sensitive(self, widget, event):
         self._connect_btn.set_sensitive(True)
 
     def _thread_finish(self, success):
-        self._enable_widgets_stop_spinner()
 
         if success:
             self._success_screen()
