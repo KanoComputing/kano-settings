@@ -7,8 +7,8 @@
 #
 # Contains the about screen backend functions
 
-import subprocess
-from kano.utils import is_model_a, is_model_b, is_model_b_plus, is_model_2_b
+
+from kano.utils import run_cmd, is_model_a, is_model_b, is_model_b_plus, is_model_2_b
 
 
 def get_current_version():
@@ -20,13 +20,19 @@ def get_current_version():
 
 
 def get_space_available():
-    output = subprocess.check_output("df -h | grep rootfs", shell=True)
-    items = output.strip().split(' ')
-    items = filter(None, items)
-    return {
-        'used': items[1],
-        'total': items[2]
+    out, err, rc = run_cmd('df -h / | tail -1')
+    device, size, used, free, percent, mp = out.split()
+
+    info = {
+        'used': '',
+        'total': ''
     }
+
+    if not err:
+        info['used'] = used
+        info['total'] = size
+
+    return info
 
 
 def get_temperature():
