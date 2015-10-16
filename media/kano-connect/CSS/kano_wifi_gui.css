@@ -140,3 +140,8 @@ GtkScrolledWindow.border {
 .plug .network_btn.selected GtkLabel {
     color: #ffffff;
 }
+
+.plug .show_password GtkLabel {
+    color: #ffffff;
+    font: Bariol bold 13;
+}

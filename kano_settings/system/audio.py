@@ -14,7 +14,7 @@ from kano.utils import run_cmd
 from kano.logging import logger
 
 
-amixer_control = "name='Master'"
+amixer_control = "name='PCM Playback Route'"
 
 analogue_value = 1
 hdmi_value = 2
