@@ -116,7 +116,7 @@ class PasswordScreen(Gtk.Box):
         visibility = self._show_password.get_active()
         self._password_entry.set_visibility(visibility)
 
-    def _refresh_networks(self):
+    def _refresh_networks(self, widget=None):
         from kano_wifi_gui.RefreshNetworks import RefreshNetworks
         RefreshNetworks(self._win)
 

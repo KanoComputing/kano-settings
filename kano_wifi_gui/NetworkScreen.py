@@ -22,7 +22,7 @@ from kano_wifi_gui.paths import img_dir
 from kano_wifi_gui.PasswordScreen import PasswordScreen
 from kano_wifi_gui.Template import Template
 from kano.network import is_connected, disconnect
-from kano_wifi_gui.connect_functions import launch_connect_thread
+from kano_wifi_gui.ConnectToNetwork import ConnectToNetwork
 
 
 class NetworkScreen(Gtk.Box):
@@ -333,11 +333,7 @@ class NetworkScreen(Gtk.Box):
             essid = self._selected_network['essid']
             encryption = 'off'
             passphrase = ''
-            launch_connect_thread(
-                self._wiface, essid, encryption, passphrase,
-                self._disable_widgets_start_spinner,
-                self._thread_finish
-            )
+            ConnectToNetwork(self._win, essid, passphrase, encryption)
         else:
             self._go_to_password_screen()
 

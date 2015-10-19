@@ -39,7 +39,11 @@ class SpinnerScreen(Gtk.Box):
 
         self._win.set_main_widget(self)
 
-        heading = Heading(self._title, self._description)
+        heading = Heading(
+            self._title,
+            self._description,
+            self._win.is_plug()
+        )
         self.pack_start(heading.container, False, False, 0)
 
         spinner = Gtk.Image()

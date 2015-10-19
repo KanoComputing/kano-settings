@@ -67,6 +67,10 @@ GtkScrolledWindow.border {
     color: #e57273;
 }
 
+.transparent {
+    background: transparent;
+}
+
 /************************************************
 * Dark theme for Gtk.Plug
 ************************************************/
