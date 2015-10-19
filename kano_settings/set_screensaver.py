@@ -189,6 +189,7 @@ class SetScreensaverAdvanced(Template):
             max=60,
             step=1
         )
+        self.scale.get_style_context().add_class('normal_label')
         self.scale.set_size_request(200, 1)
 
         scalebox.pack_start(label, False, False, 0)
