@@ -369,18 +369,6 @@ class NetworkScreen(Gtk.Box):
 
         self._connect_btn.set_sensitive(True)
 
-    def _thread_finish(self, success):
-        '''When the thread finishes, stop the spinner, enable the buttons
-        and launch a dialog with an appropriate message depending on whether
-        the user successfully connected to the internet.
-        '''
-        self._enable_widgets_stop_spinner()
-
-        if success:
-            self._success_screen()
-        else:
-            self._fail_screen()
-
     def _disable_widgets_start_spinner(self):
         self._connect_btn.start_spinner()
         self._disable_widgets()
