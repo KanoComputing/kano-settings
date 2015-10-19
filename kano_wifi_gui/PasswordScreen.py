@@ -153,7 +153,7 @@ class PasswordScreen(Gtk.Box):
         self._win.remove_main_widget()
 
         title = "Success!"
-        description = "You\’re connected"
+        description = "You're connected"
         buttons = [
             {
                 "label": "OK",
