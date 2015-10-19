@@ -3,7 +3,7 @@
 # kano_dialog.py
 #
 # Copyright (C) 2014 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Heading used frequently around kano-settings and kano-login
 
@@ -42,11 +42,14 @@ class Heading():
                 title_hbox.pack_start(self.back_button, True, False, 0)
 
             else:
-                title_hbox.pack_start(Gtk.Label(), True, False, 0)
+                empty_button = Gtk.Button(" ")
+                empty_button.get_style_context().add_class("transparent")
+                title_hbox.pack_start(empty_button, True, True, 0)
 
         self.title = Gtk.Label(title)
         self.title.get_style_context().add_class('title')
-        self.container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        self.container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL,
+                                 spacing=10)
 
         if is_plug:
             title_hbox.pack_start(self.title, True, True, 0)

@@ -22,16 +22,16 @@ from kano_wifi_gui.paths import img_dir
 from kano_wifi_gui.PasswordScreen import PasswordScreen
 from kano_wifi_gui.Template import Template
 from kano.network import is_connected, disconnect
-from kano_wifi_gui.connect_functions import launch_connect_thread
+from kano_wifi_gui.ConnectToNetwork import ConnectToNetwork
 
 
 class NetworkScreen(Gtk.Box):
 
-    def __init__(self, win, _wiface, network_list):
+    def __init__(self, win, network_list):
 
         Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
         self._win = win
-        self._wiface = _wiface
+        self._wiface = self._win.wiface
 
         # The network that the user selects
         self._selected_network = {}
@@ -333,25 +333,22 @@ class NetworkScreen(Gtk.Box):
             essid = self._selected_network['essid']
             encryption = 'off'
             passphrase = ''
-            launch_connect_thread(
-                self._wiface, essid, encryption, passphrase,
-                self._disable_widgets_start_spinner,
-                self._thread_finish
-            )
+            ConnectToNetwork(self._win, essid, passphrase, encryption)
         else:
             self._go_to_password_screen()
 
     def _go_to_spinner_screen(self, button=None, event=None):
         '''Loading networks and showing the spinner screen.
         '''
-        from kano_wifi_gui.SpinnerScreen import SpinnerScreen
 
-        self._win.remove_main_widget()
-        SpinnerScreen(self._win, self._wiface)
+        from kano_wifi_gui.RefreshNetworks import RefreshNetworks
+        RefreshNetworks(self._win)
 
     def _go_to_password_screen(self):
         self._win.remove_main_widget()
-        PasswordScreen(self._win, self._wiface, self._selected_network)
+        PasswordScreen(self._win, self._wiface,
+                       self._selected_network["essid"],
+                       self._selected_network["encryption"])
 
     def _select_network(self, button, network, network_connection):
         for network_btn in self._network_btns:
@@ -371,74 +368,6 @@ class NetworkScreen(Gtk.Box):
             self._set_connect_btn_status(connect=True)
 
         self._connect_btn.set_sensitive(True)
-
-    def _thread_finish(self, success):
-        '''When the thread finishes, stop the spinner, enable the buttons
-        and launch a dialog with an appropriate message depending on whether
-        the user successfully connected to the internet.
-        '''
-        self._enable_widgets_stop_spinner()
-
-        if success:
-            self._success_screen()
-        else:
-            self._fail_screen()
-
-    def _success_screen(self):
-        self._win.remove_main_widget()
-        title = "Success!"
-        description = "You're connected"
-        buttons = [
-            {
-                "label": "OK",
-                "type": "KanoButton",
-                "color": "green",
-                "callback": Gtk.main_quit
-            }
-        ]
-        img_path = os.path.join(img_dir, "internet.png")
-
-        self._win.set_main_widget(
-            Template(
-                title,
-                description,
-                buttons,
-                self._win.is_plug(),
-                img_path
-            )
-        )
-
-    def _fail_screen(self):
-        self._win.remove_main_widget()
-        title = "Cannot connect!"
-        description = "Maybe the signal was too weak to connect."
-        buttons = [
-            {
-                "label": ""
-            },
-            {
-                "label": "TRY AGAIN",
-                "type": "KanoButton",
-                "color": "green",
-                "callback": self._go_to_spinner_screen
-            },
-            {
-                "label": "QUIT",
-                "type": "OrangeButton",
-                "callback": Gtk.main_quit
-            }
-        ]
-        img_path = os.path.join(img_dir, "no-wifi.png")
-
-        self._win.set_main_widget(
-            Template(
-                title,
-                description,
-                buttons,
-                self._win.is_plug(),
-                img_path
-            )
-        )
 
     def _disable_widgets_start_spinner(self):
         self._connect_btn.start_spinner()

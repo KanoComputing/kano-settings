@@ -40,10 +40,13 @@ from kano.gtk3.apply_styles import (
     apply_common_to_screen, apply_styling_to_screen
 )
 from kano_wifi_gui.SpinnerScreen import SpinnerScreen
+from kano_wifi_gui.RefreshNetworks import RefreshNetworks
 from kano_wifi_gui.paths import css_dir, img_dir
 from kano.network import is_internet, is_ethernet_plugged, is_device
 from kano_settings.get_window import get_window_class
 from kano_wifi_gui.Template import Template
+from kano_wifi_gui.NetworkScreen import NetworkScreen
+from kano.network import IWList
 
 
 def create_wifi_gui(is_plug, socket_id):
@@ -83,7 +86,7 @@ def get_wifi_gui(base_class):
             )
 
             self.top_bar = TopBar("Kano WiFi")
-            self.top_bar.set_prev_callback(self._go_to_spinner_screen)
+            self.top_bar.set_prev_callback(self.refresh_networks)
             self.top_bar.set_close_callback(Gtk.main_quit)
             self.prev_handler = None
             self.connect("delete-event", Gtk.main_quit)
@@ -117,16 +120,14 @@ def get_wifi_gui(base_class):
                 if has_internet:
                     self._you_have_internet_screen(self.wiface)
                 else:
-                    # The spinner screen takes user through to the
-                    # SpinnerScreen
-                    self._go_to_spinner_screen()
+                    # Refresh the networks list
+                    self.refresh_networks()
 
             else:
                 self._plug_in_wifi_dongle()
 
-        def _go_to_spinner_screen(self, widget=None, event=None):
-            self.remove_main_widget()
-            SpinnerScreen(self, self.wiface)
+        def refresh_networks(self, widget=None, event=None):
+            RefreshNetworks(self)
 
         def _plug_in_wifi_dongle(self):
             self.remove_main_widget()
@@ -198,7 +199,7 @@ def get_wifi_gui(base_class):
         def _ethernet_next_step(self, widget=None):
             dongle_is_plugged_in = is_device(self.wiface)
             if dongle_is_plugged_in:
-                self._go_to_spinner_screen()
+                self.refresh_networks()
             else:
                 self._plug_in_wifi_dongle()
 
@@ -216,7 +217,7 @@ def get_wifi_gui(base_class):
                 {
                     "label": "YES",
                     "color": "green",
-                    "callback": self._go_to_spinner_screen,
+                    "callback": self.refresh_networks,
                     "type": "KanoButton"
                 }
             ]
@@ -234,7 +235,7 @@ def get_wifi_gui(base_class):
 
         def _decide(self):
             if is_device(self.wiface):
-                self._go_to_spinner_screen()
+                self.refresh_networks()
             else:
                 self._plug_in_wifi_dongle()
 
