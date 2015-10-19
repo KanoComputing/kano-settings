@@ -177,8 +177,8 @@ class SetPassword(Template):
         if self.parental_enabled:
             Template.__init__(
                 self,
-                "Unlock the parental lock",
-                "Choose a password",
+                "Unlock parental lock",
+                "Enter your password",
                 "UNLOCK",
                 win.is_plug(),
                 True
@@ -194,8 +194,8 @@ class SetPassword(Template):
         else:
             Template.__init__(
                 self,
-                "Set up your parental lock",
-                "Enter your password",
+                "Set up parental lock",
+                "Choose a password",
                 "LOCK",
                 win.is_plug()
             )
