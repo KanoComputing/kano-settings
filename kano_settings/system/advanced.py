@@ -15,7 +15,6 @@ import subprocess
 import signal
 import urllib2
 from bs4 import BeautifulSoup
-import pycountry
 import gzip
 import re
 
@@ -208,6 +207,8 @@ def add_safesearch_blacklist(hosts):
     Prevents surfing to generic search engine sites by adding them to the blacklist
     '''
 
+    # import pycountry here as it takes a long time to import. 
+    import pycountry
     logger.debug('Applying safesearch settings')
     # Block search sites
     search_sites = [
