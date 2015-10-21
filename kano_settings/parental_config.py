@@ -190,14 +190,17 @@ class AllowedSites(Template):
         grid = Gtk.Grid()
         grid.set_column_spacing(40)
 
-        grid.attach(
-            Gtk.Label("Add extra sites to block"), 0, 0, 1, 1)
+        add_label = Gtk.Label("Add extra sites to block")
+        add_label.get_style_context().add_class('normal_label')
+        grid.attach(add_label, 0, 0, 1, 1)
         grid.attach(self.blacklist, 0, 1, 1, 1)
-        grid.attach(
-            Gtk.Label("Something blocked that shouldn't be?"), 1, 0, 1, 1)
-        grid.attach(self.whitelist, 1, 1, 1, 1)
-        self.box.pack_start(grid, False, False, 0)
 
+        remove_label = Gtk.Label("Something blocked that shouldn't be?")
+        remove_label.get_style_context().add_class('normal_label')
+        grid.attach(remove_label, 1, 0, 1, 1)
+        grid.attach(self.whitelist, 1, 1, 1, 1)
+
+        self.box.pack_start(grid, False, False, 0)
         self.box.pack_start(Gtk.Label(''), False, False, 0)
 
         self.win.set_main_widget(self)
