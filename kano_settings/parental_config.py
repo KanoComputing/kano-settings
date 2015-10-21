@@ -154,7 +154,8 @@ class SiteList(EditableList):
 
     @staticmethod
     def _sanitise_site(site):
-        return site.replace(' ', '').lstrip('www.')
+        site = site.replace(' ', '').lstrip('www.')
+        return site.split('/', 1)[0]
 
     def _item_edited_handler(self, cellrenderertext, path, new_text):
         site = self._sanitise_site(new_text)
