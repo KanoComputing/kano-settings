@@ -18,14 +18,14 @@ from kano_settings.set_screensaver import SetScreensaver
 from kano_settings.system.wallpaper import change_wallpaper
 
 
-class SetAppearance(Gtk.Notebook):
+class SetStyle(Gtk.Notebook):
 
     def __init__(self, win):
 
         Gtk.Notebook.__init__(self)
 
         background = Gtk.EventBox()
-        background.get_style_context().add_class('set_appearance_window')
+        background.get_style_context().add_class('set_style_window')
         background.add(self)
 
         self.win = win

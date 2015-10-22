@@ -140,7 +140,7 @@ GtkVScale.slider, GtkScale.slider {
     color: #333333;
 }
 
-.set_appearance_window {
+.set_style_window {
     background-color: #e1e1e1;
 }
 
