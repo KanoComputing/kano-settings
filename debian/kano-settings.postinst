@@ -9,8 +9,9 @@
 TMP_FILE=/tmp/kano-settings_conf
 rclocal_backup="/etc/rc.local.backup"
 
-systemd_fsck="/lib/systemd/system/systemd-fsck-root.service"
-
+systemd_fsck_root="/lib/systemd/system/systemd-fsck-root.service"
+systemd_fsck_other="/lib/systemd/system/systemd-fsck@.service"
+fsck_sed='s/^StandardOutput=journal+console/StandardOutput\=journal/g'
 case "$1" in
     configure)
 
@@ -58,8 +59,12 @@ case "$1" in
 	python -c "from kano_settings.system.advanced import set_hostname_postinst; set_hostname_postinst()"
 
         # On Jessie, tell systemd.fsck service to send messages to journal only (no console)
-        if [ -f "$systemd_fsck" ]; then
-            sed -i 's/^StandardOutput=journal+console/StandardOutput\=journal/g' $systemd_fsck
+        if [ -f "$systemd_fsck_root" ]; then
+            sed -i $fsck_sed $systemd_fsck_root
+        fi
+
+        if [ -f "$systemd_fsck_other" ]; then
+            sed -i $fsck_sed $systemd_fsck_other
         fi
 
         ;;
