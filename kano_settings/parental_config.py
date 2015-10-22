@@ -6,6 +6,9 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 
+
+from urlparse import urlparse
+
 from gi.repository import Gtk
 
 from kano_settings import common
@@ -153,9 +156,19 @@ class SiteList(EditableList):
         EditableList.__init__(self, size_x=size_x, size_y=size_y)
 
     @staticmethod
-    def _sanitise_site(site):
-        site = site.replace(' ', '').lstrip('www.')
-        return site.split('/', 1)[0]
+    def _sanitise_site(url):
+        parse = urlparse(url)
+
+        # enforcing some standards (e.g. http://)
+        if parse.scheme == '' or parse.netloc == '':
+            return None
+
+        # removing the leading 'www.'
+        netloc = parse.netloc
+        if netloc.startswith('www.'):
+            netloc = netloc.split('.', 1)[1]
+
+        return netloc.lower()
 
     def _item_edited_handler(self, cellrenderertext, path, new_text):
         site = self._sanitise_site(new_text)

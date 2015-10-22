@@ -8,11 +8,15 @@
 # Template container class
 #
 
+
+import os
+
 from gi.repository import Gtk
 
 from kano.gtk3.buttons import KanoButton, OrangeButton
 from kano_settings.components.heading import Heading
 from kano.gtk3.scrolled_window import ScrolledWindow
+from kano.gtk3.kano_dialog import KanoDialog
 
 
 class Template(Gtk.Box):
@@ -196,7 +200,7 @@ class EditableList(Gtk.Grid):
         row = len(self.edit_list_store) - 1
         col = self.edit_list.get_column(0)
         self.edit_list.set_cursor(row, col, start_editing=True)
-        self._set_rm_btn_state()
+        self._rm_btn.set_sensitive(False)
 
     def rm(self, button=None, event=None):
         selection = self.edit_list.get_selection()
@@ -209,17 +213,32 @@ class EditableList(Gtk.Grid):
         self._set_rm_btn_state()
 
     def _item_edited_handler(self, cellrenderertext, path, new_text):
-        selection = self.edit_list.get_selection()
-        _, selected = selection.get_selected()
+        if new_text is None:
+            # FIXME: the reason for the os.system here is that the 'edited' signal
+            # triggers on a key-pressed-event and the dialog closes on release. So
+            # you would only see the dialog while holding down the 'ENTER' key.
+            title = 'Invalid website given'
+            description = "\nWe need to make sure the website URL is valid.\n" \
+                          "Please enter the full URL as it appears in your browser.\n\n" \
+                          "Example: http://www.google.com\n"
+            buttons = "OK:red:1"
+            cmd = 'kano-dialog title="{}" description="{}" buttons="{}" no-taskbar &'.format(
+                  title, description, buttons)
+            os.system(cmd)
+            self.rm()
 
-        if new_text and new_text not in self:
-            self.edit_list_store.set_value(selected, 0, new_text)
         else:
-            row = self.edit_list_store[selected]
-            old_text = row[0]
+            selection = self.edit_list.get_selection()
+            _, selected = selection.get_selected()
 
-            if not old_text:
-                self.rm()
+            if new_text and new_text not in self:
+                self.edit_list_store.set_value(selected, 0, new_text)
+            else:
+                row = self.edit_list_store[selected]
+                old_text = row[0]
+
+                if not old_text:
+                    self.rm()
 
         self._add_btn.set_sensitive(True)
         self._set_rm_btn_state()
@@ -229,6 +248,7 @@ class EditableList(Gtk.Grid):
 
     def _item_edit_canceled(self, *_):
         self._add_btn.set_sensitive(True)
+        self.rm()
 
     def _set_rm_btn_state(self):
         state = len(self.edit_list_store) != 0
