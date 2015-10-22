@@ -12,7 +12,8 @@ import re
 import os
 import sys
 import shutil
-from kano.utils import read_file_contents_as_lines, is_number
+from kano.utils import read_file_contents_as_lines
+from kano.utils import is_number, open_locked
 from kano.logging import logger
 
 boot_config_standard_path = "/boot/config.txt"
@@ -31,7 +32,7 @@ class BootConfig:
 
     def ensure_exists(self):
         if not self.exists():
-            f = open(self.path, "w")
+            f = open_locked(self.path, "w")
             print >>f, "#"  # otherwise set_value thinks the file should not be written to
 
             # make sure changes go to disk
@@ -50,7 +51,7 @@ class BootConfig:
 
         option_re = r'^\s*#?\s*' + str(name) + r'=(.*)'
 
-        with open(self.path, "w") as boot_config_file:
+        with open_locked(self.path, "w") as boot_config_file:
             was_found = False
 
             for line in lines:
@@ -97,7 +98,7 @@ class BootConfig:
         comment_str_full = '### {}: {}'.format(name, value)
         comment_str_name = '### {}'.format(name)
 
-        with open(self.path, "w") as boot_config_file:
+        with open_locked(self.path, "w") as boot_config_file:
             boot_config_file.write(comment_str_full + '\n')
 
             for line in lines:
