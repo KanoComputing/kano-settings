@@ -178,6 +178,7 @@ if is_mode_fallback():
 # If we need to set anything to do with config.txt, reboot
 if reboot_now:
     logger.sync()
+    run_cmd('sync')
     run_cmd('reboot -f')
     sys.exit()
 
@@ -244,4 +245,5 @@ if changes:
     set_config_comment('kano_screen_used', model)
     # reboot
     logger.sync()
+    run_cmd('sync')
     run_cmd('reboot -f')
