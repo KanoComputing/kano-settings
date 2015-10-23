@@ -48,6 +48,7 @@ class Heading():
 
         self.title = Gtk.Label(title)
         self.title.get_style_context().add_class('title')
+        self.title.set_justify(Gtk.Justification.CENTER)
         self.container = Gtk.Box(orientation=Gtk.Orientation.VERTICAL,
                                  spacing=10)
 
