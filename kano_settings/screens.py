@@ -107,7 +107,7 @@ SCREENS = ScreenCollection([
     Screen('overclocking', 'Overclocking', SetOverclock, screen_no=5,
            setting_param='Overclocking'),
     Screen('account', 'Account', SetAccount, screen_no=6),
-    Screen('style', 'Style', SetStyle, screen_no=7,
+    Screen('appearance', 'Style', SetStyle, screen_no=7,
            setting_param='Wallpaper'),
     Screen('font', 'Font', SetFont, screen_no=8, setting_param='Font'),
     Screen('advanced', 'Advanced', SetAdvanced, screen_no=9),
