@@ -1,7 +1,7 @@
 /****************************************************************
  * overscan.c version 1.0.1 -- get/set overscan values on the fly
  * to use this standalone you will need to create the mailbox
- * device first. sudo mknod /dev/vcio c 100 0
+ * device first. sudo mknod /dev/vcio c 249 0
  * if used with the set_overscan.sh script this is not necessary
  ****************************************************************
  * returns 0 if successful, positive integer if failure
