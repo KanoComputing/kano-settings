@@ -1,7 +1,7 @@
 /****************************************************************
  * overscan.c version 1.0.1 -- get/set overscan values on the fly
  * to use this standalone you will need to create the mailbox
- * device first. sudo mknod /dev/mailbox c 100 0
+ * device first. sudo mknod /dev/vcio c 100 0
  * if used with the set_overscan.sh script this is not necessary
  ****************************************************************
  * returns 0 if successful, positive integer if failure
@@ -106,7 +106,7 @@ int main(int argc, char *argv[])
    int file_desc;
    unsigned coord[4];
 
-   file_desc = open("/dev/mailbox", 0);
+   file_desc = open("/dev/vcio", 0);
    if (file_desc == -1)
       exit(1);
    /* order of coords on the commasnd line/return order
