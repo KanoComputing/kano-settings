@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# set_appearence.py
+# set_style.py
 #
 # Copyright (C) 2015 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
@@ -18,14 +18,14 @@ from kano_settings.set_screensaver import SetScreensaver
 from kano_settings.system.wallpaper import change_wallpaper
 
 
-class SetAppearance(Gtk.Notebook):
+class SetStyle(Gtk.Notebook):
 
     def __init__(self, win):
 
         Gtk.Notebook.__init__(self)
 
         background = Gtk.EventBox()
-        background.get_style_context().add_class('set_appearance_window')
+        background.get_style_context().add_class('set_style_window')
         background.add(self)
 
         self.win = win

@@ -26,7 +26,7 @@ from kano_settings.set_overclock import SetOverclock
 from kano_settings.set_account import SetAccount
 from kano_settings.set_about import SetAbout
 from kano_settings.set_advanced import SetAdvanced, SetPassword
-from kano_settings.set_appearance import SetAppearance
+from kano_settings.set_style import SetStyle
 from kano_settings.set_wallpaper import FirstBootSetWallpaper
 from kano_settings.locale import LocaleConfig
 
@@ -107,7 +107,7 @@ SCREENS = ScreenCollection([
     Screen('overclocking', 'Overclocking', SetOverclock, screen_no=5,
            setting_param='Overclocking'),
     Screen('account', 'Account', SetAccount, screen_no=6),
-    Screen('appearance', 'Appearance', SetAppearance, screen_no=7,
+    Screen('appearance', 'Style', SetStyle, screen_no=7,
            setting_param='Wallpaper'),
     Screen('font', 'Font', SetFont, screen_no=8, setting_param='Font'),
     Screen('advanced', 'Advanced', SetAdvanced, screen_no=9),

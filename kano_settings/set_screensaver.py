@@ -161,7 +161,7 @@ class SetScreensaverAdvanced(Template):
         self.win = win
         self.win.set_main_widget(self)
         self.win.top_bar.enable_prev()
-        self.win.change_prev_callback(self.go_to_set_appearance)
+        self.win.change_prev_callback(self.go_to_set_style)
 
         self.kano_button.connect("button-release-event", self.apply_changes)
         self.kano_button.connect("key-release-event", self.apply_changes)
@@ -225,14 +225,14 @@ class SetScreensaverAdvanced(Template):
             # This turns off the screensaver
             set_screensaver_timeout('0')
 
-        self.go_to_set_appearance()
+        self.go_to_set_style()
 
-    def go_to_set_appearance(self, widget=None, event=None):
-        '''Go to the Set Appearance screen
+    def go_to_set_style(self, widget=None, event=None):
+        '''Go to the Set Style screen
         '''
         self.win.remove_main_widget()
-        from kano_settings.set_appearance import SetAppearance
-        SetAppearance(self.win)
+        from kano_settings.set_style import SetStyle
+        SetStyle(self.win)
 
     def show_config_on_loading_page(self):
         '''Makes the relevent widgets sensitive depending on the kdesk
