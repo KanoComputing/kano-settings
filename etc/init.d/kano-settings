@@ -14,7 +14,7 @@
 case "$1" in
     start)
         # Display a welcome message to the bootup terminal
-        echo "Kano OS is booting up... please wait a few seconds!" > /dev/tty1
+        echo "Get ready... Kano is starting up." > /dev/tty1
 
 	log_action_begin_msg "Running kano-settings-onboot"
 	/usr/bin/kano-settings-onboot
