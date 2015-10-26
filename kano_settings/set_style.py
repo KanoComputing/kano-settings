@@ -25,7 +25,6 @@ class SetStyle(Gtk.Notebook):
         Gtk.Notebook.__init__(self)
 
         background = Gtk.EventBox()
-        background.get_style_context().add_class('set_style_window')
         background.add(self)
 
         self.win = win
@@ -39,15 +38,32 @@ class SetStyle(Gtk.Notebook):
         reset_widget = SetResetDesktop(self.win)
 
         wallpaper_label = Gtk.Label('BACKGROUND')
+        wallpaper_label_ebox = Gtk.EventBox()
+        wallpaper_label_ebox.add(wallpaper_label)
+        wallpaper_label_ebox.connect("realize", self._set_cursor_to_hand_cb)
+        wallpaper_label_ebox.show_all()
+
         screensaver_label = Gtk.Label('SCREENSAVER')
+        screensaver_label_ebox = Gtk.EventBox()
+        screensaver_label_ebox.add(screensaver_label)
+        screensaver_label_ebox.connect("realize", self._set_cursor_to_hand_cb)
+        screensaver_label_ebox.show_all()
+
         general_label = Gtk.Label('GENERAL')
+        general_label_ebox = Gtk.EventBox()
+        general_label_ebox.add(general_label)
+        general_label_ebox.connect("realize", self._set_cursor_to_hand_cb)
+        general_label_ebox.show_all()
 
         # Add the screensaver and wallpaper tabs
-        self.append_page(wallpaper_widget, wallpaper_label)
-        self.append_page(screensaver_widget, screensaver_label)
-        self.append_page(reset_widget, general_label)
+        self.append_page(wallpaper_widget, wallpaper_label_ebox)
+        self.append_page(screensaver_widget, screensaver_label_ebox)
+        self.append_page(reset_widget, general_label_ebox)
 
         self.win.show_all()
+
+    def _set_cursor_to_hand_cb(self, widget, data=None):
+        widget.get_window().set_cursor(Gdk.Cursor(Gdk.CursorType.HAND1))
 
 
 from kano.gtk3.buttons import KanoButton
@@ -60,6 +76,7 @@ class SetResetDesktop(Gtk.Box):
         Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
 
         self.win = win
+        self.get_style_context().add_class('notebook_page')
 
         reset_button = KanoButton(text='RESET YOUR DESKTOP', color='orange')
         reset_button.connect('button-release-event', self.reset_button_cb)

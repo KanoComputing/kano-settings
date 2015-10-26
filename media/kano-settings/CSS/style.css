@@ -140,16 +140,21 @@ GtkVScale.slider, GtkScale.slider {
     color: #333333;
 }
 
-.set_style_window {
-    background-color: #e1e1e1;
-}
 
 GtkNotebook {
-    background-color: #fff;
+    background-color: #e3e3e3;
     -GtkNotebook-tab-overlap: -12px;
     -GtkWidget-focus-line-width: 0px;
     -GtkNotebook-initial-gap: 28px;
     padding: 0px;
+}
+
+.notebook_page {
+    background: #fff;
+}
+
+GtkNotebook.bottom {
+    background-color: #fff;
 }
 
 GtkNotebook tab:active {
@@ -160,8 +165,9 @@ GtkNotebook tab:active {
 GtkNotebook tab {
     border: none;
     background-color: #d1d1d1;
-    border-radius: 5px;
-    padding: 10px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+    padding: 12px 10px 12px 10px;
 }
 
 GtkNotebook tab GtkLabel {

@@ -38,6 +38,7 @@ class SetScreensaver(ScrolledWindowTemplate):
         )
 
         self.win = win
+        self.get_style_context().add_class('notebook_page')
 
         self.table = ScreensaverTable()
         self.orange_button.connect('button-release-event', self.go_to_advanced)

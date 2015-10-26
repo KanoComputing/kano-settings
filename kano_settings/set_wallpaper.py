@@ -30,6 +30,7 @@ class SetWallpaper(TwoButtonTemplate):
         TwoButtonTemplate.__init__(self, header, subheader, 'TRY', 'CHOOSE', buttons_shown)
 
         self.win = win
+        self.get_style_context().add_class('notebook_page')
 
         # This isn't that neccessary for this screen, but is useful for the
         # the first screen
