@@ -17,6 +17,7 @@ class Template(Gtk.Box):
 
     def __init__(self, title, description, buttons, is_plug=False, img_path=None):
         super(Template, self).__init__(orientation=Gtk.Orientation.VERTICAL)
+        self._focus_widget = None
 
         heading = Heading(
             title,
@@ -49,6 +50,9 @@ class Template(Gtk.Box):
                 gtk_button.connect("clicked", callback)
             bbox.pack_start(gtk_button, False, False, 0)
 
+            if "focus" in b:
+                self._focus_widget = gtk_button
+
         self.pack_start(heading.container, False, False, 0)
         heading.container.set_margin_right(15)
         heading.container.set_margin_left(15)
@@ -64,3 +68,7 @@ class Template(Gtk.Box):
             self.pack_end(bbox, False, False, 30)
 
         self.show_all()
+
+    def button_grab_focus(self):
+        if self._focus_widget is not None:
+            self._focus_widget.grab_focus()

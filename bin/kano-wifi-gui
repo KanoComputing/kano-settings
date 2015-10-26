@@ -141,7 +141,8 @@ def get_wifi_gui(base_class):
                     "label": "TRY AGAIN",
                     "color": "green",
                     "callback": self._launch_application,
-                    "type": "KanoButton"
+                    "type": "KanoButton",
+                    "focus": True
                 },
                 {
                     "label": "Skip",
@@ -160,6 +161,7 @@ def get_wifi_gui(base_class):
                 img_path
             )
             self.set_main_widget(screen)
+            screen.button_grab_focus()
             screen.show_all()
 
         def _you_are_connected_via_ethernet(self):
@@ -180,7 +182,8 @@ def get_wifi_gui(base_class):
                     "label": "YES",
                     "color": "green",
                     "callback": self._ethernet_next_step,
-                    "type": "KanoButton"
+                    "type": "KanoButton",
+                    "focus": True
                 }
             ]
 
@@ -194,6 +197,7 @@ def get_wifi_gui(base_class):
                 img_path
             )
             self.set_main_widget(screen)
+            screen.button_grab_focus()
             screen.show_all()
 
         def _ethernet_next_step(self, widget=None):
@@ -218,7 +222,8 @@ def get_wifi_gui(base_class):
                     "label": "YES",
                     "color": "green",
                     "callback": self.refresh_networks,
-                    "type": "KanoButton"
+                    "type": "KanoButton",
+                    "focus": True
                 }
             ]
             img_path = os.path.join(img_dir, "internet.png")
@@ -231,6 +236,7 @@ def get_wifi_gui(base_class):
                 img_path
             )
             self.set_main_widget(screen)
+            screen.button_grab_focus()
             screen.show_all()
 
         def _decide(self):
