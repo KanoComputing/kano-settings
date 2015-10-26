@@ -9,7 +9,7 @@
 # password for the network.
 
 import os
-from gi.repository import Gtk
+from gi.repository import Gtk, Gdk
 
 from kano_wifi_gui.paths import img_dir
 from kano_settings.components.heading import Heading
@@ -74,6 +74,11 @@ class PasswordScreen(Gtk.Box):
         self._password_entry.set_margin_right(60)
         self._password_entry.connect("key-release-event",
                                      self._set_button_sensitive)
+        # If Enter key is pressed on the password entry, we want to act as
+        # though the connect_btn was clicked
+        self._password_entry.connect(
+            "key-release-event", self._on_connect_key_wrapper
+        )
 
         self._connect_btn = KanoButton("CONNECT")
         self._connect_btn.connect('clicked', self._on_connect)
@@ -120,7 +125,11 @@ class PasswordScreen(Gtk.Box):
         from kano_wifi_gui.RefreshNetworks import RefreshNetworks
         RefreshNetworks(self._win)
 
-    def _on_connect(self, network):
+    def _on_connect_key_wrapper(self, widget, event):
+        if event.keyval == Gdk.KEY_Return:
+            self._on_connect()
+
+    def _on_connect(self, widget=None):
         passphrase = self._password_entry.get_text()
         ConnectToNetwork(
             self._win,
