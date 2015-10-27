@@ -179,7 +179,7 @@ if is_mode_fallback():
 if reboot_now:
     logger.sync()
     run_cmd('sync')
-    run_cmd('reboot -f')
+    run_cmd('systemctl reboot --force')
     sys.exit()
 
 
@@ -246,4 +246,4 @@ if changes:
     # reboot
     logger.sync()
     run_cmd('sync')
-    run_cmd('reboot -f')
+    run_cmd('systemctl reboot --force')
