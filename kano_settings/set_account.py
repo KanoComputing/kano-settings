@@ -16,7 +16,6 @@ import kano.gtk3.kano_dialog as kano_dialog
 from kano.gtk3.buttons import KanoButton
 from kano.gtk3.labelled_entries import LabelledEntries
 
-from kano.utils import ensure_dir
 import kano_settings.common as common
 from kano_settings.templates import Template
 
@@ -71,7 +70,7 @@ class SetAccount(Gtk.Box):
         # Check if we already scheduled an account add or remove
         # We import kano-init locally to avoid circular dependency
         # the packages.
-	try:
+        try:
             from kano_init.utils import is_any_task_scheduled
             if is_any_task_scheduled():
                 self.disable_buttons()
@@ -118,7 +117,6 @@ class SetAccount(Gtk.Box):
             kdialog.run()
             self.disable_buttons()
 
-
     # Gets executed when REMOVE button is clicked
     def remove_account_dialog(self, widget=None, event=None):
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
@@ -153,7 +151,6 @@ class SetAccount(Gtk.Box):
                     )
                     return
 
-
                 kdialog = kano_dialog.KanoDialog(
                     "To finish removing this account, you need to reboot",
                     "Do you want to reboot?",
@@ -173,7 +170,7 @@ class SetAccount(Gtk.Box):
                 )
                 do_reboot_now = kdialog.run()
                 if do_reboot_now:
-                    os.system("sudo reboot")
+                    os.system("sudo systemctl reboot")
 
     # Disables both buttons and makes the temp 'flag' folder
     def disable_buttons(self):

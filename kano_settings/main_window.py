@@ -143,7 +143,7 @@ def get_main_window(base_class):
                 kdialog.set_action_background("grey")
                 do_reboot_now = kdialog.run()
                 if do_reboot_now:
-                    os.system("sudo reboot")
+                    os.system("sudo systemctl reboot")
 
             self._trigger_tracking_event()
 
