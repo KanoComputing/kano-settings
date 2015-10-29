@@ -298,7 +298,9 @@ def parse_edid(edid_txt):
 
         # model name
         elif 'monitor name is' in l:
-            edid['model'] = l.split('monitor name is')[1].strip()
+            # Some displays return garbage, on old firmwares it can also be random.
+            model=l.split('monitor name is')[1].strip()
+            edid['model'] = model.decode('ascii', 'ignore')
 
         # preferred
         elif 'found preferred' in l:
