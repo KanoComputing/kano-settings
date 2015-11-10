@@ -41,6 +41,32 @@ class BootConfig:
 
             f.close()  # make file, even if empty
 
+    def remove_noobs_defaults(self):
+        """
+        Remove the config entries added by Noobs,
+        by removing all the lines after and including
+        noobs' sentinel
+        
+        """
+        lines = read_file_contents_as_lines(self.path)
+        noobs_line = "# NOOBS Auto-generated Settings:"
+        if noobs_line in lines:
+            with open_locked(self.path, "w") as boot_config_file:
+                
+                for line in lines:
+                    if line == noobs_line:
+                        break
+                    
+                    boot_config_file.write(line+ "\n")
+
+                # flush changes to disk
+                boot_config_file.flush()
+                os.fsync(boot_config_file.fileno())
+
+            return True
+        return False
+        
+
     def set_value(self, name, value=None):
         # if the value argument is None, the option will be commented out
         lines = read_file_contents_as_lines(self.path)
@@ -155,6 +181,9 @@ def get_config_comment(name, value):
 
 def has_config_comment(name):
     return real_config.has_comment(name)
+
+def remove_noobs_defaults():
+    return real_config.remove_noobs_defaults()
 
 
 def enforce_pi():
