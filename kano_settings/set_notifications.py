@@ -8,9 +8,14 @@
 # Controls the UI of the notification setting
 # Check result with display_generic_notification function in kano.notifications
 
-from gi.repository import Gdk
-from kano_settings.templates import RadioButtonTemplate
+
+from gi.repository import Gdk, Gtk
+
 import kano.notifications as notifications
+from kano.utils import run_bg, is_model_2_b
+
+from kano_settings.templates import RadioButtonTemplate
+from kano_settings.config_file import get_setting, set_setting
 
 
 class SetNotifications(RadioButtonTemplate):
@@ -36,10 +41,19 @@ class SetNotifications(RadioButtonTemplate):
         self.enable_all_radiobutton = self.get_button(0)
         self.disable_all_radiobutton = self.get_button(1)
         self.disable_world_radiobutton = self.get_button(2)
-        self.show_configuration()
+
+        if is_model_2_b() is True:
+            self.cpu_monitor_checkbox = Gtk.CheckButton()
+
+            self.buttons.append(self.cpu_monitor_checkbox)
+            self.label_button_and_pack(
+                self.cpu_monitor_checkbox,
+                'Enable LED Speaker CPU Animation', ''
+            )
 
         self.kano_button.connect("button-release-event", self.apply_changes)
 
+        self.show_configuration()
         self.win.show_all()
 
     def configure_all_notifications(self):
@@ -53,6 +67,14 @@ class SetNotifications(RadioButtonTemplate):
             notifications.disallow_world_notifications()
         else:
             notifications.allow_world_notifications()
+
+    def configure_cpu_monitor_animation(self, checkbox=None):
+        set_setting('LED-Speaker-anim', self.cpu_monitor_checkbox.get_active())
+
+        if self.cpu_monitor_checkbox.get_active() is True:
+            run_bg('kano-speakerleds cpu-monitor start', unsudo=True)
+        else:
+            run_bg('kano-speakerleds cpu-monitor stop', unsudo=True)
 
     def show_configuration(self):
         enable_all = False
@@ -69,9 +91,11 @@ class SetNotifications(RadioButtonTemplate):
         self.disable_world_radiobutton.set_active(disable_world)
         self.enable_all_radiobutton.set_active(enable_all)
         self.disable_all_radiobutton.set_active(disable_all)
+        self.cpu_monitor_checkbox.set_active(get_setting('LED-Speaker-anim'))
 
     def apply_changes(self, widget, event):
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
             self.configure_all_notifications()
             self.configure_world_notifications()
+            self.configure_cpu_monitor_animation()
             self.win.go_to_home()

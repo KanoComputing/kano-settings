@@ -43,7 +43,8 @@ defaults = {
         'Font': 'Normal',
         'Wallpaper': 'kanux-background',
         'Parental-level': 0,
-        'Locale': 'en_US'
+        'Locale': 'en_US',
+        'LED-Speaker-anim': False
     },
     'pi2': {
         'Keyboard-continent-index': 1,
@@ -60,7 +61,8 @@ defaults = {
         'Font': 'Normal',
         'Wallpaper': 'kanux-background',
         'Parental-level': 0,
-        'Locale': 'en_US'
+        'Locale': 'en_US',
+        'LED-Speaker-anim': True
     }
 }
 
