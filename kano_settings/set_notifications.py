@@ -69,11 +69,14 @@ class SetNotifications(RadioButtonTemplate):
             notifications.allow_world_notifications()
 
     def configure_cpu_monitor_animation(self, checkbox=None):
-        set_setting('LED-Speaker-anim', self.cpu_monitor_checkbox.get_active())
+        is_ticked = self.cpu_monitor_checkbox.get_active()
+        was_enabled = get_setting('LED-Speaker-anim')
 
-        if self.cpu_monitor_checkbox.get_active() is True:
+        if is_ticked and not was_enabled:
+            set_setting('LED-Speaker-anim', is_ticked)
             run_bg('kano-speakerleds cpu-monitor start', unsudo=True)
-        else:
+        elif was_enabled and not is_ticked:
+            set_setting('LED-Speaker-anim', is_ticked)
             run_bg('kano-speakerleds cpu-monitor stop', unsudo=True)
 
     def show_configuration(self):
