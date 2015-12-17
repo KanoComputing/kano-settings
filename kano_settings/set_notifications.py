@@ -42,7 +42,7 @@ class SetNotifications(RadioButtonTemplate):
         self.disable_all_radiobutton = self.get_button(1)
         self.disable_world_radiobutton = self.get_button(2)
 
-        if is_model_2_b() is True:
+        if is_model_2_b():
             self.cpu_monitor_checkbox = Gtk.CheckButton()
 
             self.buttons.append(self.cpu_monitor_checkbox)
