@@ -55,4 +55,4 @@ os.close(dirfd)
 
 os.system('sync')
 
-os.system(' '.join(cmd_plus_args))
+os.system(cmd_plus_args)
