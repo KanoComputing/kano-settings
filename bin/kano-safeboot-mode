@@ -50,6 +50,5 @@ if safe_boot_requested() and not is_safe_boot():
 
     # Trigger a reboot
     logger.sync()
-    run_cmd('sync')
-    run_cmd('systemctl reboot --force')
+    run_cmd('kano-checked-reboot safeboot systemctl reboot --force')
     sys.exit()

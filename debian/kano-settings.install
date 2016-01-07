@@ -5,6 +5,7 @@ bin/kano-settings-onboot /usr/bin
 bin/kano-safeboot-mode /usr/bin
 bin/regenerate-ssh-keys /usr/bin
 bin/start-sentry-server /usr/bin
+bin/kano-checked-reboot /usr/bin
 
 kano_settings/* /usr/lib/python2.7/dist-packages/kano_settings
 media/kano-settings/* /usr/share/kano-settings/media

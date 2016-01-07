@@ -1,0 +1,35 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:         kano-reboot-clear
+# Required-Start:   $local_fs $all kano-settings kano-safeboot-mode
+# Required-Stop:
+# X-Start-Before:   
+# Default-Start:    2 3 4 5
+# Default-Stop:
+### END INIT INFO
+
+. /lib/lsb/init-functions
+
+case "$1" in
+    start)
+        # Display a welcome message to the bootup terminal
+	log_action_begin_msg "Running kano-reboot-clear"
+	echo "kano-reboot-clear starting" >/dev/tty1
+	sleep 333
+	echo "kano-reboot-clear starting" >/dev/tty1 
+	rm -rf /boot/kano_reboots	
+	log_action_end_msg $?
+	;;
+    stop)
+	;;
+    restart|reload|force-reload|status)
+        echo "Error: argument '$1' not supported" >&2
+        exit 3
+	;;
+    *)
+      echo "Usage: kano-reboot-clear [start|stop]" >&2
+      exit 3
+      ;;
+esac
+
