@@ -1,3 +1,9 @@
+kano-settings (2.2-3) unstable; urgency=low
+
+  * Add kano-checked-reboot
+
+ -- Team Kano <dev@kano.me>  Thu, 07 Jan 2016 19:18:00 +0000
+
 kano-settings (2.2-2) unstable; urgency=low
 
   * Changes on Parental Control
