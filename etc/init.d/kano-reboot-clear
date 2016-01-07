@@ -2,7 +2,7 @@
 
 ### BEGIN INIT INFO
 # Provides:         kano-reboot-clear
-# Required-Start:   $local_fs $all kano-settings kano-safeboot-mode
+# Required-Start:   $local_fs $all kano-settings kano-safeboot
 # Required-Stop:
 # X-Start-Before:   
 # Default-Start:    2 3 4 5
