@@ -25,9 +25,7 @@ case "$1" in
         # Display a welcome message to the bootup terminal
 	log_action_begin_msg "Running kano-reboot-clear"
 	(
-	    echo "kano-reboot-clear starting" >/dev/tty1
 	    sleep 333 ;	rm -rf /boot/kano_reboots	
-	    echo "kano-reboot-clear done" >/dev/tty1
 	) & 
 	log_action_end_msg $?
 	;;
