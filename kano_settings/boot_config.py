@@ -26,9 +26,17 @@ boot_config_safemode_backup_path = '/boot/config.txt.orig'
 class BootConfig:
     def __init__(self, path=boot_config_standard_path):
         self.path = path
+        self.dry_run = False
 
     def exists(self):
         return os.path.exists(self.path)
+
+    def set_dry_run(self):
+        """
+        Set dry run mode. If set, no actual changes will be written to
+        disk; instead more logging will happen.
+        """
+        self.dry_run = True
 
     def ensure_exists(self):
         if not self.exists():
@@ -48,6 +56,10 @@ class BootConfig:
         noobs' sentinel
         
         """
+        if self.dry_run:
+            logger.debug("Removing Noobs default values")
+            return
+
         lines = read_file_contents_as_lines(self.path)
         noobs_line = "# NOOBS Auto-generated Settings:"
         if noobs_line in lines:
@@ -76,6 +88,10 @@ class BootConfig:
         logger.info('writing value to {} {} {}'.format(self.path, name, value))
 
         option_re = r'^\s*#?\s*' + str(name) + r'=(.*)'
+
+        if self.dry_run:
+            logger.debug("Setting config value {} in {} to {}".format(name, self.path, value))
+            return
 
         with open_locked(self.path, "w") as boot_config_file:
             was_found = False
@@ -124,6 +140,10 @@ class BootConfig:
         comment_str_full = '### {}: {}'.format(name, value)
         comment_str_name = '### {}'.format(name)
 
+        if self.dry_run:
+            logger.debug("setting comment {} in {} to {}".format(name, self.path, value))
+            return
+
         with open_locked(self.path, "w") as boot_config_file:
             boot_config_file.write(comment_str_full + '\n')
 
@@ -161,6 +181,15 @@ class BootConfig:
 real_config = BootConfig()
 pi1_backup_config = BootConfig(boot_config_pi1_backup_path)
 pi2_backup_config = BootConfig(boot_config_pi2_backup_path)
+
+def set_dry_run():
+    """
+    Set dry run on all config files.
+    """
+    real_config.set_dry_run()
+    pi1_backup_config.set_dry_run()
+    pi2_backup_config.set_dry_run()
+    
 
 
 def set_config_value(name, value=None):

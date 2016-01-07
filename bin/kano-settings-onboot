@@ -24,12 +24,19 @@ from kano_settings.system.display import get_status, get_model, set_hdmi_mode, \
 from kano_settings.boot_config import set_config_value, set_config_comment, \
     get_config_comment, get_config_value, has_config_comment, \
     enforce_pi, is_safe_boot, safe_mode_backup_config, \
-    safe_mode_restore_config, remove_noobs_defaults
+    safe_mode_restore_config, remove_noobs_defaults, set_dry_run
 from kano_settings.system.audio import is_HDMI, set_to_HDMI
 from kano_settings.system.overclock_chip_support import check_clock_config_matches_chip
 
 logger.force_log_level('info')
 
+dry_run = '--dry-run' in sys.argv
+if dry_run:
+    print "dry_run_mode"
+    set_dry_run()
+    logger.force_log_level('debug')
+    logger.force_debug_level('debug')
+    
 
 screen_log_path = '/boot/screen.log'
 
@@ -185,9 +192,12 @@ if is_mode_fallback():
 
 # If we need to set anything to do with config.txt, reboot
 if reboot_now:
-    logger.sync()
-    run_cmd('sync')
-    run_cmd('systemctl reboot --force')
+    if dry_run:
+        logger.debug("rebooting")
+    else:
+        logger.sync()
+        run_cmd('sync')
+        run_cmd('systemctl reboot --force')
     sys.exit()
 
 
@@ -252,6 +262,9 @@ if changes:
     # write comment to config
     set_config_comment('kano_screen_used', model)
     # reboot
-    logger.sync()
-    run_cmd('sync')
-    run_cmd('systemctl reboot --force')
+    if dry_run:
+        logger.debug("rebooting due to config changes")
+    else:
+        logger.sync()
+        run_cmd('sync')
+        run_cmd('systemctl reboot --force')
