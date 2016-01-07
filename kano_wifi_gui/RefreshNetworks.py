@@ -7,8 +7,10 @@
 #
 
 from gi.repository import GObject
-from kano_wifi_gui.NetworkScreen import NetworkScreen
+
 from kano.network import IWList
+
+from kano_wifi_gui.NetworkScreen import NetworkScreen
 from kano_wifi_gui.SpinnerScreen import SpinnerScreen
 
 

@@ -8,9 +8,11 @@
 # Create a white version of the orange link found in toolset
 
 import os
+
 from kano.gtk3.buttons import GenericButton
-from kano_wifi_gui.paths import css_dir
 from kano.gtk3.apply_styles import apply_styling_to_widget
+
+from kano_wifi_gui.paths import css_dir
 
 
 class WhiteButton(GenericButton):

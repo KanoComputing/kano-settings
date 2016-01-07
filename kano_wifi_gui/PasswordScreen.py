@@ -11,9 +11,10 @@
 import os
 from gi.repository import Gtk, Gdk
 
-from kano_wifi_gui.paths import img_dir
 from kano_settings.components.heading import Heading
 from kano.gtk3.buttons import KanoButton
+
+from kano_wifi_gui.paths import img_dir
 from kano_wifi_gui.Template import Template
 from kano_wifi_gui.ConnectToNetwork import ConnectToNetwork
 

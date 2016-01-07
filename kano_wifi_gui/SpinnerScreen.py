@@ -12,6 +12,7 @@ import threading
 from gi.repository import Gtk, GdkPixbuf
 
 from kano_settings.components.heading import Heading
+
 from kano_wifi_gui.paths import media_dir
 
 

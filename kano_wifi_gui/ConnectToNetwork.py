@@ -6,15 +6,16 @@
 # Show spinner screen while connecting to a network
 #
 
-from gi.repository import GObject
-from kano_wifi_gui.SpinnerScreen import SpinnerScreen
+import os
 import threading
+from gi.repository import Gtk, GObject
+
 from kano.logging import logger
 from kano.network import KwifiCache, connect
-from kano_wifi_gui.Template import Template
-from gi.repository import Gtk
-import os
+
 from kano_wifi_gui.paths import img_dir
+from kano_wifi_gui.SpinnerScreen import SpinnerScreen
+from kano_wifi_gui.Template import Template
 
 
 class ConnectToNetwork():
