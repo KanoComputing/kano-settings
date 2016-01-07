@@ -9,6 +9,15 @@
 # Default-Stop:
 ### END INIT INFO
 
+
+# This file clears reboot sentinels, which are used by kano-checked-reboot
+# to avoid indefinite rebooting.
+# The idea of this script is to clear the sentinels only when it is reasonly clear that we have
+# bootted stably.
+#
+# Frustratingly systemd ignores the $all dependency, so we additionally depend on all
+# scripts we know contain reboot commands and then wait for an additional period to be safe.
+
 . /lib/lsb/init-functions
 
 case "$1" in

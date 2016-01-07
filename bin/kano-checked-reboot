@@ -10,7 +10,7 @@
 # Usage: kano-checked-reboot <why> <cmd> <cmd_args...>
 
 # The first argument is written to a randomly named sentinel file.
-# The remaining arguemnts are executed as a command.
+# The remaining arguments are executed as a command.
 
 import os
 import sys
@@ -26,7 +26,7 @@ files = os.listdir(REBOOT_DIR)
 
 if len(files) > REBOOT_MAX:
     from kano.logging import logger
-    logger.error("More than 3 reboots!")
+    logger.error("More than {} reboots!".format(REBOOT_MAX))
     exit(1)
 
 # any extra args are passed to
