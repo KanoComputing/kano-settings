@@ -15,13 +15,14 @@ from gi.repository import Gtk, GObject, Gdk
 from kano_settings.components.heading import Heading
 from kano.gtk3.scrolled_window import ScrolledWindow
 from kano.gtk3.buttons import KanoButton
-from kano_wifi_gui.WhiteButton import WhiteButton
 from kano.gtk3.cursor import attach_cursor_events
+from kano.network import is_connected, disconnect
+
+from kano_wifi_gui.WhiteButton import WhiteButton
 from kano_wifi_gui.misc import tick_icon
 from kano_wifi_gui.paths import img_dir
 from kano_wifi_gui.PasswordScreen import PasswordScreen
 from kano_wifi_gui.Template import Template
-from kano.network import is_connected, disconnect
 from kano_wifi_gui.ConnectToNetwork import ConnectToNetwork
 
 
