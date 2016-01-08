@@ -196,8 +196,7 @@ if reboot_now:
         logger.debug("rebooting")
     else:
         logger.sync()
-        run_cmd('sync')
-        run_cmd('systemctl reboot --force')
+        run_cmd('kano-checked-reboot reboot_now systemctl reboot --force')
     sys.exit()
 
 
@@ -266,5 +265,4 @@ if changes:
         logger.debug("rebooting due to config changes")
     else:
         logger.sync()
-        run_cmd('sync')
-        run_cmd('systemctl reboot --force')
+        run_cmd('kano-checked-reboot changes systemctl reboot --force')

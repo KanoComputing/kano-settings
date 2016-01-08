@@ -1,0 +1,58 @@
+#!/usr/bin/python
+# kano-check-reboot
+#
+# Copyright (C) 2014, 2015 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+# Wrapper for reboot. Will refuse to reboot more than REBOOT_MAX times
+# between calls to kano-reboot-clear
+
+# Usage: kano-checked-reboot <why> <cmd> <cmd_args...>
+
+# The first argument is written to a randomly named sentinel file.
+# The remaining arguments are executed as a command.
+
+import os
+import sys
+import tempfile
+
+REBOOT_DIR = '/boot/kano_reboots'
+REBOOT_MAX = 3
+
+# Ensure reboot directory exists
+os.system('mkdir -p ' + REBOOT_DIR)
+
+files = os.listdir(REBOOT_DIR)
+
+if len(files) > REBOOT_MAX:
+    from kano.logging import logger
+    logger.error("More than {} reboots!".format(REBOOT_MAX))
+    exit(1)
+
+# any extra args are passed to
+cmd_plus_args = ' '.join(sys.argv[2:])
+
+why = sys.argv[1]
+
+if len(sys.argv) < 3:
+    from kano.logging import logger
+    logger.error("No reboot command passed!")
+    exit(1)
+
+
+# Add a file to count another reboot
+(fd, name) = tempfile.mkstemp(dir=REBOOT_DIR)
+
+# Ensure that the file is written to disk, and appears in
+# the correct directory, before the reboot.
+os.write(fd, why)
+os.fsync(fd)
+os.close(fd)
+
+dirfd = os.open(REBOOT_DIR, os.O_DIRECTORY)
+os.fsync(dirfd)
+os.close(dirfd)
+
+os.system('sync')
+
+os.system(cmd_plus_args)
