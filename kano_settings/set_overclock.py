@@ -9,7 +9,7 @@
 from gi.repository import Gdk
 from kano_settings.templates import RadioButtonTemplate
 import kano_settings.common as common
-from kano_settings.boot_config import get_config_value
+from kano_settings.boot_config import get_config_value, end_config_transaction
 from kano_settings.system.overclock import CLOCK_MODES, change_overclock_value, is_dangerous_overclock_value
 from kano.utils import is_model_2_b
 from kano.gtk3.kano_dialog import KanoDialog
@@ -18,7 +18,6 @@ from kano.gtk3.kano_dialog import KanoDialog
 class SetOverclock(RadioButtonTemplate):
     selected_button = 0
     initial_button = 0
-    boot_config_file = "/boot/config.txt"
 
     def __init__(self, win):
         self.is_pi2 = is_model_2_b()
@@ -99,6 +98,7 @@ class SetOverclock(RadioButtonTemplate):
                 change_overclock_value(config, self.is_pi2)
 
                 # Tell user to reboot to see changes
+                end_config_transaction()
                 common.need_reboot = True
 
                 self.win.go_to_home()

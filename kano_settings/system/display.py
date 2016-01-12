@@ -12,7 +12,7 @@ import os
 import re
 import subprocess
 import time
-from kano_settings.boot_config import set_config_value, get_config_value
+from kano_settings.boot_config import set_config_value, get_config_value, end_config_transaction
 from kano.utils import run_cmd, delete_file
 from kano.logging import logger
 
@@ -22,6 +22,8 @@ xrefresh_path = '/usr/bin/xrefresh'
 
 
 def switch_display_safe_mode():
+    # NB this function appears to be unused
+
     # Finds the first available display resolution that is safe
     # and switches to this mode immediately
     safe_resolution = '1024x768'
@@ -238,13 +240,16 @@ def write_overscan_values(overscan_values):
     set_config_value('overscan_bottom', overscan_values['bottom'])
     set_config_value('overscan_left', overscan_values['left'])
     set_config_value('overscan_right', overscan_values['right'])
+    end_config_transaction()
 
 
 def is_overscan():
+    # This completes a transaction to avoid kano-video holding the lock
     top = get_config_value('overscan_top')
     bottom = get_config_value('overscan_bottom')
     left = get_config_value('overscan_left')
     right = get_config_value('overscan_right')
+    end_config_transaction()
     return (top or bottom or left or right)
 
 

@@ -17,7 +17,8 @@ if __name__ == '__main__' and __package__ is None:
 
 from kano.utils import run_cmd, enforce_root
 from kano.logging import logger
-from kano_settings.boot_config import enforce_pi, is_safe_boot, safe_mode_backup_config
+from kano_settings.boot_config import enforce_pi, is_safe_boot, \
+    safe_mode_backup_config, end_config_transaction
 from kano_settings.system.display import set_safeboot_mode
 
 logger.force_log_level('info')
@@ -47,6 +48,8 @@ if safe_boot_requested() and not is_safe_boot():
     safe_mode_backup_config()
 
     set_safeboot_mode()
+
+    end_config_transaction()
 
     # Trigger a reboot
     logger.sync()

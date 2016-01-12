@@ -9,7 +9,7 @@
 
 
 from kano_settings.config_file import get_setting, set_setting, file_replace
-from kano_settings.boot_config import set_config_value
+from kano_settings.boot_config import set_config_value, end_config_transaction
 from kano.utils import run_cmd
 from kano.logging import logger
 
@@ -55,6 +55,8 @@ def set_to_HDMI(HDMI):
         set_config_value("hdmi_ignore_edid_audio", 1)
         set_config_value("hdmi_drive", None)
         config = "Analogue"
+
+    end_config_transaction()
 
     # Set audio path in amixer
     o, e, rc = run_cmd(amixer_cmd)

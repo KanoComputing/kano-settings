@@ -14,7 +14,7 @@ from kano_settings.components.heading import Heading
 from kano_profile.tracker import track_data
 
 import kano_settings.common as common
-from kano_settings.boot_config import set_config_comment, get_config_value
+from kano_settings.boot_config import set_config_comment, get_config_value, end_config_transaction
 from kano_settings.system.display import get_model, get_status, list_supported_modes, set_hdmi_mode, read_hdmi_mode, \
     find_matching_mode, get_overscan_status, write_overscan_values, set_overscan_status, launch_pipe, set_flip
 
@@ -109,6 +109,8 @@ class SetDisplay(Template):
                     "mode": parse_mode
                 })
 
+                end_config_transaction()
+
                 common.need_reboot = True
 
             self.win.go_to_home()
@@ -145,6 +147,7 @@ class SetDisplay(Template):
     def flip(self, button):
         set_flip(button.get_active())
         self.kano_button.set_sensitive(True)
+        end_config_transaction()
         common.need_reboot = True
 
 class OverscanTemplate(Gtk.Box):
@@ -183,9 +186,11 @@ class OverscanTemplate(Gtk.Box):
 
     def apply_changes(self, button, event):
         # Apply changes
+        set_config_comment('kano_screen_used', get_model())
+        # NB, write_overscan_values ends the transaction
         write_overscan_values(self.overscan_values)
         self.original_overscan = self.overscan_values
-        set_config_comment('kano_screen_used', get_model())
+
 
         # Tell user to reboot to see changes
         common.need_reboot = True
