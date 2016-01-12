@@ -61,7 +61,6 @@ class SetNotifications(RadioButtonTemplate):
             speaker_led_api = get_speakerleds_interface()
             if speaker_led_api:  # can be None
                 is_led_speaker_plugged = speaker_led_api.detect()
-                print '_add_led_speaker_checkbox: ', is_led_speaker_plugged
 
         except Exception as e:
             logger.error('Something unexpected occured in _add_led_speaker_checkbox'
