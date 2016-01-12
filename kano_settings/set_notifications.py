@@ -13,6 +13,7 @@ from gi.repository import Gdk, Gtk
 
 import kano.notifications as notifications
 from kano.utils import run_bg, is_model_2_b
+from kano.logging import logger
 
 from kano_settings.templates import RadioButtonTemplate
 from kano_settings.config_file import get_setting, set_setting
@@ -42,19 +43,36 @@ class SetNotifications(RadioButtonTemplate):
         self.disable_all_radiobutton = self.get_button(1)
         self.disable_world_radiobutton = self.get_button(2)
 
-        if is_model_2_b():
-            self.cpu_monitor_checkbox = Gtk.CheckButton()
-
-            self.buttons.append(self.cpu_monitor_checkbox)
-            self.label_button_and_pack(
-                self.cpu_monitor_checkbox,
-                'Enable LED Speaker CPU Animation', ''
-            )
+        self._add_led_speaker_checkbox()
 
         self.kano_button.connect("button-release-event", self.apply_changes)
 
         self.show_configuration()
         self.win.show_all()
+
+    def _add_led_speaker_checkbox(self):
+        self.cpu_monitor_checkbox = Gtk.CheckButton()
+        is_led_speaker_plugged = False
+
+        try:
+            from kano_peripherals.speaker_leds.driver.high_level import \
+                get_speakerleds_interface
+
+            speaker_led_api = get_speakerleds_interface()
+            if speaker_led_api:  # can be None
+                is_led_speaker_plugged = speaker_led_api.detect()
+                print '_add_led_speaker_checkbox: ', is_led_speaker_plugged
+
+        except Exception as e:
+            logger.error('Something unexpected occured in _add_led_speaker_checkbox'
+                         ' - [{}]'.format(e))
+
+        if is_model_2_b() and is_led_speaker_plugged:
+            self.buttons.append(self.cpu_monitor_checkbox)
+            self.label_button_and_pack(
+                self.cpu_monitor_checkbox,
+                'Enable LED Speaker CPU Animation', ''
+            )
 
     def configure_all_notifications(self):
         if self.disable_all_radiobutton.get_active():
