@@ -2,15 +2,21 @@
 #
 # set_notifications.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2014-2016 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Controls the UI of the notification setting
 # Check result with display_generic_notification function in kano.notifications
 
-from gi.repository import Gdk
-from kano_settings.templates import RadioButtonTemplate
+
+from gi.repository import Gdk, Gtk
+
 import kano.notifications as notifications
+from kano.utils import run_bg, is_model_2_b
+from kano.logging import logger
+
+from kano_settings.templates import RadioButtonTemplate
+from kano_settings.config_file import get_setting, set_setting
 
 
 class SetNotifications(RadioButtonTemplate):
@@ -36,11 +42,36 @@ class SetNotifications(RadioButtonTemplate):
         self.enable_all_radiobutton = self.get_button(0)
         self.disable_all_radiobutton = self.get_button(1)
         self.disable_world_radiobutton = self.get_button(2)
-        self.show_configuration()
+
+        self._add_led_speaker_checkbox()
 
         self.kano_button.connect("button-release-event", self.apply_changes)
 
+        self.show_configuration()
         self.win.show_all()
+
+    def _add_led_speaker_checkbox(self):
+        self.cpu_monitor_checkbox = Gtk.CheckButton()
+        is_led_speaker_plugged = False
+
+        try:
+            from kano_peripherals.speaker_leds.driver.high_level import \
+                get_speakerleds_interface
+
+            speaker_led_api = get_speakerleds_interface()
+            if speaker_led_api:  # can be None
+                is_led_speaker_plugged = speaker_led_api.detect()
+
+        except Exception as e:
+            logger.error('Something unexpected occured in _add_led_speaker_checkbox'
+                         ' - [{}]'.format(e))
+
+        if is_model_2_b() and is_led_speaker_plugged:
+            self.buttons.append(self.cpu_monitor_checkbox)
+            self.label_button_and_pack(
+                self.cpu_monitor_checkbox,
+                'Enable LED Speaker CPU Animation', ''
+            )
 
     def configure_all_notifications(self):
         if self.disable_all_radiobutton.get_active():
@@ -53,6 +84,17 @@ class SetNotifications(RadioButtonTemplate):
             notifications.disallow_world_notifications()
         else:
             notifications.allow_world_notifications()
+
+    def configure_cpu_monitor_animation(self, checkbox=None):
+        is_ticked = self.cpu_monitor_checkbox.get_active()
+        was_enabled = get_setting('LED-Speaker-anim')
+
+        if is_ticked and not was_enabled:
+            set_setting('LED-Speaker-anim', is_ticked)
+            run_bg('kano-speakerleds cpu-monitor start', unsudo=True)
+        elif was_enabled and not is_ticked:
+            set_setting('LED-Speaker-anim', is_ticked)
+            run_bg('kano-speakerleds cpu-monitor stop', unsudo=True)
 
     def show_configuration(self):
         enable_all = False
@@ -69,9 +111,11 @@ class SetNotifications(RadioButtonTemplate):
         self.disable_world_radiobutton.set_active(disable_world)
         self.enable_all_radiobutton.set_active(enable_all)
         self.disable_all_radiobutton.set_active(disable_all)
+        self.cpu_monitor_checkbox.set_active(get_setting('LED-Speaker-anim'))
 
     def apply_changes(self, widget, event):
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
             self.configure_all_notifications()
             self.configure_world_notifications()
+            self.configure_cpu_monitor_animation()
             self.win.go_to_home()
