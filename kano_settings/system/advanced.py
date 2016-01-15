@@ -27,7 +27,7 @@ from kano.utils import read_file_contents, write_file_contents, \
     get_user_unsudoed, chown_path
 from kano.network import set_dns, restore_dns_interfaces, \
     clear_dns_interfaces, refresh_resolvconf
-from kano_settings.config_file import get_setting
+from kano_settings.config_file import get_setting, set_setting
 
 password_file = "/etc/kano-parental-lock"
 hosts_file = '/etc/hosts'
@@ -586,6 +586,8 @@ def write_blacklisted_sites(blacklist):
 
 
 def set_parental_level(level_setting):
+    set_setting('Parental-level', max(level_setting, 1))
+
     # NB, we pass -1 to disable all
     feature_levels = [
         # Low
