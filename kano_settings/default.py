@@ -33,6 +33,7 @@ def set_default_config():
     set_config_value('hdmi_pixel_encoding', 2)
     set_config_value('hdmi_group', None)
     set_config_value('hdmi_mode', None)
+    set_config_value('display_rotate', 0)
     set_config_comment('kano_screen_used', 'xxx')
 
     # resetting overclocking settings
