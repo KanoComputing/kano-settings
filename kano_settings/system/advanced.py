@@ -430,7 +430,10 @@ def redirect_traffic_to_localhost():
 
 
 def launch_sentry_server(filename):
-    subprocess.Popen(["sentry -c {}".format(filename)], shell=True)
+    subprocess.Popen(
+        ["sentry -c {}".format(filename)], shell=True,
+        stdin=subprocess.PIPE, stdout=subprocess.PIPE
+    )
 
 
 def kill_server():
