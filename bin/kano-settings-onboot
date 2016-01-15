@@ -24,7 +24,8 @@ from kano_settings.system.display import get_status, get_model, set_hdmi_mode, \
 from kano_settings.boot_config import set_config_value, set_config_comment, \
     get_config_comment, get_config_value, has_config_comment, \
     enforce_pi, is_safe_boot, safe_mode_backup_config, \
-    safe_mode_restore_config, remove_noobs_defaults, set_dry_run
+    safe_mode_restore_config, remove_noobs_defaults, set_dry_run, \
+    end_config_transaction
 from kano_settings.system.audio import is_HDMI, set_to_HDMI
 from kano_settings.system.overclock_chip_support import check_clock_config_matches_chip
 
@@ -192,6 +193,7 @@ if is_mode_fallback():
 
 # If we need to set anything to do with config.txt, reboot
 if reboot_now:
+    end_config_transaction()
     if dry_run:
         logger.debug("rebooting")
     else:
@@ -205,6 +207,7 @@ if is_safe_boot():
 
     # Restore the config.txt file
     safe_mode_restore_config()
+    end_config_transaction()
 
     sys.exit()
 
@@ -260,6 +263,7 @@ changes = compare_and_set_mode() or compare_and_set_full_range() or \
 if changes:
     # write comment to config
     set_config_comment('kano_screen_used', model)
+    end_config_transaction()
     # reboot
     if dry_run:
         logger.debug("rebooting due to config changes")
