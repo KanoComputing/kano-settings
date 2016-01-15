@@ -18,6 +18,7 @@ import tempfile
 from kano.utils import read_file_contents_as_lines
 from kano.utils import is_number, open_locked
 from kano.logging import logger
+import atexit
 
 boot_config_standard_path = "/boot/config.txt"
 boot_config_pi1_backup_path = "/boot/config_pi1_backup.txt"
@@ -176,6 +177,13 @@ class BootConfig:
         return False
 
 
+class OpenTransactionError(Exception):
+    """
+    Exception denoting that a transaction was left open
+    """
+    pass
+
+
 class ConfigTransaction:
     def __init__(self, path):
         # This class represents a transaction on the config files.
@@ -330,6 +338,14 @@ class ConfigTransaction:
             logger.warn("closing config transaction with no edits")
         self.set_state_idle()
 
+    def _clean_up_exit(self):
+        # for program exit: check if the transaction has been left open,
+        # close it, and raise an error.
+
+        if self.state > 0:
+            self.close()
+            raise OpenTransactionError()
+
     def abort(self):
         os.remove(self.temp_path)
         self.set_state_idle()
@@ -398,3 +414,11 @@ def safe_mode_backup_config():
 
 def safe_mode_restore_config():
     _trans().copy_from(boot_config_safemode_backup_path)
+
+
+# Register handler to make sure transaction is closed.
+
+def _clean_up_exit():
+    _trans()._clean_up_exit()
+
+atexit.register(_clean_up_exit)
