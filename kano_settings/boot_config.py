@@ -342,7 +342,11 @@ class ConfigTransaction:
         # for program exit: check if the transaction has been left open,
         # close it, and raise an error.
 
-        if self.state > 0:
+        # NB, we don't complain if only reads have happened. Ideally
+        # we might want to close read transactions to avoid locking for
+        # long periods, but it's not a safety issue so leave it for now.
+
+        if self.state > 1:
             self.close()
             raise OpenTransactionError()
 
