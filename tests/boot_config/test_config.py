@@ -141,7 +141,7 @@ class configSetTest(unittest.TestCase):
             # Check whether the lock is effective. Return true if the lock is held
             
             import os
-            py = os.path.join(os.path.dirname(__file__), 'test_lock.py')
+            py = os.path.join(os.path.dirname(__file__), 'try_lock.py')
             return os.system('python '+py) != 0
 
         def test_read(configs):
