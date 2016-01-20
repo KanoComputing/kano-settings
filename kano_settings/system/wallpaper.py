@@ -2,36 +2,79 @@
 
 # wallpaper.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2014-2016 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Backend wallpaper functions
 #
 
 
 from kano.logging import logger
+from kano.utils import get_user_unsudoed
 import os
 
-KDESKRC_HOME = "/home/{user}/.kdeskrc"
+KDESKRC_SYSTEM = "/usr/share/kano-desktop/kdesk/.kdeskrc"
+KDESKRC_HOME_TEMPLATE = "/home/{user}/.kdeskrc"
+
+PARAM_NAME_TEMPLATE = "Background.File-{size}:"
+SIZE_SUFFIX_MAP = {
+    "medium": "-1024.png",
+    "4-3": "-4-3.png",
+    "16-9": "-16-9.png"
+}
+
+
+def _get_wallpaper_from_kdeskrc(kdeskrc_path):
+    """
+        Parses a .kdeskrc file and looks for wallpaper configuration keys.
+
+        :param kdeskrc_path: Location of the file to be parsed.
+        :type kdeskrc_path: str
+
+        :return: A map of wallpaper types to file paths.
+        :rtype: dict
+    """
+
+    wallpapers = {}
+    if os.path.isfile(kdeskrc_path):
+        with open(kdeskrc_path, 'r') as kdesk_conf:
+            for kdesk_conf_line in kdesk_conf:
+                for key, suffix in SIZE_SUFFIX_MAP.iteritems():
+                    token = "{}:".format(key)
+                    if token in kdesk_conf_line:
+                        path = kdesk_conf_line.split(token)[-1].strip()
+                        wallpapers[key] = path
+
+    return wallpapers
+
+
+def get_current_wallpapers():
+    """
+        Returns the current wallpaper configuration.
+
+        :return: A map of wallpaper types to file paths.
+        :rtype: dict
+    """
+
+    wallpapers = {key: None for key in SIZE_SUFFIX_MAP.iterkeys()}
+    wallpapers.update(_get_wallpaper_from_kdeskrc(KDESKRC_SYSTEM))
+
+    home_dir = KDESKRC_HOME_TEMPLATE.format(user=get_user_unsudoed())
+    wallpapers.update(_get_wallpaper_from_kdeskrc(home_dir))
+
+    return wallpapers
 
 
 def change_wallpaper(path, name):
     logger.info('set_wallpaper / change_wallpaper image_name:{}'.format(name))
 
     # home directory
-    user = os.environ['SUDO_USER']
-    deskrc_path = KDESKRC_HOME.format(user=user)
+    deskrc_path = KDESKRC_HOME_TEMPLATE.format(user=get_user_unsudoed())
 
-    wallpapers = [
-        ('medium', os.path.join(path, "{}-1024.png".format(name))),
-        ('4-3', os.path.join(path, "{}-4-3.png".format(name))),
-        ('16-9', os.path.join(path, "{}-16-9.png".format(name)))
-    ]
-    conf_param_template = 'Background.File-{size}'
-    conf_params = dict()
-
-    for size, image in wallpapers:
-        conf_param = conf_param_template.format(size=size)
+    conf_params = {}
+    for size, suffix in SIZE_SUFFIX_MAP.iteritems():
+        conf_param = PARAM_NAME_TEMPLATE.format(size=size)
+        image = os.path.join(path, "{}{}".format(name, suffix))
         conf_params[conf_param] = "  {param}: {image}".format(param=conf_param,
                                                               image=image)
 
@@ -62,3 +105,8 @@ def change_wallpaper(path, name):
     os.system('sudo -u {user} kdesk -w'.format(user=user))
 
     return 0
+
+
+# Module debug
+if __name__ == '__main__':
+    print get_current_wallpapers()

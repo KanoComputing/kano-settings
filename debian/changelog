@@ -1,3 +1,9 @@
+kano-settings (2.3.0-1) unstable; urgency=low
+
+  * Extending the wallpaper settings API with a getter function
+
+ -- Team Kano <dev@kano.me>  Wed, 20 Jan 2016 15:44:00 +0000
+
 kano-settings (2.2-4) unstable; urgency=low
 
   * Change config API to use a transactional approach
