@@ -333,11 +333,11 @@ class ConfigTransaction:
             path = self.temp_path
         else:
             path = self.path
-        shutil.copy2(path, boot_config_safemode_backup_path)
+        shutil.copy2(path, dest)
 
     def copy_from(self, src):
         self.set_state_writable()
-        shutil.copy2(boot_config_safemode_backup_path, self.temp_path)
+        shutil.copy2(src, self.temp_path)
 
     def check_corrupt_config(self):
         self.raise_state_to_locked()
