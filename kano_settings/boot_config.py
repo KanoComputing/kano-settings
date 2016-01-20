@@ -23,6 +23,7 @@ import atexit
 boot_config_standard_path = "/boot/config.txt"
 boot_config_pi1_backup_path = "/boot/config_pi1_backup.txt"
 boot_config_pi2_backup_path = "/boot/config_pi2_backup.txt"
+default_config_path = "/usr/share/kano-settings/boot_default/config.txt"
 tvservice_path = '/usr/bin/tvservice'
 boot_config_safemode_backup_path = '/boot/config.txt.orig'
 lock_dir = '/run/lock'
@@ -85,6 +86,23 @@ class BootConfig:
             return True
         return False
 
+    def check_corrupt(self):
+
+        # Quick check for corrpution in config file.
+        # Check that is has at least some expected data
+        try:
+            lines = read_file_contents_as_lines(self.path)
+        except:
+            return True
+
+        must_contain = set(['overscan_bottom', 'over_voltage'])
+        found = set()
+
+        for l in lines:
+            for m in must_contain:
+                if m in l:
+                    found.add(m)
+        return must_contain != found
 
     def set_value(self, name, value=None):
         # if the value argument is None, the option will be commented out
@@ -321,6 +339,14 @@ class ConfigTransaction:
         self.set_state_writable()
         shutil.copy2(boot_config_safemode_backup_path, self.temp_path)
 
+    def check_corrupt_config(self):
+        self.raise_state_to_locked()
+        if self.temp_config.check_corrupt():
+            self.copy_from(default_config_path)
+            return True
+        return False
+        
+
     def close(self):
         if self.state == 2:
             if dry_run:
@@ -418,6 +444,10 @@ def safe_mode_backup_config():
 
 def safe_mode_restore_config():
     _trans().copy_from(boot_config_safemode_backup_path)
+
+
+def check_corrupt_config():
+    return _trans().check_corrupt_config()
 
 
 # Register handler to make sure transaction is closed.
