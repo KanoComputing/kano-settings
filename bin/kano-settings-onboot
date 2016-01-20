@@ -25,7 +25,7 @@ from kano_settings.boot_config import set_config_value, set_config_comment, \
     get_config_comment, get_config_value, has_config_comment, \
     enforce_pi, is_safe_boot, safe_mode_backup_config, \
     safe_mode_restore_config, remove_noobs_defaults, set_dry_run, \
-    end_config_transaction
+    end_config_transaction, check_corrupt_config
 from kano_settings.system.audio import is_HDMI, set_to_HDMI
 from kano_settings.system.overclock_chip_support import check_clock_config_matches_chip
 
@@ -153,15 +153,19 @@ def get_screen_information():
     return info
 
 
+# Shared reboot flag for reconfiguring for rpi1/2 and video
+reboot_now = False
+
 # main program
 enforce_pi()
 enforce_root('Need to be root!')
 
+# Check for corrupt config file
+if check_corrupt_config():
+    reboot_now = True
+
 # Gather and log data about the current screen
 screen_data = get_screen_information()
-
-# Shared reboot flag for reconfiguring for rpi1/2 and video
-reboot_now = False
 
 # Rpi1 and Rpi2 have different clock rate defaults, but only one
 # set of config options. Swap the config options if we have booted on the other
