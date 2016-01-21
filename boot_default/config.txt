@@ -1,0 +1,69 @@
+# uncomment if you get no picture on HDMI for a default "safe" mode
+#hdmi_safe=1
+
+# Force sound to go through the analog output even if an HDMI monitor is plugged in
+# Not strictly necessary for most apps that default to local device (sonic-pi).
+hdmi_ignore_edid_audio=1
+
+# 1 -> perfect size
+# 0 -> added black border for TVs
+disable_overscan=1
+
+# Use the following to adjust overscan. Use positive numbers if console
+# goes off screen, and negative if there is too much border
+# the zero setting for CEA is -48, for DMT is 0
+overscan_left=0
+overscan_right=0
+overscan_top=0
+overscan_bottom=0
+
+# Force RGB full range (0-255)
+hdmi_pixel_encoding=2
+
+# Force Kanux display size.
+#framebuffer_width=1024
+#framebuffer_height=768
+
+# uncomment if hdmi display is not detected and composite is being output
+hdmi_force_hotplug=1
+
+# uncomment to force a specific HDMI mode (this will force VGA)
+#hdmi_group=1
+#hdmi_mode=1
+
+# uncomment to force a HDMI mode rather than DVI. This can make audio work in
+# DMT (computer monitor) modes
+#hdmi_drive=2
+
+# uncomment to increase signal to HDMI, if you have interference, blanking, or
+# no display
+#config_hdmi_boost=4
+
+# uncomment for composite PAL
+#sdtv_mode=2
+
+# Enabling Turbo Mode
+# Please, beware "force_turbo=1" will set the sticky bit
+# on your RPi unit forever.
+#
+force_turbo=0
+arm_freq=900
+core_freq=250
+sdram_freq=450
+over_voltage=0
+
+# set memory split: amount allocated to the GPU in MB.
+gpu_mem=128
+
+# Toggles PiCamera on(1) and off(0)
+start_x=0
+
+# Set max_usb_current flag to 1 if you need to drive usb devices > 500ma current
+# Note: RaspberryPI model B+ only
+max_usb_current=0
+
+# Enable I2C to allow speaker LEDs to work.
+dtparam=i2c_arm=on
+dtparam=i2c1=on
+
+# for more options see http://elinux.org/RPi_config.txt
