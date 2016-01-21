@@ -162,6 +162,7 @@ enforce_root('Need to be root!')
 
 # Check for corrupt config file
 if check_corrupt_config():
+    logger.error("Found corrupt config file! Restoring default.")
     reboot_now = True
 
 # Gather and log data about the current screen
