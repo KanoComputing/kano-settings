@@ -65,5 +65,7 @@ max_usb_current=0
 # Enable I2C to allow speaker LEDs to work.
 dtparam=i2c_arm=on
 dtparam=i2c1=on
+# Enable SPI device
+dtparam=spi=on
 
 # for more options see http://elinux.org/RPi_config.txt
