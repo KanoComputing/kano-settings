@@ -49,7 +49,8 @@ static GtkWidget *plugin_constructor(LXPanel *panel, config_setting_t *settings)
     plugin->panel = panel;
 
     /* need to create a widget to show */
-    GtkWidget *pwid = gtk_event_box_new();
+    GtkWidget *pwid = gtk_button_new();
+    gtk_button_set_relief(GTK_BUTTON(pwid), GTK_RELIEF_NONE);
 
     lxpanel_plugin_set_data(pwid, plugin, g_free);
 
