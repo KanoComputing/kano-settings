@@ -36,14 +36,17 @@ def _get_wallpaper_from_kdeskrc(kdeskrc_path):
     """
 
     wallpapers = {}
-    if os.path.isfile(kdeskrc_path):
-        with open(kdeskrc_path, 'r') as kdesk_conf:
-            for kdesk_conf_line in kdesk_conf:
-                for key, suffix in SIZE_SUFFIX_MAP.iteritems():
-                    token = "{}:".format(key)
-                    if token in kdesk_conf_line:
-                        path = kdesk_conf_line.split(token)[-1].strip()
-                        wallpapers[key] = path
+
+    if not os.path.isfile(kdeskrc_path):
+        return wallpapers
+
+    with open(kdeskrc_path, 'r') as kdesk_conf:
+        for kdesk_conf_line in kdesk_conf:
+            for key, suffix in SIZE_SUFFIX_MAP.iteritems():
+                token = "{}:".format(key)
+                if token in kdesk_conf_line:
+                    path = kdesk_conf_line.split(token)[-1].strip()
+                    wallpapers[key] = path
 
     return wallpapers
 
