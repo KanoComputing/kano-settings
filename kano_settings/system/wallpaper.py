@@ -73,7 +73,8 @@ def change_wallpaper(path, name):
     logger.info('set_wallpaper / change_wallpaper image_name:{}'.format(name))
 
     # home directory
-    deskrc_path = KDESKRC_HOME_TEMPLATE.format(user=get_user_unsudoed())
+    user = get_user_unsudoed()
+    deskrc_path = KDESKRC_HOME_TEMPLATE.format(user=user)
 
     conf_params = {}
     for size, suffix in SIZE_SUFFIX_MAP.iteritems():
