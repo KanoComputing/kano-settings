@@ -16,7 +16,7 @@ import os
 KDESKRC_SYSTEM = "/usr/share/kano-desktop/kdesk/.kdeskrc"
 KDESKRC_HOME_TEMPLATE = "/home/{user}/.kdeskrc"
 
-PARAM_NAME_TEMPLATE = "Background.File-{size}:"
+PARAM_NAME_TEMPLATE = "Background.File-{size}"
 SIZE_SUFFIX_MAP = {
     "medium": "-1024.png",
     "4-3": "-4-3.png",
@@ -43,7 +43,8 @@ def _get_wallpaper_from_kdeskrc(kdeskrc_path):
     with open(kdeskrc_path, 'r') as kdesk_conf:
         for kdesk_conf_line in kdesk_conf:
             for key, suffix in SIZE_SUFFIX_MAP.iteritems():
-                token = "{}:".format(key)
+                conf_param = PARAM_NAME_TEMPLATE.format(size=key)
+                token = "{}:".format(conf_param)
                 if token in kdesk_conf_line:
                     path = kdesk_conf_line.split(token)[-1].strip()
                     wallpapers[key] = path
