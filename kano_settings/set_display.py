@@ -6,6 +6,8 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
+import os
+
 from gi.repository import Gtk, Gdk
 from kano_settings.templates import Template
 from kano.gtk3.buttons import OrangeButton, KanoButton
@@ -14,9 +16,24 @@ from kano_settings.components.heading import Heading
 from kano_profile.tracker import track_data
 
 import kano_settings.common as common
-from kano_settings.boot_config import set_config_comment, get_config_value, end_config_transaction
-from kano_settings.system.display import get_model, get_status, list_supported_modes, set_hdmi_mode, read_hdmi_mode, \
-    find_matching_mode, get_overscan_status, write_overscan_values, set_overscan_status, launch_pipe, set_flip
+from kano_settings.boot_config import set_config_comment, get_config_value, \
+    end_config_transaction
+from kano_settings.system.display import get_model, get_status, \
+    list_supported_modes, set_hdmi_mode, read_hdmi_mode, \
+    find_matching_mode, get_overscan_status, write_overscan_values, \
+    set_overscan_status, launch_pipe, set_flip
+
+
+def get_overscan_limit():
+    """
+        Determines the maximum overscan setting based on current resolution.
+        Currently we limit it to a third of the screen.
+
+        :return: Maximum number of pixels to cut off from each edge.
+        :rtype: int
+    """
+
+    return int(Gdk.Screen.height() / 3)
 
 
 class SetDisplay(Template):
@@ -48,7 +65,8 @@ class SetDisplay(Template):
         self.kano_button.connect("button-release-event", self.apply_changes)
         self.kano_button.connect("key-release-event", self.apply_changes)
 
-        horizontal_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=40)
+        horizontal_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL,
+                                       spacing=40)
         horizontal_container.set_valign(Gtk.Align.CENTER)
 
         # HDMI mode combo box
@@ -78,7 +96,7 @@ class SetDisplay(Template):
 
         self.box.pack_start(horizontal_container, False, False, 0)
 
-        # Create Flip 180 checkbox 
+        # Create Flip 180 checkbox
         flip_button = Gtk.CheckButton("Flip Screen")
         flip_button.set_can_focus(False)
         flip_button.props.valign = Gtk.Align.CENTER
@@ -173,14 +191,15 @@ class OverscanTemplate(Gtk.Box):
         self.original_overscan = original_overscan
 
         # Pass original overscan values between the classes
-        # If original_overscan hasn't been generated yet, get it from current overscan status
-        # Alternatively, maybe read this from a file in future
+        # If original_overscan hasn't been generated yet, get it from current
+        # overscan status. Alternatively, maybe read this from a file in future
         if original_overscan is None:
             self.original_overscan = get_overscan_status()
 
         # Reset button
         self.reset_button = OrangeButton()
-        reset_image = Gtk.Image().new_from_file(common.media + "/Icons/reset.png")
+        reset_icon_path = os.path.join(common.media, '/Icons/reset.png')
+        reset_image = Gtk.Image().new_from_file(reset_icon_path)
         self.reset_button.set_image(reset_image)
         self.reset_button.connect("button_press_event", self.reset)
 
@@ -235,7 +254,7 @@ class SetSimpleOverscan(OverscanTemplate):
         ## slider
         self.t_value = Gtk.Label()
         self.t_value.get_style_context().add_class("slider_label")
-        self.t_scale = Gtk.HScale.new_with_range(0, 100, 1)
+        self.t_scale = Gtk.HScale.new_with_range(0, get_overscan_limit(), 1)
         self.t_scale.set_value(self.overscan_values['top'])
         self.t_scale.set_size_request(400, 30)
         self.t_scale.connect('value_changed', self.adjust_all)
@@ -369,7 +388,7 @@ class SetAdvancedOverscan(OverscanTemplate):
     def generate_slider_label(self, direction):
         value_label = Gtk.Label()
         value_label.get_style_context().add_class("slider_label")
-        slider = Gtk.HScale.new_with_range(0, 100, 1)
+        slider = Gtk.HScale.new_with_range(0, get_overscan_limit(), 1)
         slider.set_value(self.overscan_values[direction])
         slider.set_size_request(400, 30)
         slider.connect('value_changed', self.adjust, direction)
