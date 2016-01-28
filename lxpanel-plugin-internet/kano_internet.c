@@ -74,7 +74,8 @@ static GtkWidget *plugin_constructor(LXPanel *panel, config_setting_t *settings)
     plugin->timer = g_timeout_add(MINUTE * 1000, (GSourceFunc) internet_status, (gpointer) plugin);
 
     /* need to create a widget to show */
-    GtkWidget *pwid = gtk_event_box_new();
+    GtkWidget *pwid = gtk_button_new();
+    gtk_button_set_relief(GTK_BUTTON(pwid), GTK_RELIEF_NONE);
     lxpanel_plugin_set_data(pwid, plugin, plugin_destructor);
 
     // Check status
