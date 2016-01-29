@@ -13,6 +13,7 @@ from gi.repository import Gtk, Gdk
 
 from kano_settings.components.heading import Heading
 from kano.gtk3.buttons import KanoButton
+from kano_profile.tracker import track_action
 
 from kano_wifi_gui.paths import img_dir
 from kano_wifi_gui.Template import Template
@@ -163,6 +164,9 @@ class PasswordScreen(Gtk.Box):
             }
         ]
         img_path = os.path.join(img_dir, "internet.png")
+
+        # Track that user connected online
+        track_action('internet-connection-established')
 
         self._win.set_main_widget(
             Template(
