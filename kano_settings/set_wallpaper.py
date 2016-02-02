@@ -257,8 +257,8 @@ class WallpaperTable(ImageTable):
 class FirstBootSetWallpaper(SetWallpaper):
     def __init__(self, win):
         SetWallpaper.__init__(self, win,
-                              header='Yes! You built your desktop.',
-                              subheader='New backgrounds unlocked! Level up to get more.',
+                              header='Pick your background',
+                              subheader='New wallpapers unlocked! Level up to get more.',
                               buttons_shown=2)
         self.win.set_main_widget(self)
 
