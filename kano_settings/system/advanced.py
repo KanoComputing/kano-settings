@@ -586,7 +586,7 @@ def write_blacklisted_sites(blacklist):
 
 
 def set_parental_level(level_setting):
-    set_setting('Parental-level', max(level_setting, 1))
+    set_setting('Parental-level', max(level_setting, 0))
 
     # NB, we pass -1 to disable all
     feature_levels = [
