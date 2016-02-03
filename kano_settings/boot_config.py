@@ -27,6 +27,7 @@ default_config_path = "/usr/share/kano-settings/boot_default/config.txt"
 tvservice_path = '/usr/bin/tvservice'
 boot_config_safemode_backup_path = '/boot/config.txt.orig'
 lock_dir = '/run/lock'
+noobs_line = "# NOOBS Auto-generated Settings:"
 
 dry_run = False
 lock_timeout = 5
@@ -61,7 +62,11 @@ class BootConfig:
 
             f.close()  # make file, even if empty
 
-    def remove_noobs_defaults(self):
+    def _noobs_defaults_present(self):
+        lines = read_file_contents_as_lines(self.path)
+        return noobs_line in lines
+
+    def _remove_noobs_defaults(self):
         """
         Remove the config entries added by Noobs,
         by removing all the lines after and including
@@ -69,22 +74,18 @@ class BootConfig:
 
         """
         lines = read_file_contents_as_lines(self.path)
-        noobs_line = "# NOOBS Auto-generated Settings:"
-        if noobs_line in lines:
-            with open_locked(self.path, "w") as boot_config_file:
+        with open_locked(self.path, "w") as boot_config_file:
 
-                for line in lines:
-                    if line == noobs_line:
-                        break
+            for line in lines:
+                if line == noobs_line:
+                    break
+                
+                boot_config_file.write(line + "\n")
+                
+            # flush changes to disk
+            boot_config_file.flush()
+            os.fsync(boot_config_file.fileno())
 
-                    boot_config_file.write(line + "\n")
-
-                # flush changes to disk
-                boot_config_file.flush()
-                os.fsync(boot_config_file.fileno())
-
-            return True
-        return False
 
     def check_corrupt(self):
 
@@ -322,8 +323,14 @@ class ConfigTransaction:
         return self.temp_config.has_comment(name)
 
     def remove_noobs_defaults(self):
-        self.set_state_writable()
-        return self.temp_config.remove_noobs_defaults()
+        # NB, unlike the other methods, this may or may not require close.
+        # It returns true if it does (also to trigger a reboot)
+        self.raise_state_to_locked()
+        present = self.temp_config._noobs_defaults_present()
+        if present:
+            self.set_state_writable()
+        self.temp_config._remove_noobs_defaults()
+        return present
 
     def copy_to(self, dest):
         # Copy to a file. Note that if we have modified in this transaction,
