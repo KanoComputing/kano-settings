@@ -216,7 +216,7 @@ class configSetTest(unittest.TestCase):
             self.assertTrue(is_locked())
 
         def test_write(configs):
-            which = random.randint(0, 3)
+            which = random.randint(0, 2)
             present = random.randint(0, 1) == 1
 
             before_write = configs['current'].copy()
@@ -249,16 +249,27 @@ class configSetTest(unittest.TestCase):
 
                 self.assertTrue(compare(configs['backup'], configs['written']))
 
-            elif which == 3:
-                # test remove_noobs_defaults
-                boot_config.remove_noobs_defaults()
-                print "testing remove_noobs_defaults"
-                # FIXME this is not properly tested yet
-
             after_write = read_config()
 
             self.assertTrue(compare(before_write, after_write))
             self.assertTrue(boot_config._trans().state == 2)
+            self.assertTrue(is_locked())
+
+        def test_remove_noobs(configs):
+            # FIXME this is not properly tested yet
+            before_write = configs['current'].copy()
+            present = boot_config.noobs_line in before_write.comments
+            # test remove_noobs_defaults
+            boot_config.remove_noobs_defaults()
+            print "testing remove_noobs_defaults"
+
+            after_write = read_config()
+
+            self.assertTrue(compare(before_write, after_write))
+            if present:
+                self.assertTrue(boot_config._trans().state == 2)
+            else:
+                self.assertTrue(boot_config._trans().state >= 1)
             self.assertTrue(is_locked())
 
         def test_close(configs):
@@ -289,12 +300,14 @@ class configSetTest(unittest.TestCase):
             configs['written'] = orig.copy()
 
             for trial in range(numtests):
-                rwc = random.randint(0, 2)
+                rwc = random.randint(0, 3)
 
                 if rwc == 0:
                     test_read(configs)
                 elif rwc == 1:
                     test_write(configs)
+                elif rwc == 2:
+                    test_remove_noobs(configs)
                 else:
                     test_close(configs)
 
