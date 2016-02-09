@@ -25,6 +25,7 @@ from kano.network import IWList, is_device, is_connected, connect, is_gateway, \
     is_internet, KwifiCache, reload_kernel_module, is_redirected, \
     launch_browser
 from kano.utils import is_model_a, is_model_b
+from kano_networking.ifaces import get_wlan_device
 
 NETWORKS_PER_PAGE = 5
 
@@ -261,7 +262,7 @@ if __name__ == '__main__':
     wificache = KwifiCache()
 
     selected = online = None
-    wiface = 'wlan0'
+    wiface = get_wlan_device()
     page = 0
 
     #
