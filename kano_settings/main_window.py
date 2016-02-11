@@ -143,7 +143,9 @@ def get_main_window(base_class):
                 kdialog.set_action_background("grey")
                 do_reboot_now = kdialog.run()
                 if do_reboot_now:
-                    os.system("sudo systemctl reboot")
+                    # In case the SD card is doing some processing after
+                    # the final sync, we wait 5 seconds                
+                    os.system("sleep 5; sudo systemctl reboot")
 
             self._trigger_tracking_event()
 

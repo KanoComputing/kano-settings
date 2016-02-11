@@ -170,7 +170,9 @@ class SetAccount(Gtk.Box):
                 )
                 do_reboot_now = kdialog.run()
                 if do_reboot_now:
-                    os.system("sudo systemctl reboot")
+                    # In case the SD card is doing some processing after
+                    # the final sync, we wait 5 seconds                
+                    os.system("sleep 5; sudo systemctl reboot")
 
     # Disables both buttons and makes the temp 'flag' folder
     def disable_buttons(self):

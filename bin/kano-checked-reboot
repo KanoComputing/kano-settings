@@ -15,6 +15,7 @@
 import os
 import sys
 import tempfile
+import time
 
 REBOOT_DIR = '/boot/kano_reboots'
 REBOOT_MAX = 3
@@ -55,4 +56,6 @@ os.close(dirfd)
 
 os.system('sync')
 
+# In case the SD card is doing some processing after the final sync:
+time.sleep(5)
 os.system(cmd_plus_args)
