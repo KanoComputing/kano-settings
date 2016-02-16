@@ -12,13 +12,20 @@ import os
 import re
 import subprocess
 import time
+import shutil
 from kano_settings.boot_config import set_config_value, get_config_value, end_config_transaction
 from kano.utils import run_cmd, delete_file
 from kano.logging import logger
+from kano_settings.config_file import get_setting, set_setting
+
 
 tvservice_path = '/usr/bin/tvservice'
 fbset_path = '/bin/fbset'
 xrefresh_path = '/usr/bin/xrefresh'
+
+fpturbo_conf_path = '/usr/share/X11/xorg.conf.d/99-fbturbo.conf'
+fpturbo_conf_backup_path = '/var/cache/kano-settings/99-fbturbo.conf'
+
 
 
 def switch_display_safe_mode():
@@ -373,3 +380,32 @@ def get_edid():
         return
 
     return parse_edid(edid_txt)
+
+def get_gfx_driver():
+    return get_setting('Use_GLX')
+
+def set_gfx_driver(enabled):
+    if enabled:
+        set_config_value('dtoverlay', 'vc4-kms-v3d')
+        try:
+            try:
+                os.makedirs(os.path.basename(fpturbo_conf_backup_path))
+            except OSError as e:
+                if e.strerror == 'File exists':
+                    pass
+                else:
+                    raise
+            shutil.copyfile(fpturbo_conf_path, fpturbo_conf_backup_path)
+            os.remove(fpturbo_conf_path)
+        except Exception as e:
+            logger.error("Error restoring fpturbo_config", exception=e)
+
+    else:
+        set_config_value('dtoverlay', None)
+        if not os.path.exists(fpturbo_conf_path):
+            try:
+                shutil.copyfile(fpturbo_conf_backup_path, fpturbo_conf_path)
+            except Exception as e:
+                logger.error("Error restoring fpturbo_config", exception=e)
+    end_config_transaction()
+    set_setting('Use_GLX', enabled)

@@ -18,6 +18,7 @@ if __name__ == '__main__' and __package__ is None:
         sys.path.insert(1, dir_path)
 
 from kano_settings.system.keyboard_config import set_saved_keyboard
+from kano_settings.system.display import get_gfx_driver, set_gfx_driver
 from kano_settings.config_file import get_setting
 
 verbose = False
@@ -48,6 +49,14 @@ def parse_args():
             if args['--load']:
                 set_saved_keyboard()
                 print_v('Setting keyboard to value loaded from settings')
+        elif args['gfx_driver']:
+            if args['enable']:
+                set_gfx_driver(True)
+            elif args['disable']:
+                set_gfx_driver(False)
+            
+                
+                
     elif args['get']:
         if args['audio']:
             print_v(
@@ -83,6 +92,8 @@ def parse_args():
                     get_setting('Keyboard-variant-index')
                 )
             )
+        elif args['gfx_driver']:
+            print 'gfx_driver: {}'.format(get_gfx_driver())
 
 if __name__ == "__main__":
     args = docopt("""
@@ -92,6 +103,8 @@ if __name__ == "__main__":
       kano-settings-cli [-v | --verbose] get keyboard
       kano-settings-cli [-v | --verbose] set keyboard (--layout <layout_code> | --load)
       kano-settings-cli [-v | --verbose] get network
+      kano-settings-cli [-v | --verbose] get gfx_driver
+      kano-settings-cli [-v | --verbose] set gfx_driver (enable | disable)
       kano-settings-cli -h | --help
 
     Options:
@@ -101,6 +114,8 @@ if __name__ == "__main__":
       load      Set the keyboard to the value saved by Kano-Settings
       network   Get the network info
       verbose   Verbose mode
+      enable    enable gfx_driver driver
+      disable   disable gfx_driver driver
     """)
 
     parse_args()
