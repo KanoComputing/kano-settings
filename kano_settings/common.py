@@ -21,6 +21,7 @@ else:
     sys.exit('Media folder missing!')
 
 css_dir = os.path.join(media, "CSS")
+IMAGES_DIR = os.path.join(media, "Graphics")
 
 has_internet = False
 proxy_enabled = False
