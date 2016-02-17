@@ -12,7 +12,7 @@
 from gi.repository import Gdk, Gtk
 
 import kano.notifications as notifications
-from kano.utils import run_bg, is_model_2_b
+from kano.utils import run_bg, has_min_performance, RPI_2_B_SCORE
 from kano.logging import logger
 
 from kano_settings.templates import RadioButtonTemplate
@@ -66,7 +66,7 @@ class SetNotifications(RadioButtonTemplate):
             logger.error('Something unexpected occured in _add_led_speaker_checkbox'
                          ' - [{}]'.format(e))
 
-        if is_model_2_b() and is_led_speaker_plugged:
+        if has_min_performance(RPI_2_B_SCORE) and is_led_speaker_plugged:
             self.buttons.append(self.cpu_monitor_checkbox)
             self.label_button_and_pack(
                 self.cpu_monitor_checkbox,
