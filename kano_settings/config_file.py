@@ -44,7 +44,8 @@ defaults = {
         'Wallpaper': 'kanux-background',
         'Parental-level': 0,
         'Locale': 'en_US',
-        'LED-Speaker-anim': False
+        'LED-Speaker-anim': False,
+        'Use_GLX': False
     },
     'pi2': {
         'Keyboard-continent-index': 1,
@@ -62,7 +63,8 @@ defaults = {
         'Wallpaper': 'kanux-background',
         'Parental-level': 0,
         'Locale': 'en_US',
-        'LED-Speaker-anim': True
+        'LED-Speaker-anim': True,
+        'Use_GLX': False
     }
 }
 
