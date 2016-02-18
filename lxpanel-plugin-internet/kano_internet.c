@@ -1,7 +1,7 @@
 /*
 * kano_internet.c
 *
-* Copyright (C) 2014, 2015 Kano Computing Ltd.
+* Copyright (C) 2014-2016 Kano Computing Ltd.
 * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 *
 */
@@ -21,6 +21,7 @@
 #include <unistd.h>
 
 #include <kdesk-hourglass.h>
+#include <kano/networking/ifaces.h>
 
 #define NO_INTERNET_ICON "/usr/share/kano-settings/icon/widget-no-internet.png"
 #define WIFI_ICON "/usr/share/kano-settings/icon/widget-wifi.png"
@@ -31,7 +32,7 @@
 #define INTERNET_CMD "/usr/bin/is_internet"
 #define SETTINGS_CMD "sudo /usr/bin/kano-settings 4"
 #define WIFI_CMD "sudo /usr/bin/kano-wifi-gui"
-#define RECONNECT_CMD "sudo /usr/bin/kano-connect -c wlan0"
+#define RECONNECT_CMD "sudo /usr/bin/kano-connect -c "
 #define SOUND_CMD "/usr/bin/aplay /usr/share/kano-media/sounds/kano_open_app.wav"
 #define PLUGIN_TOOLTIP "Internet status"
 #define DISCONNECT_CMD "sudo /usr/bin/kano-wifi-gui --disconnect"
@@ -165,12 +166,21 @@ static gboolean internet_status(kano_internet_plugin_t *plugin) {
         }
 
         // skip if the wireless dongle is not plugged in
-        if( access("/sys/class/net/wlan0", F_OK) == -1 ) {
+        char *iface;
+        if( select_iface("wlan", &iface) == E_NO_INTERFACES )
             return TRUE;
-        }
+
+        // Construct the actual connect command
+        size_t base_cmd_len = strlen(RECONNECT_CMD) + 1;
+        size_t iface_len = strlen(iface);
+        char reconnect_cmd[base_cmd_len + iface_len];
+
+        strncpy(reconnect_cmd, RECONNECT_CMD, base_cmd_len);
+        strncat(reconnect_cmd, iface, iface_len);
+        free(iface);
 
         // run kano-connect if everything was OK
-        launch_cmd(RECONNECT_CMD, NULL);
+        launch_cmd(reconnect_cmd, NULL);
     }
 
     return TRUE;

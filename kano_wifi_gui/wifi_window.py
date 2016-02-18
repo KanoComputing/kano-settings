@@ -10,6 +10,7 @@ import os
 from gi.repository import Gtk
 
 from kano.network import is_internet, is_ethernet_plugged, is_device, IWList
+from kano_networking.ifaces import get_wlan_device
 from kano.gtk3.top_bar import TopBar
 from kano.gtk3.apply_styles import apply_common_to_screen, \
     apply_styling_to_screen
@@ -24,7 +25,9 @@ from kano_wifi_gui.Template import Template
 def create_wifi_gui(is_plug, socket_id):
     base_class = get_window_class(is_plug)
     wifi_gui = get_wifi_gui(base_class)
-    win = wifi_gui(socket_id=socket_id)
+
+    iface = get_wlan_device()
+    win = wifi_gui(socket_id=socket_id, wiface=iface)
     win.show_all()
     Gtk.main()
 

@@ -5,12 +5,15 @@
 #
 # WiFi control functions
 
+from kano_networking.ifaces import get_wlan_device
+
 
 def disconnect_wifi():
     from kano.network import KwifiCache, disconnect
     from kano.gtk3.kano_dialog import KanoDialog
 
-    disconnect('wlan0')
+    iface = get_wlan_device()
+    disconnect(iface)
     wificache = KwifiCache()
     wificache.empty()
 

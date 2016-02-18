@@ -10,9 +10,9 @@
 #
 
 # Is the wireless dongle plugged in?
-wlan_device="wlan0"
-wlan_info=`grep -c -q $wlan_device /proc/net/dev > /dev/null`
-is_wlan=$?
-if [ "$is_wlan" = "0" ]; then
-    python /usr/bin/kano-connect -c wlan0 &
+device_type="wlan"
+wlan_device=`grep --max-count=1 $device_type /proc/net/dev | \
+             sed -r 's/^.*(wlan[[:digit:]]).*$/\1/'`
+if [ ! "$wlan_device" = "" ]; then
+    python /usr/bin/kano-connect -c $wlan_device &
 fi
