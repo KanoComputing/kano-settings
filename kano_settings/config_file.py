@@ -16,7 +16,6 @@ from kano.logging import logger
 from kano.utils.user import get_user_unsudoed
 from kano.utils.file_operations import ensure_dir, read_json, write_json, \
     chown_path
-from kano.utils.hardware import get_rpi_model
 
 from kano_settings.common import settings_dir
 from kano_settings.system.boards import get_board_props
@@ -32,7 +31,7 @@ if username != 'root':
     chown_path(settings_dir)
     settings_file = os.path.join(settings_dir, 'settings')
 
-DEFAULTS = get_board_props(get_rpi_model()).DEFAULT_CONFIG
+DEFAULTS = get_board_props().DEFAULT_CONFIG
 
 
 def file_replace(fname, pat, s_after):

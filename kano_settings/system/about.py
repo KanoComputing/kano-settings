@@ -1,14 +1,14 @@
-#!/usr/bin/env python
-
+#
 # about.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2014, 2016 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Contains the about screen backend functions
 
 
-from kano.utils import run_cmd, get_rpi_model
+from kano.utils.shell import run_cmd
+from kano.utils.hardware import get_board_property, get_rpi_model
 
 
 def get_current_version():
@@ -44,8 +44,7 @@ def get_temperature():
 
 
 def get_model_name():
-    model_name = get_rpi_model()
-    # TODO: Good enough for now but re should review this
-    model = model_name.split('RPI/', 1)[-1].split('/', 1)[0]
+    model = get_rpi_model()
+    model_name = get_board_property(model, 'name')
 
-    return "Raspberry Pi {}".format(model)
+    return model_name

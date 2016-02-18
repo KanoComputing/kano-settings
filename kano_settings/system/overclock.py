@@ -3,7 +3,7 @@
 # overclock.py
 #
 # Copyright (C) 2014-2016 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Backend overclock functions
 #
@@ -85,8 +85,8 @@ def restore_overclock_values(backup_config):
         set_config_value(key, backup_config.get_value(key))
 
 
-def change_overclock_value(config, board_name):
-    board = get_board_props(board_name)
+def change_overclock_value(config, board_name=None):
+    board = get_board_props(board_name=board_name)
 
     if not board:
         logger.error('Could not get overclocking settings for board')
@@ -119,8 +119,8 @@ def change_overclock_value(config, board_name):
     set_setting("Overclocking", config)
 
 
-def set_default_overclock_values(board_name):
-    board = get_board_props(board_name)
+def set_default_overclock_values(board_name=None):
+    board = get_board_props(board_name=board_name)
 
     if not board:
         logger.error('Could not get overclocking settings for board')
@@ -129,8 +129,8 @@ def set_default_overclock_values(board_name):
     change_overclock_value(board.CLOCKING['default'], board_name)
 
 
-def is_dangerous_overclock_value(config, board_name):
-    board = get_board_props(board_name)
+def is_dangerous_overclock_value(config, board_name=None):
+    board = get_board_props(board_name=board_name)
 
     if not board:
         logger.error('Could not get overclocking settings for board')

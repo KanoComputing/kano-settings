@@ -2,12 +2,10 @@
 
 # default.py
 #
-# Copyright (C) 2014,2015 Kano Computing Ltd.
+# Copyright (C) 2014-2016 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Function to restore factory default config.
-
-from kano.utils.hardware import get_rpi_model
 
 from kano_settings.system.audio import set_to_HDMI
 from kano_settings.boot_config import set_config_value, set_config_comment
@@ -38,7 +36,7 @@ def set_default_config():
     set_config_comment('kano_screen_used', 'xxx')
 
     # resetting overclocking settings
-    set_default_overclock_values(get_rpi_model())
+    set_default_overclock_values()
 
     # set the keyboard to default
     set_keyboard('en_US', 'generic')

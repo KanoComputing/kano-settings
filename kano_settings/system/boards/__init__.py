@@ -12,32 +12,42 @@ import re
 import pkgutil
 
 from kano.logging import logger
+from kano.utils.hardware import RPI_1_CPU_PROFILE, get_board_property, \
+    get_rpi_model
 
 
 __author__ = 'Kano Computing Ltd.'
 __email__ = 'dev@kano.me'
 
 
-def get_board_props(board_name):
-    # FIXME: Sort out support for boards which share names, i.e. with /+ suffix
-    board_name = re.sub(r'[-/ ]', '_', board_name).lower()
+def get_board_props(board_name=None):
+    if not board_name:
+        board_name = get_rpi_model()
+
+    cpu_profile = get_board_property(board_name, 'cpu_profile')
+
+    if not cpu_profile:
+        cpu_profile = RPI_1_CPU_PROFILE
+
+    board_module = re.sub(r'[-/ ]', '_', cpu_profile).lower()
+
     try:
         board = importlib.import_module(
-            '{}.{}'.format(__name__, board_name)
+            '{}.{}'.format(__name__, board_module)
         )
     except ImportError:
         logger.error('Board not found')
         return None
 
-    if not hasattr(board, 'CLOCKING'):
-        logger.error('No clocking data in board config')
-        return None
+    required_props = ['CLOCKING', 'DEFAULT_CONFIG']
 
-    '''
-    if not all([key in board.CLOCKING for key in CLOCK_KEYS]):
-        logger.error('Malformed clocking data in board config')
-        return None
-    '''
+    for prop in required_props:
+        if not hasattr(board, prop):
+            logger.error('No {} data in board config'
+                         .format(prop.replace('_', ' ').lower()))
+            return None
+
+    # TODO: Validate board info
 
     return board
 

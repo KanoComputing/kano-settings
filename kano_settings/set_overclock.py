@@ -2,8 +2,8 @@
 
 # set_overclock.py
 #
-# Copyright (C) 2014, 2015 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2014-2016 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 
 from gi.repository import Gdk
@@ -24,8 +24,7 @@ class SetOverclock(RadioButtonTemplate):
     initial_button = 0
 
     def __init__(self, win):
-        self._model = get_rpi_model()
-        self._board_props = get_board_props(self._model)
+        self._board_props = get_board_props()
         self._board_clocking = self._board_props.CLOCKING
 
         options = []
@@ -75,7 +74,7 @@ class SetOverclock(RadioButtonTemplate):
             config = self._board_clocking['modes'][self.selected_button]
             change_overclock = True
 
-            if is_dangerous_overclock_value(config, self._model):
+            if is_dangerous_overclock_value(config):
 
                 kdialog = KanoDialog(
                     title_text="Warning",
@@ -101,7 +100,7 @@ class SetOverclock(RadioButtonTemplate):
                 change_overclock = kdialog.run()
 
             if change_overclock:
-                change_overclock_value(config, self._model)
+                change_overclock_value(config)
 
                 # Tell user to reboot to see changes
                 end_config_transaction()

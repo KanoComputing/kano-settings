@@ -2,7 +2,7 @@
 
 # boot_config.py
 #
-# Copyright (C) 2014,2015 Kano Computing Ltd.
+# Copyright (C) 2014-2016 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Functions controlling reading and writing to /boot/config.txt
@@ -43,11 +43,18 @@ def set_dry_run():
 
 class BootConfig:
     # Class which knows how to make individual modifications to a config file.
-    # Shoudl only be used within this module to allow locking.
-    
+    # Should only be used within this module to allow locking.
+
     def __init__(self, path=boot_config_standard_path, read_only=True):
         self.path = path
         self.read_only = read_only
+
+    @staticmethod
+    def new_from_model(model):
+        model = re.sub(r'[-/ ]', '', model).lower()
+        model_config_file = BACKUP_BOOT_CONFIG_TEMPLATE.format(model=model)
+
+        return BootConfig(model_config_file)
 
     def exists(self):
         return os.path.exists(self.path)

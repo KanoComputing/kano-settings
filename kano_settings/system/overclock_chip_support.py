@@ -1,6 +1,6 @@
 # overclock_chip_support.py
 #
-# Copyright (C) 2015 Kano Computing Ltd.
+# Copyright (C) 2015-2016 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Code to configure clock settings on boot.
@@ -18,7 +18,7 @@
 from kano.utils.hardware import get_rpi_model
 from kano.logging import logger
 
-from kano_settings.boot_config import BACKUP_BOOT_CONFIG_TEMPLATE, BootConfig
+from kano_settings.boot_config import BootConfig
 from kano_settings.system import overclock
 
 
@@ -39,6 +39,7 @@ def restore_config(config, model):
         # no saved config for the new chip, set to default
         overclock.set_default_overclock_values(model)
 
+
 def check_clock_config_matches_chip():
     """  Check if the clock setting in the current config is supported on
          the chip we have booted on.
@@ -53,15 +54,13 @@ def check_clock_config_matches_chip():
         # Config looks good
         return False
 
-    new_config_file = BACKUP_BOOT_CONFIG_TEMPLATE.format(model=current_model)
-    new_config = BootConfig(new_config_file)
+    new_config = BootConfig.new_from_model(current_model)
     if old_model:
         logger.info("Config settings match for {} but running {}. "
                     "Backing up old settings and restoring new settings"
                     .format(old_model, current_model))
 
-        old_config_file = BACKUP_BOOT_CONFIG_TEMPLATE.format(model=old_model)
-        old_config = BootConfig(old_config_file)
+        old_config = BootConfig.new_from_model(old_model)
         overclock.backup_overclock_values(old_config)
 
     restore_config(new_config, current_model)
