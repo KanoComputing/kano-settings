@@ -8,22 +8,23 @@
 # Functions controlling reading and writing to /boot/config.txt
 #
 # NOTE this api has changed to use a transactional approach.
-# See documentation at the start of ConfigTransaction() 
+# See documentation at the start of ConfigTransaction()
 
+import atexit
 import re
 import os
 import sys
 import shutil
 import tempfile
-from kano.utils import read_file_contents_as_lines
-from kano.utils import is_number, open_locked
+
+from kano.utils.file_operations import read_file_contents_as_lines, open_locked
+from kano.utils.misc import is_number
 from kano.logging import logger
-import atexit
 
 boot_config_standard_path = "/boot/config.txt"
-boot_config_pi1_backup_path = "/boot/config_pi1_backup.txt"
-boot_config_pi2_backup_path = "/boot/config_pi2_backup.txt"
+BACKUP_BOOT_CONFIG_TEMPLATE = "/boot/config_{model}_backup.txt"
 default_config_path = "/usr/share/kano-settings/boot_default/config.txt"
+
 tvservice_path = '/usr/bin/tvservice'
 boot_config_safemode_backup_path = '/boot/config.txt.orig'
 lock_dir = '/run/lock'
@@ -386,9 +387,6 @@ class ConfigTransaction:
     def abort(self):
         os.remove(self.temp_path)
         self.set_state_idle()
-
-pi1_backup_config = BootConfig(boot_config_pi1_backup_path)
-pi2_backup_config = BootConfig(boot_config_pi2_backup_path)
 
 
 def enforce_pi():

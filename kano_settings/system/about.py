@@ -8,7 +8,7 @@
 # Contains the about screen backend functions
 
 
-from kano.utils import run_cmd, is_model_a, is_model_b, is_model_b_plus, is_model_2_b
+from kano.utils import run_cmd, get_rpi_model
 
 
 def get_current_version():
@@ -44,13 +44,8 @@ def get_temperature():
 
 
 def get_model_name():
-    if is_model_a():
-        model = "A"
-    elif is_model_b():
-        model = "B"
-    elif is_model_b_plus():
-        model = "B+"
-    elif is_model_2_b():
-        model = "2"
+    model_name = get_rpi_model()
+    # TODO: Good enough for now but re should review this
+    model = model_name.split('RPI/', 1)[-1].split('/', 1)[0]
 
     return "Raspberry Pi {}".format(model)

@@ -7,12 +7,13 @@
 #
 # Function to restore factory default config.
 
+from kano.utils.hardware import get_rpi_model
+
 from kano_settings.system.audio import set_to_HDMI
 from kano_settings.boot_config import set_config_value, set_config_comment
 from kano_settings.boot_config import end_config_transaction
 from kano_settings.system.overclock import set_default_overclock_values
 from kano_settings.system.keyboard_config import set_keyboard
-from kano.utils import is_model_2_b
 
 
 def set_default_config():
@@ -37,7 +38,7 @@ def set_default_config():
     set_config_comment('kano_screen_used', 'xxx')
 
     # resetting overclocking settings
-    set_default_overclock_values(is_model_2_b())
+    set_default_overclock_values(get_rpi_model())
 
     # set the keyboard to default
     set_keyboard('en_US', 'generic')

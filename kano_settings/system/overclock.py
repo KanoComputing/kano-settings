@@ -2,100 +2,76 @@
 
 # overclock.py
 #
-# Copyright (C) 2014, 2015 Kano Computing Ltd.
+# Copyright (C) 2014-2016 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 # Backend overclock functions
 #
 
-from kano_settings.boot_config import set_config_value, get_config_value
 from kano.logging import logger
+from kano_settings.boot_config import set_config_value, get_config_value
 from kano_settings.config_file import set_setting
+from kano_settings.system.boards import get_board_props, \
+    get_supported_boards_props
 
 
-CLOCK_RPI1 = False
-CLOCK_RPI2 = True
-
-CLOCK_KEYS = ['arm_freq', 'core_freq','sdram_freq', 'over_voltage']
-
-CLOCK_MODES = {
-
-    CLOCK_RPI1: {
-        'modes': ['None', 'Modest', 'Medium', 'High', 'Turbo'],
-        'default': 'High',
-        'warning': ['Turbo'],
-        'values': {
-            'None': {
-                'arm_freq': 700,
-                'core_freq': 250,
-                'sdram_freq': 400,
-                'over_voltage': 0
-            },
-            'Modest': {
-                'arm_freq':  800,
-                'core_freq':  250,
-                'sdram_freq':  400,
-                'over_voltage':  0
-            },
-            'Medium': {
-                'arm_freq': 900,
-                'core_freq': 250,
-                'sdram_freq': 450,
-                'over_voltage': 2
-            },
-            'High': {
-                'arm_freq': 950,
-                'core_freq': 250,
-                'sdram_freq': 450,
-                'over_voltage': 6,
-            },
-            'Turbo': {
-                'arm_freq': 1000,
-                'core_freq': 500,
-                'sdram_freq': 600,
-                'over_voltage': 6,
-            }
-        }
-    },
-
-    CLOCK_RPI2: {
-        'modes': ['Standard', 'Overclocked'],
-        'default': 'Standard',
-        'warning': ['Overclocked'],
-        'values': {
-            'Standard': {
-                'arm_freq': 900,
-                'core_freq': 250,
-                'sdram_freq': 450,
-                'over_voltage': 0
-            },
-            # from https://github.com/asb/raspi-config/blob/4ee1fde44ee544a7eade9ecf94141eb40aabab60/raspi-config#L288
-            'Overclocked': {
-                'arm_freq': 1000,
-                'core_freq': 500,
-                'sdram_freq': 500,
-                'over_voltage': 2
-            }
-        }
-    }
-
-}
+CLOCK_KEYS = [
+    'arm_freq',
+    'core_freq',
+    'sdram_freq',
+    'over_voltage'
+]
 
 
 def values_equal(v1, v2):
     return all([v1[x] == v2[x] for x in CLOCK_KEYS])
 
 
-def match_overclock_value(is_pi2):
+def match_overclock_value(board_name):
     """ which overlock gui setting matches our current set of values?"""
     curr = {}
     for key in CLOCK_KEYS:
         curr[key] = get_config_value(key)
 
-    for row in CLOCK_MODES[is_pi2]['values']:
-        if values_equal(CLOCK_MODES[is_pi2]['values'][row], curr):
+    board = get_board_props(board_name)
+
+    if not board:
+        logger.error('Could not get overclocking settings for board')
+        return
+
+    values = board.CLOCKING['values']
+
+    for row in values:
+        if values_equal(values[row], curr):
             return row
     return None
+
+def get_board_with_overclock_value():
+    curr = {}
+    for key in CLOCK_KEYS:
+        curr[key] = get_config_value(key)
+
+    def does_board_match(board):
+        values = board.CLOCKING['values']
+
+        for row in values:
+            if values_equal(values[row], curr):
+                return True
+
+        return False
+
+
+    boards = get_supported_boards_props()
+
+    if not boards:
+        logger.error('Could not get overclocking settings for any board')
+        return
+
+    for board_name, board_props in boards.iteritems():
+        if does_board_match(board_props):
+            return board_name
+
+    return False
 
 
 def backup_overclock_values(backup_config):
@@ -109,9 +85,15 @@ def restore_overclock_values(backup_config):
         set_config_value(key, backup_config.get_value(key))
 
 
-def change_overclock_value(config, is_pi2):
+def change_overclock_value(config, board_name):
+    board = get_board_props(board_name)
+
+    if not board:
+        logger.error('Could not get overclocking settings for board')
+        return
+
     try:
-        values = CLOCK_MODES[is_pi2]['values'][config]
+        values = board.CLOCKING['values'][config]
     except KeyError:
         logger.error(
             'kano-settings: set_overclock: SetOverclock: set_overclock(): '
@@ -137,9 +119,21 @@ def change_overclock_value(config, is_pi2):
     set_setting("Overclocking", config)
 
 
-def set_default_overclock_values(is_pi2):
-    change_overclock_value(CLOCK_MODES[is_pi2]['default'], is_pi2)
+def set_default_overclock_values(board_name):
+    board = get_board_props(board_name)
+
+    if not board:
+        logger.error('Could not get overclocking settings for board')
+        return
+
+    change_overclock_value(board.CLOCKING['default'], board_name)
 
 
-def is_dangerous_overclock_value(config, is_pi2):
-    return (config in CLOCK_MODES[is_pi2]['warning'])
+def is_dangerous_overclock_value(config, board_name):
+    board = get_board_props(board_name)
+
+    if not board:
+        logger.error('Could not get overclocking settings for board')
+        return
+
+    return config in board.CLOCKING['warning']
