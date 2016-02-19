@@ -15,7 +15,7 @@
 # We maintain two backup files, one for the pi1 one for the pi2.
 # If we think the current setting is for the other chip, we save i
 
-from kano.utils.hardware import get_rpi_model
+from kano.utils.hardware import get_rpi_model, get_board_property
 from kano.logging import logger
 
 from kano_settings.boot_config import BootConfig
@@ -48,19 +48,23 @@ def check_clock_config_matches_chip():
     """
 
     current_model = get_rpi_model()
-    old_model = overclock.get_board_with_overclock_value()
+    current_model_profile = get_board_property(current_model, 'cpu_profile')
+    old_model_profile = overclock.get_matching_board_profile()
+    logger.debug('Checked the two boards, the old one is {} type '
+                 'and the new one is {} type'
+                 .format(old_model_profile, current_model_profile))
 
-    if current_model == old_model:
+    if current_model_profile == old_model_profile:
         # Config looks good
         return False
 
     new_config = BootConfig.new_from_model(current_model)
-    if old_model:
+    if old_model_profile:
         logger.info("Config settings match for {} but running {}. "
                     "Backing up old settings and restoring new settings"
-                    .format(old_model, current_model))
+                    .format(old_model_profile, current_model_profile))
 
-        old_config = BootConfig.new_from_model(old_model)
+        old_config = BootConfig.new_from_model(old_model_profile)
         overclock.backup_overclock_values(old_config)
 
     restore_config(new_config, current_model)

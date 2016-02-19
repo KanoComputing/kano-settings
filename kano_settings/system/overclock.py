@@ -9,10 +9,11 @@
 #
 
 from kano.logging import logger
+from kano.utils.hardware import BOARD_PROPERTIES, get_board_property
+
 from kano_settings.boot_config import set_config_value, get_config_value
 from kano_settings.config_file import set_setting
-from kano_settings.system.boards import get_board_props, \
-    get_supported_boards_props
+from kano_settings.system.boards import get_board_props
 
 
 CLOCK_KEYS = [
@@ -46,7 +47,7 @@ def match_overclock_value(board_name):
             return row
     return None
 
-def get_board_with_overclock_value():
+def get_matching_board_profile():
     curr = {}
     for key in CLOCK_KEYS:
         curr[key] = get_config_value(key)
@@ -54,22 +55,19 @@ def get_board_with_overclock_value():
     def does_board_match(board):
         values = board.CLOCKING['values']
 
-        for row in values:
-            if values_equal(values[row], curr):
+        for oc_setting in values.itervalues():
+            if values_equal(oc_setting, curr):
                 return True
 
         return False
 
+    for board_key in BOARD_PROPERTIES.iterkeys():
+        board_props = get_board_props(board_key)
 
-    boards = get_supported_boards_props()
-
-    if not boards:
-        logger.error('Could not get overclocking settings for any board')
-        return
-
-    for board_name, board_props in boards.iteritems():
         if does_board_match(board_props):
-            return board_name
+            logger.debug('Matched the board {} with the current settings'
+                         .format(board_key))
+            return get_board_property(board_key, 'cpu_profile')
 
     return False
 

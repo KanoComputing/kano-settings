@@ -50,10 +50,3 @@ def get_board_props(board_name=None):
     # TODO: Validate board info
 
     return board
-
-def get_supported_boards_props():
-    return {
-        board_name: get_board_props(board_name)
-        for dummy_importer, board_name, dummy
-        in pkgutil.iter_modules([__path__])
-    }
