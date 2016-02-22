@@ -11,10 +11,14 @@
 import os
 import re
 import shutil
-from kano.utils import ensure_dir, get_user_unsudoed, read_json, write_json, chown_path
+
 from kano.logging import logger
+from kano.utils.user import get_user_unsudoed
+from kano.utils.file_operations import ensure_dir, read_json, write_json, \
+    chown_path
+
 from kano_settings.common import settings_dir
-from kano.utils import is_model_2_b
+from kano_settings.system.boards import get_board_props
 
 USER = None
 USER_ID = None
@@ -27,46 +31,32 @@ if username != 'root':
     chown_path(settings_dir)
     settings_file = os.path.join(settings_dir, 'settings')
 
-defaults = {
-    'pi1': {
-        'Keyboard-continent-index': 1,
-        'Keyboard-country-index': 21,
-        'Keyboard-variant-index': 0,
-        'Keyboard-continent-human': 'america',
-        'Keyboard-country-human': 'United States',
-        'Keyboard-variant-human': 'Generic',
-        'Audio': 'Analogue',
-        'Wifi': '',
-        'Wifi-connection-attempted': False,
-        'Overclocking': 'High',
-        'Mouse': 'Normal',
-        'Font': 'Normal',
-        'Wallpaper': 'kanux-background',
-        'Parental-level': 0,
-        'Locale': 'en_US',
-        'LED-Speaker-anim': False,
-        'Use_GLX': False
-    },
-    'pi2': {
-        'Keyboard-continent-index': 1,
-        'Keyboard-country-index': 21,
-        'Keyboard-variant-index': 0,
-        'Keyboard-continent-human': 'america',
-        'Keyboard-country-human': 'United States',
-        'Keyboard-variant-human': 'Generic',
-        'Audio': 'Analogue',
-        'Wifi': '',
-        'Wifi-connection-attempted': False,
-        'Overclocking': 'Standard',
-        'Mouse': 'Normal',
-        'Font': 'Normal',
-        'Wallpaper': 'kanux-background',
-        'Parental-level': 0,
-        'Locale': 'en_US',
-        'LED-Speaker-anim': True,
-        'Use_GLX': False
-    }
+def merge_dicts(base, override):
+    for key, value in override.iteritems():
+        base[key] = value
+
+    return base
+
+DEFAULT_CONFIG = {
+    'Keyboard-continent-index': 1,
+    'Keyboard-country-index': 21,
+    'Keyboard-variant-index': 0,
+    'Keyboard-continent-human': 'america',
+    'Keyboard-country-human': 'United States',
+    'Keyboard-variant-human': 'Generic',
+    'Audio': 'Analogue',
+    'Wifi': '',
+    'Wifi-connection-attempted': False,
+    'Mouse': 'Normal',
+    'Font': 'Normal',
+    'Wallpaper': 'kanux-background',
+    'Parental-level': 0,
+    'Locale': 'en_US',
+    'LED-Speaker-anim': True,
+    'Use_GLX': False
 }
+
+DEFAULTS = merge_dicts(DEFAULT_CONFIG, get_board_props().DEFAULT_CONFIG)
 
 
 def file_replace(fname, pat, s_after):
@@ -102,25 +92,14 @@ def file_replace(fname, pat, s_after):
     logger.debug('config_file / file_replace file replaced')
 
 
-def get_pi_key():
-    pi2 = is_model_2_b()
-
-    key = "pi1"
-    if pi2:
-        key = "pi2"
-
-    return key
-
-
 def get_setting(variable):
 
     try:
         value = read_json(settings_file)[variable]
     except Exception:
-        key = get_pi_key()
-        if variable not in defaults[key]:
+        if variable not in DEFAULTS:
             logger.info('Defaults not found for variable: {}'.format(variable))
-        value = defaults[key][variable]
+        value = DEFAULTS[variable]
     return value
 
 

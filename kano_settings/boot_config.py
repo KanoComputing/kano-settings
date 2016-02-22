@@ -2,28 +2,29 @@
 
 # boot_config.py
 #
-# Copyright (C) 2014,2015 Kano Computing Ltd.
+# Copyright (C) 2014-2016 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Functions controlling reading and writing to /boot/config.txt
 #
 # NOTE this api has changed to use a transactional approach.
-# See documentation at the start of ConfigTransaction() 
+# See documentation at the start of ConfigTransaction()
 
+import atexit
 import re
 import os
 import sys
 import shutil
 import tempfile
-from kano.utils import read_file_contents_as_lines
-from kano.utils import is_number, open_locked
+
+from kano.utils.file_operations import read_file_contents_as_lines, open_locked
+from kano.utils.misc import is_number
 from kano.logging import logger
-import atexit
 
 boot_config_standard_path = "/boot/config.txt"
-boot_config_pi1_backup_path = "/boot/config_pi1_backup.txt"
-boot_config_pi2_backup_path = "/boot/config_pi2_backup.txt"
+BACKUP_BOOT_CONFIG_TEMPLATE = "/boot/config_{model}_backup.txt"
 default_config_path = "/usr/share/kano-settings/boot_default/config.txt"
+
 tvservice_path = '/usr/bin/tvservice'
 boot_config_safemode_backup_path = '/boot/config.txt.orig'
 lock_dir = '/run/lock'
@@ -42,11 +43,18 @@ def set_dry_run():
 
 class BootConfig:
     # Class which knows how to make individual modifications to a config file.
-    # Shoudl only be used within this module to allow locking.
-    
+    # Should only be used within this module to allow locking.
+
     def __init__(self, path=boot_config_standard_path, read_only=True):
         self.path = path
         self.read_only = read_only
+
+    @staticmethod
+    def new_from_model(model):
+        model = re.sub(r'[-/ ]', '', model).lower()
+        model_config_file = BACKUP_BOOT_CONFIG_TEMPLATE.format(model=model)
+
+        return BootConfig(model_config_file)
 
     def exists(self):
         return os.path.exists(self.path)
@@ -386,9 +394,6 @@ class ConfigTransaction:
     def abort(self):
         os.remove(self.temp_path)
         self.set_state_idle()
-
-pi1_backup_config = BootConfig(boot_config_pi1_backup_path)
-pi2_backup_config = BootConfig(boot_config_pi2_backup_path)
 
 
 def enforce_pi():
