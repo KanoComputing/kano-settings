@@ -10,23 +10,7 @@
 #
 
 DEFAULT_CONFIG = {
-    'Keyboard-continent-index': 1,
-    'Keyboard-country-index': 21,
-    'Keyboard-variant-index': 0,
-    'Keyboard-continent-human': 'america',
-    'Keyboard-country-human': 'United States',
-    'Keyboard-variant-human': 'Generic',
-    'Audio': 'Analogue',
-    'Wifi': '',
-    'Wifi-connection-attempted': False,
-    'Overclocking': 'High',
-    'Mouse': 'Normal',
-    'Font': 'Normal',
-    'Wallpaper': 'kanux-background',
-    'Parental-level': 0,
-    'Locale': 'en_US',
-    'LED-Speaker-anim': False,
-    'Use_GLX': False
+    'Overclocking': 'High'
 }
 
 CLOCKING = {

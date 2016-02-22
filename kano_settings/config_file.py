@@ -31,7 +31,32 @@ if username != 'root':
     chown_path(settings_dir)
     settings_file = os.path.join(settings_dir, 'settings')
 
-DEFAULTS = get_board_props().DEFAULT_CONFIG
+def merge_dicts(base, override):
+    for key, value in override.iteritems():
+        base[key] = value
+
+    return base
+
+DEFAULT_CONFIG = {
+    'Keyboard-continent-index': 1,
+    'Keyboard-country-index': 21,
+    'Keyboard-variant-index': 0,
+    'Keyboard-continent-human': 'america',
+    'Keyboard-country-human': 'United States',
+    'Keyboard-variant-human': 'Generic',
+    'Audio': 'Analogue',
+    'Wifi': '',
+    'Wifi-connection-attempted': False,
+    'Mouse': 'Normal',
+    'Font': 'Normal',
+    'Wallpaper': 'kanux-background',
+    'Parental-level': 0,
+    'Locale': 'en_US',
+    'LED-Speaker-anim': True,
+    'Use_GLX': False
+}
+
+DEFAULTS = merge_dicts(DEFAULT_CONFIG, get_board_props().DEFAULT_CONFIG)
 
 
 def file_replace(fname, pat, s_after):
