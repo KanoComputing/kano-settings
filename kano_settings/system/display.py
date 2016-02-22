@@ -389,7 +389,7 @@ def set_gfx_driver(enabled):
         set_config_value('dtoverlay', 'vc4-kms-v3d')
         try:
             try:
-                os.makedirs(os.path.basename(fpturbo_conf_backup_path))
+                os.makedirs(os.path.dirname(fpturbo_conf_backup_path))
             except OSError as e:
                 if e.strerror == 'File exists':
                     pass
