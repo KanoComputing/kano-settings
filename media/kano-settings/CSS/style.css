@@ -212,3 +212,15 @@ GtkNotebook tab GtkLabel {
     background: #222200;
     border-radius: 3px;
 }
+
+/************************************************
+* Bluetooth selection screen
+************************************************/
+
+.white-bg {
+    background: #fff;
+}
+
+.grey-bg {
+    background: #f0f0f0;
+}

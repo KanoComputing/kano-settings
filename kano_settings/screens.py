@@ -1,6 +1,6 @@
 # screens.py
 #
-# Copyright (C) 2015 Kano Computing Ltd.
+# Copyright (C) 2015-2016 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Structures to hold the screens
@@ -22,6 +22,7 @@ from kano_settings.set_audio import SetAudio
 from kano_settings.set_display import SetDisplay
 from kano_settings.set_wifi import SetWifi, SetProxy
 from kano_settings.no_internet_screen import NoInternet
+from kano_settings.bluetooth_config import BluetoothConfig
 from kano_settings.set_overclock import SetOverclock
 from kano_settings.set_account import SetAccount
 from kano_settings.set_about import SetAbout
@@ -29,6 +30,7 @@ from kano_settings.set_advanced import SetAdvanced, SetPassword
 from kano_settings.set_style import SetStyle
 from kano_settings.set_wallpaper import FirstBootSetWallpaper
 from kano_settings.locale import LocaleConfig
+from kano_settings.system.bt.interface import is_bluetooth_available
 
 
 class Screen(object):
@@ -104,6 +106,8 @@ SCREENS = ScreenCollection([
     Screen('audio', 'Audio', SetAudio, screen_no=2, setting_param='Audio'),
     Screen('display', 'Display', SetDisplay, screen_no=3),
     Screen('wifi', 'WiFi', SetWifi, screen_no=4),
+    Screen('bluetooth', 'Bluetooth', BluetoothConfig,
+           on_home_screen=is_bluetooth_available()),
     Screen('overclocking', 'Overclocking', SetOverclock, screen_no=5,
            setting_param='Overclocking'),
     Screen('account', 'Account', SetAccount, screen_no=6),
