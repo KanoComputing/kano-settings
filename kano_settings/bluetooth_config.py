@@ -49,9 +49,15 @@ class BluetoothDeviceItem(Gtk.Box):
         self.pack_start(self._pair_button, False, False, 0)
 
     def _set_paired_button_state(self, *dummy_args, **dummy_kwargs):
-        label = 'Pair'.upper() if not self.device.connected \
-            else 'Unpair'.upper()
+        if not self.device.connected:
+            label = 'Pair'.upper()
+            colour = 'green'
+        else:
+            label = 'Unpair'.upper()
+            colour = 'red'
+
         self._pair_button.set_label(label)
+        self._pair_button.set_color(colour)
 
     def error(self, err_msg):
         KanoDialog(err_msg).run()
