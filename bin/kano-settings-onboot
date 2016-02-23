@@ -28,6 +28,7 @@ from kano_settings.boot_config import set_config_value, set_config_comment, \
     end_config_transaction, check_corrupt_config
 from kano_settings.system.audio import is_HDMI, set_to_HDMI
 from kano_settings.system.overclock_chip_support import check_clock_config_matches_chip
+from kano.utils.hardware import get_rpi_model, get_board_property
 
 logger.force_log_level('info')
 
@@ -152,6 +153,20 @@ def get_screen_information():
 
     return info
 
+def ensure_correct_browser():
+    model = get_rpi_model()
+    arch = get_board_property(model,'arch')
+    chromium_support = arch not in ['armv6']
+
+    if chromium_support:
+        browser = 'chromium-browser'
+    else:
+        browser = 'epiphany-browser'
+
+    if dry_run:
+        logger.debug("browser should be {}".format(browser))
+    else:
+        run_cmd('update-alternatives --set x-www-browser /usr/bin/{}'.format(browser))
 
 # Shared reboot flag for reconfiguring for rpi1/2 and video
 reboot_now = False
@@ -159,6 +174,9 @@ reboot_now = False
 # main program
 enforce_pi()
 enforce_root('Need to be root!')
+
+# ensure browser is configured to be one that works on the board
+ensure_correct_browser()
 
 # Check for corrupt config file
 if check_corrupt_config():
