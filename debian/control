@@ -11,7 +11,7 @@ Package: kano-settings
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}, kano-connect (= ${binary:Version}),
          python, python-gi, dante-client, kano-toolset (>= 2.4.0-1),
-         kano-profile (>= 2.1-1), gir1.2-gtk-3.0, libkdesk-dev, sentry (>= 0.5-0),
+         kano-profile (>= 2.1-1), gir1.2-gtk-3.0, libkdesk-dev, sentry (>= 0.5-1),
          python-bs4, python-pycountry, kano-i18n, libnss-mdns, avahi-daemon,
          kano-content, bluetooth
 Recommends: kano-fonts
