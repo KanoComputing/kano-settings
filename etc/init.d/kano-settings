@@ -18,6 +18,12 @@ case "$1" in
 
 	log_action_begin_msg "Running kano-settings-onboot"
 	/usr/bin/kano-settings-onboot
+        # Fix for noobs:
+        /sbin/setcap cap_net_raw+ep /bin/ping6 || true
+        /sbin/setcap cap_net_raw+ep /bin/ping || true
+        /sbin/setcap cap_net_raw+ep /usr/bin/fping6 || true
+        /sbin/setcap cap_net_raw+ep /usr/bin/fping || true
+        /sbin/setcap cap_dac_override,cap_sys_ptrace+ep /usr/bin/systemd-detect-virt || true
 	log_action_end_msg $?
 	;;
     stop)
