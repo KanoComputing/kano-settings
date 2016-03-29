@@ -10,6 +10,7 @@
 
 import os
 import sys
+import json
 from docopt import docopt
 
 if __name__ == '__main__' and __package__ is None:
@@ -103,7 +104,7 @@ def parse_args():
             print 'gfx_driver: {}'.format(get_gfx_driver())
 
         elif args['overscan']:
-            print 'Overscan values: {}'.format(read_overscan_values())
+            print 'Overscan values: {}'.format(json.dumps(read_overscan_values()))
 
 
 if __name__ == "__main__":
