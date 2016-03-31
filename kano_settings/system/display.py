@@ -242,6 +242,16 @@ def set_overscan_status(overscan_values):
     run_cmd(cmd)
 
 
+def read_overscan_values():
+    values={
+      'top': get_config_value('overscan_top')
+      'bottom': get_config_value('overscan_bottom')
+      'left': get_config_value('overscan_left')
+      'right': get_config_value('overscan_right')
+    }
+    return values
+
+
 def write_overscan_values(overscan_values):
     set_config_value('overscan_top', overscan_values['top'])
     set_config_value('overscan_bottom', overscan_values['bottom'])

@@ -10,6 +10,7 @@
 
 import os
 import sys
+import json
 from docopt import docopt
 
 if __name__ == '__main__' and __package__ is None:
@@ -18,7 +19,8 @@ if __name__ == '__main__' and __package__ is None:
         sys.path.insert(1, dir_path)
 
 from kano_settings.system.keyboard_config import set_saved_keyboard
-from kano_settings.system.display import get_gfx_driver, set_gfx_driver
+from kano_settings.system.display import get_gfx_driver, set_gfx_driver, \
+    read_overscan_values, write_overscan_values
 from kano_settings.config_file import get_setting
 
 verbose = False
@@ -28,12 +30,13 @@ def print_v(string):
         print string
 
 def parse_args():
+
     if args['-v'] or args['--verbose']:
         global verbose
         verbose = True
 
     if args['set']:
-        # Need to b e root to change settings
+        # Need to be root to change settings
         if os.environ['LOGNAME'] != 'root':
             exit("Error: Settings must be executed with root privileges")
 
@@ -54,9 +57,14 @@ def parse_args():
                 set_gfx_driver(True)
             elif args['disable']:
                 set_gfx_driver(False)
-            
-                
-                
+
+        elif args['overscan']:
+            overscan_values={ 'top': args['<top>'], 'bottom': args['<bottom>'],
+                              'left': args['<left>'], 'right' : args['<right>'] }
+
+            write_overscan_values(overscan_values)
+
+
     elif args['get']:
         if args['audio']:
             print_v(
@@ -95,6 +103,10 @@ def parse_args():
         elif args['gfx_driver']:
             print 'gfx_driver: {}'.format(get_gfx_driver())
 
+        elif args['overscan']:
+            print 'Overscan values: {}'.format(json.dumps(read_overscan_values()))
+
+
 if __name__ == "__main__":
     args = docopt("""
     Usage:
@@ -105,6 +117,8 @@ if __name__ == "__main__":
       kano-settings-cli [-v | --verbose] get network
       kano-settings-cli [-v | --verbose] get gfx_driver
       kano-settings-cli [-v | --verbose] set gfx_driver (enable | disable)
+      kano-settings-cli [-v | --verbose] get overscan
+      kano-settings-cli [-v | --verbose] set overscan <top> <left> <bottom> <right>
       kano-settings-cli -h | --help
 
     Options:
