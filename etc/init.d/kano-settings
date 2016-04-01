@@ -16,6 +16,12 @@ case "$1" in
         # Display a welcome message to the bootup terminal
         echo "Get ready... Kano is starting up." > /dev/tty1
 
+        # If Dashboard Onboot is installed (soft dependency),
+        # call him now. He enforces the kit to always go to Dashboard/Greeter.
+        if [ -x "/usr/bin/kano-dashboard-onboot" ]; then
+            /usr/bin/kano-dashboard-onboot
+        fi
+
 	log_action_begin_msg "Running kano-settings-onboot"
 	/usr/bin/kano-settings-onboot
         # Fix for noobs:
