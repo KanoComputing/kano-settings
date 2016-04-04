@@ -244,9 +244,9 @@ def set_overscan_status(overscan_values):
 
 def read_overscan_values():
     values={
-      'top': get_config_value('overscan_top')
-      'bottom': get_config_value('overscan_bottom')
-      'left': get_config_value('overscan_left')
+      'top': get_config_value('overscan_top'),
+      'bottom': get_config_value('overscan_bottom'),
+      'left': get_config_value('overscan_left'),
       'right': get_config_value('overscan_right')
     }
     return values
