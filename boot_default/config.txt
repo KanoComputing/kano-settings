@@ -67,5 +67,9 @@ dtparam=i2c_arm=on
 dtparam=i2c1=on
 # Enable SPI device
 dtparam=spi=on
+# Enable speaker
+dtparam=audio=on
+
 
 # for more options see http://elinux.org/RPi_config.txt
+
