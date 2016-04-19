@@ -29,16 +29,29 @@ analogue_cmd = "amixer -c 0 cset numid=3 1"
 hdmi_cmd = "amixer -c 0 cset numid=3 2"
 
 
-try:
-    from kano_settings.system.display import get_edid
-    hdmi_supported = get_edid()['hdmi_audio']
-except Exception:
-    hdmi_supported = False
+
+def is_hdmi_audio_supported():
+    '''
+    Returns True if the display is HDMI and has audio support
+    '''
+    try:
+        from kano_settings.system.display import get_edid
+        hdmi_supported = get_edid()['hdmi_audio']
+    except Exception:
+        hdmi_supported = False
+
+    return hdmi_supported
 
 
-# set_to_HDMI = True or False
 def set_to_HDMI(HDMI):
-    if not hdmi_supported:
+    '''
+    Set audio output to HDMI if supported by the display,
+    otherwise set it to Analogue output.
+
+    Returns 'HDMI' or 'Analogue', whichever was applied.
+    '''
+
+    if not is_hdmi_audio_supported():
         HDMI = False
 
     # 1 analog
@@ -69,6 +82,7 @@ def set_to_HDMI(HDMI):
         logger.warn("error from alsa-utils: {} {} {}".format(o, e, rc))
 
     set_setting('Audio', config)
+    return config
 
 
 # Returns is_HDMI = True or False
