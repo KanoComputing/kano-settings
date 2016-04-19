@@ -61,10 +61,10 @@ def launch_pipe():
 def get_supported_modes(group):
     modes = {}
 
-    if not os.path.exists('/opt/vc/bin/tvservice'):
+    if not os.path.isfile(tvservice_path):
         return modes
 
-    cea_modes = subprocess.check_output(["/opt/vc/bin/tvservice", "-m", group.upper()])
+    cea_modes = subprocess.check_output([tvservice_path, "-m", group.upper()])
     cea_modes = cea_modes.decode()
     cea_modes = cea_modes.split("\n")[1:]
     mode_line_re = r'mode (\d+): (\d+x\d+) @ (\d+Hz) (\d+:\d+)'
@@ -204,7 +204,10 @@ def is_mode_fallback():
 
 
 def get_model():
-    cmd = '/opt/vc/bin/tvservice -n'
+    '''
+    Get the display device model name
+    '''
+    cmd = '{} -n'.format(tvservice_path)
     display_name, _, _ = run_cmd(cmd)
     display_name = display_name[16:].rstrip()
     return display_name
@@ -295,7 +298,7 @@ def read_edid():
     edid_dat_path = '/tmp/edid.dat'
 
     delete_file(edid_dat_path)
-    edid_txt, _, rc = run_cmd('tvservice -d {0} && edidparser {0}'.format(edid_dat_path))
+    edid_txt, _, rc = run_cmd('{0} -d {1} && edidparser {1}'.format(tvservice_path, edid_dat_path))
     edid_txt = edid_txt.splitlines()
     if rc != 0:
         logger.error('error getting edid dat')
