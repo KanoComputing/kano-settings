@@ -21,7 +21,6 @@ if __name__ == '__main__' and __package__ is None:
 from kano_settings.system.keyboard_config import set_saved_keyboard
 from kano_settings.system.display import get_gfx_driver, set_gfx_driver, \
     read_overscan_values, write_overscan_values
-from kano_settings.system.audio import set_to_HDMI
 from kano_settings.config_file import get_setting
 
 verbose = False
@@ -53,6 +52,9 @@ def parse_args():
                 hdmi_enabled = False
 
             print_v('setting audio to {}'.format(setting))
+
+            # only import on use, because this is slow
+            from kano_settings.system.audio import set_to_HDMI
             set_to_HDMI(hdmi_enabled)
         elif args['keyboard']:
             if args['--load']:
