@@ -11,7 +11,7 @@ import kano_settings.common as common
 from kano_settings.templates import Template
 from kano.logging import logger
 from kano_settings.config_file import get_setting
-from kano_settings.system.audio import set_to_HDMI, is_HDMI, hdmi_supported
+from kano_settings.system.audio import set_to_HDMI, is_HDMI, is_hdmi_audio_supported
 
 
 class SetAudio(Template):
@@ -77,7 +77,7 @@ class SetAudio(Template):
             self.win.go_to_home()
 
     def current_setting(self):
-        if not hdmi_supported:
+        if not is_hdmi_audio_supported():
             self.hdmi_button.set_active(False)
             self.hdmi_button.set_sensitive(False)
             self.analog_button.set_active(True)
