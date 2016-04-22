@@ -34,13 +34,18 @@ def is_hdmi_audio_supported():
     '''
     Returns True if the display is HDMI and has audio support
     '''
+    if is_hdmi_audio_supported.hdmi_supported is not None:
+        return is_hdmi_audio_supported.hdmi_supported
     try:
         from kano_settings.system.display import get_edid
-        hdmi_supported = get_edid()['hdmi_audio']
+        is_hdmi_audio_supported.hdmi_supported = get_edid()['hdmi_audio']
     except Exception:
-        hdmi_supported = False
+        is_hdmi_audio_supported.hdmi_supported = False
 
-    return hdmi_supported
+    return is_hdmi_audio_supported.hdmi_supported
+
+# local static variable to avoid calling tvservice more than once
+is_hdmi_audio_supported.hdmi_supported = None
 
 
 def set_to_HDMI(HDMI):
