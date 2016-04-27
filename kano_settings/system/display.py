@@ -85,15 +85,34 @@ def list_supported_modes():
     dmt_modes = get_supported_modes("DMT")
     modes = []
 
+
+    def is_resolution_supported(cea_dmt_resolution, min_x=1024, min_y=768):
+        '''
+        Returns True if CEA/DMT resolution is supported by Kano.
+        The string Format is expected in the form "widthxheight".
+        '''
+        try:
+            mode_x, mode_y = cea_dmt_resolution.lower().split('x')
+            if int(mode_x) >= min_x and int(mode_y) >= min_y:
+                return True
+            else:
+                return False
+        except:
+            # Unrecognized entry
+            return True
+
+
     for key in sorted(cea_modes):
         values = cea_modes[key]
-        string = "cea:{:d}  {}  {}  {}".format(key, values[0], values[1], values[2])
-        modes.append(string)
+        cea_string = "cea:{:d}  {}  {}  {}".format(key, values[0], values[1], values[2])
+        if is_resolution_supported(values[0]):
+            modes.append(cea_string)
 
     for key in sorted(dmt_modes):
         values = dmt_modes[key]
-        string = "dmt:{:d}  {}  {}  {}".format(key, values[0], values[1], values[2])
-        modes.append(string)
+        dmt_string = "dmt:{:d}  {}  {}  {}".format(key, values[0], values[1], values[2])
+        if is_resolution_supported(values[0]):
+            modes.append(dmt_string)
 
     return modes
 
