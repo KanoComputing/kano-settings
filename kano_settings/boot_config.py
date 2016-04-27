@@ -360,7 +360,6 @@ class ConfigTransaction:
             self.copy_from(default_config_path)
             return True
         return False
-        
 
     def close(self):
         if self.state == 2:
@@ -456,6 +455,8 @@ def safe_mode_backup_config():
 
 def safe_mode_restore_config():
     _trans().copy_from(boot_config_safemode_backup_path)
+    # remove backup file to indicate we are not in safe mode any more
+    os.unlink(boot_config_safemode_backup_path)
 
 
 def check_corrupt_config():
