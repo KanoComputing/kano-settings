@@ -185,12 +185,12 @@ class SetKeyboard(Template):
                 # The callback runs a GUI task, so wrap it!
                 GObject.idle_add(self.work_finished_cb)
 
-            # Apply changes
+            # Save the changes in the config file
+            self.update_config()
+
+            # An then apply the new saved changes
             thread = threading.Thread(target=lengthy_process)
             thread.start()
-
-            # Save the changes in the config
-            self.update_config()
 
             kano_keyboard = detect_kano_keyboard()
 
