@@ -122,6 +122,12 @@ class configSetTest(unittest.TestCase):
     # 'written' (The value that will be written back at the end of the transaction)
     # 'backup' (The value of the safe mode backup config)
 
+    def __init__(self, x):
+        # can only test restoring after a backup
+        self.backup_config_exists = False
+
+        unittest.TestCase.__init__(self, x)
+
 
     @unittest.skipIf('-fast' in sys.argv, 'Skipping because tests are in fast mode')
     def test_set_config(self):
@@ -141,7 +147,7 @@ class configSetTest(unittest.TestCase):
 
         def is_locked():
             # Check whether the lock is effective. Return true if the lock is held
-            
+
             import os
             py = os.path.join(os.path.dirname(__file__), 'try_lock.py')
             return os.system('python '+py) != 0
@@ -149,7 +155,7 @@ class configSetTest(unittest.TestCase):
         def test_read(configs):
             # Test all read methods
             # Check the result of the read against the 'written' config set.
-            
+
             which = random.randint(0, 3)
             present = random.randint(0, 1) == 1
             if which == 0:
@@ -204,6 +210,9 @@ class configSetTest(unittest.TestCase):
                 print "testing safe_mode_config_backup"
                 boot_config.safe_mode_backup_config()
 
+                # enable testing of restore
+                self.backup_config_exists = True
+
                 configs['backup'] = read_config(boot_config.boot_config_safemode_backup_path)
 
                 self.assertTrue(compare(configs['backup'], configs['written']))
@@ -218,7 +227,12 @@ class configSetTest(unittest.TestCase):
             self.assertTrue(is_locked())
 
         def test_write(configs):
-            which = random.randint(0, 2)
+
+            if self.backup_config_exists:
+                which = random.randint(0, 2)
+            else:
+                which = random.randint(0, 1)
+
             present = random.randint(0, 1) == 1
 
             before_write = configs['current'].copy()
@@ -245,9 +259,14 @@ class configSetTest(unittest.TestCase):
             elif which == 2:
                 # test restore_backup
 
+                self.assertTrue(self.backup_config_exists)  # bug in test if triggered
+
                 print "testing safe_mode_restore_backup"
                 boot_config.safe_mode_restore_config()
                 configs['written'] = read_config(boot_config._trans().temp_path)
+
+                self.backup_config_exists = False
+
 
                 self.assertTrue(compare(configs['backup'], configs['written']))
 
