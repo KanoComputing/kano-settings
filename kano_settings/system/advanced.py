@@ -37,12 +37,19 @@ hosts_mod_comment = '# Modified to add username'
 chromium_policy_file = '/etc/chromium/policies/managed/policy.json'
 sentry_config = os.path.join(settings_dir, 'sentry')
 
-youtube_safe_cookie = '/usr/share/kano-video/cookies/youtube_safe/cookies.db'
-youtube_nosafe_cookie = '/usr/share/kano-video/cookies/youtube_nosafe/cookies.db'
-browser_safe_cookie = '/usr/share/kano-video/cookies/browser_safe/cookies.db'
-browser_nosafe_cookie = '/usr/share/kano-video/cookies/browser_nosafe/cookies.db'
-midori_cookie = '.config/midori'
-youtube_cookie = '.config/midori/youtube'
+# Google: Add extra seconday-level domains not covered in ISO 3166
+# http://en.wikipedia.org/wiki/Second-level_domain
+# http://en.wikipedia.org/wiki/List_of_Google_domains
+second_level_domains = [
+    'com.af', 'com.af', 'com.ag', 'com.ai', 'co.ao', 'com.ar', 'com.au', 'com.bd', 'com.bh', 'com.bn', 'com.bo', 'com.br',
+    'co.bw', 'com.bz', 'com.kh', 'co.ck', 'g.cn', 'com.co', 'co.cr', 'com.cu', 'com.cy', 'com.do', 'com.ec', 'com.eg',
+    'com.et', 'com.fj', 'com.gh', 'com.gi', 'com.gt', 'com.hk', 'co.id', 'co.il', 'co.in', 'com.jm', 'co.jp',
+    'co.ke', 'co.kr', 'com.kw', 'com.lb', 'com.lc', 'co.ls', 'com.ly', 'co.ma', 'com.mm', 'com.mt', 'com.mx',
+    'com.my', 'com.mz', 'com.na', 'com.nf', 'com.ng', 'com.ni', 'com.np', 'co.nz', 'com.om', 'com.pa', 'com.pe',
+    'com.ph', 'com.pk', 'com.pg', 'com.pr', 'com.py', 'com.qa', 'com.sa', 'com.sb', 'com.sg', 'com.sl', 'com.sv',
+    'co.th', 'com.tj', 'com.tn', 'com.tr', 'com.tw', 'co.tz', 'com.ua', 'co.ug', 'co.uk', 'com.uy', 'co.uz',
+    'com.vc', 'co.ve', 'co.vi', 'com.vn', 'co.za', 'co.zm', 'co.zw']
+
 
 username = get_user_unsudoed()
 
@@ -257,18 +264,6 @@ def add_safesearch_blacklist(hosts):
         add_blacklist_host(hosts, '{}.info.com'.format(country.alpha2.lower()))
         add_blacklist_host(hosts, '{}.alhea.com'.format(country.alpha2.lower()))
 
-    # Google: Add extra seconday-level domains not covered in ISO 3166
-    # http://en.wikipedia.org/wiki/Second-level_domain
-    # http://en.wikipedia.org/wiki/List_of_Google_domains
-    second_level_domains = [
-        'com.af', 'com.af', 'com.ag', 'com.ai', 'co.ao', 'com.ar', 'com.au', 'com.bd', 'com.bh', 'com.bn', 'com.bo', 'com.br',
-        'co.bw', 'com.bz', 'com.kh', 'co.ck', 'g.cn', 'com.co', 'co.cr', 'com.cu', 'com.cy', 'com.do', 'com.ec', 'com.eg',
-        'com.et', 'com.fj', 'com.gh', 'com.gi', 'com.gt', 'com.hk', 'co.id', 'co.il', 'co.in', 'com.jm', 'co.jp',
-        'co.ke', 'co.kr', 'com.kw', 'com.lb', 'com.lc', 'co.ls', 'com.ly', 'co.ma', 'com.mm', 'com.mt', 'com.mx',
-        'com.my', 'com.mz', 'com.na', 'com.nf', 'com.ng', 'com.ni', 'com.np', 'co.nz', 'com.om', 'com.pa', 'com.pe',
-        'com.ph', 'com.pk', 'com.pg', 'com.pr', 'com.py', 'com.qa', 'com.sa', 'com.sb', 'com.sg', 'com.sl', 'com.sv',
-        'co.th', 'com.tj', 'com.tn', 'com.tr', 'com.tw', 'co.tz', 'com.ua', 'co.ug', 'co.uk', 'com.uy', 'co.uz',
-        'com.vc', 'co.ve', 'co.vi', 'com.vn', 'co.za', 'co.zm', 'co.zw']
 
     for subdomain in second_level_domains:
         add_blacklist_host(hosts, 'google.{}'.format(subdomain))
@@ -338,15 +333,18 @@ def set_hosts_blacklist(enable, block_search,
 # Ultimate parental lock functions
 ####################################################
 
-def set_ultimate_parental(enable):
-    if enable:
+def set_ultimate_parental(ultimate, safesearch):
+    if ultimate or safesearch:
         # if server is running, kill it and restart it
         kill_server()
 
         # this is to get the most up to date whitelist
         restore_dns_interfaces()
         redirect_traffic_to_google()
-        parse_whitelist_to_config_file(sentry_config)
+        if ultimate:
+            parse_whitelist_to_config_file(sentry_config)
+        elif safesearch:
+            make_safesearch_config_file(sentry_config)
 
         # Now set resolv.conf to point to localhost
         clear_dns_interfaces()
@@ -400,6 +398,22 @@ def parse_whitelist_to_config_file(config):
     g.write(new_config)
     g.close()
     logger.debug("finished writing new ultimate parental control to {}".format(config))
+
+def make_safesearch_config_file(config_file):
+    new_config = { "port": 53, "host": "127.0.0.1", "rules":[]}
+    import pycountry, json
+    rule = "cname ^(?!forcesafesearch)(.*).(?:google|youtube).(?:{}) to forcesafesearch.google.com using 8.8.8.8, 8.8.4.4"    
+    country_names = [country.alpha2.lower() for country in pycountry.countries]
+    country_names.extend(second_level_domains)
+    country_names_re = '|'.join(country_names)
+    new_config["rules"].append(rule.format(country_names_re))
+    new_config["rules"].append("resolve ^(.*) using 8.8.8.8, 8.8.4.4")
+
+    logger.debug('new safesearch parental control config: {}'.format(new_config))
+    g = open(config_file, 'w+')
+    json.dump(new_config, g)
+    g.close()
+    logger.debug("finished writing new safesearch parental control to {}".format(config_file))    
 
 
 def get_whitelist():
@@ -506,70 +520,6 @@ def set_dns_parental(enabled):
     refresh_resolvconf()
 
 
-def set_everyone_cookies(enabled=None):
-    if enabled is None:
-        enabled = get_parental_level() >= 2
-
-    username = []
-    try:
-        for username in os.listdir("/home/"):
-            set_user_cookies(enabled, username)
-    except:
-        logger.error('Error applying Midori security to users ({})'.format(','.join(username)))
-
-
-def set_user_cookies(enabled=None, username=None):
-    if enabled is None:
-        enabled = get_parental_level() >= 2
-    if username is None:
-        return
-
-    # The cookie enables/disables safety mode in YouTube (Midori)
-    # The .db files are located in /usr/share/kano-video
-    homedir = "/home/{}".format(username)
-    if not os.path.isdir(homedir):
-        logger.error("Could not access user home dir: {}".format(homedir))
-        return
-
-    # Browser: Cookie needs to be copied to /home/USERNAME/.config/midori
-    midori_cookie_path = '{}/{}'.format(homedir, midori_cookie)
-    if os.path.exists(browser_safe_cookie) and \
-            os.path.exists(browser_nosafe_cookie) and \
-            os.path.exists(midori_cookie_path):
-
-        if enabled:
-            logger.debug('Enabling Browser Safety mode for browser on user {}'.format(username))
-            browser_cookie = browser_safe_cookie
-        else:
-            logger.debug('Disabling Browser Safety mode for browser on user {}'.format(username))
-            browser_cookie = browser_nosafe_cookie
-
-        # Copy cookie for this user
-        shutil.copy(browser_cookie, midori_cookie_path)
-
-        # Set correct permissions on file
-        chown_path('{}/cookies.db'.format(midori_cookie_path), username, username)
-
-    # YT: copy yo /home/USERNAME/.config/midori/youtube (kano-video-browser)
-    youtube_cookie_path = '{}/{}'.format(homedir, youtube_cookie)
-    if os.path.exists(youtube_safe_cookie) and \
-       os.path.exists(youtube_nosafe_cookie) and \
-       os.path.exists(youtube_cookie_path):
-
-        if enabled:
-            logger.debug('Enabling YouTube Safety mode for kano-video-browser on user {}'.format(username))
-            yt_cookie = youtube_safe_cookie
-        else:
-            logger.debug('Disabling YT Safety mode for kano-video-browser on user {}'.format(username))
-            yt_cookie = youtube_nosafe_cookie
-
-        # Copy cookie for this user
-        shutil.copy(yt_cookie, youtube_cookie_path)
-
-        # Set correct permissions on file
-        chown_path('{}/cookies.db'.format(youtube_cookie_path), username, username)
-
-
 def read_listed_sites():
     return (
         read_file_contents_as_lines(blacklist_file),
@@ -591,7 +541,7 @@ def set_parental_level(level_setting):
     # NB, we pass -1 to disable all
     feature_levels = [
         # Low
-        ['blacklist', 'cookies'],
+        ['blacklist', 'forcesafe'],
         # Medium
         ['dns'],
         # High
@@ -608,13 +558,13 @@ def set_parental_level(level_setting):
 
     logger.debug('Setting parental control to level {}'.format(level_setting))
 
-    if 'ultimate' in enabled:
-        set_ultimate_parental('ultimate' in enabled)
-    else:
-        set_ultimate_parental(False)
+    set_ultimate_parental('ultimate' in enabled, 'forcesafe' in enabled)
+    if 'ultimate' not in enabled:
         set_chromium_parental('chromium' in enabled)
+
+    # both ultimate and forcesafe set dns themselves, so don't override
+    if 'ultimate' not in enabled and 'forcesafe' not in enabled:
         set_dns_parental('dns' in enabled)
-        set_everyone_cookies('cookies' in enabled)
 
     # Blacklist setup
     blacklist, whitelist = read_listed_sites()
