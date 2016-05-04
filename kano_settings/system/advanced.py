@@ -342,8 +342,10 @@ def set_ultimate_parental(ultimate, safesearch):
         restore_dns_interfaces()
         redirect_traffic_to_google()
         if ultimate:
+            set_setting("use_sentry", "whitelist")
             parse_whitelist_to_config_file(sentry_config)
         elif safesearch:
+            set_setting("use_sentry", "safesearch")
             make_safesearch_config_file(sentry_config)
 
         # Now set resolv.conf to point to localhost
@@ -351,10 +353,13 @@ def set_ultimate_parental(ultimate, safesearch):
         redirect_traffic_to_localhost()
         launch_sentry_server(sentry_config)
 
+
     else:
         restore_dns_interfaces()
         redirect_traffic_to_google()
         kill_server()
+
+        set_setting("use_sentry", "")
 
 
 def redirect_traffic_to_google():

@@ -12,6 +12,7 @@ import sys
 import os
 from kano_settings.system.advanced import (sentry_config,
                                            parse_whitelist_to_config_file,
+                                           make_safesearch_config_file,
                                            launch_sentry_server)
 from kano_settings.common import settings_dir
 from kano.logging import logger
@@ -19,7 +20,7 @@ from kano.logging import logger
 
 def check_config():
     # Look at the setting to find the parental level
-    ultimate_parental = False
+    use_sentry = False
 
     settings_config = os.path.join(settings_dir, 'settings')
     if not os.path.exists(settings_config):
@@ -28,19 +29,25 @@ def check_config():
 
     f = open(settings_config, 'r')
 
-    # Check if the parental control is at the highest level 3.0
+    # Check if the parental control is at a level in which sentry is used
     for line in f:
         line = line.strip()
-        if '"Parental-level": 3.0' in line:
-            ultimate_parental = True
-            logger.debug("Ultimate parental control set in line {}".format(line))
+        whitelist = '"use_sentry": "whitelist"' in line
+        safesearch = '"use_sentry": "safesearch"' in line
+        if whitelist or safesearch:
+            use_sentry = True
+            logger.debug("Sentry use set in line {}".format(line))
         else:
-            logger.debug("Ultimate parental control is NOT set in line {}".format(line))
+            logger.debug("Sentry use is NOT set in line {}".format(line))
 
     # If the parental is at the highest level, start the sentry server
-    if ultimate_parental:
+    if use_sentry:
         # Functions contain logs
-        parse_whitelist_to_config_file(sentry_config)
+        if whitelist:
+            parse_whitelist_to_config_file(sentry_config)
+        else:
+            make_safesearch_config_file(sentry_config)
+
         launch_sentry_server(sentry_config)
         sys.exit(0)
 
