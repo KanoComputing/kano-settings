@@ -285,6 +285,10 @@ def set_hosts_blacklist(enable, block_search,
     if enable:
         logger.debug('enabling blacklist')
 
+        if os.path.exists(hosts_file_backup):
+            logger.debug('restoring original backup file')
+            shutil.copy(hosts_file_backup, hosts_file)
+
         # sanity check: this is a big file, looks like the blacklist is already in place
         if os.path.getsize(hosts_file) > 10000:
             logger.debug('skipping, hosts file is already too big')
