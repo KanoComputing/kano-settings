@@ -12,7 +12,6 @@ import sys
 import os
 from kano_settings.system.advanced import (sentry_config,
                                            parse_whitelist_to_config_file,
-                                           make_safesearch_config_file,
                                            launch_sentry_server)
 from kano_settings.common import settings_dir
 from kano.logging import logger
@@ -46,7 +45,8 @@ def check_config():
         if whitelist:
             parse_whitelist_to_config_file(sentry_config)
         else:
-            make_safesearch_config_file(sentry_config)
+            # No need to rebuild safesearch config, as it doesn't change
+            pass
 
         launch_sentry_server(sentry_config)
         sys.exit(0)
