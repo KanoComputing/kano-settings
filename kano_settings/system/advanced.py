@@ -37,6 +37,9 @@ hosts_mod_comment = '# Modified to add username'
 chromium_policy_file = '/etc/chromium/policies/managed/policy.json'
 sentry_config = os.path.join(settings_dir, 'sentry')
 
+opendns_servers = ['208.67.222.123', '208.67.220.123']
+google_servers = ['8.8.8.8', '8.8.4.4']
+
 # Google: Add extra seconday-level domains not covered in ISO 3166
 # http://en.wikipedia.org/wiki/Second-level_domain
 # http://en.wikipedia.org/wiki/List_of_Google_domains
@@ -282,12 +285,16 @@ def set_hosts_blacklist(enable, block_search,
     if enable:
         logger.debug('enabling blacklist')
 
+        if os.path.exists(hosts_file_backup):
+            logger.debug('restoring original backup file')
+            shutil.copy(hosts_file_backup, hosts_file)
+
         # sanity check: this is a big file, looks like the blacklist is already in place
         if os.path.getsize(hosts_file) > 10000:
             logger.debug('skipping, hosts file is already too big')
         else:
             logger.debug('making a backup of the original hosts file')
-            shutil.copyfile(hosts_file, hosts_file_backup)
+            shutil.copy(hosts_file, hosts_file_backup)
 
             logger.debug('appending the blacklist file')
             zipped_blacklist = gzip.GzipFile(blacklist_file)
@@ -330,10 +337,10 @@ def set_hosts_blacklist(enable, block_search,
             create_empty_hosts()
 
 
-# Ultimate parental lock functions
+# Dns-related parental config
 ####################################################
 
-def set_ultimate_parental(ultimate, safesearch):
+def set_dns_parental(ultimate, safesearch, opendns):
     if ultimate or safesearch:
         # if server is running, kill it and restart it
         kill_server()
@@ -342,32 +349,34 @@ def set_ultimate_parental(ultimate, safesearch):
         restore_dns_interfaces()
         redirect_traffic_to_google()
         if ultimate:
+            set_setting("use_sentry", "whitelist")
             parse_whitelist_to_config_file(sentry_config)
         elif safesearch:
-            make_safesearch_config_file(sentry_config)
+            set_setting("use_sentry", "safesearch")
+            make_safesearch_config_file(sentry_config, opendns)
 
         # Now set resolv.conf to point to localhost
         clear_dns_interfaces()
         redirect_traffic_to_localhost()
         launch_sentry_server(sentry_config)
 
+
     else:
         restore_dns_interfaces()
         redirect_traffic_to_google()
         kill_server()
 
+        set_setting("use_sentry", "")
+
 
 def redirect_traffic_to_google():
-    google_servers = [
-        '8.8.8.8',
-        '8.8.4.4'
-    ]
     set_dns(google_servers)
     refresh_resolvconf()
 
 
 def parse_whitelist_to_config_file(config):
     whitelist = get_whitelist()
+    servers = ', '.join(google_servers)
 
     new_config = (
         '{\n'
@@ -381,7 +390,7 @@ def parse_whitelist_to_config_file(config):
         line = line.strip()
         if line and not line.startswith('#'):
             allowed_url = (
-                "        \"resolve ^(.*){} using 8.8.8.8, 8.8.4.4\",\n".format(line)
+                "        \"resolve ^(.*){} using {}\",\n".format(line, servers)
             )
             new_config += allowed_url
             logger.debug("url {} being allowed in ultimate parental control".format(allowed_url))
@@ -399,15 +408,20 @@ def parse_whitelist_to_config_file(config):
     g.close()
     logger.debug("finished writing new ultimate parental control to {}".format(config))
 
-def make_safesearch_config_file(config_file):
+def make_safesearch_config_file(config_file, opendns):
     new_config = { "port": 53, "host": "127.0.0.1", "rules":[]}
+    if opendns:
+        servers = ', '.join(opendns_servers)
+    else:
+        # use google servers 
+        servers = ', '.join(google_servers)
     import pycountry, json
-    rule = "cname ^(?!forcesafesearch)(.*).(?:google|youtube).(?:{}) to forcesafesearch.google.com using 8.8.8.8, 8.8.4.4"    
+    rule = "cname ^(?!forcesafesearch)(.*).(?:google|youtube).(?:{}) to forcesafesearch.google.com using "+servers    
     country_names = [country.alpha2.lower() for country in pycountry.countries]
     country_names.extend(second_level_domains)
     country_names_re = '|'.join(country_names)
     new_config["rules"].append(rule.format(country_names_re))
-    new_config["rules"].append("resolve ^(.*) using 8.8.8.8, 8.8.4.4")
+    new_config["rules"].append("resolve ^(.*) using "+servers)
 
     logger.debug('new safesearch parental control config: {}'.format(new_config))
     g = open(config_file, 'w+')
@@ -497,29 +511,6 @@ def set_chromium_parental(enabled):
     set_chromium_policies(new_policy)
 
 
-def set_dns_parental(enabled):
-    open_dns_servers = [
-        '208.67.222.123',
-        '208.67.220.123'
-    ]
-
-    google_servers = [
-        '8.8.8.8',
-        '8.8.4.4'
-    ]
-
-    if enabled:
-        logger.debug('Enabling parental DNS servers (OpenDNS servers)')
-        set_dns(open_dns_servers)
-        clear_dns_interfaces()
-    else:
-        logger.debug('Disabling parental DNS servers (Google servers)')
-        set_dns(google_servers)
-        restore_dns_interfaces()
-
-    refresh_resolvconf()
-
-
 def read_listed_sites():
     return (
         read_file_contents_as_lines(blacklist_file),
@@ -558,13 +549,10 @@ def set_parental_level(level_setting):
 
     logger.debug('Setting parental control to level {}'.format(level_setting))
 
-    set_ultimate_parental('ultimate' in enabled, 'forcesafe' in enabled)
+    set_dns_parental('ultimate' in enabled, 'forcesafe' in enabled, 'dns' in enabled)
+
     if 'ultimate' not in enabled:
         set_chromium_parental('chromium' in enabled)
-
-    # both ultimate and forcesafe set dns themselves, so don't override
-    if 'ultimate' not in enabled and 'forcesafe' not in enabled:
-        set_dns_parental('dns' in enabled)
 
     # Blacklist setup
     blacklist, whitelist = read_listed_sites()

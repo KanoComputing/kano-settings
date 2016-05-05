@@ -15,6 +15,7 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, kano-connect (= ${binary:Version}),
          python-bs4, python-pycountry, kano-i18n, libnss-mdns, avahi-daemon,
          kano-content, bluetooth, pi-bluetooth
 Recommends: kano-fonts
+Breaks: kano-init (<<3.2.0-1)
 Description: Graphical tool to set different system settings
  This application is a GUI frontend to set multiple Kano OS functionalities
  like Wireless, Keyboard layout, Screen options, and Proxy.
