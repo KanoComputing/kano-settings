@@ -294,7 +294,7 @@ def set_hosts_blacklist(enable, block_search,
             logger.debug('skipping, hosts file is already too big')
         else:
             logger.debug('making a backup of the original hosts file')
-            shutil.copyfile(hosts_file, hosts_file_backup)
+            shutil.copy(hosts_file, hosts_file_backup)
 
             logger.debug('appending the blacklist file')
             zipped_blacklist = gzip.GzipFile(blacklist_file)
