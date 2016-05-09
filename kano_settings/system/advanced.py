@@ -436,7 +436,7 @@ def get_whitelist():
     try:
         online_whitelist = (
             "https://raw.githubusercontent.com/KanoComputing/kano-settings/"
-            "master/WHITELIST"
+            "jessie/WHITELIST"
         )
         html = urllib2.urlopen(online_whitelist).read()
         text = BeautifulSoup(html).get_text().encode('ascii', 'ignore')
