@@ -6,6 +6,7 @@
 # Structures to hold the screens
 #
 
+import os
 from collections import OrderedDict
 
 from kano.utils import get_user_unsudoed
@@ -112,6 +113,7 @@ SCREENS = ScreenCollection([
            setting_param='Overclocking'),
     Screen('account', 'Account', SetAccount, screen_no=6),
     Screen('appearance', 'Style', SetStyle, screen_no=7,
+           on_home_screen=os.environ.get('DESKTOP_MODE'),
            setting_param='Wallpaper'),
     Screen('font', 'Font', SetFont, screen_no=8, setting_param='Font'),
     Screen('advanced', 'Advanced', SetAdvanced, screen_no=9),
