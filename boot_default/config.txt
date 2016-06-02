@@ -76,3 +76,4 @@ dtparam=audio=on
 [pi3]
 # for light board
 enable_uart=1
+[all]
