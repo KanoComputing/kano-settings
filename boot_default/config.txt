@@ -73,3 +73,7 @@ dtparam=audio=on
 
 # for more options see http://elinux.org/RPi_config.txt
 
+[pi3]
+# for light board
+enable_uart=1
+[all]

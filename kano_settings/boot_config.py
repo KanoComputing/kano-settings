@@ -343,6 +343,10 @@ class ConfigTransaction:
     def copy_to(self, dest):
         # Copy to a file. Note that if we have modified in this transaction,
         # include the changes.
+
+        # Note that although internal, this function is used in
+        # kano-updater post-update scenario beta_310_to_beta_320
+        
         self.raise_state_to_locked()
         if self.temp_path:
             path = self.temp_path
@@ -351,6 +355,9 @@ class ConfigTransaction:
         shutil.copy2(path, dest)
 
     def copy_from(self, src):
+        # Note that although internal, this function is used in
+        # kano-updater post-update scenario beta_310_to_beta_320
+        
         self.set_state_writable()
         shutil.copy2(src, self.temp_path)
 
@@ -406,6 +413,8 @@ def enforce_pi():
 _transaction = None
 
 def _trans():
+    # Note that although internal, this function is used in
+    # kano-updater post-update scenario beta_310_to_beta_320
     global _transaction
     if not _transaction:
         _transaction = ConfigTransaction(boot_config_standard_path)
