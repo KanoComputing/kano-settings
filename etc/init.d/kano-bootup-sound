@@ -2,7 +2,7 @@
 
 ### BEGIN INIT INFO
 # Provides:          kano-bootup-sound
-# Required-Start:    $alsa-utils
+# Required-Start:    $alsa-restore
 # Required-Stop:
 # Default-Start:     2
 # Default-Stop:
