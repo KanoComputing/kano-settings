@@ -20,7 +20,7 @@ analogue_value = 1
 hdmi_value = 2
 hdmi_string = ": values={}".format(hdmi_value)
 
-store_cmd = "service alsa-utils restart"
+store_cmd = "service alsa-store restart"
 #amixer_set_cmd = "amixer -c 0 cset {control} {{value}}".format(
 #    control=amixer_control)
 amixer_get_cmd = "amixer -c 0 cget {control}".format(control=amixer_control)
@@ -81,10 +81,10 @@ def set_to_HDMI(HDMI):
     if rc:
         logger.warn("error from amixer: {} {} {}".format(o, e, rc))
 
-    # trigger alsa-utils to store the path in /var/lib/alsa/asound.state
+    # trigger alsa-store to store the path in /var/lib/alsa/asound.state
     o, e, rc = run_cmd(store_cmd)
     if rc:
-        logger.warn("error from alsa-utils: {} {} {}".format(o, e, rc))
+        logger.warn("error from alsa-store: {} {} {}".format(o, e, rc))
 
     set_setting('Audio', config)
     return config

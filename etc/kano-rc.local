@@ -14,7 +14,7 @@
 #
 
 #
-# NB audio is no loger controlled here, we just rely on alsa-utils.
+# NB audio is no longer controlled here, we just rely on alsa-(re)store.
 #
 
 /etc/rc.network
