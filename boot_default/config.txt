@@ -77,3 +77,6 @@ dtparam=audio=on
 # for light board
 enable_uart=1
 [all]
+
+# Decrease audio noise.
+disable_audio_dither=1
