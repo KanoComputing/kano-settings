@@ -48,7 +48,14 @@ def check_clock_config_matches_chip():
     """
 
     current_model = get_rpi_model()
+
     current_model_profile = get_board_property(current_model, 'cpu_profile')
+
+    if current_model_profile is None:
+        logger.error('Unknown pi model {}, not messing with config.txt',
+                     current_model)
+        return False
+
     old_model_profile = overclock.get_matching_board_profile()
     logger.debug('Checked the two boards, the old one is {} type '
                  'and the new one is {} type'
