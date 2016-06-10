@@ -21,6 +21,7 @@ etc/rc.network /etc
 etc/rc.overclock /etc
 etc/rc.others /etc
 etc/init.d /etc
+etc/polkit-1/localauthority/50-local.d/* /etc/polkit-1/localauthority/50-local.d
 
 etc_override /usr/share/kano-settings
 
