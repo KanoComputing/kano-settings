@@ -21,6 +21,9 @@ from kano.utils.file_operations import read_file_contents_as_lines, open_locked
 from kano.utils.misc import is_number
 from kano.logging import logger
 
+from kano_settings.boot_config_parser import BootConfigParser
+from kano_settings.boot_config_filter import Filter
+
 boot_config_standard_path = "/boot/config.txt"
 BACKUP_BOOT_CONFIG_TEMPLATE = "/boot/config_{model}_backup.txt"
 default_config_path = "/usr/share/kano-settings/boot_default/config.txt"
@@ -87,16 +90,15 @@ class BootConfig:
             for line in lines:
                 if line == noobs_line:
                     break
-                
+
                 boot_config_file.write(line + "\n")
-                
+
             # flush changes to disk
             boot_config_file.flush()
             os.fsync(boot_config_file.fileno())
 
 
     def check_corrupt(self):
-
         # Quick check for corrpution in config file.
         # Check that is has at least some expected data
         try:
@@ -113,7 +115,8 @@ class BootConfig:
                     found.add(m)
         return must_contain != found
 
-    def set_value(self, name, value=None):
+
+    def set_value(self, name, value=None, config_filter=Filter.ALL):
         # if the value argument is None, the option will be commented out
         lines = read_file_contents_as_lines(self.path)
         if not lines:  # this is true if the file is empty, not sure that was intended.
@@ -121,44 +124,23 @@ class BootConfig:
 
         logger.info('writing value to {} {} {}'.format(self.path, name, value))
 
-        option_re = r'^\s*#?\s*' + str(name) + r'=(.*)'
+        config = BootConfigParser(lines)
+        config.set(name, value if value else '0', config_filter=config_filter)
 
         with open_locked(self.path, "w") as boot_config_file:
-            was_found = False
-
-            for line in lines:
-                if re.match(option_re, line):
-                    was_found = True
-                    if value is not None:
-                        replace_str = str(name) + "=" + str(value)
-                    else:
-                        replace_str = r'#' + str(name) + r'=0'
-                    new_line = replace_str
-                else:
-                    new_line = line
-
-                boot_config_file.write(new_line + "\n")
-
-            if not was_found and value is not None:
-                boot_config_file.write(str(name) + "=" + str(value) + "\n")
+            boot_config_file.write(config.dump())
 
             # flush changes to disk
             boot_config_file.flush()
             os.fsync(boot_config_file.fileno())
 
-    def get_value(self, name):
+    def get_value(self, name, config_filter=Filter.ALL):
         lines = read_file_contents_as_lines(self.path)
         if not lines:
             return 0
 
-        for l in lines:
-            if l.startswith(name + '='):
-                value = l.split('=')[1]
-                if is_number(value):
-                    value = int(value)
-                return value
-
-        return 0
+        config = BootConfigParser(lines)
+        return config.get(name, config_filter=config_filter).value
 
     def set_comment(self, name, value):
         lines = read_file_contents_as_lines(self.path)
@@ -310,9 +292,9 @@ class ConfigTransaction:
 
         self.state = 2
 
-    def set_config_value(self, name, value=None):
+    def set_config_value(self, name, value=None, config_filter=Filter.ALL):
         self.set_state_writable()
-        self.temp_config.set_value(name, value)
+        self.temp_config.set_value(name, value, config_filter)
 
     def get_config_value(self, name):
         self.raise_state_to_locked()
@@ -420,8 +402,8 @@ def _trans():
         _transaction = ConfigTransaction(boot_config_standard_path)
     return _transaction
 
-def set_config_value(name, value=None):
-    _trans().set_config_value(name, value)
+def set_config_value(name, value=None, config_filter=Filter.ALL):
+    _trans().set_config_value(name, value, config_filter)
 
 
 def get_config_value(name):
