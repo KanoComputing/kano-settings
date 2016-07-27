@@ -1,3 +1,6 @@
+import os
+
+
 RESOLUTIONS = {
     '1280x800': {
         'group': 'dmt',
@@ -20,11 +23,8 @@ SCREENS = {
 }
 
 
-BASE_CONFIG_FILE_PATH = 'base_config.txt'
-import os
-print os.path.exists(BASE_CONFIG_FILE_PATH)
-print __dirname__
+BASE_CONFIG_FILENAME = 'base_config.txt'
+BASE_CONFIG_FILE_PATH = os.path.join(os.path.dirname(__file__), BASE_CONFIG_FILENAME)
+
 with open(BASE_CONFIG_FILE_PATH, 'r') as f:
     BASE_CONFIG_FILE = f.read()
-
-print BASE_CONFIG_FILE
