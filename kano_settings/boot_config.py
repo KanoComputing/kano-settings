@@ -45,6 +45,9 @@ class BootConfig:
     # Class which knows how to make individual modifications to a config file.
     # Should only be used within this module to allow locking.
 
+    CONFIG_FILTER_PATTERN = r'^\[(\w*)=?([\w\-]*)\]$'
+    CONFIG_FILTER_RE = re.compile(CONFIG_FILTER_PATTERN)
+
     def __init__(self, path=boot_config_standard_path, read_only=True):
         self.path = path
         self.read_only = read_only
@@ -113,7 +116,28 @@ class BootConfig:
                     found.add(m)
         return must_contain != found
 
-    def set_value(self, name, value=None):
+
+    @classmethod
+    def get_current_filter(cls, current_filter, line):
+        filter_match = cls.CONFIG_FILTER_RE.match(line)
+
+        if not filter_match:
+            return current_filter
+
+        filter_groups = filter_match.groups()
+        new_filter = filter_groups[0]
+
+        if filter_groups[1]:
+            new_filter += '=' + filter_groups[1]
+
+        return new_filter
+
+    @staticmethod
+    def sanitise_filter(config_filter):
+        pass
+
+
+    def set_value(self, name, value=None, config_filter=''):
         # if the value argument is None, the option will be commented out
         lines = read_file_contents_as_lines(self.path)
         if not lines:  # this is true if the file is empty, not sure that was intended.
@@ -122,12 +146,16 @@ class BootConfig:
         logger.info('writing value to {} {} {}'.format(self.path, name, value))
 
         option_re = r'^\s*#?\s*' + str(name) + r'=(.*)'
+        current_filter = ''
 
         with open_locked(self.path, "w") as boot_config_file:
             was_found = False
 
             for line in lines:
-                if re.match(option_re, line):
+                current_filter = self.get_current_filter(current_filter, line)
+
+                if current_filter == config_filter \
+                        and re.match(option_re, line):
                     was_found = True
                     if value is not None:
                         replace_str = str(name) + "=" + str(value)
@@ -140,19 +168,27 @@ class BootConfig:
                 boot_config_file.write(new_line + "\n")
 
             if not was_found and value is not None:
+                if config_filter:
+                    boot_config_file.write('[' + config_filter + ']\n')
+
                 boot_config_file.write(str(name) + "=" + str(value) + "\n")
 
             # flush changes to disk
             boot_config_file.flush()
             os.fsync(boot_config_file.fileno())
 
-    def get_value(self, name):
+    def get_value(self, name, config_filter=''):
         lines = read_file_contents_as_lines(self.path)
         if not lines:
             return 0
 
+        current_filter = ''
+
         for l in lines:
-            if l.startswith(name + '='):
+            current_filter = self.get_current_filter(current_filter, l)
+
+            if current_filter == config_filter \
+                    and l.startswith(name + '='):
                 value = l.split('=')[1]
                 if is_number(value):
                     value = int(value)
@@ -420,8 +456,8 @@ def _trans():
         _transaction = ConfigTransaction(boot_config_standard_path)
     return _transaction
 
-def set_config_value(name, value=None):
-    _trans().set_config_value(name, value)
+def set_config_value(name, value=None, config_filter=''):
+    _trans().set_config_value(name, value, config_filter)
 
 
 def get_config_value(name):
