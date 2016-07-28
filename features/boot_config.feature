@@ -1,6 +1,7 @@
 # language: en
 Feature: Settings reflected in the boot "config.txt" are updated correctly
 
+    @wip
     Scenario Outline: Setting a resolution applies it only to the current screen
         Given A screen with EDID "<edid>" is plugged in
         And The resolution is <start_resolution>

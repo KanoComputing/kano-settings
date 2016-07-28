@@ -148,7 +148,9 @@ class BootConfig:
         option_re = r'^\s*#?\s*' + str(name) + r'=(.*)'
         current_filter = ''
 
+        print('opening locked', self.path, 'exists?: ', os.path.exists(self.path))
         with open_locked(self.path, "w") as boot_config_file:
+            print('managed to open ', self.path)
             was_found = False
 
             for line in lines:
@@ -282,6 +284,7 @@ class ConfigTransaction:
 
         self.state = None
         self.set_state_idle()
+        print('setup', 'lockpath: ', self.lockpath)
 
     def valid_state(self):
         # validity condition for states
@@ -323,7 +326,9 @@ class ConfigTransaction:
     def raise_state_to_locked(self):
         if self.state == 0:
             self.state = 1
+            print('raising state and doing lock')
             self.lock = open_locked(self.lockpath, "w", timeout=lock_timeout)
+            print('raised state')
 
     def set_state_writable(self):
 
@@ -339,6 +344,7 @@ class ConfigTransaction:
             self.temp_path = temp.name
             logger.info("Enable modifications in  config transaction: {}".format(self.temp_path))
             temp.close()
+            print('copying', self.path, ' -> ', self.temp_path)
             shutil.copyfile(self.path, self.temp_path)
 
             # create temporary
@@ -346,9 +352,9 @@ class ConfigTransaction:
 
         self.state = 2
 
-    def set_config_value(self, name, value=None):
+    def set_config_value(self, name, value=None, config_filter=''):
         self.set_state_writable()
-        self.temp_config.set_value(name, value)
+        self.temp_config.set_value(name, value, config_filter)
 
     def get_config_value(self, name):
         self.raise_state_to_locked()

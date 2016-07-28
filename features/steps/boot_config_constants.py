@@ -1,6 +1,8 @@
 import os
 
 
+BOOT_CONFIG_FILEPATH = '/boot/config.txt'
+
 RESOLUTIONS = {
     '1280x800': {
         'group': 'dmt',
