@@ -96,7 +96,7 @@ class BootConfigParserTest(unittest.TestCase):
 
     def setUp(self):
         self.base_config = BASE_TEST_CONFIG
-        self.config = BootConfigParser(self.base_config.splitlines())
+        self.config = BootConfigParser(self.base_config)
 
     def tearDown(self):
         pass
@@ -111,12 +111,41 @@ class BootConfigParserTest(unittest.TestCase):
 
 class CheckParsingConfig(BootConfigParserTest):
 
+    def compare_config_dumps(self, config_1, config_2):
+        self.assertEqual(
+            self.sanitise_config(config_1),
+            self.sanitise_config(config_2)
+        )
+
     def test_dump_same(self):
         dump = self.config.dump()
-        self.assertEqual(
-            self.sanitise_config(self.base_config),
-            self.sanitise_config(dump)
-        )
+        self.compare_config_dumps(self.base_config, dump)
+
+    def test_list_init(self):
+        test = BootConfigParser(self.base_config.splitlines())
+        self.compare_config_dumps(self.base_config, test.dump())
+
+    def check_null_get(self, null_conf):
+        key = 'hdmi_mode'
+        line = null_conf.get(key)
+
+        self.assertEqual(line.setting, key)
+        self.assertEqual(line.value, '')
+
+    def test_none_init(self):
+        test = BootConfigParser(None)
+        self.check_null_get(test)
+
+    def test_empty_string_init(self):
+        test = BootConfigParser('')
+        self.check_null_get(test)
+
+    def test_empty_list_init(self):
+        test = BootConfigParser([])
+        self.check_null_get(test)
+
+    def test_iter(self):
+        self.assertEqual(len(self.config), len([_ for _ in self.config]))
 
 
 class CheckGettingConfigValues(BootConfigParserTest):

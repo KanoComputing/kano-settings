@@ -9,6 +9,12 @@ class BootConfigParser(object):
     CONFIG_FILTER_RE = re.compile(CONFIG_FILTER_PATTERN)
 
     def __init__(self, conf_file_lines, debug=False):
+        if not conf_file_lines:
+            conf_file_lines = []
+
+        if isinstance(conf_file_lines, basestring):
+            conf_file_lines = conf_file_lines.splitlines()
+
         self.current_filter = 'all'
         self.debug = debug
         self.config = []
@@ -30,10 +36,17 @@ class BootConfigParser(object):
         self.config.append(line)
 
     def __getitem__(self, item):
-        return self.config[item]
+        return self.get(item)
 
     def __setitem__(self, item, value):
-        self.config[item] = value
+        self.set(item, value)
+
+    def __iter__(self):
+        for line in self.config:
+            yield line
+
+    def __len__(self):
+        return len(self.config)
 
     def is_filter(self, line):
         if isinstance(line, BootConfigLine):
