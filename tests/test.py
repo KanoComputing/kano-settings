@@ -20,6 +20,8 @@ sys.path.insert(1, os.path.abspath(
 SUITE = unittest.TestSuite()
 TESTS = [
     'tests.i18n.test_locale',
+    'tests.boot_config.boot_config_parser',
+    'tests.boot_config.boot_config_line',
     'tests.boot_config.test_config'
 ]
 
