@@ -1,4 +1,3 @@
-import imp
 from behave import *
 
 try:
@@ -18,7 +17,18 @@ from steps.diff import Diff
 with mock.patch('atexit.register'):
     import kano_settings.boot_config as boot_config
 
-import kano_settings.system.display as display
+
+import pyfakefs.fake_filesystem as fake_fs
+
+def get_fake_fs():
+    fs = fake_fs.FakeFilesystem()
+    fs.CreateDirectory('/usr/share/kano-settings/media')
+
+    return fs
+
+
+with mock.patch('os.path', spec=fake_fs.FakeOsModule(get_fake_fs())):
+    import kano_settings.system.display as display
 
 
 @decorator

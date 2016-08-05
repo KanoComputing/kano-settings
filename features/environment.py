@@ -12,15 +12,15 @@ from pyfakefs.fake_filesystem_unittest import Patcher
 from steps.boot_config_constants import RESOLUTIONS, BASE_CONFIG_FILE, \
     BOOT_CONFIG_FILEPATH
 
+FAKE_FS = None
 
 @decorator
-def create_fs(func, ctx, *args, **kwargs):
+def refresh_fs(func, ctx, *args, **kwargs):
     print('creating fs')
     if not hasattr(ctx, 'patcher') or not ctx.patcher:
-        ctx.patcher = Patcher()
-        ctx.patcher.setUp()
-
+        ctx.patcher = FAKE_FS
         ctx.fs = ctx.patcher.fs
+
         # TODO: Move
         ctx.patcher.fs.CreateFile(
             BOOT_CONFIG_FILEPATH,
@@ -48,6 +48,7 @@ def destroy_fs(func, ctx, *args, **kwargs):
 
 
 def before_all(dummy_ctx):
+    from steps.fs import FAKE_FS
     pass
 
 
@@ -55,12 +56,12 @@ def before_feature(dummy_ctx, dummy_feature):
     pass
 
 
-@create_fs
+@refresh_fs
 def before_scenario(ctx, dummy_scenario):
     ctx.edid = None
 
 
-@destroy_fs
+# @destroy_fs
 def after_scenario(dummy_ctx, dummy_scenario):
     pass
 
