@@ -134,15 +134,15 @@ class BootConfig:
             boot_config_file.flush()
             os.fsync(boot_config_file.fileno())
 
-    def get_value(self, name, config_filter=Filter.ALL):
+    def get_value(self, name, config_filter=Filter.ALL, fallback=True):
         lines = read_file_contents_as_lines(self.path)
         if not lines:
             return 0
 
         config = BootConfigParser(lines)
-        return config.get(name, config_filter=config_filter).value
+        return config.get(name, config_filter=config_filter, fallback=fallback)
 
-    def set_comment(self, name, value):
+    def set_comment(self, name, value, config_filter=Filter.ALL):
         lines = read_file_contents_as_lines(self.path)
         if not lines:
             return
@@ -300,9 +300,11 @@ class ConfigTransaction:
         self.set_state_writable()
         self.temp_config.set_value(name, value, config_filter)
 
-    def get_config_value(self, name):
+    def get_config_value(self, name, config_filter=Filter.ALL, fallback=True):
         self.raise_state_to_locked()
-        return self.temp_config.get_value(name)
+        return self.temp_config.get_value(
+            name, config_filter=config_filter, fallback=fallback
+        )
 
     def set_config_comment(self, name, value):
         self.set_state_writable()
@@ -410,8 +412,10 @@ def set_config_value(name, value=None, config_filter=Filter.ALL):
     _trans().set_config_value(name, value, config_filter)
 
 
-def get_config_value(name):
-    return _trans().get_config_value(name)
+def get_config_value(name, config_filter=Filter.ALL, fallback=True):
+    return _trans().get_config_value(
+        name, config_filter=config_filter, fallback=fallback
+    )
 
 
 def set_config_comment(name, value):
