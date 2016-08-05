@@ -13,10 +13,13 @@ import re
 import subprocess
 import time
 import shutil
-from kano_settings.boot_config import set_config_value, get_config_value, end_config_transaction
+
+from kano_settings.boot_config import set_config_value, get_config_value, \
+    end_config_transaction
+from kano_settings.boot_config_filter import Filter
+from kano_settings.config_file import get_setting, set_setting
 from kano.utils import run_cmd, delete_file
 from kano.logging import logger
-from kano_settings.config_file import get_setting, set_setting
 
 
 tvservice_path = '/usr/bin/tvservice'
@@ -27,6 +30,38 @@ fpturbo_conf_path = '/usr/share/X11/xorg.conf.d/99-fbturbo.conf'
 fpturbo_conf_backup_path = '/var/cache/kano-settings/99-fbturbo.conf'
 
 
+MONITOR_EDID_NAME = None
+
+
+def get_edid_name(use_cached=True):
+    global MONITOR_EDID_NAME
+
+    if use_cached and MONITOR_EDID_NAME:
+        return MONITOR_EDID_NAME
+
+    edid_line, dummy, rc = run_cmd(
+        '{tvservice} -n'.format(tvservice=tvservice_path)
+    )
+
+    if rc != 0:
+        logger.error('Error getting EDID name')
+        return
+
+    MONITOR_EDID_NAME = edid_line.split('=')[-1]
+
+    return MONITOR_EDID_NAME
+
+
+def set_screen_value(key, value):
+    monitor_edid_filter = Filter.get_edid_filter(get_edid_name())
+    set_config_value(key, value, config_filter=monitor_edid_filter)
+
+
+def get_screen_value(key, fallback=True):
+    monitor_edid_filter = Filter.get_edid_filter(get_edid_name())
+    return get_config_value(
+        key, config_filter=monitor_edid_filter, fallback=fallback
+    )
 
 def switch_display_safe_mode():
     # NB this function appears to be unused
@@ -136,41 +171,41 @@ def set_hdmi_mode_live(group=None, mode=None, drive='HDMI'):
 
 def set_hdmi_mode(group=None, mode=None):
     if not group or not mode:
-        set_config_value("hdmi_group", None)
-        set_config_value("hdmi_mode", None)
+        set_screen_value("hdmi_group", None)
+        set_screen_value("hdmi_mode", None)
         return
 
     group = group.lower()
     mode = int(mode)
 
     if group == "cea":
-        set_config_value("hdmi_group", 1)
+        set_screen_value("hdmi_group", 1)
     else:
-        set_config_value("hdmi_group", 2)
+        set_screen_value("hdmi_group", 2)
 
-    set_config_value("hdmi_mode", mode)
+    set_screen_value("hdmi_mode", mode)
 
 # flip screen 180
 def set_flip(display_rotate=None):
     if display_rotate:
-        set_config_value("display_rotate", 2)
+        set_screen_value("display_rotate", 2)
     else:
-        set_config_value("display_rotate", 0)
+        set_screen_value("display_rotate", 0)
 
 def set_safeboot_mode():
     logger.warn("Safe boot requested")
 
-    set_config_value("hdmi_force_hotplug", 1)
-    set_config_value("config_hdmi_boost", 4)
+    set_screen_value("hdmi_force_hotplug", 1)
+    set_screen_value("config_hdmi_boost", 4)
 
-    set_config_value("hdmi_group", 2)
-    set_config_value("hdmi_mode", 16)
+    set_screen_value("hdmi_group", 2)
+    set_screen_value("hdmi_mode", 16)
 
-    set_config_value("disable_overscan", 1)
-    set_config_value("overscan_left", 0)
-    set_config_value("overscan_right", 0)
-    set_config_value("overscan_top", 0)
-    set_config_value("overscan_bottom", 0)
+    set_screen_value("disable_overscan", 1)
+    set_screen_value("overscan_left", 0)
+    set_screen_value("overscan_right", 0)
+    set_screen_value("overscan_top", 0)
+    set_screen_value("overscan_bottom", 0)
 
 
 
@@ -190,11 +225,11 @@ def get_status():
     status['full_range'] = 'RGB full' in status_str
 
     status['overscan'] = not (
-        get_config_value('disable_overscan') == 1 and
-        get_config_value('overscan_top') == 0 and
-        get_config_value('overscan_bottom') == 0 and
-        get_config_value('overscan_left') == 0 and
-        get_config_value('overscan_right') == 0
+        get_screen_value('disable_overscan') == 1 and
+        get_screen_value('overscan_top') == 0 and
+        get_screen_value('overscan_bottom') == 0 and
+        get_screen_value('overscan_left') == 0 and
+        get_screen_value('overscan_right') == 0
     )
 
     res, hz = status_str.split(',')[1].split('@')
@@ -265,41 +300,41 @@ def set_overscan_status(overscan_values):
 
 
 def read_overscan_values():
-    values={
-      'top': get_config_value('overscan_top'),
-      'bottom': get_config_value('overscan_bottom'),
-      'left': get_config_value('overscan_left'),
-      'right': get_config_value('overscan_right')
+    values = {
+        'top': get_screen_value('overscan_top'),
+        'bottom': get_screen_value('overscan_bottom'),
+        'left': get_screen_value('overscan_left'),
+        'right': get_screen_value('overscan_right')
     }
     return values
 
 
 def write_overscan_values(overscan_values):
-    set_config_value('overscan_top', overscan_values['top'])
-    set_config_value('overscan_bottom', overscan_values['bottom'])
-    set_config_value('overscan_left', overscan_values['left'])
-    set_config_value('overscan_right', overscan_values['right'])
+    set_screen_value('overscan_top', overscan_values['top'])
+    set_screen_value('overscan_bottom', overscan_values['bottom'])
+    set_screen_value('overscan_left', overscan_values['left'])
+    set_screen_value('overscan_right', overscan_values['right'])
     end_config_transaction()
 
 
 def is_overscan():
     # This completes a transaction to avoid kano-video holding the lock
-    top = get_config_value('overscan_top')
-    bottom = get_config_value('overscan_bottom')
-    left = get_config_value('overscan_left')
-    right = get_config_value('overscan_right')
+    top = get_screen_value('overscan_top')
+    bottom = get_screen_value('overscan_bottom')
+    left = get_screen_value('overscan_left')
+    right = get_screen_value('overscan_right')
     end_config_transaction()
     return (top or bottom or left or right)
 
 
 def read_hdmi_mode():
-    group_int = get_config_value('hdmi_group')
+    group_int = get_screen_value('hdmi_group')
     if group_int == 1:
         group_name = 'CEA'
     else:
         group_name = 'DMT'
 
-    mode = int(get_config_value('hdmi_mode'))
+    mode = int(get_screen_value('hdmi_mode'))
     return group_name, mode
 
 
