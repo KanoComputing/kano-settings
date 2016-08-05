@@ -16,8 +16,8 @@ import shutil
 
 from kano_settings.boot_config import set_config_value, get_config_value, \
     end_config_transaction
-from kano_settings.boot_config_filter import Filter
 from kano_settings.config_file import get_setting, set_setting
+from kano_settings.system.boot_config.boot_config_filter import Filter
 from kano.utils import run_cmd, delete_file
 from kano.logging import logger
 

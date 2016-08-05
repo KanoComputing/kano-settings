@@ -1,6 +1,6 @@
 import re
 
-from kano_settings.boot_config_filter import Filter
+from kano_settings.system.boot_config.boot_config_filter import Filter
 
 
 class BootConfigLine(object):

@@ -21,8 +21,8 @@ from kano.utils.file_operations import read_file_contents_as_lines, open_locked
 from kano.utils.misc import is_number
 from kano.logging import logger
 
-from kano_settings.boot_config_parser import BootConfigParser
-from kano_settings.boot_config_filter import Filter
+from kano_settings.system.boot_config.boot_config_parser import BootConfigParser
+from kano_settings.system.boot_config.boot_config_filter import Filter
 
 boot_config_standard_path = "/boot/config.txt"
 BACKUP_BOOT_CONFIG_TEMPLATE = "/boot/config_{model}_backup.txt"

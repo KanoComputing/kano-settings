@@ -1,8 +1,8 @@
 import unittest
 import warnings
 
-from kano_settings.boot_config_filter import Filter
-from kano_settings.boot_config_line import BootConfigLine
+from kano_settings.system.boot_config.boot_config_filter import Filter
+from kano_settings.system.boot_config.boot_config_parser import BootConfigLine
 
 
 class ConfigLineTest(unittest.TestCase):

@@ -2,7 +2,7 @@ import re
 import unittest
 import warnings
 
-from kano_settings.boot_config_parser import BootConfigParser
+from kano_settings.system.boot_config.boot_config_parser import BootConfigParser
 
 BASE_TEST_CONFIG = '''
 # uncomment if you get no picture on HDMI for a default "safe" mode
