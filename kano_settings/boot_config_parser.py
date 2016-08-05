@@ -71,7 +71,7 @@ class BootConfigParser(object):
 
         return True
 
-    def get(self, setting, config_filter=Filter.ALL):
+    def get_line(self, setting, config_filter=Filter.ALL, fallback=False):
         search = {
             'setting': setting,
             'filter': config_filter
@@ -81,10 +81,18 @@ class BootConfigParser(object):
             if line == search:
                 return line
 
+        if fallback and config_filter != Filter.ALL:
+            return self.get_line(setting, config_filter=Filter.ALL)
+
         return BootConfigLine({
             'setting': setting,
             'filter': config_filter
         })
+
+    def get(self, setting, config_filter=Filter.ALL, fallback=False):
+        return self.get_line(
+            setting, config_filter=config_filter, fallback=fallback
+            ).value
 
     def set(self, setting, value, config_filter=Filter.ALL):
         search = {

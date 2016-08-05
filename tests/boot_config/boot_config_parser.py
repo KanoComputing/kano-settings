@@ -127,7 +127,7 @@ class CheckParsingConfig(BootConfigParserTest):
 
     def check_null_get(self, null_conf):
         key = 'hdmi_mode'
-        line = null_conf.get(key)
+        line = null_conf.get_line(key)
 
         self.assertEqual(line.setting, key)
         self.assertEqual(line.value, '')
@@ -150,32 +150,36 @@ class CheckParsingConfig(BootConfigParserTest):
 
 class CheckGettingConfigValues(BootConfigParserTest):
 
-    def test_getting_unique_value(self):
-        sdram_freq = self.config.get('sdram_freq')
+    def test_getting_unique_line(self):
+        sdram_freq = self.config.get_line('sdram_freq')
         self.assertEqual(sdram_freq.value, '450')
         self.assertEqual(sdram_freq.is_comment, False)
 
-    def test_getting_duplicate_value(self):
-        arm_freq = self.config.get('arm_freq')
+    def test_getting_duplicate_line(self):
+        arm_freq = self.config.get_line('arm_freq')
         self.assertEqual(arm_freq.value, '900')
         self.assertEqual(arm_freq.is_comment, False)
 
-        arm_freq_rpi3 = self.config.get('arm_freq', 'rpi3')
+        arm_freq_rpi3 = self.config.get_line('arm_freq', 'rpi3')
         self.assertEqual(arm_freq_rpi3.value, '1200')
         self.assertEqual(arm_freq_rpi3.is_comment, False)
 
-    def test_getting_commented_value(self):
-        sdtv_mode = self.config.get('sdtv_mode')
+    def test_get_value(self):
+        arm_freq_rpi3 = self.config.get('arm_freq', 'rpi3')
+        self.assertEqual(arm_freq_rpi3, '1200')
+
+    def test_getting_commented_line(self):
+        sdtv_mode = self.config.get_line('sdtv_mode')
         self.assertEqual(sdtv_mode.value, '2')
         self.assertEqual(sdtv_mode.is_comment, True)
 
     def test_getting_compound_key(self):
-        dtparam_mode = self.config.get('dtparam=i2c_arm')
+        dtparam_mode = self.config.get_line('dtparam=i2c_arm')
         self.assertEqual(dtparam_mode.value, 'on')
         self.assertEqual(dtparam_mode.is_comment, False)
 
-    def test_get_reset_value(self):
-        hdmi_group = self.config.get('hdmi_group')
+    def test_get_reset_line(self):
+        hdmi_group = self.config.get_line('hdmi_group')
         self.assertEqual(hdmi_group.value, '1')
         self.assertEqual(hdmi_group.is_comment, False)
 
@@ -183,9 +187,20 @@ class CheckGettingConfigValues(BootConfigParserTest):
             'Should the value returned from `get` be the old value '
             'or the new one?'
         )
-        hdmi_group_rpi3 = self.config.get('hdmi_group', 'EDID=VSC-TD2220')
+        hdmi_group_rpi3 = self.config.get_line('hdmi_group', 'EDID=VSC-TD2220')
         self.assertEqual(hdmi_group_rpi3.value, '2')
         self.assertEqual(hdmi_group_rpi3.is_comment, False)
+
+    def test_get_filterless_with_filter(self):
+        line = self.config.get_line('gpu_mem', config_filter='rpi3')
+        self.assertEqual(line.value, '')
+
+    def test_get_filterless_with_filter_fallback(self):
+        line = self.config.get_line(
+            'gpu_mem', config_filter='rpi3', fallback=True
+        )
+        self.assertEqual(line.value, '128')
+
 
 
 class CheckSettingConfigValues(BootConfigParserTest):
@@ -194,7 +209,7 @@ class CheckSettingConfigValues(BootConfigParserTest):
         new_val = 400
         self.config.set('sdram_freq', new_val)
 
-        sdram_freq = self.config.get('sdram_freq')
+        sdram_freq = self.config.get_line('sdram_freq')
         self.assertEqual(sdram_freq.value, new_val)
         self.assertEqual(sdram_freq.is_comment, False)
 
@@ -204,11 +219,11 @@ class CheckSettingConfigValues(BootConfigParserTest):
         self.config.set('arm_freq', new_val)
         self.config.set('arm_freq', new_rpi3_val, 'rpi3')
 
-        arm_freq = self.config.get('arm_freq')
+        arm_freq = self.config.get_line('arm_freq')
         self.assertEqual(arm_freq.value, new_val)
         self.assertEqual(arm_freq.is_comment, False)
 
-        arm_freq_rpi3 = self.config.get('arm_freq', 'rpi3')
+        arm_freq_rpi3 = self.config.get_line('arm_freq', 'rpi3')
         self.assertEqual(arm_freq_rpi3.value, new_rpi3_val)
         self.assertEqual(arm_freq_rpi3.is_comment, False)
 
@@ -216,7 +231,7 @@ class CheckSettingConfigValues(BootConfigParserTest):
         new_val = 1
         sdtv_mode = self.config.set('sdtv_mode', new_val)
 
-        sdtv_mode = self.config.get('sdtv_mode')
+        sdtv_mode = self.config.get_line('sdtv_mode')
         self.assertEqual(sdtv_mode.value, new_val)
         self.assertEqual(sdtv_mode.is_comment, True)
 
@@ -224,7 +239,7 @@ class CheckSettingConfigValues(BootConfigParserTest):
         new_val = 'off'
         self.config.set('dtparam=i2c_arm', new_val)
 
-        dtparam_mode = self.config.get('dtparam=i2c_arm')
+        dtparam_mode = self.config.get_line('dtparam=i2c_arm')
         self.assertEqual(dtparam_mode.value, new_val)
         self.assertEqual(dtparam_mode.is_comment, False)
 
@@ -235,14 +250,14 @@ class CheckSettingConfigValues(BootConfigParserTest):
         self.config.set('hdmi_group', new_edid_val,
                         config_filter='EDID=VSC-TD2220')
 
-        hdmi_group = self.config.get('hdmi_group')
+        hdmi_group = self.config.get_line('hdmi_group')
         self.assertEqual(hdmi_group.value, new_val)
         self.assertEqual(hdmi_group.is_comment, False)
 
         warnings.warn(
             'Should the value set by `set` be the one controlled by the filter?'
         )
-        hdmi_group_rpi3 = self.config.get('hdmi_group',
+        hdmi_group_rpi3 = self.config.get_line('hdmi_group',
                                           config_filter='EDID=VSC-TD2220')
         self.assertEqual(hdmi_group_rpi3.value, new_edid_val)
         self.assertEqual(hdmi_group_rpi3.is_comment, False)
