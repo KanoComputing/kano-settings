@@ -22,6 +22,7 @@ TESTS = [
     'tests.i18n.test_locale',
     'tests.boot_config.boot_config_parser',
     'tests.boot_config.boot_config_line',
+    'tests.display.display',
     'tests.boot_config.test_config'
 ]
 
