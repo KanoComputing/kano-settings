@@ -1,3 +1,12 @@
+#
+# boot_config_parser.py
+#
+# Copyright (C) 2016 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
+#
+# Parse and manipulate the boot config file for ease of modification
+#
+
 import re
 
 from kano_settings.system.boot_config.boot_config_filter import Filter
