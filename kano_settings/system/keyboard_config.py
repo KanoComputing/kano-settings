@@ -9,7 +9,8 @@
 # based on country name and local keyboard variant.
 #
 
-from kano.utils import run_cmd
+from kano.utils.shell import run_cmd
+from kano.utils.file_operations import sed
 import kano_settings.system.keyboard_layouts as keyboard_layouts
 from kano_settings.config_file import get_setting
 
@@ -61,13 +62,25 @@ def is_changed(country_code, variant):
     return (country_code != stored_layout or variant != stored_variant)
 
 
+def set_keyboard_config(country_code, variant):
+    sed('^XKBLAYOUT=.*$',
+        'XKBLAYOUT="{}"'.format(country_code),
+        keyboard_conffile,
+        True)
+    sed('^XKBVARIANT=.*$',
+        'XKBVARIANT="{}"'.format(variant),
+        keyboard_conffile,
+        True)
+
+
 def set_keyboard(country_code, variant):
     if variant == 'generic':
         variant = ''
 
     # Notify and apply changes to the XServer
     run_cmd("setxkbmap {} {}".format(country_code, variant))
-
+    set_keyboard_config(country_code, variant)
+    run_cmd("ACTIVE_CONSOLE=guess /bin/setupcon -k </dev/tty1")
 
 def set_saved_keyboard():
     continent = get_setting('Keyboard-continent-human')

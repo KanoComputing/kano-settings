@@ -18,7 +18,7 @@ if __name__ == '__main__' and __package__ is None:
     if dir_path != '/usr':
         sys.path.insert(1, dir_path)
 
-from kano_settings.system.keyboard_config import set_saved_keyboard
+from kano_settings.system.keyboard_config import set_saved_keyboard, set_keyboard
 from kano_settings.system.display import get_gfx_driver, set_gfx_driver, \
     read_overscan_values, write_overscan_values
 from kano_settings.config_file import get_setting
@@ -60,6 +60,20 @@ def parse_args():
             if args['--load']:
                 set_saved_keyboard()
                 print_v('Setting keyboard to value loaded from settings')
+            elif args['--layout']:
+                a = args['<layout_code>']
+                alist = a.split(' ')
+                if len(alist) >= 1:
+                    cc = alist[0]
+                else:
+                    cc = 'en_US'
+                if len(alist) >= 2:
+                    variant = alist[1]
+                else:
+                    variant = 'generic'
+                set_keyboard(cc, variant)
+                print_v('Setting keyboard to {} {}'.format(cc, variant))
+
         elif args['gfx_driver']:
             if args['enable']:
                 set_gfx_driver(True)
