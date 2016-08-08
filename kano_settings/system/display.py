@@ -2,7 +2,7 @@
 
 # display.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
+# Copyright (C) 2014-2016 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 # Change screen resolution and other settings
@@ -47,7 +47,7 @@ def get_edid_name(use_cached=True):
         logger.error('Error getting EDID name')
         return
 
-    MONITOR_EDID_NAME = edid_line.split('=')[-1]
+    MONITOR_EDID_NAME = edid_line.split('=')[-1].strip().rstrip()
 
     return MONITOR_EDID_NAME
 
