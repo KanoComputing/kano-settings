@@ -82,7 +82,8 @@ class BootConfigLine(object):
         return str(self)
 
     def __str__(self):
-        value = ' = {val}'.format(val=self.value) if self.value else ''
+        # Config is incorrectly parsed by RPi if whitespace exists around '='
+        value = '={val}'.format(val=self.value) if self.value else ''
         comment = '{} '.format(self.COMMENT_SYMBOL) if self.is_comment else ''
         filter_flag = ' [{}]'.format(self.filter) if \
                 self.debug and self.filter != Filter.ALL else ''
