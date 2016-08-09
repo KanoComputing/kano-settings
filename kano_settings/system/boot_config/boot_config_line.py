@@ -15,7 +15,7 @@ from kano_settings.system.boot_config.boot_config_filter import Filter
 class BootConfigLine(object):
     EMPTY = ''
     COMMENT_SYMBOL = '#'
-    CONFIG_LINE_PATTERN = r'^\s*(#)?\s*([\w=]+)=(.*)\s*$'
+    CONFIG_LINE_PATTERN = r'^\s*(#)?\s*([\w=]+)\s*=\s*(.*)\s*$'
     CONFIG_LINE_RE = re.compile(CONFIG_LINE_PATTERN)
 
     def __init__(self, line, config_filter=Filter.ALL, debug=False):

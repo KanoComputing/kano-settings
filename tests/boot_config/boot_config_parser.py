@@ -210,6 +210,13 @@ class CheckGettingConfigValues(BootConfigParserTest):
         )
         self.assertEqual(line.value, '128')
 
+    def test_reading_generated_file(self):
+        dump = self.config.dump()
+
+        re_init_config = BootConfigParser(dump)
+        re_init_dump = re_init_config.dump()
+
+        self.assertEqual(dump.splitlines(), re_init_dump.splitlines())
 
 
 class CheckSettingConfigValues(BootConfigParserTest):
