@@ -1,16 +1,17 @@
-#!/usr/bin/env python
-
+#
 # keyboard_layouts.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2014-2016 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
-# Country code mappings to keyboard model names, and keyboard variant names collected from
-# Debian console-setup source package, version 1.88: http://packages.debian.org/source/wheezy/console-setup
+# Country code mappings to keyboard model names, and keyboard variant names
+# collected from Debian console-setup source package, version 1.88:
+#     http://packages.debian.org/source/wheezy/console-setup
 # http://dev.kano.me/public/Keyboardnames.pl.txt
 #
 # Mapping of country names to keyboard layout codes,
-# With additional names for natural country prompts (for example United Kingdom, England, UK, etc)
+# With additional names for natural country prompts (for example United Kingdom,
+# England, UK, etc)
 
 layouts = {
     'europe': {
@@ -674,3 +675,19 @@ variants = {
     ]
 
 }
+
+def get_continents():
+    return [
+        'Africa',
+        'America',
+        'Asia',
+        'Australia',
+        'Europe',
+        'Others'
+    ]
+
+def get_countries_for_continent(continent):
+    return layouts.get(continent.lower(), [])
+
+def sorted_countries(countries):
+    return sorted(countries)

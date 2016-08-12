@@ -16,6 +16,7 @@ sys.path.insert(1, os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..')))
 
 import kano_settings.system.locale as locale
+import kano_settings.system.keyboard_layouts as keyboard_layouts
 import kano.utils as utils
 
 from tests.tools import test_print, mock_file
@@ -252,3 +253,130 @@ class GetLocale(unittest.TestCase):
         locale_setting = locale.get_locale()
 
         self.assertEqual(locale_setting, locale_test)
+
+
+class CountryCodeManipulations(unittest.TestCase):
+    DEFAULT_CONTINENT = 'america'
+    DEFAULT_COUNTRY = 'United States'
+    DEFAULT_VARIANT = ''
+    DEFAULT_CONTINENT_IDX = 1
+    DEFAULT_COUNTRY_IDX = 21
+    DEFAULT_VARIANT_IDX = 0
+
+    def verify_layout_keys_exist(self, continent, country):
+        country_list = keyboard_layouts.layouts.get(continent)
+        self.assertIsInstance(country_list, dict)
+
+        country_code = country_list.get(country)
+        self.assertIsInstance(country_code, basestring)
+        self.assertNotEqual(len(country_code), 0)
+
+
+class CountryCodeToLayoutKeys(CountryCodeManipulations):
+
+    def test_valid_country_code_americas(self):
+        continent, country = locale.country_code_to_layout_keys('AR')
+        self.verify_layout_keys_exist(continent, country)
+
+        self.assertEqual(country, 'Argentina')
+        self.assertEqual(continent, 'america')
+
+    def test_valid_country_code_europe(self):
+        continent, country = locale.country_code_to_layout_keys('GB')
+        self.verify_layout_keys_exist(continent, country)
+
+        self.assertEqual(country, 'United Kingdom')
+        self.assertEqual(continent, 'europe')
+
+
+    def test_invalid_country_code(self):
+        continent, country = locale.country_code_to_layout_keys('XXX')
+        self.verify_layout_keys_exist(continent, country)
+
+        self.assertEqual(country, 'United States')
+        self.assertEqual(continent, 'america')
+
+
+
+class LocaleToLayoutKeys(CountryCodeManipulations):
+
+    def test_valid_locale_americas(self):
+        continent, country = locale.locale_to_layout_keys('es_AR')
+        self.verify_layout_keys_exist(continent, country)
+
+        self.assertEqual(country, 'Argentina')
+        self.assertEqual(continent, 'america')
+
+    def test_valid_locale_europe(self):
+        continent, country = locale.locale_to_layout_keys('en_GB')
+        self.verify_layout_keys_exist(continent, country)
+
+        self.assertEqual(country, 'United Kingdom')
+        self.assertEqual(continent, 'europe')
+
+
+    def test_invalid_locale(self):
+        continent, country = locale.locale_to_layout_keys('XXX_XX')
+        self.verify_layout_keys_exist(continent, country)
+
+        self.assertEqual(continent, self.DEFAULT_CONTINENT)
+        self.assertEqual(country, self.DEFAULT_COUNTRY)
+
+
+class LayoutKeysToIndexes(CountryCodeManipulations):
+
+    def test_valid_keys_americas(self):
+        continent_idx, country_idx = locale.layout_keys_to_indexes(
+            'america', 'Argentina'
+        )
+
+        self.assertEqual(continent_idx, 1)
+        self.assertEqual(country_idx, 0)
+
+    def test_valid_keys_defaults(self):
+        continent_idx, country_idx = locale.layout_keys_to_indexes(
+            self.DEFAULT_CONTINENT, self.DEFAULT_COUNTRY
+        )
+
+        self.assertEqual(continent_idx, self.DEFAULT_CONTINENT_IDX)
+        self.assertEqual(country_idx, self.DEFAULT_COUNTRY_IDX)
+
+    def test_valid_keys_europe(self):
+        continent_idx, country_idx = locale.layout_keys_to_indexes(
+            'europe', 'United Kingdom'
+        )
+
+        self.assertEqual(continent_idx, 4)
+        self.assertEqual(country_idx, 40)
+
+    def test_invalid_continent_key(self):
+        continent_idx, country_idx = locale.layout_keys_to_indexes(
+            'XXX', 'United Kingdom'
+        )
+
+        self.assertEqual(continent_idx, self.DEFAULT_CONTINENT_IDX)
+        self.assertEqual(country_idx, self.DEFAULT_COUNTRY_IDX)
+
+    def test_invalid_country_key(self):
+        continent_idx, country_idx = locale.layout_keys_to_indexes(
+            'europe', 'XXX'
+        )
+
+        self.assertEqual(continent_idx, 4)
+        self.assertEqual(country_idx, self.DEFAULT_COUNTRY_IDX)
+
+    def test_mismatching_keys(self):
+        continent_idx, country_idx = locale.layout_keys_to_indexes(
+            'africa', 'United Kingdom'
+        )
+
+        self.assertEqual(continent_idx, 0)
+        self.assertEqual(country_idx, self.DEFAULT_COUNTRY_IDX)
+
+    def test_invalid_keys(self):
+        continent_idx, country_idx = locale.layout_keys_to_indexes(
+            'XXX', 'XXX'
+        )
+
+        self.assertEqual(continent_idx, self.DEFAULT_CONTINENT_IDX)
+        self.assertEqual(country_idx, self.DEFAULT_COUNTRY_IDX)
