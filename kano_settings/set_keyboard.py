@@ -77,7 +77,7 @@ class SetKeyboard(Template):
     selected_country_hr = "USA"
     selected_variant_hr = "generic"
     variants_combo = None
-    continents = ['Africa', 'America', 'Asia', 'Australia', 'Europe', 'Others']
+    continents = keyboard_layouts.get_continents()
     kano_keyboard = True
 
     def __init__(self, win):
@@ -211,22 +211,14 @@ class SetKeyboard(Template):
         self.selected_variant_hr = get_setting("Keyboard-variant-human")
 
     def update_config(self):
-        logger.info('set_keyboard.update_config {} {} {} {} {} {}'.format(
+        keyboard_config.update_settings_keyboard_conf(
             self.selected_continent_index,
             self.selected_country_index,
             self.selected_variant_index,
             self.selected_continent_hr,
             self.selected_country_hr,
             self.selected_variant_hr
-        ))
-
-        # Add new configurations to config file.
-        set_setting("Keyboard-continent-index", self.selected_continent_index)
-        set_setting("Keyboard-country-index", self.selected_country_index)
-        set_setting("Keyboard-variant-index", self.selected_variant_index)
-        set_setting("Keyboard-continent-human", self.selected_continent_hr)
-        set_setting("Keyboard-country-human", self.selected_country_hr)
-        set_setting("Keyboard-variant-human", self.selected_variant_hr)
+        )
 
     # setting = "variant", "continent" or "country"
     def set_defaults(self, setting):
@@ -352,10 +344,9 @@ class SetKeyboard(Template):
     def fill_countries_combo(self, continent):
         continent = continent.lower()
 
-        try:
-            self.selected_layout = keyboard_layouts.layouts[continent]
-        except KeyError:
-            return
+        self.selected_layout = keyboard_layouts.get_countries_for_continent(
+            continent
+        )
 
         self.selected_continent_hr = continent
 
@@ -364,7 +355,7 @@ class SetKeyboard(Template):
         self.variants_combo.remove_all()
 
         # Get a sorted list of the countries from the dict layout
-        sorted_countries = sorted(self.selected_layout)
+        sorted_countries = keyboard_layouts.sorted_countries(continent)
 
         # Refresh countries combo box
         for country in sorted_countries:
