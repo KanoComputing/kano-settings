@@ -19,7 +19,7 @@ sys.path.insert(1, os.path.abspath(
 import kano_settings.system.locale as locale
 import kano.utils as utils
 
-from tests.tools import test_print, mock_file
+from tests.tools import test_print, mock_file, require_rpi
 import re
 import shutil
 import copy
@@ -129,6 +129,7 @@ class configSetTest(unittest.TestCase):
         unittest.TestCase.__init__(self, x)
 
 
+    @require_rpi
     @unittest.skipIf('-fast' in sys.argv, 'Skipping because tests are in fast mode')
     def test_set_config(self):
         from kano_settings import boot_config

@@ -19,7 +19,7 @@ import kano_settings.system.locale as locale
 import kano_settings.system.keyboard_layouts as keyboard_layouts
 import kano.utils as utils
 
-from tests.tools import test_print, mock_file
+from tests.tools import test_print, mock_file, require_rpi
 
 
 print '''
@@ -76,37 +76,50 @@ class StandardLocaleToGenfileEntry(unittest.TestCase):
 
 
 class IsLocaleValid(unittest.TestCase):
+    '''
+    These calculate validity through the `/usr/share/i18n/SUPPORTED' file which
+    is not guaranteed to be present on non-linux machines
+    '''
 
+    @require_rpi
     def test_is_en_US_valid(self):
         self.assertTrue(locale.is_locale_valid('en_US.UTF-8'))
 
+    @require_rpi
     def test_is_en_GB_valid(self):
         self.assertTrue(locale.is_locale_valid('en_GB.UTF-8'))
 
+    @require_rpi
     def test_is_random_string_valid(self):
         self.assertFalse(locale.is_locale_valid('some_invalid_locale'))
 
 
 class IsLocaleInstalled(unittest.TestCase):
 
+    @require_rpi
     def test_is_en_US_installed(self):
         self.assertTrue(locale.is_locale_installed('en_US.UTF-8'))
 
+    @require_rpi
     def test_is_en_GB_installed(self):
         self.assertTrue(locale.is_locale_installed('en_GB.UTF-8'))
 
+    @require_rpi
     def test_is_ru_RU_installed(self):
         self.assertFalse(locale.is_locale_installed('ru_RU.UTF-8'))
 
+    @require_rpi
     def test_is_aa_ER_installed(self):
         self.assertFalse(locale.is_locale_installed('aa_ER.UTF-8'))
 
+    @require_rpi
     def test_is_random_string_installed(self):
         self.assertFalse(locale.is_locale_installed('some_ininstalled_locale'))
 
 
 class InstallLocale(unittest.TestCase):
 
+    @require_rpi
     def test_install_locale(self):
         test_locale = 'aa_ER'
         locale_already_installed = locale.is_locale_installed(test_locale)
@@ -131,6 +144,7 @@ class InstallLocale(unittest.TestCase):
 
 class UninstallLocale(unittest.TestCase):
 
+    @require_rpi
     def test_uninstall_locale(self):
         test_locale = 'aa_ER'
         locale_already_installed = locale.is_locale_installed(test_locale)
@@ -165,50 +179,64 @@ class SetLocaleParam(unittest.TestCase):
 
             self.assertTrue(config_line in config)
 
+    @require_rpi
     def test_xsession_rc_file_path(self):
         self.assertEqual(locale.XSESSION_RC_FILE,
                          os.path.join('/home', utils.get_user_unsudoed(),
                                       '.xsessionrc'))
 
+    @require_rpi
     def test_LANGUAGE_set(self):
         self.run_test_for_param('LANGUAGE')
 
+    @require_rpi
     def test_LC_ADDRESS_set(self):
         self.run_test_for_param('LC_ADDRESS')
 
+    @require_rpi
     def test_LC_COLLATE_set(self):
         self.run_test_for_param('LC_COLLATE')
 
+    @require_rpi
     def test_LC_CTYPE_set(self):
         self.run_test_for_param('LC_CTYPE')
 
+    @require_rpi
     def test_LC_MONETARY_set(self):
         self.run_test_for_param('LC_MONETARY')
 
+    @require_rpi
     def test_LC_MEASUREMENT_set(self):
         self.run_test_for_param('LC_MEASUREMENT')
 
+    @require_rpi
     def test_LC_MESSAGES_set(self):
         self.run_test_for_param('LC_MESSAGES')
 
+    @require_rpi
     def test_LC_NUMERIC_set(self):
         self.run_test_for_param('LC_NUMERIC')
 
+    @require_rpi
     def test_LC_PAPER_set(self):
         self.run_test_for_param('LC_PAPER')
 
+    @require_rpi
     def test_LC_RESPONSE_set(self):
         self.run_test_for_param('LC_RESPONSE')
 
+    @require_rpi
     def test_LC_TELEPHONE_set(self):
         self.run_test_for_param('LC_TELEPHONE')
 
+    @require_rpi
     def test_LC_TIME_set(self):
         self.run_test_for_param('LC_TIME')
 
 
 class SetLocale(unittest.TestCase):
 
+    @require_rpi
     def test_set_locale(self):
         with mock_file(locale.XSESSION_RC_FILE):
             params = [
@@ -242,6 +270,7 @@ class SetLocale(unittest.TestCase):
 
 class GetLocale(unittest.TestCase):
 
+    @require_rpi
     def test_get_locale(self):
         locale_param = r'^LANG='
         locale_regex = r'{}\(.*\)$'.format(locale_param)
