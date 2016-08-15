@@ -29,13 +29,13 @@ class ParsingConfigLineStringTest(ConfigLineTest):
         key = 'hdmi_safe'
         val = 1
         line = BootConfigLine('{}={}'.format(key, val))
-        self.validate_line(line, key, str(val))
+        self.validate_line(line, key, val)
 
     def test_comment_line(self):
         key = 'hdmi_safe'
         val = 1
         line = BootConfigLine('# {}={}'.format(key, val))
-        self.validate_line(line, key, str(val), is_comment=True)
+        self.validate_line(line, key, val, is_comment=True)
 
     def test_compound_line(self):
         key = 'dtparam=i2c_arm'
@@ -50,7 +50,7 @@ class ParsingConfigLineStringTest(ConfigLineTest):
         line = BootConfigLine(
             '{}={}'.format(key, val), config_filter=config_filter
         )
-        self.validate_line(line, key, str(val), config_filter=config_filter)
+        self.validate_line(line, key, val, config_filter=config_filter)
 
 
 class ParsingConfigLineTupleTest(ConfigLineTest):
@@ -59,7 +59,7 @@ class ParsingConfigLineTupleTest(ConfigLineTest):
 
     def test_single_tuple(self):
         line = BootConfigLine((self.base_line.setting,))
-        self.validate_line(line, self.base_line.setting, '')
+        self.validate_line(line, self.base_line.setting, 0)
 
     def test_double_tuple(self):
         line = BootConfigLine((
@@ -86,7 +86,7 @@ class ParsingConfigLineDictTest(ConfigLineTest):
         line = BootConfigLine({
             'setting': self.base_line.setting,
         })
-        self.validate_line(line, self.base_line.setting, '')
+        self.validate_line(line, self.base_line.setting, 0)
 
     def test_setting_value_dict(self):
         line = BootConfigLine({

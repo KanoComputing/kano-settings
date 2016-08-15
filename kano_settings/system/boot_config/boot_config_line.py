@@ -113,3 +113,17 @@ class BootConfigLine(object):
             val=value,
             filter_flag=filter_flag
         )
+
+    @property
+    def value(self):
+        if not self._value:
+            return 0
+
+        try:
+            return int(self._value)
+        except ValueError:
+            return self._value
+
+    @value.setter
+    def value(self, val):
+        self._value = str(val)

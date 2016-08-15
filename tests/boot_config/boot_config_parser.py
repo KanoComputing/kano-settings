@@ -139,7 +139,7 @@ class CheckParsingConfig(BootConfigParserTest):
         line = null_conf.get_line(key)
 
         self.assertEqual(line.setting, key)
-        self.assertEqual(line.value, '')
+        self.assertEqual(line.value, 0)
 
     def test_none_init(self):
         test = BootConfigParser(None)
@@ -161,25 +161,25 @@ class CheckGettingConfigValues(BootConfigParserTest):
 
     def test_getting_unique_line(self):
         sdram_freq = self.config.get_line('sdram_freq')
-        self.assertEqual(sdram_freq.value, '450')
+        self.assertEqual(sdram_freq.value, 450)
         self.assertEqual(sdram_freq.is_comment, False)
 
     def test_getting_duplicate_line(self):
         arm_freq = self.config.get_line('arm_freq')
-        self.assertEqual(arm_freq.value, '900')
+        self.assertEqual(arm_freq.value, 900)
         self.assertEqual(arm_freq.is_comment, False)
 
         arm_freq_rpi3 = self.config.get_line('arm_freq', 'rpi3')
-        self.assertEqual(arm_freq_rpi3.value, '1200')
+        self.assertEqual(arm_freq_rpi3.value, 1200)
         self.assertEqual(arm_freq_rpi3.is_comment, False)
 
     def test_get_value(self):
         arm_freq_rpi3 = self.config.get('arm_freq', 'rpi3')
-        self.assertEqual(arm_freq_rpi3, '1200')
+        self.assertEqual(arm_freq_rpi3, 1200)
 
     def test_getting_commented_line(self):
         sdtv_mode = self.config.get_line('sdtv_mode')
-        self.assertEqual(sdtv_mode.value, '2')
+        self.assertEqual(sdtv_mode.value, 2)
         self.assertEqual(sdtv_mode.is_comment, True)
 
     def test_getting_compound_key(self):
@@ -189,7 +189,7 @@ class CheckGettingConfigValues(BootConfigParserTest):
 
     def test_get_reset_line(self):
         hdmi_group = self.config.get_line('hdmi_group')
-        self.assertEqual(hdmi_group.value, '1')
+        self.assertEqual(hdmi_group.value, 1)
         self.assertEqual(hdmi_group.is_comment, False)
 
         warnings.warn(
@@ -197,18 +197,18 @@ class CheckGettingConfigValues(BootConfigParserTest):
             'or the new one?'
         )
         hdmi_group_rpi3 = self.config.get_line('hdmi_group', 'EDID=VSC-TD2220')
-        self.assertEqual(hdmi_group_rpi3.value, '2')
+        self.assertEqual(hdmi_group_rpi3.value, 2)
         self.assertEqual(hdmi_group_rpi3.is_comment, False)
 
     def test_get_filterless_with_filter(self):
         line = self.config.get_line('gpu_mem', config_filter='rpi3')
-        self.assertEqual(line.value, '')
+        self.assertEqual(line.value, 0)
 
     def test_get_filterless_with_filter_fallback(self):
         line = self.config.get_line(
             'gpu_mem', config_filter='rpi3', fallback=True
         )
-        self.assertEqual(line.value, '128')
+        self.assertEqual(line.value, 128)
 
     def test_reading_generated_file(self):
         dump = self.config.dump()
