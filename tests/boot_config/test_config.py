@@ -169,9 +169,9 @@ class configSetTest(unittest.TestCase):
                 print "testing get_config_value({}) => {}".format(key, v)
 
                 if present:
-                    self.assertTrue(v == configs['written'].values[key])
+                    self.assertEqual(v, configs['written'].values[key])
                 else:
-                    self.assertTrue(v == 0)
+                    self.assertEqual(v, 0)
 
             elif which == 1:
                 # test get_config_comment
