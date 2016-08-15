@@ -61,7 +61,6 @@ hdmi_force_hotplug=1
 # Enabling Turbo Mode
 # Please, beware "force_turbo=1" will set the sticky bit
 # on your RPi unit forever.
-#
 force_turbo=0
 arm_freq=900
 core_freq=250
