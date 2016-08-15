@@ -1,5 +1,4 @@
-#!/usr/bin/env python
-
+#
 # __init__.py
 #
 # Copyright (C) 2016 Kano Computing Ltd.
