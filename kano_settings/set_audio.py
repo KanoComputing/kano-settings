@@ -20,9 +20,9 @@ class SetAudio(Template):
     def __init__(self, win):
         Template.__init__(
             self,
-            "Audio",
-            "Get sound from your speaker or your TV",
-            "APPLY CHANGES"
+            _("Audio"),
+            _("Get sound from your speaker or your TV"),
+            _("APPLY CHANGES")
         )
 
         self.win = win
@@ -31,16 +31,16 @@ class SetAudio(Template):
         self.win.top_bar.enable_prev()
         self.win.change_prev_callback(self.win.go_to_home)
 
-        self.kano_button.connect("button-release-event", self.apply_changes)
-        self.kano_button.connect("key-release-event", self.apply_changes)
+        self.kano_button.connect('button-release-event', self.apply_changes)
+        self.kano_button.connect('key-release-event', self.apply_changes)
 
         # Analog radio button
-        self.analog_button = Gtk.RadioButton.new_with_label_from_widget(None, "Speaker")
+        self.analog_button = Gtk.RadioButton.new_with_label_from_widget(None, _("Speaker"))
 
         # HDMI radio button
         self.hdmi_button = Gtk.RadioButton.new_from_widget(self.analog_button)
-        self.hdmi_button.set_label("TV     ")
-        self.hdmi_button.connect("toggled", self.on_button_toggled)
+        self.hdmi_button.set_label(_("TV     "))
+        self.hdmi_button.connect('toggled', self.on_button_toggled)
 
         # height is 106px
         self.current_img = Gtk.Image()

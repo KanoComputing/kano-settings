@@ -40,9 +40,9 @@ class SetOverclock(RadioButtonTemplate):
 
         RadioButtonTemplate.__init__(
             self,
-            "Overclock your processor",
-            "Make your computer's brain think faster, but run hotter.",
-            "APPLY CHANGES",
+            _("Overclock your processor"),
+            _("Make your computer's brain think faster, but run hotter."),
+            _("APPLY CHANGES"),
             options
         )
 
@@ -57,8 +57,8 @@ class SetOverclock(RadioButtonTemplate):
         self.win.top_bar.enable_prev()
         self.win.change_prev_callback(self.win.go_to_home)
 
-        self.kano_button.connect("button-release-event", self.set_overclock)
-        self.kano_button.connect("key-release-event", self.set_overclock)
+        self.kano_button.connect('button-release-event', self.set_overclock)
+        self.kano_button.connect('key-release-event', self.set_overclock)
 
         self.win.show_all()
 
@@ -77,20 +77,20 @@ class SetOverclock(RadioButtonTemplate):
             if is_dangerous_overclock_value(config):
 
                 kdialog = KanoDialog(
-                    title_text="Warning",
+                    title_text=_("Warning"),
                     description_text=(
-                        "For a small percentage of users, this setting makes "
-                        "the Pi behave unpredictably. Do you want to "
-                        "continue?"
+                        _("For a small percentage of users, this setting makes " \
+                          "the Pi behave unpredictably. Do you want to " \
+                          "continue?")
                     ),
                     button_dict=[
                         {
-                            'label': "NO",
+                            'label': _("NO"),
                             'color': 'red',
                             'return_value': False
                         },
                         {
-                            'label': "YES",
+                            'label': _("YES"),
                             'color': 'green',
                             'return_value': True
                         }

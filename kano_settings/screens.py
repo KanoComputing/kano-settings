@@ -64,9 +64,9 @@ class Screen(object):
         else:
             if self.name == 'wifi':
                 if common.has_internet:
-                    description = 'Connected'
+                    description = _("Connected")
                 else:
-                    description = 'Not connected'
+                    description = _("Not connected")
 
             elif self.name == 'account':
                 description = get_user_unsudoed()

@@ -31,8 +31,8 @@ class ConnectToNetwork():
         self._connect_to_network()
 
     def _connect_to_network(self):
-        title = "Connecting to {}".format(self._network_name)
-        description = "Any minute now"
+        title = _("Connecting to {}").format(self._network_name)
+        description = _("Any minute now")
         SpinnerScreen(self._win, title, description,
                       self._launch_connect_thread)
 
@@ -58,23 +58,23 @@ class ConnectToNetwork():
 
     def _fail_screen(self, win):
         win.remove_main_widget()
-        title = "Cannot connect!"
-        description = "Maybe the signal was too weak to connect."
+        title = _("Cannot connect!")
+        description = _("Maybe the signal was too weak to connect.")
         buttons = [
             {
-                "label": ""
+                'label': ""
             },
             {
-                "label": "TRY AGAIN",
-                "type": "KanoButton",
-                "color": "green",
+                'label': _("TRY AGAIN"),
+                'type': 'KanoButton',
+                'color': 'green',
                 # Go to the network refresh screen
-                "callback": self._go_to_network_screen
+                'callback': self._go_to_network_screen
             },
             {
-                "label": "QUIT",
-                "type": "OrangeButton",
-                "callback": Gtk.main_quit
+                'label': _("QUIT"),
+                'type': 'OrangeButton',
+                'callback': Gtk.main_quit
             }
         ]
         img_path = os.path.join(img_dir, "no-wifi.png")
@@ -91,14 +91,14 @@ class ConnectToNetwork():
 
     def _success_screen(self):
         self._win.remove_main_widget()
-        title = "Success"
-        description = "You're connected"
+        title = _("Success")
+        description = _("You're connected")
         buttons = [
             {
-                "label": "OK",
-                "type": "KanoButton",
-                "color": "green",
-                "callback": Gtk.main_quit
+                'label': _("OK"),
+                'type': 'KanoButton',
+                'color': 'green',
+                'callback': Gtk.main_quit
             }
         ]
         img_path = os.path.join(img_dir, "internet.png")
@@ -114,7 +114,7 @@ class ConnectToNetwork():
         )
 
     def _launch_connect_thread(self):
-        logger.debug('Connecting to {}'.format(self._network_name))
+        logger.debug("Connecting to {}".format(self._network_name))
 
         # start thread
         t = threading.Thread(
@@ -156,7 +156,7 @@ def _connect_thread_(wiface, network_name, passphrase, encryption,
         wificache.empty()
 
     logger.debug(
-        'Connecting to {} {} {}. Successful: {}'.format(
+        "Connecting to {} {} {}. Successful: {}".format(
             network_name, encryption, passphrase, success
         )
     )

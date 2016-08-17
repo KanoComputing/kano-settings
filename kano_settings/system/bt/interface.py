@@ -23,8 +23,8 @@ def is_bluetooth_available():
 
         return BASE_DEVICE_OBJ_PATH in dbus_obj_paths
     except Exception as e:
-        logger.error('Couldn\'t connect to DBus to see if bluetooth is '
-                     'available, asuming not',
+        logger.error("Couldn't connect to DBus to see if bluetooth is " \
+                     "available, asuming not",
                      exception=e)
         return False
 
@@ -64,33 +64,33 @@ def clear_all_devices(retain_connected=True, retain_trusted=True):
 
 def discover_devices():
     if not is_bluetooth_available():
-        logger.warn('No bluetooth available')
+        logger.warn("No bluetooth available")
         return
 
     try:
         ADAPTOR_IFACE.StartDiscovery()
     except dbus.DBusException as e:
-        logger.error('Error entering bluetooth discovery mode. '
-                     'This is likely because DBus isn\'t ready',
+        logger.error("Error entering bluetooth discovery mode. " \
+                     "This is likely because DBus isn't ready",
                      exception=e)
 
 
 def stop_discovering_devices():
     if not is_bluetooth_available():
-        logger.warn('No bluetooth available')
+        logger.warn("No bluetooth available")
         return
 
     try:
         ADAPTOR_IFACE.StopDiscovery()
     except dbus.DBusException as e:
-        logger.error('Error exiting bluetooth discovery mode. '
-                     'This is likely because DBus isn\'t ready',
+        logger.error("Error exiting bluetooth discovery mode. " \
+                     "This is likely because DBus isn't ready",
                      exception=e)
 
 
 def device_scan(callback, clear=True, timeout=10, *cb_args, **cb_kwargs):
     if not is_bluetooth_available():
-        logger.warn('No bluetooth available')
+        logger.warn("No bluetooth available")
         return
 
     if clear:

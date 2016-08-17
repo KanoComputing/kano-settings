@@ -118,7 +118,7 @@ def compare(a, b):
 
 class configSetTest(unittest.TestCase):
     # The main test.
-    # We want to test  the following: 
+    # We want to test  the following:
     #    All read methods read correct value
     #    all read methods cause lock
     #    all write methods cause lock
@@ -345,7 +345,7 @@ class configSetTest(unittest.TestCase):
                 #print "___"
                 #os.system('cat '+boot_config._trans().temp_config.path)
                 #print "___"
-                
+
                 rwc = random.randint(0, 3)
 
                 if rwc == 0:

@@ -85,14 +85,14 @@ class ImageTable(Gtk.Table):
         for name, img_dict in self.images.iteritems():
             button = img_dict['button']
             style = button.get_style_context()
-            style.remove_class("wallpaper_box_active")
-            style.add_class("wallpaper_box")
+            style.remove_class('wallpaper_box_active')
+            style.add_class('wallpaper_box')
 
         if image_name in self.images:
             button = self.images[image_name]['button']
             style = button.get_style_context()
-            style.remove_class("wallpaper_box")
-            style.add_class("wallpaper_box_active")
+            style.remove_class('wallpaper_box')
+            style.add_class('wallpaper_box_active')
 
     def select_image_cb(self, widget, event, image_name):
         '''This is connected to the button-release-event when you click on a

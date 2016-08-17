@@ -27,7 +27,7 @@ class BluetoothDevice(object):
         self.interface = self.get_device_interface()
 
         props = self.get_properties()
-        logger.debug(u'Properties: {}'.format(props).encode('utf-8'))
+        logger.debug(u"Properties: {}".format(props).encode('utf-8'))
 
         self._name = props.get('Name', '')
         self._alias = props.get('Alias', '')
@@ -121,7 +121,7 @@ class BluetoothDevice(object):
             return self.trusted
         except dbus.DBusException:
             logger.error(
-                'Fusing failed: the dbus service probably did not reply'
+                "Fusing failed: the dbus service probably did not reply"
             )
             return False
 
@@ -132,7 +132,7 @@ class BluetoothDevice(object):
             return True
         except dbus.DBusException:
             logger.error(
-                'Unfusing failed: the dbus service probably did not reply'
+                "Unfusing failed: the dbus service probably did not reply"
             )
             return False
 

@@ -65,14 +65,14 @@ def set_to_HDMI(HDMI):
     # These are the changes we'll apply if they have changed from what they were
     if HDMI:
         amixer_cmd = hdmi_cmd
-        set_config_value("hdmi_ignore_edid_audio", None)
-        set_config_value("hdmi_drive", 2)
-        config = "HDMI"
+        set_config_value('hdmi_ignore_edid_audio', None)
+        set_config_value('hdmi_drive', 2)
+        config = 'HDMI'
     else:
         amixer_cmd = analogue_cmd
-        set_config_value("hdmi_ignore_edid_audio", 1)
-        set_config_value("hdmi_drive", None)
-        config = "Analogue"
+        set_config_value('hdmi_ignore_edid_audio', 1)
+        set_config_value('hdmi_drive', None)
+        config = 'Analogue'
 
     end_config_transaction()
 
@@ -100,12 +100,12 @@ def is_HDMI():
     if amixer_string.find(hdmi_string) != -1:
         # Make sure config file is up to date
         if get_setting('Audio') != 'HDMI':
-            set_setting('Audio', "HDMI")
+            set_setting('Audio', 'HDMI')
         return True
 
     # Default to Analogue
     else:
         # Make sure config file is up to date
         if get_setting('Audio') != 'Analogue':
-            set_setting('Audio', "Analogue")
+            set_setting('Audio', 'Analogue')
         return False

@@ -26,4 +26,4 @@ def change_mouse_speed(configuration):
 
     # Apply changes
     os.system(command)
-    logger.debug('set_mouse / change_mouse_speed: selected_button:{}'.format(configuration))
+    logger.debug("set_mouse / change_mouse_speed: selected_button:{}".format(configuration))

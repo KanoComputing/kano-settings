@@ -21,7 +21,7 @@ if os.path.exists(rel_path):
 elif os.path.exists(abs_path):
     media_dir = abs_path
 else:
-    sys.exit('Kano connect media folder missing!')
+    sys.exit("Kano connect media folder missing!")
 
 css_dir = os.path.join(media_dir, "CSS")
 img_dir = os.path.join(media_dir, "kano-wifi-gui")

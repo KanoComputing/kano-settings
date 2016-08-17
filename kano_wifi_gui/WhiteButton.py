@@ -24,4 +24,4 @@ class WhiteButton(GenericButton):
         GenericButton.__init__(self, text)
         apply_styling_to_widget(self, self.button_css)
         apply_styling_to_widget(self.label, self.button_css)
-        self.get_style_context().add_class("small_white_button")
+        self.get_style_context().add_class('small_white_button')

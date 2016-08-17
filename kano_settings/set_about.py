@@ -6,6 +6,8 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
+# -*- coding: utf-8 -*-
+
 import os
 import subprocess
 from gi.repository import Gtk
@@ -39,35 +41,35 @@ class SetAbout(Gtk.Box):
             'about_version'
         )
         space_align = self.create_align(
-            "Disk space used: {used}B / {total}B".format(**get_space_available())
+            _("Disk space used: {used}B / {total}B").format(**get_space_available())
         )
         try:
-            celsius = u"{:.1f}\N{DEGREE SIGN}C".format(get_temperature())
+            celsius = u"{:.1f}°C".format(get_temperature())
         except ValueError:
             celsius = "?"
         temperature_align = self.create_align(
-            u"Temperature: {celsius}".format(celsius=celsius)
+            _(u"Temperature: {celsius}").format(celsius=celsius)
         )
         model_align = self.create_align(
-            "Model: {model}".format(model=get_model_name())
+            _("Model: {model}").format(model=get_model_name())
         )
 
-        terms_and_conditions = OrangeButton("Terms and conditions")
+        terms_and_conditions = OrangeButton(_("Terms and conditions"))
         terms_and_conditions.connect(
-            "button_release_event", self.show_terms_and_conditions
+            'button_release_event', self.show_terms_and_conditions
         )
 
-        credits_button = OrangeButton("Meet the team")
+        credits_button = OrangeButton(_("Meet the team"))
         credits_button.connect(
-            "button_release_event", self.show_credits
+            'button_release_event', self.show_credits
         )
 
-        changelog_button = OrangeButton("Changelog")
+        changelog_button = OrangeButton(_("Changelog"))
         changelog_button.connect(
-            "button_release_event", self.show_changelog
+            'button_release_event', self.show_changelog
         )
 
-        self.kano_button = KanoButton("BACK")
+        self.kano_button = KanoButton(_("BACK"))
         self.kano_button.pack_and_align()
 
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
@@ -88,8 +90,8 @@ class SetAbout(Gtk.Box):
         self.pack_start(hbutton_container, False, False, 3)
         self.pack_start(self.kano_button.align, False, False, 10)
 
-        self.kano_button.connect("button-release-event", self.win.go_to_home)
-        self.kano_button.connect("key-release-event", self.win.go_to_home)
+        self.kano_button.connect('button-release-event', self.win.go_to_home)
+        self.kano_button.connect('key-release-event', self.win.go_to_home)
 
         # Refresh window
         self.win.show_all()
@@ -116,7 +118,7 @@ class SetAbout(Gtk.Box):
             with open(legal_dir + file, 'r') as f:
                 legal_text = legal_text + f.read() + '\n\n\n'
 
-        kdialog = KanoDialog("Terms and conditions", "",
+        kdialog = KanoDialog(_("Terms and conditions"), "",
                              scrolled_text=legal_text,
                              parent_window=self.win)
         kdialog.run()

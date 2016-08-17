@@ -62,21 +62,21 @@ def get_main_window(base_class):
             ScrolledWindow.apply_styling_to_screen(wide=True)
 
             # Set window
-            base_class.__init__(self, "Settings", self.width,
+            base_class.__init__(self, _("Settings"), self.width,
                                 self.height, socket_id)
 
             self.set_decorated(True)
-            self.top_bar = TopBar("Settings")
+            self.top_bar = TopBar(_("Settings"))
             self.top_bar.set_close_callback(self.close_window)
             self.prev_handler = None
-            self.set_icon_name("kano-settings")
+            self.set_icon_name('kano-settings')
 
             if self._base_name == "Window":
                 self.set_titlebar(self.top_bar)
 
             self._onescreen = onescreen
 
-            self.connect("delete-event", Gtk.main_quit)
+            self.connect('delete-event', Gtk.main_quit)
             # In case we are called from kano-world-launcher, terminate splash
             os.system('kano-stop-splash')
             # Init to Home Screen
@@ -97,7 +97,7 @@ def get_main_window(base_class):
             # first time, no event attached
             self.remove_prev_callback()
             self.prev_handler = self.top_bar.prev_button.connect(
-                "button-release-event", callback
+                'button-release-event', callback
             )
 
         def remove_prev_callback(self):
@@ -123,16 +123,16 @@ def get_main_window(base_class):
         def close_window(self, button, event):
             if common.need_reboot:
                 kdialog = KanoDialog(
-                    "Reboot?",
-                    "Your Kano needs to reboot for changes to apply",
+                    _("Reboot?"),
+                    _("Your Kano needs to reboot for changes to apply"),
                     [
                         {
-                            'label': "LATER",
+                            'label': _("LATER"),
                             'color': 'grey',
                             'return_value': False
                         },
                         {
-                            'label': "REBOOT NOW",
+                            'label': _("REBOOT NOW"),
                             'color': 'orange',
                             'return_value': True
                         }
@@ -140,7 +140,7 @@ def get_main_window(base_class):
                     parent_window=self.get_toplevel()
                 )
 
-                kdialog.set_action_background("grey")
+                kdialog.set_action_background('grey')
                 do_reboot_now = kdialog.run()
                 if do_reboot_now:
                     os.system("sudo systemctl reboot")

@@ -23,11 +23,11 @@ name_pattern = "-4-3.png"
 
 
 class SetWallpaper(TwoButtonTemplate):
-    def __init__(self, win, header='Choose a background',
-                 subheader='', buttons_shown=1):
+    def __init__(self, win, header=_("Choose a background"),
+                 subheader="", buttons_shown=1):
         # This simply is a Gtk.Box with a heading, scrolledwindow and green
         # kano button and optionally an orange link
-        TwoButtonTemplate.__init__(self, header, subheader, 'TRY', 'CHOOSE', buttons_shown)
+        TwoButtonTemplate.__init__(self, header, subheader, _("TRY"), _("CHOOSE"), buttons_shown)
 
         self.win = win
         self.get_style_context().add_class('notebook_page')
@@ -36,11 +36,11 @@ class SetWallpaper(TwoButtonTemplate):
         # the first screen
         self.left_button.set_sensitive(False)
         self.left_button.set_margin(10, 0, 20, 0)
-        self.left_button.connect("button-release-event", self.set_wallpaper)
+        self.left_button.connect('button-release-event', self.set_wallpaper)
 
         self.right_button.set_margin(10, 0, 20, 0)
         self.right_button.set_sensitive(False)
-        self.right_button.connect("button-release-event", self.apply_changes)
+        self.right_button.connect('button-release-event', self.apply_changes)
 
         # Initialise table
         self.table = WallpaperTable()
@@ -91,7 +91,7 @@ class SetWallpaper(TwoButtonTemplate):
         '''
         selected = self.get_selected()
         if selected:
-            set_setting("Wallpaper", selected)
+            set_setting('Wallpaper', selected)
 
     def set_selected(self, image_name):
         '''Sets the selected element in the dictionary to True,
@@ -257,8 +257,8 @@ class WallpaperTable(ImageTable):
 class FirstBootSetWallpaper(SetWallpaper):
     def __init__(self, win):
         SetWallpaper.__init__(self, win,
-                              header='Pick your background',
-                              subheader='New wallpapers unlocked! Level up to get more.',
+                              header=_("Pick your background"),
+                              subheader=_("New wallpapers unlocked! Level up to get more."),
                               buttons_shown=2)
         self.win.set_main_widget(self)
 

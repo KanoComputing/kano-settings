@@ -1,0 +1,813 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR Kano Computing Ltd.
+# This file is distributed under the same license as the kano-apps package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: kano-apps\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2016-08-16 13:45+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../kano_settings/system/locale.py:100 ../kano_settings/system/locale.py:114
+msgid "You need to be root to change install a locale"
+msgstr ""
+
+#: ../kano_settings/system/overclock.py:117
+msgid "Overclocking"
+msgstr ""
+
+#: ../kano_settings/system/advanced.py:94
+msgid "Parental lock enabled!"
+msgstr ""
+
+#: ../kano_settings/system/advanced.py:111
+msgid "Parental lock disabled!"
+msgstr ""
+
+#: ../kano_settings/system/advanced.py:118
+msgid ""
+"Password doesn't match\n"
+"leaving parental lock enabled!"
+msgstr ""
+
+#: ../kano_settings/system/screensaver.py:21
+msgid "Could not find in home kdesk"
+msgstr ""
+
+#: ../kano_settings/set_audio.py:23
+msgid "Audio"
+msgstr ""
+
+#: ../kano_settings/set_audio.py:24
+msgid "Get sound from your speaker or your TV"
+msgstr ""
+
+#: ../kano_settings/set_audio.py:25 ../kano_settings/set_mouse.py:27
+#: ../kano_settings/set_notifications.py:28 ../kano_settings/set_font.py:35
+#: ../kano_settings/parental_config.py:31
+#: ../kano_settings/parental_config.py:183
+#: ../kano_settings/bluetooth_config.py:183 ../kano_settings/set_display.py:56
+#: ../kano_settings/set_display.py:175 ../kano_settings/set_advanced.py:26
+#: ../kano_settings/set_overclock.py:45 ../kano_settings/set_keyboard.py:39
+#: ../kano_settings/set_keyboard.py:88
+msgid "APPLY CHANGES"
+msgstr ""
+
+#: ../kano_settings/set_audio.py:38
+msgid "Speaker"
+msgstr ""
+
+#: ../kano_settings/set_audio.py:42
+msgid "TV     "
+msgstr ""
+
+#: ../kano_settings/set_mouse.py:25
+msgid "Mouse"
+msgstr ""
+
+#: ../kano_settings/set_mouse.py:26
+msgid "Pick your speed"
+msgstr ""
+
+#: ../kano_settings/set_mouse.py:29
+msgid "Slow"
+msgstr ""
+
+#: ../kano_settings/set_mouse.py:29
+msgid "REQUIRES LESS MOVE PRECISION"
+msgstr ""
+
+#: ../kano_settings/set_mouse.py:30 ../kano_settings/set_font.py:38
+msgid "Normal"
+msgstr ""
+
+#: ../kano_settings/set_mouse.py:30 ../kano_settings/set_font.py:38
+msgid "DEFAULT"
+msgstr ""
+
+#: ../kano_settings/set_mouse.py:31
+msgid "Fast"
+msgstr ""
+
+#: ../kano_settings/set_mouse.py:31
+msgid "BETTER FOR WIDE SCREENS"
+msgstr ""
+
+#: ../kano_settings/set_notifications.py:26
+msgid "Notifications"
+msgstr ""
+
+#: ../kano_settings/set_notifications.py:27
+msgid "Here you can manage the built-in notification system"
+msgstr ""
+
+#: ../kano_settings/set_notifications.py:30
+msgid "Show all notifications"
+msgstr ""
+
+#: ../kano_settings/set_notifications.py:31
+msgid "Hide all notifications"
+msgstr ""
+
+#: ../kano_settings/set_notifications.py:32
+msgid "Hide only Kano World notifications"
+msgstr ""
+
+#: ../kano_settings/set_account.py:39
+msgid "System account settings"
+msgstr ""
+
+#: ../kano_settings/set_account.py:40
+msgid "Set your account"
+msgstr ""
+
+#: ../kano_settings/set_account.py:43 ../kano_settings/set_account.py:189
+msgid "CHANGE PASSWORD"
+msgstr ""
+
+#: ../kano_settings/set_account.py:48
+msgid "ADD ACCOUNT"
+msgstr ""
+
+#: ../kano_settings/set_account.py:53
+msgid "REMOVE ACCOUNT"
+msgstr ""
+
+#: ../kano_settings/set_account.py:66
+msgid "Accounts"
+msgstr ""
+
+#: ../kano_settings/set_account.py:67
+msgid "Add or remove accounts"
+msgstr ""
+
+#: ../kano_settings/set_account.py:103
+msgid "Error creating new user"
+msgstr ""
+
+#: ../kano_settings/set_account.py:109
+msgid "Reboot the system"
+msgstr ""
+
+#: ../kano_settings/set_account.py:110
+msgid "A new account will be created next time you reboot."
+msgstr ""
+
+#: ../kano_settings/set_account.py:125
+msgid "Are you sure you want to delete the current user?"
+msgstr ""
+
+#: ../kano_settings/set_account.py:126
+msgid "You will lose all the data on this account!"
+msgstr ""
+
+#: ../kano_settings/set_account.py:129
+msgid "CANCEL"
+msgstr ""
+
+#: ../kano_settings/set_account.py:134 ../kano_settings/set_wifi.py:330
+#: ../kano_wifi_gui/ConnectToNetwork.py:98
+#: ../kano_wifi_gui/PasswordScreen.py:160
+msgid "OK"
+msgstr ""
+
+#: ../kano_settings/set_account.py:148
+msgid "Error deleting user"
+msgstr ""
+
+#: ../kano_settings/set_account.py:155
+msgid "To finish removing this account, you need to reboot"
+msgstr ""
+
+#: ../kano_settings/set_account.py:156
+msgid "Do you want to reboot?"
+msgstr ""
+
+#: ../kano_settings/set_account.py:159 ../kano_settings/main_window.py:130
+msgid "LATER"
+msgstr ""
+
+#: ../kano_settings/set_account.py:164 ../kano_settings/main_window.py:135
+msgid "REBOOT NOW"
+msgstr ""
+
+#: ../kano_settings/set_account.py:187
+msgid "Change your password"
+msgstr ""
+
+#: ../kano_settings/set_account.py:193 ../kano_settings/set_account.py:201
+msgid "Old password"
+msgstr ""
+
+#: ../kano_settings/set_account.py:194 ../kano_settings/set_account.py:206
+msgid "New password"
+msgstr ""
+
+#: ../kano_settings/set_account.py:195 ../kano_settings/set_account.py:211
+msgid "Repeat new password"
+msgstr ""
+
+#: ../kano_settings/set_account.py:193
+msgid "\"kano\" is default"
+msgstr ""
+
+#: ../kano_settings/set_account.py:253 ../kano_settings/set_account.py:258
+#: ../kano_settings/set_account.py:288 ../kano_settings/set_account.py:314
+msgid "Could not change password"
+msgstr ""
+
+#: ../kano_settings/set_account.py:254
+msgid "Your old password is incorrect!"
+msgstr ""
+
+#: ../kano_settings/set_account.py:259
+msgid "Your new passwords don't match! Try again."
+msgstr ""
+
+#: ../kano_settings/set_account.py:289
+msgid "Your new password is not long enough or contains special characters."
+msgstr ""
+
+#: ../kano_settings/set_account.py:291
+msgid "Password changed!"
+msgstr ""
+
+#: ../kano_settings/set_account.py:320 ../kano_settings/set_advanced.py:309
+msgid "GO BACK"
+msgstr ""
+
+#: ../kano_settings/set_account.py:325 ../kano_settings/set_advanced.py:314
+#: ../kano_wifi_gui/ConnectToNetwork.py:68 ../kano_wifi_gui/wifi_window.py:116
+msgid "TRY AGAIN"
+msgstr ""
+
+#: ../kano_settings/set_font.py:33
+msgid "Font"
+msgstr ""
+
+#: ../kano_settings/set_font.py:34
+msgid "Choose a comfortable text size"
+msgstr ""
+
+#: ../kano_settings/set_font.py:37
+msgid "Small"
+msgstr ""
+
+#: ../kano_settings/set_font.py:37
+msgid "BETTER FOR SMALL SCREENS"
+msgstr ""
+
+#: ../kano_settings/set_font.py:39
+msgid "Big"
+msgstr ""
+
+#: ../kano_settings/set_font.py:39
+msgid "BETTER FOR BIG SCREENS"
+msgstr ""
+
+#: ../kano_settings/no_internet_screen.py:27
+msgid "Later"
+msgstr ""
+
+#: ../kano_settings/no_internet_screen.py:30
+msgid "CONNECT NOW"
+msgstr ""
+
+#: ../kano_settings/no_internet_screen.py:51
+msgid "You need internet to continue"
+msgstr ""
+
+#: ../kano_settings/set_about.py:43
+#, python-brace-format
+msgid "Disk space used: {used}B / {total}B"
+msgstr ""
+
+#: ../kano_settings/set_about.py:50
+#, python-brace-format
+msgid "Temperature: {celsius}"
+msgstr ""
+
+#: ../kano_settings/set_about.py:53
+#, python-brace-format
+msgid "Model: {model}"
+msgstr ""
+
+#: ../kano_settings/set_about.py:56 ../kano_settings/set_about.py:120
+msgid "Terms and conditions"
+msgstr ""
+
+#: ../kano_settings/set_about.py:61
+msgid "Meet the team"
+msgstr ""
+
+#: ../kano_settings/set_about.py:66
+msgid "Changelog"
+msgstr ""
+
+#: ../kano_settings/set_about.py:71 ../kano_settings/set_wifi.py:88
+msgid "BACK"
+msgstr ""
+
+#: ../kano_settings/set_screensaver.py:34
+msgid "Change your screensaver"
+msgstr ""
+
+#: ../kano_settings/set_screensaver.py:36
+msgid "CHANGE SCREENSAVER"
+msgstr ""
+
+#: ../kano_settings/set_screensaver.py:37
+msgid "Advanced Options"
+msgstr ""
+
+#: ../kano_settings/set_screensaver.py:184
+msgid ""
+"Length of time in minutes\n"
+"before screensaver launches"
+msgstr ""
+
+#: ../kano_settings/parental_config.py:29 ../kano_settings/set_advanced.py:68
+msgid "Parental lock"
+msgstr ""
+
+#: ../kano_settings/parental_config.py:30
+msgid "Configure your parental lock settings"
+msgstr ""
+
+#: ../kano_settings/parental_config.py:48
+msgid "Low Settings"
+msgstr ""
+
+#: ../kano_settings/parental_config.py:49
+msgid ""
+"Block predefined blacklisted websites and\n"
+"activates SafeSearch on Google and Youtube"
+msgstr ""
+
+#: ../kano_settings/parental_config.py:52
+msgid "Medium Settings"
+msgstr ""
+
+#: ../kano_settings/parental_config.py:53
+msgid "Use safe DNS servers to filter all traffic"
+msgstr ""
+
+#: ../kano_settings/parental_config.py:56
+msgid "High Settings"
+msgstr ""
+
+#: ../kano_settings/parental_config.py:57
+msgid "Enable all filters and restrict search engine access"
+msgstr ""
+
+#: ../kano_settings/parental_config.py:60
+msgid "Ultimate Settings"
+msgstr ""
+
+#: ../kano_settings/parental_config.py:61
+msgid "Only allow access to Kano World activities"
+msgstr ""
+
+#: ../kano_settings/parental_config.py:65
+msgid "Configure allowed/blocked"
+msgstr ""
+
+#: ../kano_settings/parental_config.py:121
+msgid ""
+"If any browsers are open, please relaunch them for this setting to take "
+"effect"
+msgstr ""
+
+#: ../kano_settings/parental_config.py:181
+msgid "Allow and Block Sites"
+msgstr ""
+
+#: ../kano_settings/parental_config.py:182
+msgid "Add extra sites to block or allow"
+msgstr ""
+
+#: ../kano_settings/parental_config.py:206
+msgid "Add extra sites to block"
+msgstr ""
+
+#: ../kano_settings/parental_config.py:211
+msgid "Something blocked that shouldn't be?"
+msgstr ""
+
+#: ../kano_settings/templates.py:221
+msgid ""
+"\n"
+"We need to make sure the website URL is valid.\n"
+"Please enter the full URL as it appears in your browser.\n"
+"\n"
+"Example: http://www.google.com\n"
+msgstr ""
+
+#: ../kano_settings/main_window.py:65 ../kano_settings/main_window.py:69
+msgid "Settings"
+msgstr ""
+
+#: ../kano_settings/main_window.py:126
+msgid "Reboot?"
+msgstr ""
+
+#: ../kano_settings/main_window.py:127
+msgid "Your Kano needs to reboot for changes to apply"
+msgstr ""
+
+#: ../kano_settings/bluetooth_config.py:181
+msgid "Bluetooth"
+msgstr ""
+
+#: ../kano_settings/bluetooth_config.py:182
+msgid "Connect to bluetooth devices"
+msgstr ""
+
+#: ../kano_settings/set_display.py:43
+msgid " (Changing this requires a reboot)"
+msgstr ""
+
+#: ../kano_settings/set_display.py:54
+msgid "Display"
+msgstr ""
+
+#: ../kano_settings/set_display.py:93 ../kano_settings/set_display.py:244
+#: ../kano_settings/set_display.py:333
+msgid "Overscan"
+msgstr ""
+
+#: ../kano_settings/set_display.py:100
+msgid "Flip Screen"
+msgstr ""
+
+#: ../kano_settings/set_display.py:245
+msgid "This setting lets you adjust your screen's size."
+msgstr ""
+
+#: ../kano_settings/set_display.py:334
+msgid "This setting lets you adjust your screen's size, edge by edge."
+msgstr ""
+
+#: ../kano_settings/get_window.py:31
+msgid "Application"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:24 ../kano_settings/set_keyboard.py:120
+msgid "Advanced options"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:25
+msgid "Toggle parental lock and debug mode"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:60
+msgid ""
+"Use different levels to:\n"
+"- Block mature content in browser and YouTube\n"
+"- Or restrict internet access to only Kano World activity"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:85 ../kano_settings/set_wifi.py:134
+msgid "Configure"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:98
+msgid ""
+"Having problems?\n"
+"1) Enable this mode\n"
+"2) Report a bug with the ? tool on the Desktop"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:105 ../kano_settings/set_advanced.py:150
+msgid "Debug mode"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:143
+msgid "Activated"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:148
+msgid "De-activated"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:180
+msgid "Unlock parental lock"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:181
+msgid "Enter your password"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:182
+msgid "UNLOCK"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:188
+msgid "Enter your selected password"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:197
+msgid "Set up parental lock"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:198
+msgid "Choose a password"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:199
+msgid "LOCK"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:205
+msgid "Select password"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:209
+msgid "Confirm password"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:278
+msgid "Careful"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:279
+msgid "The passwords don't match! Try again"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:347 ../kano_wifi_gui/ConnectToNetwork.py:94
+msgid "Success"
+msgstr ""
+
+#: ../kano_settings/set_advanced.py:349
+msgid "Error"
+msgstr ""
+
+#: ../kano_settings/set_overclock.py:43
+msgid "Overclock your processor"
+msgstr ""
+
+#: ../kano_settings/set_overclock.py:44
+msgid "Make your computer's brain think faster, but run hotter."
+msgstr ""
+
+#: ../kano_settings/set_overclock.py:80
+msgid "Warning"
+msgstr ""
+
+#: ../kano_settings/set_overclock.py:82
+msgid ""
+"For a small percentage of users, this setting makes the Pi behave "
+"unpredictably. Do you want to continue?"
+msgstr ""
+
+#: ../kano_settings/set_overclock.py:88 ../kano_wifi_gui/wifi_window.py:151
+#: ../kano_wifi_gui/wifi_window.py:191
+msgid "NO"
+msgstr ""
+
+#: ../kano_settings/set_overclock.py:93 ../kano_wifi_gui/wifi_window.py:157
+#: ../kano_wifi_gui/wifi_window.py:197
+msgid "YES"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:27
+msgid "to be set"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:27 ../kano_settings/set_wifi.py:102
+msgid "COMPLETE"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:37
+msgid "Proxy  "
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:39
+msgid "Disable proxy"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:69
+msgid "Use the browser to log in or configure proxy"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:71
+msgid "Configure wireless"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:73
+msgid "Get connected"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:75
+msgid "WIFI"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:87
+msgid "No network found"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:92 ../kano_settings/set_wifi.py:117
+msgid "Browser Login"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:122 ../kano_settings/set_wifi.py:128
+msgid "Connection found!"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:123
+msgid "You're on a wired network"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:129
+msgid "You're on a wireless network"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:186
+msgid "Proxy"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:187
+msgid "Connect via a friend"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:198
+msgid "IP address"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:202
+msgid "Username"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:206
+msgid "Port"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:210 ../kano_wifi_gui/PasswordScreen.py:72
+msgid "Password"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:217
+msgid "enable proxy"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:245 ../kano_settings/set_wifi.py:364
+msgid "ENABLE PROXY"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:247 ../kano_settings/set_wifi.py:371
+msgid "DISABLE PROXY"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:305
+msgid "Error with proxy"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:313
+msgid "Successfully enabled proxy"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:320
+msgid "Successfully disabled proxy"
+msgstr ""
+
+#: ../kano_settings/set_keyboard.py:37 ../kano_settings/set_keyboard.py:86
+msgid "Keyboard"
+msgstr ""
+
+#: ../kano_settings/set_keyboard.py:38
+msgid "Kano keyboard detected"
+msgstr ""
+
+#: ../kano_settings/set_keyboard.py:51
+msgid "Layout options"
+msgstr ""
+
+#: ../kano_settings/set_keyboard.py:87
+msgid "Where do you live? So I can set your keyboard."
+msgstr ""
+
+#: ../kano_wifi_gui/ctl.py:22
+msgid "Disconnect complete - you're now offline."
+msgstr ""
+
+#: ../kano_wifi_gui/ConnectToNetwork.py:34
+msgid "Connecting to {}"
+msgstr ""
+
+#: ../kano_wifi_gui/ConnectToNetwork.py:35
+#: ../kano_wifi_gui/RefreshNetworks.py:25
+msgid "Any minute now"
+msgstr ""
+
+#: ../kano_wifi_gui/ConnectToNetwork.py:61
+msgid "Cannot connect!"
+msgstr ""
+
+#: ../kano_wifi_gui/ConnectToNetwork.py:62
+msgid "Maybe the signal was too weak to connect."
+msgstr ""
+
+#: ../kano_wifi_gui/ConnectToNetwork.py:75
+msgid "QUIT"
+msgstr ""
+
+#: ../kano_wifi_gui/ConnectToNetwork.py:95
+#: ../kano_wifi_gui/PasswordScreen.py:157
+msgid "You're connected"
+msgstr ""
+
+#: ../kano_wifi_gui/RefreshNetworks.py:24
+msgid "Searching for networks"
+msgstr ""
+
+#: ../kano_wifi_gui/PasswordScreen.py:52
+msgid "Connect to the network"
+msgstr ""
+
+#: ../kano_wifi_gui/PasswordScreen.py:85 ../kano_wifi_gui/NetworkScreen.py:227
+#: ../kano_wifi_gui/NetworkScreen.py:261
+msgid "CONNECT"
+msgstr ""
+
+#: ../kano_wifi_gui/PasswordScreen.py:92
+msgid "Show password"
+msgstr ""
+
+#: ../kano_wifi_gui/PasswordScreen.py:114
+msgid "Password incorrect"
+msgstr ""
+
+#: ../kano_wifi_gui/PasswordScreen.py:156
+msgid "Success!"
+msgstr ""
+
+#: ../kano_wifi_gui/NetworkScreen.py:54
+msgid "Connect to WiFi"
+msgstr ""
+
+#: ../kano_wifi_gui/NetworkScreen.py:55
+msgid "Choose a network"
+msgstr ""
+
+#: ../kano_wifi_gui/NetworkScreen.py:109
+msgid "No networks detected!"
+msgstr ""
+
+#: ../kano_wifi_gui/NetworkScreen.py:204 ../kano_wifi_gui/wifi_window.py:123
+msgid "Skip"
+msgstr ""
+
+#: ../kano_wifi_gui/NetworkScreen.py:234
+msgid "DISCONNECT"
+msgstr ""
+
+#: ../kano_wifi_gui/NetworkScreen.py:251
+msgid "Disconnect complete."
+msgstr ""
+
+#: ../kano_wifi_gui/NetworkScreen.py:252
+msgid "You're now offline"
+msgstr ""
+
+#: ../kano_wifi_gui/NetworkScreen.py:255
+msgid "CLOSE"
+msgstr ""
+
+#: ../kano_wifi_gui/wifi_window.py:57 ../kano_wifi_gui/wifi_window.py:63
+msgid "Kano WiFi"
+msgstr ""
+
+#: ../kano_wifi_gui/wifi_window.py:109
+msgid ""
+"You don't seem to have a WiFi dongle\n"
+"plugged in."
+msgstr ""
+
+#: ../kano_wifi_gui/wifi_window.py:110
+msgid "Plug one in and try again"
+msgstr ""
+
+#: ../kano_wifi_gui/wifi_window.py:144
+msgid "You are already connected via ethernet."
+msgstr ""
+
+#: ../kano_wifi_gui/wifi_window.py:145
+msgid "Do you still want to connect with WiFi?"
+msgstr ""
+
+#: ../kano_wifi_gui/wifi_window.py:187
+msgid "You already have internet!"
+msgstr ""
+
+#: ../kano_wifi_gui/wifi_window.py:188
+msgid "Do you want to change network?"
+msgstr ""
