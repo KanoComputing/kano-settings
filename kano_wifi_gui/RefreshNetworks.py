@@ -21,8 +21,8 @@ class RefreshNetworks():
         self._refresh_networks()
 
     def _refresh_networks(self):
-        title = "Searching for networks"
-        description = "Any minute now"
+        title = _("Searching for networks")
+        description = _("Any minute now")
         self._win.remove_main_widget()
         SpinnerScreen(self._win, title, description, self._scan_networks)
 

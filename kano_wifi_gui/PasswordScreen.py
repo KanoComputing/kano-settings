@@ -49,7 +49,7 @@ class PasswordScreen(Gtk.Box):
         self._wrong_password_used_before = False
 
         self._heading = Heading(
-            "Connect to the network",
+            _("Connect to the network"),
             self._network_name,
             self._win.is_plug(),
             True
@@ -69,29 +69,29 @@ class PasswordScreen(Gtk.Box):
         self._padlock_image = Gtk.Image.new_from_file(image_path)
 
         self._password_entry = Gtk.Entry()
-        self._password_entry.set_placeholder_text("Password")
+        self._password_entry.set_placeholder_text(_("Password"))
         self._password_entry.set_visibility(False)
-        self._password_entry.get_style_context().add_class("password_entry")
+        self._password_entry.get_style_context().add_class('password_entry')
         self._password_entry.set_margin_left(60)
         self._password_entry.set_margin_right(60)
-        self._password_entry.connect("key-release-event",
+        self._password_entry.connect('key-release-event',
                                      self._set_button_sensitive)
         # If Enter key is pressed on the password entry, we want to act as
         # though the connect_btn was clicked
         self._password_entry.connect(
-            "key-release-event", self._on_connect_key_wrapper
+            'key-release-event', self._on_connect_key_wrapper
         )
 
-        self._connect_btn = KanoButton("CONNECT")
+        self._connect_btn = KanoButton(_("CONNECT"))
         self._connect_btn.connect('clicked', self._on_connect)
         self._connect_btn.set_sensitive(False)
         self._connect_btn.set_margin_right(100)
         self._connect_btn.set_margin_left(100)
         self._connect_btn.pack_and_align()
 
-        self._show_password = Gtk.CheckButton.new_with_label("Show password")
-        self._show_password.get_style_context().add_class("show_password")
-        self._show_password.connect("toggled",
+        self._show_password = Gtk.CheckButton.new_with_label(_("Show password"))
+        self._show_password.get_style_context().add_class('show_password')
+        self._show_password.connect('toggled',
                                     self._change_password_entry_visiblity)
         self._show_password.set_active(True)
         self._show_password.set_margin_left(100)
@@ -111,8 +111,8 @@ class PasswordScreen(Gtk.Box):
         self.show_all()
 
     def _create_wrong_password_label(self):
-        label = Gtk.Label("Password incorrect")
-        label.get_style_context().add_class("wrong_password_label")
+        label = Gtk.Label(_("Password incorrect"))
+        label.get_style_context().add_class('wrong_password_label')
         return label
 
     def _change_password_entry_visiblity(self, widget):
@@ -153,14 +153,14 @@ class PasswordScreen(Gtk.Box):
     def _success_screen(self):
         self._win.remove_main_widget()
 
-        title = "Success!"
-        description = "You're connected"
+        title = _("Success!")
+        description = _("You're connected")
         buttons = [
             {
-                "label": "OK",
-                "color": "green",
-                "type": "KanoButton",
-                "callback": Gtk.main_quit
+                'label': _("OK"),
+                'color': 'green',
+                'type': 'KanoButton',
+                'callback': Gtk.main_quit
             }
         ]
         img_path = os.path.join(img_dir, "internet.png")

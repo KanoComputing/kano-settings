@@ -61,7 +61,7 @@ class BootConfig:
 
     def ensure_exists(self):
         if not self.exists():
-            f = open_locked(self.path, "w")
+            f = open_locked(self.path, 'w')
             print >>f, "#"  # otherwise set_value thinks the file should not be written to
 
             # make sure changes go to disk
@@ -82,7 +82,7 @@ class BootConfig:
 
         """
         lines = read_file_contents_as_lines(self.path)
-        with open_locked(self.path, "w") as boot_config_file:
+        with open_locked(self.path, 'w') as boot_config_file:
 
             for line in lines:
                 if line == noobs_line:
@@ -123,7 +123,7 @@ class BootConfig:
 
         option_re = r'^\s*#?\s*' + str(name) + r'=(.*)'
 
-        with open_locked(self.path, "w") as boot_config_file:
+        with open_locked(self.path, 'w') as boot_config_file:
             was_found = False
 
             for line in lines:
@@ -165,12 +165,12 @@ class BootConfig:
         if not lines:
             return
 
-        logger.info('writing comment to {} {} {}'.format(self.path, name, value))
+        logger.info("writing comment to {} {} {}".format(self.path, name, value))
 
         comment_str_full = '### {}: {}'.format(name, value)
         comment_str_name = '### {}'.format(name)
 
-        with open_locked(self.path, "w") as boot_config_file:
+        with open_locked(self.path, 'w') as boot_config_file:
             boot_config_file.write(comment_str_full + '\n')
 
             for line in lines:
@@ -287,7 +287,7 @@ class ConfigTransaction:
     def raise_state_to_locked(self):
         if self.state == 0:
             self.state = 1
-            self.lock = open_locked(self.lockpath, "w", timeout=lock_timeout)
+            self.lock = open_locked(self.lockpath, 'w', timeout=lock_timeout)
 
     def set_state_writable(self):
 
@@ -296,7 +296,7 @@ class ConfigTransaction:
 
         if self.state == 1:
 
-            temp = tempfile.NamedTemporaryFile(mode="w",
+            temp = tempfile.NamedTemporaryFile(mode='w',
                                                delete=False,
                                                prefix="config_tmp_",
                                                dir=self.dir)
@@ -406,7 +406,7 @@ def enforce_pi():
     pi_detected = os.path.exists(tvservice_path) and \
         os.path.exists(boot_config_standard_path)
     if not pi_detected:
-        logger.error('need to run on a Raspberry Pi')
+        logger.error("need to run on a Raspberry Pi")
         sys.exit()
 
 

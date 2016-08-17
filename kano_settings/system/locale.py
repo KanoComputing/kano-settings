@@ -14,11 +14,6 @@
 #
 
 
-# TODO: Make this safety measure cleaner
-if not hasattr(__builtins__, '_'):
-    def _(s):
-        return s
-
 import re
 import os
 from kano.utils import run_cmd, read_file_contents, sed, enforce_root, \

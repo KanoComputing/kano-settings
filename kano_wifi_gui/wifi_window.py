@@ -54,19 +54,19 @@ def get_wifi_gui(base_class):
             # Set window
             base_class.__init__(
                 self,
-                "Kano WiFi",
+                _("Kano WiFi"),
                 self.width,
                 self.height,
                 socket_id
             )
 
-            self.top_bar = TopBar("Kano WiFi")
+            self.top_bar = TopBar(_("Kano WiFi"))
             self.top_bar.set_prev_callback(self.refresh_networks)
             self.top_bar.set_close_callback(Gtk.main_quit)
             self.prev_handler = None
-            self.connect("delete-event", Gtk.main_quit)
+            self.connect('delete-event', Gtk.main_quit)
             self.set_keep_above(True)
-            self.set_icon_name("kano-settings")
+            self.set_icon_name('kano-settings')
             self.set_decorated(True)
 
             if self._base_name == "Window":
@@ -106,23 +106,23 @@ def get_wifi_gui(base_class):
 
         def _plug_in_wifi_dongle(self):
             self.remove_main_widget()
-            title = "You don't seem to have a WiFi dongle\nplugged in."
-            description = "Plug one in and try again"
+            title = _("You don't seem to have a WiFi dongle\nplugged in.")
+            description = _("Plug one in and try again")
             buttons = [
                 {
-                    "label": ""
+                    'label': ""
                 },
                 {
-                    "label": "TRY AGAIN",
-                    "color": "green",
-                    "callback": self._launch_application,
-                    "type": "KanoButton",
-                    "focus": True
+                    'label': _("TRY AGAIN"),
+                    'color': 'green',
+                    'callback': self._launch_application,
+                    'type': 'KanoButton',
+                    'focus': True
                 },
                 {
-                    "label": "Skip",
-                    "callback": Gtk.main_quit,
-                    "type": "OrangeButton"
+                    'label': _("Skip"),
+                    'callback': Gtk.main_quit,
+                    'type': 'OrangeButton'
                 }
             ]
 
@@ -141,24 +141,24 @@ def get_wifi_gui(base_class):
 
         def _you_are_connected_via_ethernet(self):
             self.remove_main_widget()
-            title = "You are already connected via ethernet."
-            description = "Do you still want to connect with WiFi?"
+            title = _("You are already connected via ethernet.")
+            description = _("Do you still want to connect with WiFi?")
 
             # Decide which callback to use depending on if wifi dongle is
             # plugged in
             buttons = [
                 {
-                    "label": "NO",
-                    "color": "red",
-                    "callback": Gtk.main_quit,
-                    "type": "KanoButton"
+                    'label': _("NO"),
+                    'color': 'red',
+                    'callback': Gtk.main_quit,
+                    'type': 'KanoButton'
                 },
                 {
-                    "label": "YES",
-                    "color": "green",
-                    "callback": self._ethernet_next_step,
-                    "type": "KanoButton",
-                    "focus": True
+                    'label': _("YES"),
+                    'color': 'green',
+                    'callback': self._ethernet_next_step,
+                    'type': 'KanoButton',
+                    'focus': True
                 }
             ]
 
@@ -184,21 +184,21 @@ def get_wifi_gui(base_class):
 
         def _you_have_internet_screen(self, wiface):
             self.remove_main_widget()
-            title = "You already have internet!"
-            description = "Do you want to change network?"
+            title = _("You already have internet!")
+            description = _("Do you want to change network?")
             buttons = [
                 {
-                    "label": "NO",
-                    "color": "red",
-                    "callback": Gtk.main_quit,
-                    "type": "KanoButton"
+                    'label': _("NO"),
+                    'color': 'red',
+                    'callback': Gtk.main_quit,
+                    'type': 'KanoButton'
                 },
                 {
-                    "label": "YES",
-                    "color": "green",
-                    "callback": self.refresh_networks,
-                    "type": "KanoButton",
-                    "focus": True
+                    'label': _("YES"),
+                    'color': 'green',
+                    'callback': self.refresh_networks,
+                    'type': 'KanoButton',
+                    'focus': True
                 }
             ]
             img_path = os.path.join(img_dir, "internet.png")

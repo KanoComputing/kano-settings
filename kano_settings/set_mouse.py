@@ -22,13 +22,13 @@ class SetMouse(RadioButtonTemplate):
     def __init__(self, win):
         RadioButtonTemplate.__init__(
             self,
-            "Mouse",
-            "Pick your speed",
-            "APPLY CHANGES",
+            _("Mouse"),
+            _("Pick your speed"),
+            _("APPLY CHANGES"),
             [
-                ["Slow", "REQUIRES LESS MOVE PRECISION"],
-                ["Normal", "DEFAULT"],
-                ["Fast", "BETTER FOR WIDE SCREENS"]
+                [_("Slow"), _("REQUIRES LESS MOVE PRECISION")],
+                [_("Normal"), _("DEFAULT")],
+                [_("Fast"), _("BETTER FOR WIDE SCREENS")]
             ]
         )
         self.win = win

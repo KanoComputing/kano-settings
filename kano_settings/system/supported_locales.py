@@ -1,13 +1,13 @@
 class Locales(dict):
     LANGUAGES = {
-        'en': 'English',
-        'de': 'German'
+        'en': _("English"),
+        'de': _("German")
     }
 
     REGIONS = {
-        'US': 'United States',
-        'GB': 'United Kingdom',
-        'DE': 'Germany'
+        'US': _("United States"),
+        'GB': _("United Kingdom"),
+        'DE': _("Germany")
     }
 
     def list_language_codes(self):

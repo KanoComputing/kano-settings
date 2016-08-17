@@ -18,7 +18,7 @@ kdesk_config = os.path.join("/home", username, ".kdeskrc")
 # This is where the default kdesk settings are kept
 usr_kdesk_config = "/usr/share/kano-desktop/kdesk/.kdeskrc"
 
-error_msg = "Could not find in home kdesk"
+error_msg = _("Could not find in home kdesk")
 
 
 def is_screensaver_on():
@@ -74,7 +74,7 @@ def set_kdesk_config(param_name, param_value):
             sed_cmd = 'sed -i \'s/{}/{}/g\' {}'.format(
                 line, config_line, kdesk_config
             )
-            logger.info('Applied the sed cmd: {}'.format(sed_cmd))
+            logger.info("Applied the sed cmd: {}".format(sed_cmd))
             os.system(sed_cmd)
 
             found = True

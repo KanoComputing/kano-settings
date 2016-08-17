@@ -129,7 +129,7 @@ class configSetTest(unittest.TestCase):
         unittest.TestCase.__init__(self, x)
 
 
-    @unittest.skipIf('-fast' in sys.argv, 'Skipping because tests are in fast mode')
+    @unittest.skipIf('-fast' in sys.argv, "Skipping because tests are in fast mode")
     def test_set_config(self):
         from kano_settings import boot_config
 

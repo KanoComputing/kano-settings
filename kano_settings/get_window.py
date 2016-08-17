@@ -28,7 +28,7 @@ def application_window_wrapper(base_class):
 
     class ApplicationWindow(base_class):
 
-        def __init__(self, title="Application", width=None, height=None,
+        def __init__(self, title=_("Application"), width=None, height=None,
                      socket_id=0):
 
             base_class.__init__(self, title=title)
@@ -36,7 +36,7 @@ def application_window_wrapper(base_class):
 
             if self._base_name == "Plug":
                 self.construct(int(socket_id))
-                self.get_style_context().add_class("plug")
+                self.get_style_context().add_class('plug')
             else:
                 self.set_position(Gtk.WindowPosition.CENTER)
 
@@ -65,7 +65,7 @@ def application_window_wrapper(base_class):
 
         def add_plug_class(self, widget):
             if self._base_name == "Plug":
-                widget.get_style_context().add_class("plug")
+                widget.get_style_context().add_class('plug')
 
         def blur(self):
             if not self._blurred:

@@ -77,7 +77,7 @@ class ScrolledWindowTemplate(Gtk.Box):
                 orientation=Gtk.Orientation.HORIZONTAL, spacing=40
             )
 
-            label = Gtk.Label('')
+            label = Gtk.Label("")
             self.orange_button = OrangeButton(orange_button_text)
             button_box.pack_start(label, False, False, 0)
             button_box.pack_start(self.kano_button.align, False, False, 0)
@@ -96,10 +96,10 @@ class LabelledListTemplate(Template):
     @staticmethod
     def label_button(button, text0, text1):
         button.set_label(text0)
-        button.get_style_context().add_class("bold_toggle")
+        button.get_style_context().add_class('bold_toggle')
 
         info = Gtk.Label(text1)
-        info.get_style_context().add_class("normal_label")
+        info.get_style_context().add_class('normal_label')
 
         box = Gtk.Box()
         box.pack_start(button, False, False, 0)
@@ -177,9 +177,9 @@ class EditableList(Gtk.Grid):
         column = Gtk.TreeViewColumn(cell_renderer=renderer, text=0)
         self.edit_list.append_column(column)
 
-        self._add_btn = KanoButton('ADD')
+        self._add_btn = KanoButton(_("ADD"))
         self._add_btn.connect('button-release-event', self.add)
-        self._rm_btn = KanoButton('REMOVE')
+        self._rm_btn = KanoButton(_("REMOVE"))
         self._set_rm_btn_state()
         self._rm_btn.connect('button-release-event', self.rm)
 
@@ -217,10 +217,10 @@ class EditableList(Gtk.Grid):
             # FIXME: the reason for the os.system here is that the 'edited' signal
             # triggers on a key-pressed-event and the dialog closes on release. So
             # you would only see the dialog while holding down the 'ENTER' key.
-            title = 'Invalid website given'
-            description = "\nWe need to make sure the website URL is valid.\n" \
-                          "Please enter the full URL as it appears in your browser.\n\n" \
-                          "Example: http://www.google.com\n"
+            title = _("Invalid website given")
+            description = _("\nWe need to make sure the website URL is valid.\n" \
+                            "Please enter the full URL as it appears in your browser.\n\n" \
+                            "Example: http://www.google.com\n")
             buttons = "OK:red:1"
             cmd = 'kano-dialog title="{}" description="{}" buttons="{}" no-taskbar &'.format(
                   title, description, buttons)
@@ -266,8 +266,8 @@ class TwoButtonTemplate(Gtk.Box):
         self.sw = ScrolledWindow()
         self.sw.apply_styling_to_widget(wide=False)
 
-        self.left_button = KanoButton(left_btn_text, color="orange")
-        self.right_button = KanoButton(right_btn_text, color="green")
+        self.left_button = KanoButton(left_btn_text, color='orange')
+        self.right_button = KanoButton(right_btn_text, color='green')
 
         kano_button_box = Gtk.ButtonBox()
         kano_button_box.set_layout(Gtk.ButtonBoxStyle.CENTER)

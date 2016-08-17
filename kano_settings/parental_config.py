@@ -26,9 +26,9 @@ class ParentalConfig(Template):
     def __init__(self, win):
         Template.__init__(
             self,
-            "Parental lock",
-            "Configure your parental lock settings",
-            "APPLY CHANGES",
+            _("Parental lock"),
+            _("Configure your parental lock settings"),
+            _("APPLY CHANGES"),
             win.is_plug(),
             True
         )
@@ -45,25 +45,25 @@ class ParentalConfig(Template):
 
         self._parental_labels = [
             (
-                Gtk.Label("Low Settings"),
-                Gtk.Label("Block predefined blacklisted websites and\nactivates SafeSearch on Google and Youtube")
+                Gtk.Label(_("Low Settings")),
+                Gtk.Label(_("Block predefined blacklisted websites and\nactivates SafeSearch on Google and Youtube"))
             ),
             (
-                Gtk.Label("Medium Settings"),
-                Gtk.Label("Use safe DNS servers to filter all traffic")
+                Gtk.Label(_("Medium Settings")),
+                Gtk.Label(_("Use safe DNS servers to filter all traffic"))
             ),
             (
-                Gtk.Label("High Settings"),
-                Gtk.Label("Enable all filters and restrict search engine access")
+                Gtk.Label(_("High Settings")),
+                Gtk.Label(_("Enable all filters and restrict search engine access"))
             ),
             (
-                Gtk.Label("Ultimate Settings"),
-                Gtk.Label("Only allow access to Kano World activities")
+                Gtk.Label(_("Ultimate Settings")),
+                Gtk.Label(_("Only allow access to Kano World activities"))
             )
         ]
 
-        self.blacklist_button = OrangeButton("Configure allowed/blocked")
-        self.blacklist_button.connect("button-press-event",
+        self.blacklist_button = OrangeButton(_("Configure allowed/blocked"))
+        self.blacklist_button.connect('button-press-event',
                                       self.go_to_blacklist)
 
         self._value_change_handler(self.parental_level)
@@ -109,17 +109,17 @@ class ParentalConfig(Template):
         set_parental_level(level)
 
         # track which parental control level people use
-        track_data("parental-control-level-changed", {
-            "level": level
+        track_data('parental-control-level-changed', {
+            'level': level
         })
 
         if level == 3.0:
             # If on the highest parental control, prompt user to relaunch
             # the browser
             kdialog = KanoDialog(
-                title_text='Settings',
-                description_text=("If any browsers are open, please relaunch "
-                                  "them for this setting to take effect"),
+                title_text=_("Settings"),
+                description_text=(_("If any browsers are open, please relaunch " \
+                                    "them for this setting to take effect")),
                 parent_window=self.win
             )
             kdialog.run()
@@ -178,9 +178,9 @@ class AllowedSites(Template):
     def __init__(self, win):
         Template.__init__(
             self,
-            "Allow and Block Sites",
-            "Add extra sites to block or allow",
-            "APPLY CHANGES",
+            _("Allow and Block Sites"),
+            _("Add extra sites to block or allow"),
+            _("APPLY CHANGES"),
             win.is_plug(),
             True
         )
@@ -203,12 +203,12 @@ class AllowedSites(Template):
         grid = Gtk.Grid()
         grid.set_column_spacing(40)
 
-        add_label = Gtk.Label("Add extra sites to block")
+        add_label = Gtk.Label(_("Add extra sites to block"))
         add_label.get_style_context().add_class('normal_label')
         grid.attach(add_label, 0, 0, 1, 1)
         grid.attach(self.blacklist, 0, 1, 1, 1)
 
-        remove_label = Gtk.Label("Something blocked that shouldn't be?")
+        remove_label = Gtk.Label(_("Something blocked that shouldn't be?"))
         remove_label.get_style_context().add_class('normal_label')
         grid.attach(remove_label, 1, 0, 1, 1)
         grid.attach(self.whitelist, 1, 1, 1, 1)
@@ -244,8 +244,8 @@ class AllowedSites(Template):
         common.need_reboot = True
 
         # track which parental control level people use
-        track_data("parental-control-level-changed", {
-            "level": level
+        track_data('parental-control-level-changed', {
+            'level': level
         })
 
         self.win.go_to_home()
@@ -263,8 +263,8 @@ class ParentalPasswordDialog(KanoDialog):
         self.win = win
         KanoDialog.__init__(
             self,
-            title_text='Parental Authentication',
-            description_text='Enter your parental password:',
+            title_text=_("Parental Authentication"),
+            description_text=_("Enter your parental password:"),
             widget=entry,
             has_entry=True,
             global_style=True,
@@ -278,8 +278,8 @@ class ParentalPasswordDialog(KanoDialog):
             return True
 
         fail = KanoDialog(
-            title_text='Try again?',
-            description_text='The password was incorrect. Changes not applied',
+            title_text=_("Try again?"),
+            description_text=_("The password was incorrect. Changes not applied"),
             parent_window=self.win
         )
         fail.run()

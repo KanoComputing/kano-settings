@@ -42,7 +42,7 @@ def find_macintosh_index(country_name, layout):
 
     if variants:
         for i in range(len(variants)):
-            if variants[i] == ("Macintosh", "mac"):
+            if variants[i] == ('Macintosh', 'mac'):
                 # This is due to the adding of generic at the start of the array
                 return i + 1
     else:

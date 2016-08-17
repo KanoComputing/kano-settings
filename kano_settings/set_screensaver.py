@@ -31,10 +31,10 @@ class SetScreensaver(ScrolledWindowTemplate):
     def __init__(self, win):
         ScrolledWindowTemplate.__init__(
             self,
-            'Change your screensaver',
-            '',
-            'CHANGE SCREENSAVER',
-            'Advanced Options'
+            _("Change your screensaver"),
+            "",
+            _("CHANGE SCREENSAVER"),
+            _("Advanced Options")
         )
 
         self.win = win
@@ -154,9 +154,9 @@ class ScreensaverTable(ImageTable):
 class SetScreensaverAdvanced(Template):
 
     def __init__(self, win):
-        title = 'Screensaver - advanced'
+        title = _("Screensaver - advanced")
         description = ''
-        kano_label = 'APPLY CHANGES'
+        kano_label = _("APPLY CHANGES")
 
         Template.__init__(self, title, description, kano_label)
         self.win = win
@@ -164,8 +164,8 @@ class SetScreensaverAdvanced(Template):
         self.win.top_bar.enable_prev()
         self.win.change_prev_callback(self.go_to_set_style)
 
-        self.kano_button.connect("button-release-event", self.apply_changes)
-        self.kano_button.connect("key-release-event", self.apply_changes)
+        self.kano_button.connect('button-release-event', self.apply_changes)
+        self.kano_button.connect('key-release-event', self.apply_changes)
 
         # Want a label to the left, so we need to pack it separately
         checkbutton_box = Gtk.Box(
@@ -173,7 +173,7 @@ class SetScreensaverAdvanced(Template):
             spacing=35
         )
         self.checkbutton = Gtk.CheckButton()
-        label = Gtk.Label('Turn on screensaver')
+        label = Gtk.Label(_("Turn on screensaver"))
         label.get_style_context().add_class('checkbutton_label')
         checkbutton_box.pack_start(label, False, False, 0)
         checkbutton_box.pack_start(self.checkbutton, False, False, 0)
@@ -181,7 +181,7 @@ class SetScreensaverAdvanced(Template):
         self.checkbutton.connect('toggled', self.enable_screensaver_scale)
 
         scalebox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=20)
-        label = Gtk.Label("Length of time in minutes\nbefore screensaver launches")
+        label = Gtk.Label(_("Length of time in minutes\nbefore screensaver launches"))
         label.get_style_context().add_class('checkbutton_label')
         label.set_margin_top(25)
         self.scale = Gtk.Scale.new_with_range(

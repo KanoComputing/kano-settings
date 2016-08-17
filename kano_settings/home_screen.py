@@ -81,7 +81,7 @@ class HomeScreen(Gtk.Box):
 
         scrolled_window = ScrolledWindow(wide_scrollbar=True, vexpand=True,
                                          hexpand=True)
-        scrolled_window.get_style_context().add_class("app-grid")
+        scrolled_window.get_style_context().add_class('app-grid')
         scrolled_window.add_with_viewport(table)
 
         return scrolled_window

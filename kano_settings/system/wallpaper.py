@@ -102,7 +102,7 @@ def change_wallpaper(path, name):
             outfile.writelines(newlines)
     else:
         # Not found so add it
-        with open(deskrc_path, "a") as outfile:
+        with open(deskrc_path, 'a') as outfile:
             for conf_line in conf_params.itervalues():
                 outfile.write(conf_line + '\n')
 

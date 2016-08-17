@@ -111,11 +111,11 @@ class InstallLocale(unittest.TestCase):
         locale_already_installed = locale.is_locale_installed(test_locale)
 
         if locale_already_installed:
-            test_print('Locale already installed so uninstalling...')
+            test_print("Locale already installed so uninstalling...")
             locale.uninstall_locale(test_locale)
 
             if locale.is_locale_installed(test_locale):
-                test_print('ERROR: Locale could not be removed')
+                test_print("ERROR: Locale could not be removed")
                 return
 
         locale.install_locale(test_locale)
@@ -124,7 +124,7 @@ class InstallLocale(unittest.TestCase):
 
         # Revert the state
         if not locale_already_installed:
-            test_print('Restoring original locale state')
+            test_print("Restoring original locale state")
             locale.uninstall_locale(test_locale)
 
 
@@ -135,11 +135,11 @@ class UninstallLocale(unittest.TestCase):
         locale_already_installed = locale.is_locale_installed(test_locale)
 
         if not locale_already_installed:
-            test_print('Locale not installed so installing...')
+            test_print("Locale not installed so installing...")
             locale.install_locale(test_locale)
 
             if not locale.is_locale_installed(test_locale):
-                test_print('ERROR: Locale could not be installed')
+                test_print("ERROR: Locale could not be installed")
                 return
 
         locale.uninstall_locale(test_locale)
@@ -148,7 +148,7 @@ class UninstallLocale(unittest.TestCase):
 
         # Revert the state
         if locale_already_installed:
-            test_print('Restoring original locale state')
+            test_print("Restoring original locale state")
             locale.install_locale(test_locale)
 
 

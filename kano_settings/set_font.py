@@ -30,13 +30,13 @@ class SetFont(RadioButtonTemplate):
     def __init__(self, win):
         RadioButtonTemplate.__init__(
             self,
-            "Font",
-            "Choose a comfortable text size",
-            "APPLY CHANGES",
+            _("Font"),
+            _("Choose a comfortable text size"),
+            _("APPLY CHANGES"),
             [
-                ["Small", "BETTER FOR SMALL SCREENS"],
-                ["Normal", "DEFAULT"],
-                ["Big", "BETTER FOR BIG SCREENS"]
+                [_("Small"), _("BETTER FOR SMALL SCREENS")],
+                [_("Normal"), _("DEFAULT")],
+                [_("Big"), _("BETTER FOR BIG SCREENS")]
             ]
         )
 

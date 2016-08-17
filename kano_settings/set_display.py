@@ -40,20 +40,20 @@ class SetDisplay(Template):
     def __init__(self, win):
         # Show the Display brand and model
         self.model = get_model()
-        info_message = ' (Changing this requires a reboot)'
+        info_message = _(" (Changing this requires a reboot)")
 
         # And the current display resolution
         try:
             current_resolution = get_status()['resolution']
-            info_message += '\n\nCurrent resolution: {}'.format(current_resolution)
+            info_message += "\n\nCurrent resolution: {}".format(current_resolution)
         except:
             pass
 
         Template.__init__(
             self,
-            "Display",
+            _("Display"),
             self.model + info_message,
-            "APPLY CHANGES"
+            _("APPLY CHANGES")
         )
 
         self.win = win
@@ -62,8 +62,8 @@ class SetDisplay(Template):
         self.win.top_bar.enable_prev()
         self.win.change_prev_callback(self.win.go_to_home)
 
-        self.kano_button.connect("button-release-event", self.apply_changes)
-        self.kano_button.connect("key-release-event", self.apply_changes)
+        self.kano_button.connect('button-release-event', self.apply_changes)
+        self.kano_button.connect('key-release-event', self.apply_changes)
 
         horizontal_container = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL,
                                        spacing=40)
@@ -71,11 +71,11 @@ class SetDisplay(Template):
 
         # HDMI mode combo box
         self.mode_combo = KanoComboBox(max_display_items=7)
-        self.mode_combo.connect("changed", self.on_mode_changed)
+        self.mode_combo.connect('changed', self.on_mode_changed)
 
         # Fill list of modes
         modes = list_supported_modes()
-        self.mode_combo.append("auto")
+        self.mode_combo.append('auto')
         if modes:
             for v in modes:
                 self.mode_combo.append(v)
@@ -90,18 +90,18 @@ class SetDisplay(Template):
         self.init_item = active_item
         self.mode_index = active_item
         # Overscan button
-        overscan_button = OrangeButton("Overscan")
+        overscan_button = OrangeButton(_("Overscan"))
         horizontal_container.pack_end(overscan_button, False, False, 0)
-        overscan_button.connect("button-release-event", self.go_to_overscan)
+        overscan_button.connect('button-release-event', self.go_to_overscan)
 
         self.box.pack_start(horizontal_container, False, False, 0)
 
         # Create Flip 180 checkbox
-        flip_button = Gtk.CheckButton("Flip Screen")
+        flip_button = Gtk.CheckButton(_("Flip Screen"))
         flip_button.set_can_focus(False)
         flip_button.props.valign = Gtk.Align.CENTER
-        flip_button.set_active(get_config_value("display_rotate") == 2)
-        flip_button.connect("clicked", self.flip)
+        flip_button.set_active(get_config_value('display_rotate') == 2)
+        flip_button.connect('clicked', self.flip)
 
         self.box.pack_start(flip_button, False, False, 0)
         self.kano_button.set_sensitive(False)
@@ -123,8 +123,8 @@ class SetDisplay(Template):
                 self.set_hdmi_mode_from_str(parse_mode)
 
                 # Track the user's screen resolution
-                track_data("screen-mode-changed", {
-                    "mode": parse_mode
+                track_data('screen-mode-changed', {
+                    'mode': parse_mode
                 })
 
                 end_config_transaction()
@@ -142,7 +142,7 @@ class SetDisplay(Template):
         self.kano_button.set_sensitive(True)
 
     def set_hdmi_mode_from_str(self, mode):
-        if mode == "auto":
+        if mode == 'auto':
             set_hdmi_mode()
             set_config_comment('kano_screen_used', 'xxx')
             return
@@ -172,8 +172,8 @@ class OverscanTemplate(Gtk.Box):
     def __init__(self, win, title, description, original_overscan=None):
         Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
 
-        self.kano_button = KanoButton("APPLY CHANGES")
-        self.kano_button.connect("button-release-event", self.apply_changes)
+        self.kano_button = KanoButton(_("APPLY CHANGES"))
+        self.kano_button.connect('button-release-event', self.apply_changes)
         self.kano_button.pack_and_align()
 
         self.heading = Heading(title, description)
@@ -201,7 +201,7 @@ class OverscanTemplate(Gtk.Box):
         reset_icon_path = os.path.join(common.media, '/Icons/reset.png')
         reset_image = Gtk.Image().new_from_file(reset_icon_path)
         self.reset_button.set_image(reset_image)
-        self.reset_button.connect("button_press_event", self.reset)
+        self.reset_button.connect('button_press_event', self.reset)
 
     def apply_changes(self, button, event):
         # Apply changes
@@ -241,19 +241,19 @@ class SetSimpleOverscan(OverscanTemplate):
         OverscanTemplate.__init__(
             self,
             win,
-            "Overscan",
-            "This setting lets you adjust your screen's size.",
+            _("Overscan"),
+            _("This setting lets you adjust your screen's size."),
             original_overscan
         )
 
         self.win.change_prev_callback(self.go_to_display)
 
         # Listen for key events
-        self.key_press_handler = self.win.connect("key-press-event", self.on_key_press)
+        self.key_press_handler = self.win.connect('key-press-event', self.on_key_press)
 
         ## slider
         self.t_value = Gtk.Label()
-        self.t_value.get_style_context().add_class("slider_label")
+        self.t_value.get_style_context().add_class('slider_label')
         self.t_scale = Gtk.HScale.new_with_range(0, get_overscan_limit(), 1)
         self.t_scale.set_value(self.overscan_values['top'])
         self.t_scale.set_size_request(400, 30)
@@ -272,8 +272,8 @@ class SetSimpleOverscan(OverscanTemplate):
 
         # Advance button
         self.advanced_button = OrangeButton()
-        self.advanced_button.connect("button_press_event", self.go_to_advanced)
-        self.advanced_button.set_label("Advanced")
+        self.advanced_button.connect('button_press_event', self.go_to_advanced)
+        self.advanced_button.set_label(_("Advanced"))
 
         button_box = Gtk.ButtonBox()
         button_box.set_layout(Gtk.ButtonBoxStyle.SPREAD)
@@ -330,8 +330,8 @@ class SetAdvancedOverscan(OverscanTemplate):
         OverscanTemplate.__init__(
             self,
             win,
-            "Overscan",
-            "This setting lets you adjust your screen's size, edge by edge.",
+            _("Overscan"),
+            _("This setting lets you adjust your screen's size, edge by edge."),
             original_overscan
         )
 
@@ -387,7 +387,7 @@ class SetAdvancedOverscan(OverscanTemplate):
     # direction = 'top', 'bottom', 'right', 'left'
     def generate_slider_label(self, direction):
         value_label = Gtk.Label()
-        value_label.get_style_context().add_class("slider_label")
+        value_label.get_style_context().add_class('slider_label')
         slider = Gtk.HScale.new_with_range(0, get_overscan_limit(), 1)
         slider.set_value(self.overscan_values[direction])
         slider.set_size_request(400, 30)
@@ -396,7 +396,7 @@ class SetAdvancedOverscan(OverscanTemplate):
         slider.set_value_pos(Gtk.PositionType.RIGHT)
         slider.set_draw_value(False)
         dir_label = Gtk.Label()
-        dir_label.get_style_context().add_class("slider_label")
+        dir_label.get_style_context().add_class('slider_label')
         dir_label.set_alignment(xalign=1, yalign=1)
         dir_label.set_text(direction.title())
         self.update_value(slider, value_label)
