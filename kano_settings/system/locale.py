@@ -21,7 +21,6 @@ if not hasattr(__builtins__, '_'):
 
 import re
 import os
-import pycountry
 
 from kano.utils import run_cmd, read_file_contents, sed, enforce_root, \
     read_file_contents_as_lines, get_user_unsudoed, get_home_by_username, \
@@ -169,6 +168,8 @@ def get_locale():
 
 
 def country_code_to_layout_keys(country_code):
+    import pycountry  # lazy import since it takes a long time
+
     try:
         country = pycountry.countries.get(alpha2=country_code.upper())
         country_name = country.name
