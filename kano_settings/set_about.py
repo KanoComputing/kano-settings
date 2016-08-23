@@ -44,7 +44,7 @@ class SetAbout(Gtk.Box):
             _("Disk space used: {used}B / {total}B").format(**get_space_available())
         )
         try:
-            celsius = u"{:.1f}°C".format(get_temperature())
+            celsius = u"{:.1f}\N{DEGREE SIGN}C".format(get_temperature())
         except ValueError:
             celsius = "?"
         temperature_align = self.create_align(
