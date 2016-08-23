@@ -1,4 +1,4 @@
-APPNAME=kano-apps
+APPNAME=kano-settings
 ORG="Kano Computing Ltd."
 
 MSGLANGS=$(notdir $(wildcard *po))
