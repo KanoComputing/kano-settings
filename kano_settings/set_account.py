@@ -190,7 +190,7 @@ class SetPassword(Template):
         )
 
         self.labelled_entries = LabelledEntries(
-            [{'heading': _("Old password"), 'subheading': _("\"kano\" is default"},
+            [{'heading': _("Old password"), 'subheading': _("\"kano\" is default")},
              {'heading': _("New password"), 'subheading': ""},
              {'heading': _("Repeat new password"), 'subheading': ""}]
         )
