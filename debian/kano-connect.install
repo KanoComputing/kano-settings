@@ -13,4 +13,3 @@ etc/modprobe.d /usr/share/kano-network/etc
 etc/network /usr/share/kano-network/etc
 
 media/kano-connect/* /usr/share/kano-connect/media
-locale/* /usr/share/locale
