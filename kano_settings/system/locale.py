@@ -29,8 +29,6 @@ import kano_settings.system.keyboard_layouts as keyboard_layouts
 
 SUPPORTED_LIST_FILE = '/usr/share/i18n/SUPPORTED'
 LOCALE_GEN_FILE = '/etc/locale.gen'
-XSESSION_RC_FILE = os.path.join(get_home_by_username(get_user_unsudoed()),
-                                '.xsessionrc')
 LOCALE_PARAMS = [
     # 'LANG',  # Determines the default locale in the absence of other locale related environment variables
     'LANGUAGE',  #
@@ -127,6 +125,9 @@ def uninstall_locale(locale):
 
 
 def set_locale_param(param, locale, skip_check=False):
+    # FIXME: Don't use the .xsessionrc file to set the locale
+    XSESSION_RC_FILE = os.path.join(get_home_by_username(get_user_unsudoed()),
+                                    '.xsessionrc')
     if not skip_check and not is_locale_installed(locale):
         install_locale(locale)
 
