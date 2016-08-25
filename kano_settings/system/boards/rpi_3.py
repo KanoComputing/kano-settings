@@ -8,15 +8,15 @@
 #
 
 DEFAULT_CONFIG = {
-    'Overclocking': 'Standard'
+    'Overclocking': _("Standard")
 }
 
 CLOCKING = {
-    'modes': ['Standard'],
-    'default': 'Standard',
+    'modes': [_("Standard")],
+    'default': _("Standard"),
     'warning': [],
     'values': {
-        'Standard': {
+        _("Standard"): {
             'arm_freq': 1200,
             'core_freq': 400,
             'sdram_freq': 450,
