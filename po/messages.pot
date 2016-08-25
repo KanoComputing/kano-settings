@@ -1,6 +1,6 @@
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR Kano Computing Ltd.
-# This file is distributed under the same license as the PACKAGE package.
+# This file is distributed under the same license as the kano-settings package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
 #, fuzzy
@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kano-settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-25 10:45+0100\n"
+"POT-Creation-Date: 2016-08-25 11:53+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,720 +17,612 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: ../kano_wifi_gui/wifi_window.py:57 ../kano_wifi_gui/wifi_window.py:63
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/wifi_window.py:57
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/wifi_window.py:63
-msgid "Kano WiFi"
+#: ../kano_settings/system/locale.py:95 ../kano_settings/system/locale.py:109
+msgid "You need to be root to change install a locale"
 msgstr ""
 
-#: ../kano_wifi_gui/wifi_window.py:109
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/wifi_window.py:109
+#: ../kano_settings/system/overclock.py:117 ../kano_settings/screens.py:112
+msgid "Overclocking"
+msgstr ""
+
+#: ../kano_settings/system/boards/rpi_3.py:11
+#: ../kano_settings/system/boards/rpi_3.py:15
+#: ../kano_settings/system/boards/rpi_3.py:16
+#: ../kano_settings/system/boards/rpi_3.py:19
+#: ../kano_settings/system/boards/rpi_2.py:11
+#: ../kano_settings/system/boards/rpi_2.py:15
+#: ../kano_settings/system/boards/rpi_2.py:16
+#: ../kano_settings/system/boards/rpi_2.py:19
+msgid "Standard"
+msgstr ""
+
+#: ../kano_settings/system/boards/rpi_1.py:13
+#: ../kano_settings/system/boards/rpi_1.py:17
+#: ../kano_settings/system/boards/rpi_1.py:18
+#: ../kano_settings/system/boards/rpi_1.py:39
+msgid "High"
+msgstr ""
+
+#: ../kano_settings/system/boards/rpi_1.py:17
+#: ../kano_settings/system/boards/rpi_1.py:21
+msgid "None"
+msgstr ""
+
+#: ../kano_settings/system/boards/rpi_1.py:17
+#: ../kano_settings/system/boards/rpi_1.py:27
+msgid "Modest"
+msgstr ""
+
+#: ../kano_settings/system/boards/rpi_1.py:17
+#: ../kano_settings/system/boards/rpi_1.py:33
+msgid "Medium"
+msgstr ""
+
+#: ../kano_settings/system/boards/rpi_1.py:17
+#: ../kano_settings/system/boards/rpi_1.py:19
+#: ../kano_settings/system/boards/rpi_1.py:45
+msgid "Turbo"
+msgstr ""
+
+#: ../kano_settings/system/boards/rpi_2.py:15
+#: ../kano_settings/system/boards/rpi_2.py:17
+#: ../kano_settings/system/boards/rpi_2.py:26
+msgid "Overclocked"
+msgstr ""
+
+#: ../kano_settings/system/audio.py:70 ../kano_settings/system/audio.py:102
+#: ../kano_settings/system/audio.py:103
+msgid "HDMI"
+msgstr ""
+
+#: ../kano_settings/system/audio.py:75 ../kano_settings/system/audio.py:109
+#: ../kano_settings/system/audio.py:110 ../kano_settings/config_file.py:47
+msgid "Analogue"
+msgstr ""
+
+#: ../kano_settings/system/supported_locales.py:3
+msgid "English"
+msgstr ""
+
+#: ../kano_settings/system/supported_locales.py:4
+msgid "German"
+msgstr ""
+
+#: ../kano_settings/system/supported_locales.py:8
+#: ../kano_settings/config_file.py:45
+msgid "United States"
+msgstr ""
+
+#: ../kano_settings/system/supported_locales.py:9
+msgid "United Kingdom"
+msgstr ""
+
+#: ../kano_settings/system/supported_locales.py:10
+msgid "Germany"
+msgstr ""
+
+#: ../kano_settings/system/advanced.py:94
+msgid "Parental lock enabled!"
+msgstr ""
+
+#: ../kano_settings/system/advanced.py:111
+msgid "Parental lock disabled!"
+msgstr ""
+
+#: ../kano_settings/system/advanced.py:118
 msgid ""
-"You don't seem to have a WiFi dongle\n"
-"plugged in."
+"Password doesn't match\n"
+"leaving parental lock enabled!"
 msgstr ""
 
-#: ../kano_wifi_gui/wifi_window.py:110
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/wifi_window.py:110
-msgid "Plug one in and try again"
+#: ../kano_settings/system/screensaver.py:21
+msgid "Could not find in home kdesk"
 msgstr ""
 
-#: ../kano_wifi_gui/wifi_window.py:116 ../kano_wifi_gui/ConnectToNetwork.py:68
-#: ../kano_settings/set_account.py:325 ../kano_settings/set_advanced.py:314
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/wifi_window.py:116
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/ConnectToNetwork.py:68
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:325
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:314
-msgid "TRY AGAIN"
+#: ../kano_settings/locale.py:24 ../kano_settings/screens.py:131
+msgid "Locale"
 msgstr ""
 
-#: ../kano_wifi_gui/wifi_window.py:123 ../kano_wifi_gui/NetworkScreen.py:204
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/wifi_window.py:123
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/NetworkScreen.py:204
-msgid "Skip"
+#: ../kano_settings/locale.py:25
+msgid "Set your locale (Changing this requires a reboot)"
 msgstr ""
 
-#: ../kano_wifi_gui/wifi_window.py:144
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/wifi_window.py:144
-msgid "You are already connected via ethernet."
+#: ../kano_settings/locale.py:26 ../kano_settings/set_audio.py:25
+#: ../kano_settings/set_mouse.py:27 ../kano_settings/set_notifications.py:28
+#: ../kano_settings/set_font.py:35 ../kano_settings/set_screensaver.py:159
+#: ../kano_settings/parental_config.py:31
+#: ../kano_settings/parental_config.py:183
+#: ../kano_settings/bluetooth_config.py:183 ../kano_settings/set_display.py:56
+#: ../kano_settings/set_display.py:175 ../kano_settings/set_advanced.py:26
+#: ../kano_settings/set_overclock.py:45 ../kano_settings/set_keyboard.py:39
+#: ../kano_settings/set_keyboard.py:88
+msgid "APPLY CHANGES"
 msgstr ""
 
-#: ../kano_wifi_gui/wifi_window.py:145
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/wifi_window.py:145
-msgid "Do you still want to connect with WiFi?"
+#: ../kano_settings/set_audio.py:23 ../kano_settings/screens.py:107
+msgid "Audio"
 msgstr ""
 
-#: ../kano_wifi_gui/wifi_window.py:151 ../kano_wifi_gui/wifi_window.py:191
-#: ../kano_settings/set_style.py:104 ../kano_settings/set_overclock.py:88
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/wifi_window.py:151
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/wifi_window.py:191
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_style.py:104
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_overclock.py:88
-msgid "NO"
+#: ../kano_settings/set_audio.py:24
+msgid "Get sound from your speaker or your TV"
 msgstr ""
 
-#: ../kano_wifi_gui/wifi_window.py:157 ../kano_wifi_gui/wifi_window.py:197
-#: ../kano_settings/set_style.py:99 ../kano_settings/set_overclock.py:93
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/wifi_window.py:157
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/wifi_window.py:197
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_style.py:99
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_overclock.py:93
-msgid "YES"
+#: ../kano_settings/set_audio.py:38
+msgid "Speaker"
 msgstr ""
 
-#: ../kano_wifi_gui/wifi_window.py:187
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/wifi_window.py:187
-msgid "You already have internet!"
+#: ../kano_settings/set_audio.py:42
+msgid "TV     "
 msgstr ""
 
-#: ../kano_wifi_gui/wifi_window.py:188
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/wifi_window.py:188
-msgid "Do you want to change network?"
+#: ../kano_settings/set_mouse.py:15 ../kano_settings/set_mouse.py:29
+msgid "Slow"
 msgstr ""
 
-#: ../kano_wifi_gui/ConnectToNetwork.py:34
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/ConnectToNetwork.py:34
-msgid "Connecting to {}"
+#: ../kano_settings/set_mouse.py:15 ../kano_settings/set_mouse.py:30
+#: ../kano_settings/set_mouse.py:60 ../kano_settings/set_font.py:38
+#: ../kano_settings/config_file.py:50 ../kano_settings/config_file.py:51
+msgid "Normal"
 msgstr ""
 
-#: ../kano_wifi_gui/ConnectToNetwork.py:35
-#: ../kano_wifi_gui/RefreshNetworks.py:25
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/ConnectToNetwork.py:35
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/RefreshNetworks.py:25
-msgid "Any minute now"
+#: ../kano_settings/set_mouse.py:15 ../kano_settings/set_mouse.py:31
+msgid "Fast"
 msgstr ""
 
-#: ../kano_wifi_gui/ConnectToNetwork.py:61
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/ConnectToNetwork.py:61
-msgid "Cannot connect!"
+#: ../kano_settings/set_mouse.py:25 ../kano_settings/screens.py:106
+msgid "Mouse"
 msgstr ""
 
-#: ../kano_wifi_gui/ConnectToNetwork.py:62
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/ConnectToNetwork.py:62
-msgid "Maybe the signal was too weak to connect."
+#: ../kano_settings/set_mouse.py:26
+msgid "Pick your speed"
 msgstr ""
 
-#: ../kano_wifi_gui/ConnectToNetwork.py:75
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/ConnectToNetwork.py:75
-msgid "QUIT"
+#: ../kano_settings/set_mouse.py:29
+msgid "REQUIRES LESS MOVE PRECISION"
 msgstr ""
 
-#: ../kano_wifi_gui/ConnectToNetwork.py:94
-#: ../kano_settings/set_advanced.py:347
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/ConnectToNetwork.py:94
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:347
-msgid "Success"
+#: ../kano_settings/set_mouse.py:30 ../kano_settings/set_font.py:38
+msgid "DEFAULT"
 msgstr ""
 
-#: ../kano_wifi_gui/ConnectToNetwork.py:95
-#: ../kano_wifi_gui/PasswordScreen.py:157
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/ConnectToNetwork.py:95
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/PasswordScreen.py:157
-msgid "You're connected"
+#: ../kano_settings/set_mouse.py:31
+msgid "BETTER FOR WIDE SCREENS"
 msgstr ""
 
+#: ../kano_settings/set_notifications.py:26 ../kano_settings/screens.py:121
+msgid "Notifications"
+msgstr ""
+
+#: ../kano_settings/set_notifications.py:27
+msgid "Here you can manage the built-in notification system"
+msgstr ""
+
+#: ../kano_settings/set_notifications.py:30
+msgid "Show all notifications"
+msgstr ""
+
+#: ../kano_settings/set_notifications.py:31
+msgid "Hide all notifications"
+msgstr ""
+
+#: ../kano_settings/set_notifications.py:32
+msgid "Hide only Kano World notifications"
+msgstr ""
+
+#: ../kano_settings/set_notifications.py:73
+msgid "Enable LED Speaker CPU Animation"
+msgstr ""
+
+#: ../kano_settings/screens.py:67
+msgid "Connected"
+msgstr ""
+
+#: ../kano_settings/screens.py:69
+msgid "Not connected"
+msgstr ""
+
+#: ../kano_settings/screens.py:104 ../kano_settings/set_keyboard.py:37
+#: ../kano_settings/set_keyboard.py:86
+msgid "Keyboard"
+msgstr ""
+
+#: ../kano_settings/screens.py:108 ../kano_settings/set_display.py:54
+msgid "Display"
+msgstr ""
+
+#: ../kano_settings/screens.py:109
+msgid "WiFi"
+msgstr ""
+
+#: ../kano_settings/screens.py:110 ../kano_settings/bluetooth_config.py:181
+msgid "Bluetooth"
+msgstr ""
+
+#: ../kano_settings/screens.py:114
+msgid "Account"
+msgstr ""
+
+#: ../kano_settings/screens.py:115
+msgid "Style"
+msgstr ""
+
+#: ../kano_settings/screens.py:118 ../kano_settings/set_font.py:33
+msgid "Font"
+msgstr ""
+
+#: ../kano_settings/screens.py:119 ../kano_settings/set_display.py:276
+msgid "Advanced"
+msgstr ""
+
+#: ../kano_settings/screens.py:120
+msgid "About"
+msgstr ""
+
+#: ../kano_settings/screens.py:122
+msgid "No-internet"
+msgstr ""
+
+#: ../kano_settings/set_account.py:39
+msgid "System account settings"
+msgstr ""
+
+#: ../kano_settings/set_account.py:40
+msgid "Set your account"
+msgstr ""
+
+#: ../kano_settings/set_account.py:43 ../kano_settings/set_account.py:189
+msgid "CHANGE PASSWORD"
+msgstr ""
+
+#: ../kano_settings/set_account.py:48
+msgid "ADD ACCOUNT"
+msgstr ""
+
+#: ../kano_settings/set_account.py:53
+msgid "REMOVE ACCOUNT"
+msgstr ""
+
+#: ../kano_settings/set_account.py:66
+msgid "Accounts"
+msgstr ""
+
+#: ../kano_settings/set_account.py:67
+msgid "Add or remove accounts"
+msgstr ""
+
+#: ../kano_settings/set_account.py:103
+msgid "Error creating new user"
+msgstr ""
+
+#: ../kano_settings/set_account.py:109
+msgid "Reboot the system"
+msgstr ""
+
+#: ../kano_settings/set_account.py:110
+msgid "A new account will be created next time you reboot."
+msgstr ""
+
+#: ../kano_settings/set_account.py:125
+msgid "Are you sure you want to delete the current user?"
+msgstr ""
+
+#: ../kano_settings/set_account.py:126
+msgid "You will lose all the data on this account!"
+msgstr ""
+
+#: ../kano_settings/set_account.py:129
+msgid "CANCEL"
+msgstr ""
+
+#: ../kano_settings/set_account.py:134 ../kano_settings/set_wifi.py:330
 #: ../kano_wifi_gui/ConnectToNetwork.py:98
-#: ../kano_wifi_gui/PasswordScreen.py:160 ../kano_settings/set_wifi.py:330
-#: ../kano_settings/set_account.py:134
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/ConnectToNetwork.py:98
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/PasswordScreen.py:160
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:330
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:134
+#: ../kano_wifi_gui/PasswordScreen.py:160
 msgid "OK"
 msgstr ""
 
-#: ../kano_wifi_gui/PasswordScreen.py:52
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/PasswordScreen.py:52
-msgid "Connect to the network"
+#: ../kano_settings/set_account.py:148
+msgid "Error deleting user"
 msgstr ""
 
-#: ../kano_wifi_gui/PasswordScreen.py:72 ../kano_settings/set_wifi.py:210
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/PasswordScreen.py:72
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:210
-msgid "Password"
+#: ../kano_settings/set_account.py:155
+msgid "To finish removing this account, you need to reboot"
 msgstr ""
 
-#: ../kano_wifi_gui/PasswordScreen.py:85 ../kano_wifi_gui/NetworkScreen.py:188
-#: ../kano_wifi_gui/NetworkScreen.py:227 ../kano_wifi_gui/NetworkScreen.py:261
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/PasswordScreen.py:85
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/NetworkScreen.py:188
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/NetworkScreen.py:227
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/NetworkScreen.py:261
-msgid "CONNECT"
+#: ../kano_settings/set_account.py:156
+msgid "Do you want to reboot?"
 msgstr ""
 
-#: ../kano_wifi_gui/PasswordScreen.py:92
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/PasswordScreen.py:92
-msgid "Show password"
+#: ../kano_settings/set_account.py:159 ../kano_settings/main_window.py:130
+msgid "LATER"
 msgstr ""
 
-#: ../kano_wifi_gui/PasswordScreen.py:114
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/PasswordScreen.py:114
-msgid "Password incorrect"
+#: ../kano_settings/set_account.py:164 ../kano_settings/main_window.py:135
+msgid "REBOOT NOW"
 msgstr ""
 
-#: ../kano_wifi_gui/PasswordScreen.py:156
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/PasswordScreen.py:156
-msgid "Success!"
+#: ../kano_settings/set_account.py:187
+msgid "Change your password"
 msgstr ""
 
-#: ../kano_wifi_gui/RefreshNetworks.py:24
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/RefreshNetworks.py:24
-msgid "Searching for networks"
+#: ../kano_settings/set_account.py:193 ../kano_settings/set_account.py:201
+msgid "Old password"
 msgstr ""
 
-#: ../kano_wifi_gui/ctl.py:22
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/ctl.py:22
-msgid "Disconnect complete - you're now offline."
+#: ../kano_settings/set_account.py:193
+msgid "\"kano\" is default"
 msgstr ""
 
-#: ../kano_wifi_gui/NetworkScreen.py:54
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/NetworkScreen.py:54
-msgid "Connect to WiFi"
+#: ../kano_settings/set_account.py:194 ../kano_settings/set_account.py:206
+msgid "New password"
 msgstr ""
 
-#: ../kano_wifi_gui/NetworkScreen.py:55
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/NetworkScreen.py:55
-msgid "Choose a network"
+#: ../kano_settings/set_account.py:195 ../kano_settings/set_account.py:211
+msgid "Repeat new password"
 msgstr ""
 
-#: ../kano_wifi_gui/NetworkScreen.py:109
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/NetworkScreen.py:109
-msgid "No networks detected!"
+#: ../kano_settings/set_account.py:253 ../kano_settings/set_account.py:258
+#: ../kano_settings/set_account.py:288 ../kano_settings/set_account.py:314
+msgid "Could not change password"
 msgstr ""
 
-#: ../kano_wifi_gui/NetworkScreen.py:234
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/NetworkScreen.py:234
-msgid "DISCONNECT"
+#: ../kano_settings/set_account.py:254
+msgid "Your old password is incorrect!"
 msgstr ""
 
-#: ../kano_wifi_gui/NetworkScreen.py:251
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/NetworkScreen.py:251
-msgid "Disconnect complete."
+#: ../kano_settings/set_account.py:259
+msgid "Your new passwords don't match! Try again."
 msgstr ""
 
-#: ../kano_wifi_gui/NetworkScreen.py:252
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/NetworkScreen.py:252
-msgid "You're now offline"
+#: ../kano_settings/set_account.py:289
+msgid "Your new password is not long enough or contains special characters."
 msgstr ""
 
-#: ../kano_wifi_gui/NetworkScreen.py:255
-#: ../debian/kano-connect/usr/lib/python2.7/dist-packages/kano_wifi_gui/NetworkScreen.py:255
-msgid "CLOSE"
+#: ../kano_settings/set_account.py:291
+msgid "Password changed!"
+msgstr ""
+
+#: ../kano_settings/set_account.py:320 ../kano_settings/set_advanced.py:309
+msgid "GO BACK"
+msgstr ""
+
+#: ../kano_settings/set_account.py:325 ../kano_settings/set_advanced.py:314
+#: ../kano_wifi_gui/ConnectToNetwork.py:68 ../kano_wifi_gui/wifi_window.py:116
+msgid "TRY AGAIN"
+msgstr ""
+
+#: ../kano_settings/set_font.py:34
+msgid "Choose a comfortable text size"
+msgstr ""
+
+#: ../kano_settings/set_font.py:37
+msgid "Small"
+msgstr ""
+
+#: ../kano_settings/set_font.py:37
+msgid "BETTER FOR SMALL SCREENS"
+msgstr ""
+
+#: ../kano_settings/set_font.py:39
+msgid "Big"
+msgstr ""
+
+#: ../kano_settings/set_font.py:39
+msgid "BETTER FOR BIG SCREENS"
+msgstr ""
+
+#: ../kano_settings/no_internet_screen.py:27
+msgid "Later"
+msgstr ""
+
+#: ../kano_settings/no_internet_screen.py:30
+msgid "CONNECT NOW"
+msgstr ""
+
+#: ../kano_settings/no_internet_screen.py:51
+msgid "You need internet to continue"
+msgstr ""
+
+#: ../kano_settings/set_about.py:44
+#, python-brace-format
+msgid "Disk space used: {used}B / {total}B"
+msgstr ""
+
+#: ../kano_settings/set_about.py:51
+#, python-brace-format
+msgid "Temperature: {celsius}"
+msgstr ""
+
+#: ../kano_settings/set_about.py:54
+#, python-brace-format
+msgid "Model: {model}"
+msgstr ""
+
+#: ../kano_settings/set_about.py:57 ../kano_settings/set_about.py:121
+msgid "Terms and conditions"
+msgstr ""
+
+#: ../kano_settings/set_about.py:62
+msgid "Meet the team"
+msgstr ""
+
+#: ../kano_settings/set_about.py:67
+msgid "Changelog"
+msgstr ""
+
+#: ../kano_settings/set_about.py:72 ../kano_settings/set_wifi.py:88
+msgid "BACK"
+msgstr ""
+
+#: ../kano_settings/config_file.py:44
+msgid "america"
+msgstr ""
+
+#: ../kano_settings/config_file.py:46
+msgid "Generic"
+msgstr ""
+
+#: ../kano_settings/set_screensaver.py:34
+msgid "Change your screensaver"
+msgstr ""
+
+#: ../kano_settings/set_screensaver.py:36
+msgid "CHANGE SCREENSAVER"
+msgstr ""
+
+#: ../kano_settings/set_screensaver.py:37
+msgid "Advanced Options"
+msgstr ""
+
+#: ../kano_settings/set_screensaver.py:157
+msgid "Screensaver - advanced"
+msgstr ""
+
+#: ../kano_settings/set_screensaver.py:176
+msgid "Turn on screensaver"
+msgstr ""
+
+#: ../kano_settings/set_screensaver.py:184
+msgid ""
+"Length of time in minutes\n"
+"before screensaver launches"
+msgstr ""
+
+#: ../kano_settings/set_style.py:40
+msgid "BACKGROUND"
+msgstr ""
+
+#: ../kano_settings/set_style.py:46
+msgid "SCREENSAVER"
+msgstr ""
+
+#: ../kano_settings/set_style.py:52
+msgid "GENERAL"
+msgstr ""
+
+#: ../kano_settings/set_style.py:81
+msgid "RESET YOUR DESKTOP"
+msgstr ""
+
+#: ../kano_settings/set_style.py:95
+msgid "This will reset your wallpaper and toolbar."
+msgstr ""
+
+#: ../kano_settings/set_style.py:96
+msgid "Do you want to continue?"
+msgstr ""
+
+#: ../kano_settings/set_style.py:99 ../kano_settings/set_overclock.py:93
+#: ../kano_wifi_gui/wifi_window.py:157 ../kano_wifi_gui/wifi_window.py:197
+msgid "YES"
+msgstr ""
+
+#: ../kano_settings/set_style.py:104 ../kano_settings/set_overclock.py:88
+#: ../kano_wifi_gui/wifi_window.py:151 ../kano_wifi_gui/wifi_window.py:191
+msgid "NO"
 msgstr ""
 
 #: ../kano_settings/parental_config.py:29 ../kano_settings/set_advanced.py:68
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:29
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:68
 msgid "Parental lock"
 msgstr ""
 
 #: ../kano_settings/parental_config.py:30
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:30
 msgid "Configure your parental lock settings"
 msgstr ""
 
-#: ../kano_settings/parental_config.py:31
-#: ../kano_settings/parental_config.py:183 ../kano_settings/set_font.py:35
-#: ../kano_settings/set_keyboard.py:39 ../kano_settings/set_keyboard.py:88
-#: ../kano_settings/bluetooth_config.py:183 ../kano_settings/set_audio.py:25
-#: ../kano_settings/set_advanced.py:26 ../kano_settings/set_display.py:56
-#: ../kano_settings/set_display.py:175 ../kano_settings/set_overclock.py:45
-#: ../kano_settings/set_notifications.py:28 ../kano_settings/locale.py:26
-#: ../kano_settings/set_screensaver.py:159 ../kano_settings/set_mouse.py:27
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:31
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:183
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_font.py:35
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_keyboard.py:39
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_keyboard.py:88
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/bluetooth_config.py:183
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_audio.py:25
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:26
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_display.py:56
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_display.py:175
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_overclock.py:45
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_notifications.py:28
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/locale.py:26
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_screensaver.py:159
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_mouse.py:27
-msgid "APPLY CHANGES"
-msgstr ""
-
 #: ../kano_settings/parental_config.py:48
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:48
 msgid "Low Settings"
 msgstr ""
 
 #: ../kano_settings/parental_config.py:49
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:49
 msgid ""
 "Block predefined blacklisted websites and\n"
 "activates SafeSearch on Google and Youtube"
 msgstr ""
 
 #: ../kano_settings/parental_config.py:52
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:52
 msgid "Medium Settings"
 msgstr ""
 
 #: ../kano_settings/parental_config.py:53
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:53
 msgid "Use safe DNS servers to filter all traffic"
 msgstr ""
 
 #: ../kano_settings/parental_config.py:56
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:56
 msgid "High Settings"
 msgstr ""
 
 #: ../kano_settings/parental_config.py:57
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:57
 msgid "Enable all filters and restrict search engine access"
 msgstr ""
 
 #: ../kano_settings/parental_config.py:60
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:60
 msgid "Ultimate Settings"
 msgstr ""
 
 #: ../kano_settings/parental_config.py:61
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:61
 msgid "Only allow access to Kano World activities"
 msgstr ""
 
 #: ../kano_settings/parental_config.py:65
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:65
 msgid "Configure allowed/blocked"
 msgstr ""
 
 #: ../kano_settings/parental_config.py:120 ../kano_settings/main_window.py:65
 #: ../kano_settings/main_window.py:69
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:120
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/main_window.py:65
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/main_window.py:69
 msgid "Settings"
 msgstr ""
 
 #: ../kano_settings/parental_config.py:121
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:121
 msgid ""
 "If any browsers are open, please relaunch them for this setting to take "
 "effect"
 msgstr ""
 
 #: ../kano_settings/parental_config.py:181
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:181
 msgid "Allow and Block Sites"
 msgstr ""
 
 #: ../kano_settings/parental_config.py:182
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:182
 msgid "Add extra sites to block or allow"
 msgstr ""
 
 #: ../kano_settings/parental_config.py:206
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:206
 msgid "Add extra sites to block"
 msgstr ""
 
 #: ../kano_settings/parental_config.py:211
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:211
 msgid "Something blocked that shouldn't be?"
 msgstr ""
 
 #: ../kano_settings/parental_config.py:266
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:266
 msgid "Parental Authentication"
 msgstr ""
 
 #: ../kano_settings/parental_config.py:267
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:267
 msgid "Enter your parental password:"
 msgstr ""
 
 #: ../kano_settings/parental_config.py:281
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:281
 msgid "Try again?"
 msgstr ""
 
 #: ../kano_settings/parental_config.py:282
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/parental_config.py:282
 msgid "The password was incorrect. Changes not applied"
 msgstr ""
 
-#: ../kano_settings/set_wifi.py:27
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:27
-msgid "to be set"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:27 ../kano_settings/set_wifi.py:102
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:27
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:102
-msgid "COMPLETE"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:37
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:37
-msgid "Proxy  "
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:39
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:39
-msgid "Disable proxy"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:69
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:69
-msgid "Use the browser to log in or configure proxy"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:71
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:71
-msgid "Configure wireless"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:73
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:73
-msgid "Get connected"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:75
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:75
-msgid "WIFI"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:87
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:87
-msgid "No network found"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:88 ../kano_settings/set_about.py:72
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:88
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_about.py:72
-msgid "BACK"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:92 ../kano_settings/set_wifi.py:117
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:92
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:117
-msgid "Browser Login"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:122 ../kano_settings/set_wifi.py:128
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:122
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:128
-msgid "Connection found!"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:123
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:123
-msgid "You're on a wired network"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:129
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:129
-msgid "You're on a wireless network"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:134 ../kano_settings/set_advanced.py:85
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:134
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:85
-msgid "Configure"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:186
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:186
-msgid "Proxy"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:187
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:187
-msgid "Connect via a friend"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:198
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:198
-msgid "IP address"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:202
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:202
-msgid "Username"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:206
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:206
-msgid "Port"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:217
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:217
-msgid "enable proxy"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:245 ../kano_settings/set_wifi.py:364
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:245
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:364
-msgid "ENABLE PROXY"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:247 ../kano_settings/set_wifi.py:371
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:247
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:371
-msgid "DISABLE PROXY"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:305
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:305
-msgid "Error with proxy"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:313
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:313
-msgid "Successfully enabled proxy"
-msgstr ""
-
-#: ../kano_settings/set_wifi.py:320
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wifi.py:320
-msgid "Successfully disabled proxy"
-msgstr ""
-
-#: ../kano_settings/get_window.py:31
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/get_window.py:31
-msgid "Application"
-msgstr ""
-
-#: ../kano_settings/set_about.py:44
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_about.py:44
-#, python-brace-format
-msgid "Disk space used: {used}B / {total}B"
-msgstr ""
-
-#: ../kano_settings/set_about.py:51
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_about.py:51
-#, python-brace-format
-msgid "Temperature: {celsius}"
-msgstr ""
-
-#: ../kano_settings/set_about.py:54
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_about.py:54
-#, python-brace-format
-msgid "Model: {model}"
-msgstr ""
-
-#: ../kano_settings/set_about.py:57 ../kano_settings/set_about.py:121
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_about.py:57
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_about.py:121
-msgid "Terms and conditions"
-msgstr ""
-
-#: ../kano_settings/set_about.py:62
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_about.py:62
-msgid "Meet the team"
-msgstr ""
-
-#: ../kano_settings/set_about.py:67
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_about.py:67
-msgid "Changelog"
-msgstr ""
-
-#: ../kano_settings/set_font.py:33 ../kano_settings/screens.py:118
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_font.py:33
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/screens.py:118
-msgid "Font"
-msgstr ""
-
-#: ../kano_settings/set_font.py:34
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_font.py:34
-msgid "Choose a comfortable text size"
-msgstr ""
-
-#: ../kano_settings/set_font.py:37
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_font.py:37
-msgid "Small"
-msgstr ""
-
-#: ../kano_settings/set_font.py:37
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_font.py:37
-msgid "BETTER FOR SMALL SCREENS"
-msgstr ""
-
-#: ../kano_settings/set_font.py:38 ../kano_settings/set_mouse.py:30
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_font.py:38
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_mouse.py:30
-msgid "Normal"
-msgstr ""
-
-#: ../kano_settings/set_font.py:38 ../kano_settings/set_mouse.py:30
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_font.py:38
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_mouse.py:30
-msgid "DEFAULT"
-msgstr ""
-
-#: ../kano_settings/set_font.py:39
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_font.py:39
-msgid "Big"
-msgstr ""
-
-#: ../kano_settings/set_font.py:39
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_font.py:39
-msgid "BETTER FOR BIG SCREENS"
-msgstr ""
-
-#: ../kano_settings/set_keyboard.py:37 ../kano_settings/set_keyboard.py:86
-#: ../kano_settings/screens.py:104
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_keyboard.py:37
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_keyboard.py:86
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/screens.py:104
-msgid "Keyboard"
-msgstr ""
-
-#: ../kano_settings/set_keyboard.py:38
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_keyboard.py:38
-msgid "Kano keyboard detected"
-msgstr ""
-
-#: ../kano_settings/set_keyboard.py:51
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_keyboard.py:51
-msgid "Layout options"
-msgstr ""
-
-#: ../kano_settings/set_keyboard.py:87
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_keyboard.py:87
-msgid "Where do you live? So I can set your keyboard."
-msgstr ""
-
-#: ../kano_settings/set_keyboard.py:120 ../kano_settings/set_advanced.py:24
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_keyboard.py:120
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:24
-msgid "Advanced options"
-msgstr ""
-
-#: ../kano_settings/main_window.py:126
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/main_window.py:126
-msgid "Reboot?"
-msgstr ""
-
-#: ../kano_settings/main_window.py:127
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/main_window.py:127
-msgid "Your Kano needs to reboot for changes to apply"
-msgstr ""
-
-#: ../kano_settings/main_window.py:130 ../kano_settings/set_account.py:159
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/main_window.py:130
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:159
-msgid "LATER"
-msgstr ""
-
-#: ../kano_settings/main_window.py:135 ../kano_settings/set_account.py:164
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/main_window.py:135
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:164
-msgid "REBOOT NOW"
-msgstr ""
-
-#: ../kano_settings/set_style.py:40
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_style.py:40
-msgid "BACKGROUND"
-msgstr ""
-
-#: ../kano_settings/set_style.py:46
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_style.py:46
-msgid "SCREENSAVER"
-msgstr ""
-
-#: ../kano_settings/set_style.py:52
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_style.py:52
-msgid "GENERAL"
-msgstr ""
-
-#: ../kano_settings/set_style.py:81
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_style.py:81
-msgid "RESET YOUR DESKTOP"
-msgstr ""
-
-#: ../kano_settings/set_style.py:95
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_style.py:95
-msgid "This will reset your wallpaper and toolbar."
-msgstr ""
-
-#: ../kano_settings/set_style.py:96
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_style.py:96
-msgid "Do you want to continue?"
-msgstr ""
-
-#: ../kano_settings/bluetooth_config.py:53
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/bluetooth_config.py:53
-msgid "PAIR"
-msgstr ""
-
-#: ../kano_settings/bluetooth_config.py:56
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/bluetooth_config.py:56
-msgid "UNPAIR"
-msgstr ""
-
-#: ../kano_settings/bluetooth_config.py:73
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/bluetooth_config.py:73
-msgid "Pairing failed"
-msgstr ""
-
-#: ../kano_settings/bluetooth_config.py:78
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/bluetooth_config.py:78
-msgid "Unpairing failed"
-msgstr ""
-
-#: ../kano_settings/bluetooth_config.py:84
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/bluetooth_config.py:84
-msgid "Unpairing {}"
-msgstr ""
-
-#: ../kano_settings/bluetooth_config.py:87
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/bluetooth_config.py:87
-msgid "Pairing {}"
-msgstr ""
-
-#: ../kano_settings/bluetooth_config.py:127
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/bluetooth_config.py:127
-msgid "No bluetooth dongle detected"
-msgstr ""
-
-#: ../kano_settings/bluetooth_config.py:134
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/bluetooth_config.py:134
-msgid "No devices found nearby"
-msgstr ""
-
-#: ../kano_settings/bluetooth_config.py:181 ../kano_settings/screens.py:110
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/bluetooth_config.py:181
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/screens.py:110
-msgid "Bluetooth"
-msgstr ""
-
-#: ../kano_settings/bluetooth_config.py:182
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/bluetooth_config.py:182
-msgid "Connect to bluetooth devices"
-msgstr ""
-
-#: ../kano_settings/bluetooth_config.py:225
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/bluetooth_config.py:225
-msgid "DONE"
-msgstr ""
-
 #: ../kano_settings/templates.py:180
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/templates.py:180
 msgid "ADD"
 msgstr ""
 
 #: ../kano_settings/templates.py:182
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/templates.py:182
 msgid "REMOVE"
 msgstr ""
 
 #: ../kano_settings/templates.py:220
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/templates.py:220
 msgid "Invalid website given"
 msgstr ""
 
 #: ../kano_settings/templates.py:221
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/templates.py:221
 msgid ""
 "\n"
 "We need to make sure the website URL is valid.\n"
@@ -739,260 +631,99 @@ msgid ""
 "Example: http://www.google.com\n"
 msgstr ""
 
-#: ../kano_settings/set_audio.py:23 ../kano_settings/screens.py:107
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_audio.py:23
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/screens.py:107
-msgid "Audio"
+#: ../kano_settings/main_window.py:126
+msgid "Reboot?"
 msgstr ""
 
-#: ../kano_settings/set_audio.py:24
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_audio.py:24
-msgid "Get sound from your speaker or your TV"
+#: ../kano_settings/main_window.py:127
+msgid "Your Kano needs to reboot for changes to apply"
 msgstr ""
 
-#: ../kano_settings/set_audio.py:38
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_audio.py:38
-msgid "Speaker"
+#: ../kano_settings/bluetooth_config.py:53
+msgid "PAIR"
 msgstr ""
 
-#: ../kano_settings/set_audio.py:42
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_audio.py:42
-msgid "TV     "
+#: ../kano_settings/bluetooth_config.py:56
+msgid "UNPAIR"
 msgstr ""
 
-#: ../kano_settings/no_internet_screen.py:27
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/no_internet_screen.py:27
-msgid "Later"
+#: ../kano_settings/bluetooth_config.py:73
+msgid "Pairing failed"
 msgstr ""
 
-#: ../kano_settings/no_internet_screen.py:30
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/no_internet_screen.py:30
-msgid "CONNECT NOW"
+#: ../kano_settings/bluetooth_config.py:78
+msgid "Unpairing failed"
 msgstr ""
 
-#: ../kano_settings/no_internet_screen.py:51
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/no_internet_screen.py:51
-msgid "You need internet to continue"
+#: ../kano_settings/bluetooth_config.py:84
+msgid "Unpairing {}"
 msgstr ""
 
-#: ../kano_settings/set_account.py:39
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:39
-msgid "System account settings"
+#: ../kano_settings/bluetooth_config.py:87
+msgid "Pairing {}"
 msgstr ""
 
-#: ../kano_settings/set_account.py:40
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:40
-msgid "Set your account"
+#: ../kano_settings/bluetooth_config.py:127
+msgid "No bluetooth dongle detected"
 msgstr ""
 
-#: ../kano_settings/set_account.py:43 ../kano_settings/set_account.py:189
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:43
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:189
-msgid "CHANGE PASSWORD"
+#: ../kano_settings/bluetooth_config.py:134
+msgid "No devices found nearby"
 msgstr ""
 
-#: ../kano_settings/set_account.py:48
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:48
-msgid "ADD ACCOUNT"
+#: ../kano_settings/bluetooth_config.py:182
+msgid "Connect to bluetooth devices"
 msgstr ""
 
-#: ../kano_settings/set_account.py:53
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:53
-msgid "REMOVE ACCOUNT"
+#: ../kano_settings/bluetooth_config.py:225
+msgid "DONE"
 msgstr ""
 
-#: ../kano_settings/set_account.py:66
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:66
-msgid "Accounts"
+#: ../kano_settings/set_display.py:43
+msgid " (Changing this requires a reboot)"
 msgstr ""
 
-#: ../kano_settings/set_account.py:67
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:67
-msgid "Add or remove accounts"
+#: ../kano_settings/set_display.py:93 ../kano_settings/set_display.py:244
+#: ../kano_settings/set_display.py:333
+msgid "Overscan"
 msgstr ""
 
-#: ../kano_settings/set_account.py:103
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:103
-msgid "Error creating new user"
+#: ../kano_settings/set_display.py:100
+msgid "Flip Screen"
 msgstr ""
 
-#: ../kano_settings/set_account.py:109
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:109
-msgid "Reboot the system"
+#: ../kano_settings/set_display.py:245
+msgid "This setting lets you adjust your screen's size."
 msgstr ""
 
-#: ../kano_settings/set_account.py:110
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:110
-msgid "A new account will be created next time you reboot."
+#: ../kano_settings/set_display.py:334
+msgid "This setting lets you adjust your screen's size, edge by edge."
 msgstr ""
 
-#: ../kano_settings/set_account.py:125
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:125
-msgid "Are you sure you want to delete the current user?"
+#: ../kano_settings/get_window.py:31
+msgid "Application"
 msgstr ""
 
-#: ../kano_settings/set_account.py:126
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:126
-msgid "You will lose all the data on this account!"
-msgstr ""
-
-#: ../kano_settings/set_account.py:129
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:129
-msgid "CANCEL"
-msgstr ""
-
-#: ../kano_settings/set_account.py:148
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:148
-msgid "Error deleting user"
-msgstr ""
-
-#: ../kano_settings/set_account.py:155
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:155
-msgid "To finish removing this account, you need to reboot"
-msgstr ""
-
-#: ../kano_settings/set_account.py:156
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:156
-msgid "Do you want to reboot?"
-msgstr ""
-
-#: ../kano_settings/set_account.py:187
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:187
-msgid "Change your password"
-msgstr ""
-
-#: ../kano_settings/set_account.py:193 ../kano_settings/set_account.py:201
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:193
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:201
-msgid "Old password"
-msgstr ""
-
-#: ../kano_settings/set_account.py:193
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:193
-msgid "\"kano\" is default"
-msgstr ""
-
-#: ../kano_settings/set_account.py:194 ../kano_settings/set_account.py:206
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:194
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:206
-msgid "New password"
-msgstr ""
-
-#: ../kano_settings/set_account.py:195 ../kano_settings/set_account.py:211
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:195
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:211
-msgid "Repeat new password"
-msgstr ""
-
-#: ../kano_settings/set_account.py:253 ../kano_settings/set_account.py:258
-#: ../kano_settings/set_account.py:288 ../kano_settings/set_account.py:314
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:253
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:258
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:288
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:314
-msgid "Could not change password"
-msgstr ""
-
-#: ../kano_settings/set_account.py:254
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:254
-msgid "Your old password is incorrect!"
-msgstr ""
-
-#: ../kano_settings/set_account.py:259
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:259
-msgid "Your new passwords don't match! Try again."
-msgstr ""
-
-#: ../kano_settings/set_account.py:289
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:289
-msgid "Your new password is not long enough or contains special characters."
-msgstr ""
-
-#: ../kano_settings/set_account.py:291
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:291
-msgid "Password changed!"
-msgstr ""
-
-#: ../kano_settings/set_account.py:320 ../kano_settings/set_advanced.py:309
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_account.py:320
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:309
-msgid "GO BACK"
-msgstr ""
-
-#: ../kano_settings/system/supported_locales.py:3
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/system/supported_locales.py:3
-msgid "English"
-msgstr ""
-
-#: ../kano_settings/system/supported_locales.py:4
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/system/supported_locales.py:4
-msgid "German"
-msgstr ""
-
-#: ../kano_settings/system/supported_locales.py:8
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/system/supported_locales.py:8
-msgid "United States"
-msgstr ""
-
-#: ../kano_settings/system/supported_locales.py:9
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/system/supported_locales.py:9
-msgid "United Kingdom"
-msgstr ""
-
-#: ../kano_settings/system/supported_locales.py:10
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/system/supported_locales.py:10
-msgid "Germany"
-msgstr ""
-
-#: ../kano_settings/system/advanced.py:94
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/system/advanced.py:94
-msgid "Parental lock enabled!"
-msgstr ""
-
-#: ../kano_settings/system/advanced.py:111
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/system/advanced.py:111
-msgid "Parental lock disabled!"
-msgstr ""
-
-#: ../kano_settings/system/advanced.py:118
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/system/advanced.py:118
-msgid ""
-"Password doesn't match\n"
-"leaving parental lock enabled!"
-msgstr ""
-
-#: ../kano_settings/system/screensaver.py:21
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/system/screensaver.py:21
-msgid "Could not find in home kdesk"
-msgstr ""
-
-#: ../kano_settings/system/overclock.py:117 ../kano_settings/screens.py:112
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/system/overclock.py:117
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/screens.py:112
-msgid "Overclocking"
-msgstr ""
-
-#: ../kano_settings/system/locale.py:95 ../kano_settings/system/locale.py:109
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/system/locale.py:95
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/system/locale.py:109
-msgid "You need to be root to change install a locale"
+#: ../kano_settings/set_advanced.py:24 ../kano_settings/set_keyboard.py:120
+msgid "Advanced options"
 msgstr ""
 
 #: ../kano_settings/set_advanced.py:25
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:25
 msgid "Toggle parental lock and debug mode"
 msgstr ""
 
 #: ../kano_settings/set_advanced.py:60
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:60
 msgid ""
 "Use different levels to:\n"
 "- Block mature content in browser and YouTube\n"
 "- Or restrict internet access to only Kano World activity"
 msgstr ""
 
+#: ../kano_settings/set_advanced.py:85 ../kano_settings/set_wifi.py:134
+msgid "Configure"
+msgstr ""
+
 #: ../kano_settings/set_advanced.py:98
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:98
 msgid ""
 "Having problems?\n"
 "1) Enable this mode\n"
@@ -1000,304 +731,332 @@ msgid ""
 msgstr ""
 
 #: ../kano_settings/set_advanced.py:105 ../kano_settings/set_advanced.py:150
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:105
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:150
 msgid "Debug mode"
 msgstr ""
 
 #: ../kano_settings/set_advanced.py:143
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:143
 msgid "Activated"
 msgstr ""
 
 #: ../kano_settings/set_advanced.py:148
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:148
 msgid "De-activated"
 msgstr ""
 
 #: ../kano_settings/set_advanced.py:180
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:180
 msgid "Unlock parental lock"
 msgstr ""
 
 #: ../kano_settings/set_advanced.py:181
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:181
 msgid "Enter your password"
 msgstr ""
 
 #: ../kano_settings/set_advanced.py:182
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:182
 msgid "UNLOCK"
 msgstr ""
 
 #: ../kano_settings/set_advanced.py:188
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:188
 msgid "Enter your selected password"
 msgstr ""
 
 #: ../kano_settings/set_advanced.py:197
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:197
 msgid "Set up parental lock"
 msgstr ""
 
 #: ../kano_settings/set_advanced.py:198
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:198
 msgid "Choose a password"
 msgstr ""
 
 #: ../kano_settings/set_advanced.py:199
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:199
 msgid "LOCK"
 msgstr ""
 
 #: ../kano_settings/set_advanced.py:205
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:205
 msgid "Select password"
 msgstr ""
 
 #: ../kano_settings/set_advanced.py:209
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:209
 msgid "Confirm password"
 msgstr ""
 
 #: ../kano_settings/set_advanced.py:278
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:278
 msgid "Careful"
 msgstr ""
 
 #: ../kano_settings/set_advanced.py:279
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:279
 msgid "The passwords don't match! Try again"
 msgstr ""
 
+#: ../kano_settings/set_advanced.py:347 ../kano_wifi_gui/ConnectToNetwork.py:94
+msgid "Success"
+msgstr ""
+
 #: ../kano_settings/set_advanced.py:349
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_advanced.py:349
 msgid "Error"
 msgstr ""
 
-#: ../kano_settings/set_display.py:43
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_display.py:43
-msgid " (Changing this requires a reboot)"
-msgstr ""
-
-#: ../kano_settings/set_display.py:54 ../kano_settings/screens.py:108
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_display.py:54
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/screens.py:108
-msgid "Display"
-msgstr ""
-
-#: ../kano_settings/set_display.py:93 ../kano_settings/set_display.py:244
-#: ../kano_settings/set_display.py:333
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_display.py:93
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_display.py:244
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_display.py:333
-msgid "Overscan"
-msgstr ""
-
-#: ../kano_settings/set_display.py:100
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_display.py:100
-msgid "Flip Screen"
-msgstr ""
-
-#: ../kano_settings/set_display.py:245
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_display.py:245
-msgid "This setting lets you adjust your screen's size."
-msgstr ""
-
-#: ../kano_settings/set_display.py:276 ../kano_settings/screens.py:119
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_display.py:276
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/screens.py:119
-msgid "Advanced"
-msgstr ""
-
-#: ../kano_settings/set_display.py:334
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_display.py:334
-msgid "This setting lets you adjust your screen's size, edge by edge."
-msgstr ""
-
-#: ../kano_settings/set_wallpaper.py:26
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wallpaper.py:26
-msgid "Choose a background"
-msgstr ""
-
-#: ../kano_settings/set_wallpaper.py:30
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wallpaper.py:30
-msgid "TRY"
-msgstr ""
-
-#: ../kano_settings/set_wallpaper.py:30
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wallpaper.py:30
-msgid "CHOOSE"
-msgstr ""
-
-#: ../kano_settings/set_wallpaper.py:260
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wallpaper.py:260
-msgid "Pick your background"
-msgstr ""
-
-#: ../kano_settings/set_wallpaper.py:261
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_wallpaper.py:261
-msgid "New wallpapers unlocked! Level up to get more."
-msgstr ""
-
 #: ../kano_settings/set_overclock.py:43
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_overclock.py:43
 msgid "Overclock your processor"
 msgstr ""
 
 #: ../kano_settings/set_overclock.py:44
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_overclock.py:44
 msgid "Make your computer's brain think faster, but run hotter."
 msgstr ""
 
 #: ../kano_settings/set_overclock.py:80
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_overclock.py:80
 msgid "Warning"
 msgstr ""
 
 #: ../kano_settings/set_overclock.py:82
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_overclock.py:82
 msgid ""
 "For a small percentage of users, this setting makes the Pi behave "
 "unpredictably. Do you want to continue?"
 msgstr ""
 
-#: ../kano_settings/set_notifications.py:26 ../kano_settings/screens.py:121
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_notifications.py:26
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/screens.py:121
-msgid "Notifications"
+#: ../kano_settings/set_wifi.py:27
+msgid "to be set"
 msgstr ""
 
-#: ../kano_settings/set_notifications.py:27
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_notifications.py:27
-msgid "Here you can manage the built-in notification system"
+#: ../kano_settings/set_wifi.py:27 ../kano_settings/set_wifi.py:102
+msgid "COMPLETE"
 msgstr ""
 
-#: ../kano_settings/set_notifications.py:30
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_notifications.py:30
-msgid "Show all notifications"
+#: ../kano_settings/set_wifi.py:37
+msgid "Proxy  "
 msgstr ""
 
-#: ../kano_settings/set_notifications.py:31
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_notifications.py:31
-msgid "Hide all notifications"
+#: ../kano_settings/set_wifi.py:39
+msgid "Disable proxy"
 msgstr ""
 
-#: ../kano_settings/set_notifications.py:32
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_notifications.py:32
-msgid "Hide only Kano World notifications"
+#: ../kano_settings/set_wifi.py:69
+msgid "Use the browser to log in or configure proxy"
 msgstr ""
 
-#: ../kano_settings/set_notifications.py:73
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_notifications.py:73
-msgid "Enable LED Speaker CPU Animation"
+#: ../kano_settings/set_wifi.py:71
+msgid "Configure wireless"
 msgstr ""
 
-#: ../kano_settings/locale.py:24 ../kano_settings/screens.py:131
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/locale.py:24
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/screens.py:131
-msgid "Locale"
+#: ../kano_settings/set_wifi.py:73
+msgid "Get connected"
 msgstr ""
 
-#: ../kano_settings/locale.py:25
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/locale.py:25
-msgid "Set your locale (Changing this requires a reboot)"
+#: ../kano_settings/set_wifi.py:75
+msgid "WIFI"
 msgstr ""
 
-#: ../kano_settings/set_screensaver.py:34
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_screensaver.py:34
-msgid "Change your screensaver"
+#: ../kano_settings/set_wifi.py:87
+msgid "No network found"
 msgstr ""
 
-#: ../kano_settings/set_screensaver.py:36
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_screensaver.py:36
-msgid "CHANGE SCREENSAVER"
+#: ../kano_settings/set_wifi.py:92 ../kano_settings/set_wifi.py:117
+msgid "Browser Login"
 msgstr ""
 
-#: ../kano_settings/set_screensaver.py:37
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_screensaver.py:37
-msgid "Advanced Options"
+#: ../kano_settings/set_wifi.py:122 ../kano_settings/set_wifi.py:128
+msgid "Connection found!"
 msgstr ""
 
-#: ../kano_settings/set_screensaver.py:157
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_screensaver.py:157
-msgid "Screensaver - advanced"
+#: ../kano_settings/set_wifi.py:123
+msgid "You're on a wired network"
 msgstr ""
 
-#: ../kano_settings/set_screensaver.py:176
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_screensaver.py:176
-msgid "Turn on screensaver"
+#: ../kano_settings/set_wifi.py:129
+msgid "You're on a wireless network"
 msgstr ""
 
-#: ../kano_settings/set_screensaver.py:184
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_screensaver.py:184
+#: ../kano_settings/set_wifi.py:186
+msgid "Proxy"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:187
+msgid "Connect via a friend"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:198
+msgid "IP address"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:202
+msgid "Username"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:206
+msgid "Port"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:210 ../kano_wifi_gui/PasswordScreen.py:72
+msgid "Password"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:217
+msgid "enable proxy"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:245 ../kano_settings/set_wifi.py:364
+msgid "ENABLE PROXY"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:247 ../kano_settings/set_wifi.py:371
+msgid "DISABLE PROXY"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:305
+msgid "Error with proxy"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:313
+msgid "Successfully enabled proxy"
+msgstr ""
+
+#: ../kano_settings/set_wifi.py:320
+msgid "Successfully disabled proxy"
+msgstr ""
+
+#: ../kano_settings/set_wallpaper.py:26
+msgid "Choose a background"
+msgstr ""
+
+#: ../kano_settings/set_wallpaper.py:30
+msgid "TRY"
+msgstr ""
+
+#: ../kano_settings/set_wallpaper.py:30
+msgid "CHOOSE"
+msgstr ""
+
+#: ../kano_settings/set_wallpaper.py:260
+msgid "Pick your background"
+msgstr ""
+
+#: ../kano_settings/set_wallpaper.py:261
+msgid "New wallpapers unlocked! Level up to get more."
+msgstr ""
+
+#: ../kano_settings/set_keyboard.py:38
+msgid "Kano keyboard detected"
+msgstr ""
+
+#: ../kano_settings/set_keyboard.py:51
+msgid "Layout options"
+msgstr ""
+
+#: ../kano_settings/set_keyboard.py:87
+msgid "Where do you live? So I can set your keyboard."
+msgstr ""
+
+#: ../kano_wifi_gui/ctl.py:22
+msgid "Disconnect complete - you're now offline."
+msgstr ""
+
+#: ../kano_wifi_gui/ConnectToNetwork.py:34
+msgid "Connecting to {}"
+msgstr ""
+
+#: ../kano_wifi_gui/ConnectToNetwork.py:35
+#: ../kano_wifi_gui/RefreshNetworks.py:25
+msgid "Any minute now"
+msgstr ""
+
+#: ../kano_wifi_gui/ConnectToNetwork.py:61
+msgid "Cannot connect!"
+msgstr ""
+
+#: ../kano_wifi_gui/ConnectToNetwork.py:62
+msgid "Maybe the signal was too weak to connect."
+msgstr ""
+
+#: ../kano_wifi_gui/ConnectToNetwork.py:75
+msgid "QUIT"
+msgstr ""
+
+#: ../kano_wifi_gui/ConnectToNetwork.py:95
+#: ../kano_wifi_gui/PasswordScreen.py:157
+msgid "You're connected"
+msgstr ""
+
+#: ../kano_wifi_gui/RefreshNetworks.py:24
+msgid "Searching for networks"
+msgstr ""
+
+#: ../kano_wifi_gui/PasswordScreen.py:52
+msgid "Connect to the network"
+msgstr ""
+
+#: ../kano_wifi_gui/PasswordScreen.py:85 ../kano_wifi_gui/NetworkScreen.py:188
+#: ../kano_wifi_gui/NetworkScreen.py:227 ../kano_wifi_gui/NetworkScreen.py:261
+msgid "CONNECT"
+msgstr ""
+
+#: ../kano_wifi_gui/PasswordScreen.py:92
+msgid "Show password"
+msgstr ""
+
+#: ../kano_wifi_gui/PasswordScreen.py:114
+msgid "Password incorrect"
+msgstr ""
+
+#: ../kano_wifi_gui/PasswordScreen.py:156
+msgid "Success!"
+msgstr ""
+
+#: ../kano_wifi_gui/NetworkScreen.py:54
+msgid "Connect to WiFi"
+msgstr ""
+
+#: ../kano_wifi_gui/NetworkScreen.py:55
+msgid "Choose a network"
+msgstr ""
+
+#: ../kano_wifi_gui/NetworkScreen.py:109
+msgid "No networks detected!"
+msgstr ""
+
+#: ../kano_wifi_gui/NetworkScreen.py:204 ../kano_wifi_gui/wifi_window.py:123
+msgid "Skip"
+msgstr ""
+
+#: ../kano_wifi_gui/NetworkScreen.py:234
+msgid "DISCONNECT"
+msgstr ""
+
+#: ../kano_wifi_gui/NetworkScreen.py:251
+msgid "Disconnect complete."
+msgstr ""
+
+#: ../kano_wifi_gui/NetworkScreen.py:252
+msgid "You're now offline"
+msgstr ""
+
+#: ../kano_wifi_gui/NetworkScreen.py:255
+msgid "CLOSE"
+msgstr ""
+
+#: ../kano_wifi_gui/wifi_window.py:57 ../kano_wifi_gui/wifi_window.py:63
+msgid "Kano WiFi"
+msgstr ""
+
+#: ../kano_wifi_gui/wifi_window.py:109
 msgid ""
-"Length of time in minutes\n"
-"before screensaver launches"
+"You don't seem to have a WiFi dongle\n"
+"plugged in."
 msgstr ""
 
-#: ../kano_settings/set_mouse.py:25 ../kano_settings/screens.py:106
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_mouse.py:25
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/screens.py:106
-msgid "Mouse"
+#: ../kano_wifi_gui/wifi_window.py:110
+msgid "Plug one in and try again"
 msgstr ""
 
-#: ../kano_settings/set_mouse.py:26
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_mouse.py:26
-msgid "Pick your speed"
+#: ../kano_wifi_gui/wifi_window.py:144
+msgid "You are already connected via ethernet."
 msgstr ""
 
-#: ../kano_settings/set_mouse.py:29
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_mouse.py:29
-msgid "Slow"
+#: ../kano_wifi_gui/wifi_window.py:145
+msgid "Do you still want to connect with WiFi?"
 msgstr ""
 
-#: ../kano_settings/set_mouse.py:29
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_mouse.py:29
-msgid "REQUIRES LESS MOVE PRECISION"
+#: ../kano_wifi_gui/wifi_window.py:187
+msgid "You already have internet!"
 msgstr ""
 
-#: ../kano_settings/set_mouse.py:31
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_mouse.py:31
-msgid "Fast"
-msgstr ""
-
-#: ../kano_settings/set_mouse.py:31
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/set_mouse.py:31
-msgid "BETTER FOR WIDE SCREENS"
-msgstr ""
-
-#: ../kano_settings/screens.py:67
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/screens.py:67
-msgid "Connected"
-msgstr ""
-
-#: ../kano_settings/screens.py:69
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/screens.py:69
-msgid "Not connected"
-msgstr ""
-
-#: ../kano_settings/screens.py:109
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/screens.py:109
-msgid "WiFi"
-msgstr ""
-
-#: ../kano_settings/screens.py:114
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/screens.py:114
-msgid "Account"
-msgstr ""
-
-#: ../kano_settings/screens.py:115
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/screens.py:115
-msgid "Style"
-msgstr ""
-
-#: ../kano_settings/screens.py:120
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/screens.py:120
-msgid "About"
-msgstr ""
-
-#: ../kano_settings/screens.py:122
-#: ../debian/kano-settings/usr/lib/python2.7/dist-packages/kano_settings/screens.py:122
-msgid "No-internet"
+#: ../kano_wifi_gui/wifi_window.py:188
+msgid "Do you want to change network?"
 msgstr ""
