@@ -38,6 +38,9 @@ messages.pot:
 	msgmerge -N -U $*.po messages.pot
 	touch $*.po
 
+en_QQ.po: messages.pot
+	../../kano-i18n/dev_locale/fake_locale messages.pot en_QQ.po
+
 ../locale/%/LC_MESSAGES/$(APPNAME).mo: clean_locales
 	mkdir -p $(dir $@)
 	msgfmt -c -o $@ $*.po
