@@ -108,7 +108,7 @@ def set_setting(variable, value):
     if username == 'root':
         return
 
-    logger.debug("config_file / set_setting: {} {}".format(variable, value.encode('utf-8'))
+    logger.debug("config_file / set_setting: {} {}".format(variable, value.encode('utf-8','ignore')))
 
     data = read_json(settings_file)
     if not data:

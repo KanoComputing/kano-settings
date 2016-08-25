@@ -114,7 +114,7 @@ def change_overclock_value(config, board_name=None):
         set_config_value(val, values[val])
 
     # Update config
-    set_setting(_("Overclocking"), config)
+    set_setting('Overclocking', config)
 
 
 def set_default_overclock_values(board_name=None):
