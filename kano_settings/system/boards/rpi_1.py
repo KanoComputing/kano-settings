@@ -10,39 +10,39 @@
 #
 
 DEFAULT_CONFIG = {
-    'Overclocking': 'High'
+    'Overclocking': _("High")
 }
 
 CLOCKING = {
-    'modes': ['None', 'Modest', 'Medium', 'High', 'Turbo'],
-    'default': 'High',
-    'warning': ['Turbo'],
+    'modes': [_("None"), _("Modest"), _("Medium"), _("High"), _("Turbo")],
+    'default': _("High"),
+    'warning': [_("Turbo")],
     'values': {
-        'None': {
+        _("None"): {
             'arm_freq': 700,
             'core_freq': 250,
             'sdram_freq': 400,
             'over_voltage': 0
         },
-        'Modest': {
+        _("Modest"): {
             'arm_freq':  800,
             'core_freq':  250,
             'sdram_freq':  400,
             'over_voltage':  0
         },
-        'Medium': {
+        _("Medium"): {
             'arm_freq': 900,
             'core_freq': 250,
             'sdram_freq': 450,
             'over_voltage': 2
         },
-        'High': {
+        _("High"): {
             'arm_freq': 950,
             'core_freq': 250,
             'sdram_freq': 450,
             'over_voltage': 6,
         },
-        'Turbo': {
+        _("Turbo"): {
             'arm_freq': 1000,
             'core_freq': 500,
             'sdram_freq': 600,

@@ -37,7 +37,7 @@ def match_overclock_value(board_name):
     board = get_board_props(board_name)
 
     if not board:
-        logger.error('Could not get overclocking settings for board')
+        logger.error("Could not get overclocking settings for board")
         return
 
     values = board.CLOCKING['values']
@@ -65,7 +65,7 @@ def get_matching_board_profile():
         board_props = get_board_props(board_key)
 
         if does_board_match(board_props):
-            logger.debug('Matched the board {} with the current settings'
+            logger.debug("Matched the board {} with the current settings"
                          .format(board_key))
             return get_board_property(board_key, 'cpu_profile')
 
@@ -87,25 +87,25 @@ def change_overclock_value(config, board_name=None):
     board = get_board_props(board_name=board_name)
 
     if not board:
-        logger.error('Could not get overclocking settings for board')
+        logger.error("Could not get overclocking settings for board")
         return
 
     try:
         values = board.CLOCKING['values'][config]
     except KeyError:
         logger.error(
-            'kano-settings: set_overclock: SetOverclock: set_overclock(): '
-            'was called with an invalid overclock setting={}'
+            "kano-settings: set_overclock: SetOverclock: set_overclock(): " \
+            "was called with an invalid overclock setting={}"
             .format(config)
         )
         return
 
     logger.info(
-        'set_overclock / apply_changes: '
-        'config:{} arm_freq:{arm_freq} '
-        'core_freq:{core_freq} '
-        'sdram_freq:{sdram_freq} '
-        'over_voltage:{over_voltage}'
+        "set_overclock / apply_changes: " \
+        "config:{} arm_freq:{arm_freq} " \
+        "core_freq:{core_freq} " \
+        "sdram_freq:{sdram_freq} " \
+        "over_voltage:{over_voltage}"
         .format(config, **values)
     )
 
@@ -114,14 +114,14 @@ def change_overclock_value(config, board_name=None):
         set_config_value(val, values[val])
 
     # Update config
-    set_setting(_("Overclocking"), config)
+    set_setting('Overclocking', config)
 
 
 def set_default_overclock_values(board_name=None):
     board = get_board_props(board_name=board_name)
 
     if not board:
-        logger.error('Could not get overclocking settings for board')
+        logger.error("Could not get overclocking settings for board")
         return
 
     change_overclock_value(board.CLOCKING['default'], board_name)
@@ -131,7 +131,7 @@ def is_dangerous_overclock_value(config, board_name=None):
     board = get_board_props(board_name=board_name)
 
     if not board:
-        logger.error('Could not get overclocking settings for board')
+        logger.error("Could not get overclocking settings for board")
         return
 
     return config in board.CLOCKING['warning']

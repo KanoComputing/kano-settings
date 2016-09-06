@@ -1,4 +1,4 @@
-APPNAME=kano-apps
+APPNAME=kano-settings
 ORG="Kano Computing Ltd."
 
 MSGLANGS=$(notdir $(wildcard *po))
@@ -37,6 +37,9 @@ messages.pot:
 %.po: messages.pot
 	msgmerge -N -U $*.po messages.pot
 	touch $*.po
+
+en_QQ.po: messages.pot
+	../../kano-i18n/dev_locale/fake_locale messages.pot en_QQ.po
 
 ../locale/%/LC_MESSAGES/$(APPNAME).mo: clean_locales
 	mkdir -p $(dir $@)

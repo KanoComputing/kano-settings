@@ -20,7 +20,7 @@ username = get_user_unsudoed()
 config_file = os.path.join('/home', username, '.config/lxsession/LXDE/desktop.conf')
 
 
-MODES = ['Small', 'Normal', 'Big']
+MODES = [_("Small"), _("Normal"), _("Big")]
 
 
 class SetFont(RadioButtonTemplate):
@@ -66,7 +66,7 @@ class SetFont(RadioButtonTemplate):
         try:
             config = MODES[self.selected_button]
         except IndexError:
-            config = 'Normal'
+            config = _("Normal")
 
         if not config == get_setting('Font'):
             set_setting('Font', config)

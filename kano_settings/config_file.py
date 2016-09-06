@@ -41,14 +41,14 @@ DEFAULT_CONFIG = {
     'Keyboard-continent-index': 1,
     'Keyboard-country-index': 21,
     'Keyboard-variant-index': 0,
-    'Keyboard-continent-human': 'america',
-    'Keyboard-country-human': 'United States',
-    'Keyboard-variant-human': 'Generic',
-    'Audio': 'Analogue',
+    'Keyboard-continent-human': _("america"),
+    'Keyboard-country-human': _("United States"),
+    'Keyboard-variant-human': _("Generic"),
+    'Audio': _("Analogue"),
     'Wifi': '',
     'Wifi-connection-attempted': False,
-    'Mouse': 'Normal',
-    'Font': 'Normal',
+    'Mouse': _("Normal"),
+    'Font': _("Normal"),
     'Wallpaper': 'kanux-background',
     'Parental-level': 0,
     'Locale': 'en_US',
@@ -108,7 +108,7 @@ def set_setting(variable, value):
     if username == 'root':
         return
 
-    logger.debug("config_file / set_setting: {} {}".format(variable, value))
+    logger.debug("config_file / set_setting: {} {}".format(variable, value.encode('utf-8','ignore')))
 
     data = read_json(settings_file)
     if not data:
