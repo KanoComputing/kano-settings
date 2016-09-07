@@ -248,7 +248,8 @@ class CheckSettingConfigValues(BootConfigParserTest):
 
         sdtv_mode = self.config.get_line('sdtv_mode')
         self.assertEqual(sdtv_mode.value, new_val)
-        self.assertEqual(sdtv_mode.is_comment, True)
+        # Setting a commented value uncomments it
+        self.assertEqual(sdtv_mode.is_comment, False)
 
     def test_setting_compound_key(self):
         new_val = 'off'

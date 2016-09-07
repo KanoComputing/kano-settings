@@ -104,6 +104,8 @@ class BootConfigParser(object):
             ).value
 
     def set(self, setting, value, config_filter=Filter.ALL):
+        # NB if value is None, we comment out the setting
+        # If the value is not None, we uncomment the setting and set it to the value
         search = {
             'setting': setting,
             'filter': config_filter
@@ -111,14 +113,20 @@ class BootConfigParser(object):
 
         for line in reversed(self.config):
             if line == search:
-                line.value = value
+                line.value = value or 0
+                line.is_comment = value is None
+                line.is_commented_out = value is None
+                line.is_manual_comment = False
                 return
 
         new_line = BootConfigLine({
             'setting': setting,
             'filter': config_filter,
-            'value': value
+            'value': value or 0,
+            'is_comment': value is None,
+            'is_commented_out': value is None
         })
+
         self.add(new_line)
 
     def dump(self):

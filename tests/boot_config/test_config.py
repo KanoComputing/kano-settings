@@ -45,15 +45,18 @@ config_path = '/boot/config.txt'
 
 class config_vals:
     # Class to hold config values for comparison
-    def __init__(self, values, comment_values, comments):
+    def __init__(self, values, comment_values, comments, comment_keys):
         self.values = values   # for lines of the form foo=bar
         self.comment_values = comment_values  # for lines of the form ### foo: bar
         self.comments = comments  # All other lines
+        self.comment_keys = comment_keys
+
 
     def copy(self):
         return config_vals(copy.copy(self.values),
                            copy.copy(self.comment_values),
-                           copy.copy(self.comments))
+                           copy.copy(self.comments),
+                           copy.copy(self.comment_keys))
 
 
 def read_config(path=config_path):
@@ -62,9 +65,11 @@ def read_config(path=config_path):
     lines = open(path, "r").readlines()
     values = {}
     comment_values = {}
+    comment_keys = {}
     comments = []
     commentRe = re.compile('### ([^:]+): (.*)')
-    valRe = re.compile('([^=]+)=(.*)')
+    valRe = re.compile('([^=#]+)=(.*)')
+    valCommentRe = re.compile('^\s*#\s*([^=#]+)=(.*)')
 
     for x in lines:
         m = commentRe.match(x)
@@ -72,13 +77,18 @@ def read_config(path=config_path):
             comment_values[m.group(1)] = m.group(2)
             continue
         m = valRe.match(x)
-        if m:
+        m2 = valCommentRe.match(x)
+        if m or m2:
+            if not m:
+                m = m2
             values[m.group(1)] = m.group(2)
             if is_number(m.group(2)):
                 values[m.group(1)] = int(m.group(2))
+            if m2:
+                comment_keys[m.group(1)] = True
             continue
         comments.append(x)
-    return config_vals(values, comment_values, comments)
+    return config_vals(values, comment_values, comments, comment_keys)
 
 
 def compare(a, b):
@@ -101,7 +111,7 @@ def compare(a, b):
 
     for k in a.values.keys():
         if a.values[k] != b.values[k]:
-            print "value difference", k, a.values[k], b.values[k]
+            print "value difference", k, a.values[k], b.values[k], a, b
             return False
     return True
 
@@ -242,11 +252,19 @@ class configSetTest(unittest.TestCase):
                 # test set_config_value
 
                 key = choose_key(present, configs['current'].values)
-                value = random.randint(0, 1000)
+                if random.randint(0, 1):
+                    value = None
 
-                print "testing set_config_value({},{})".format(key, value)
-                boot_config.set_config_value(key, value)
-                configs['written'].values[key] = value
+                    print "testing set_config_value({},{})".format(key, value)
+                    boot_config.set_config_value(key, value)
+                    configs['written'].values[key] = 0
+                    configs['written'].comment_keys[key] = True
+                else:
+                    value = random.randint(0, 1000)
+                    print "testing set_config_value({},{})".format(key, value)
+                    boot_config.set_config_value(key, value)
+                    configs['written'].values[key] = value
+                    configs['written'].comment_keys[key] = False
 
             elif which == 1:
                 # test set_config_comment
@@ -322,6 +340,12 @@ class configSetTest(unittest.TestCase):
             configs['written'] = orig.copy()
 
             for trial in range(numtests):
+                print "test number ", trial
+                #os.system('cat /boot/config.txt')
+                #print "___"
+                #os.system('cat '+boot_config._trans().temp_config.path)
+                #print "___"
+                
                 rwc = random.randint(0, 3)
 
                 if rwc == 0:

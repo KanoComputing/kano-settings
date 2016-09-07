@@ -20,13 +20,28 @@ class BootConfigLine(object):
     MANUAL_COMMENT_PATTERN = r'^\s*###\s*[\w=:][\w=:\s]+\s*$'
     MANUAL_COMMENT_RE = re.compile(MANUAL_COMMENT_PATTERN)
 
+    # This object represents four classes of item:
+    
+    #  NAME            EXAMPLES             is_comment is_commented_out is_manual_comment
+    
+    #  Valid setting   "foo=bar","foo=1"    False      False            False
+    #  Commented out   "# foo=bar"          True       True             False
+    #  Manual Comment  "### foo: bar        True       False            True
+    #  Comment         "# NB pi explodes"   True       False            False
+
+    # Valid settings are looked at by the firmware.
+    # "Manual Comment" items are data stored in the config.txt not used by the firmware
+    # "Commented out" items are example settings which have been commented out.
+    # "Comment" items are any other comment
+
+
     def __init__(self, line, config_filter=Filter.ALL, debug=False):
         self.line = line
         self.debug = debug
 
         self.setting, self._value, \
                 self.filter, self.is_comment, \
-                self.is_manual_comment = self.parse_line(line)
+                self.is_manual_comment, self.is_commented_out = self.parse_line(line)
 
         if config_filter != Filter.ALL:
             self.filter = config_filter
@@ -38,17 +53,21 @@ class BootConfigLine(object):
         config_filter = Filter.ALL
         comment = False
         manual_comment = False
+        commented_out = False
 
         if isinstance(arg, BootConfigLine):
             setting = arg.setting
             value = arg.value
             config_filter = arg.filter
             comment = arg.is_comment
+            commented_out = arg.is_commented_out
 
         elif isinstance(arg, dict):
             setting = arg.get('setting', setting)
             config_filter = arg.get('filter', config_filter)
             value = arg.get('value', value)
+            is_comment = arg.get('is_comment', False)
+            commented_out = arg.get('is_commented_out', False)
 
         elif isinstance(arg, tuple):
             setting = arg[0]
@@ -65,6 +84,7 @@ class BootConfigLine(object):
             if match:
                 groups = match.groups()
                 comment = groups[0] == cls.COMMENT_SYMBOL
+                commented_out = comment
                 setting = groups[1]
                 value = groups[2]
             else:
@@ -74,13 +94,13 @@ class BootConfigLine(object):
                 setting = arg.strip(' {}'.format(cls.COMMENT_SYMBOL))
                 comment = True
 
-        return setting, value, config_filter, comment, manual_comment
+        return setting, value, config_filter, comment, manual_comment, commented_out
 
 
     def __eq__(self, other):
         setting, dummy_value, \
             config_filter, dummy_comment, \
-            dummy_manual_comment = self.parse_line(other)
+            dummy_manual_comment, dummy_commented_out = self.parse_line(other)
 
         return self.setting == setting \
                 and self.filter == config_filter
@@ -93,8 +113,15 @@ class BootConfigLine(object):
         if not self.setting:
             return ''
 
+        # Normally we want settings to have an '=' and value but this object can represent a pure
+        # comment, in which case there is no value so we want an empty string for the 'value'
+        if self.is_comment and not self.is_commented_out:
+            default_value_str = ''
+        else:
+            default_value_str = '=0'
+
         # Config is incorrectly parsed by RPi if whitespace exists around '='
-        value = '={val}'.format(val=self._value) if self._value else ''
+        value = '={val}'.format(val=self._value) if self._value else default_value_str
 
         if self.is_comment:
             comment_symbol_multiplier = 3 if self.is_manual_comment else 1
