@@ -10,6 +10,12 @@
 import os
 import sys
 
+TOKEN_PATH = '/var/cache/kano-settings'
+TOKEN_NAME = 'safeboot_token'
+TOKEN_FILENAME = os.path.join(TOKEN_PATH, TOKEN_NAME)
+SAFEBOOT_SOUND = "/usr/share/kano-settings/media/sounds/kano_safeboot.wav"
+
+
 if __name__ == '__main__' and __package__ is None:
     dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     if dir_path != '/usr':
@@ -34,6 +40,22 @@ def safe_boot_requested():
     return rv == 10
 
 
+def set_safeboot_token():
+    try:
+        # Make a token which indicates that we are in safe mode because a key was pressed
+        run_cmd("mkdir -p {}".format(TOKEN_PATH))
+        run_cmd("touch {}".format(TOKEN_FILENAME))
+    except:
+        pass  # No errors in this function should prevent the main point of this script
+
+
+def is_token_set():
+    return os.path.exists(TOKEN_FILENAME)
+
+
+def remove_token():
+    os.unlink(TOKEN_FILENAME)
+
 # main program
 enforce_pi()
 enforce_root('Need to be root!')
@@ -51,7 +73,20 @@ if safe_boot_requested() and not is_safe_boot():
 
     end_config_transaction()
 
+    # Set the token
+    set_safeboot_token()
+    try:
+        from kano.utils.audio import play_sound
+        play_sound(SAFEBOOT_SOUND)
+    except:
+        pass  # ignore failures in sound
+
     # Trigger a reboot
     logger.sync()
     run_cmd('kano-checked-reboot safeboot systemctl reboot --force')
     sys.exit()
+
+
+if is_token_set():
+    remove_token()
+    run_cmd("kano-capture-logs &")
