@@ -125,7 +125,7 @@ class BootConfig:
         logger.info('writing value to {} {} {}'.format(self.path, name, value))
 
         config = BootConfigParser(lines)
-        config.set(name, value if value else '0', config_filter=config_filter)
+        config.set(name, value, config_filter=config_filter)
 
         with open_locked(self.path, "w") as boot_config_file:
             boot_config_file.write(config.dump())
