@@ -33,7 +33,7 @@ verbose = False
 
 def print_v(string):
     if verbose:
-        print string
+        print string.encode('utf-8')
 
 def parse_args():
 
@@ -44,7 +44,7 @@ def parse_args():
     if args['set']:
         # Need to be root to change settings
         if os.environ['LOGNAME'] != 'root':
-            exit("Error: Settings must be executed with root privileges")
+            exit(_("Error: Settings must be executed with root privileges").encode('utf-8'))
 
         if args['audio']:
             if args['hdmi']:
@@ -57,7 +57,7 @@ def parse_args():
                 setting = 'default'
                 hdmi_enabled = False
 
-            print_v('setting audio to {}'.format(setting))
+            print_v(_("setting audio to {}").format(unicode(setting)))
 
             # only import on use, because this is slow
             from kano_settings.system.audio import set_to_HDMI
@@ -65,7 +65,7 @@ def parse_args():
         elif args['keyboard']:
             if args['--load']:
                 set_saved_keyboard()
-                print_v('Setting keyboard to value loaded from settings')
+                print_v(_("Setting keyboard to value loaded from settings"))
             elif args['--layout']:
                 a = args['<layout_code>']
                 alist = a.split(' ')
@@ -78,7 +78,7 @@ def parse_args():
                 else:
                     variant = 'generic'
                 set_keyboard(cc, variant)
-                print_v('Setting keyboard to {} {}'.format(cc, variant))
+                print_v(_("Setting keyboard to {} {}").format(unicode(cc), unicode(variant)))
 
         elif args['gfx_driver']:
             if args['enable']:
@@ -96,17 +96,17 @@ def parse_args():
     elif args['get']:
         if args['audio']:
             print_v(
-                'Audio settings:\n\n'
-                'Audio mode: {}'.format(
+                _("Audio settings:\n\n"
+                  "Audio mode: {}").format(
                     get_setting('Audio')
                 )
             )
         elif args['network']:
             print_v(
-                'Network settings:\n\n'
-                'WiFi: {}, WiFi Connection Attempted: {},\n'
-                'Proxy port : {}, Proxy IP: {}, '
-                'Proxy username : {}, Proxy type : {}'.format(
+                _("Network settings:\n\n"
+                  "WiFi: {}, WiFi Connection Attempted: {},\n"
+                  "Proxy port : {}, Proxy IP: {}, "
+                  "Proxy username : {}, Proxy type : {}").format(
                     get_setting('Wifi'),
                     get_setting('Wifi-connection-attempted'),
                     get_setting('Proxy-port'),
@@ -117,9 +117,9 @@ def parse_args():
             )
         elif args['keyboard']:
             print_v(
-                'Keyboard settings:\n\n'
-                'Continent: {}, Country: {}, Variant: {}\n'
-                '(indicies - Continent: {}, Country: {}, Variant: {})'.format(
+                _("Keyboard settings:\n\n"
+                  "Continent: {}, Country: {}, Variant: {}\n"
+                  "(indicies - Continent: {}, Country: {}, Variant: {})").format(
                     get_setting('Keyboard-continent-human'),
                     get_setting('Keyboard-country-human'),
                     get_setting('Keyboard-variant-human'),
