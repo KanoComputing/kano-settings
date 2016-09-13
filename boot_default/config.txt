@@ -73,14 +73,15 @@ dtparam=audio=on
 
 # for more options see http://elinux.org/RPi_config.txt
 
-[pi3]
-# for light board
-enable_uart=1
 
 [EDID=ADA-HDMI]
 # Screen kit
 display_rotate=2
 
+[all]
+[pi3]
+# for light board
+enable_uart=1
 [all]
 
 # Decrease audio noise.

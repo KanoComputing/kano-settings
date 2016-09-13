@@ -82,9 +82,11 @@ dtparam=i2c_arm=on
 dtparam=i2c1=on
 
 # for more options see http://elinux.org/RPi_config.txt
+[all]
 [EDID=VSC-TD2220]
 hdmi_group=2
 hdmi_mode=82
+[all]
 [rpi3]
 arm_freq=1200
 [all]
@@ -126,6 +128,7 @@ class CheckParsingConfig(BootConfigParserTest):
         )
 
     def test_dump_same(self):
+        self.maxDiff = 2048
         dump = self.config.dump()
         self.compare_config_dumps(self.base_config, dump)
 
