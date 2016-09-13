@@ -26,7 +26,7 @@ def create_wifi_gui(is_plug, socket_id):
     base_class = get_window_class(is_plug)
     wifi_gui = get_wifi_gui(base_class)
 
-    iface = get_wlan_device()
+    iface = get_wlan_device()  # this is now redundant, moved to _launch_application
     win = wifi_gui(socket_id=socket_id, wiface=iface)
     win.show_all()
     Gtk.main()
@@ -78,6 +78,7 @@ def get_wifi_gui(base_class):
             # Decide whether application prompts user to plug in WiFi dongle
             # or tell them they have ethernet.
             # Don't want to call this function more than once
+            self.wiface = get_wlan_device()
 
             has_internet = is_internet()
             ethernet_plugged = is_ethernet_plugged()
