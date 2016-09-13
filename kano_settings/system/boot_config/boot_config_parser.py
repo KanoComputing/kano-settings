@@ -146,7 +146,12 @@ class BootConfigParser(object):
     def sanitise_filter(config_filter):
         return config_filter.strip(' [').rstrip(' ]')
 
-
     @staticmethod
     def construct_filter_entry(config_filter):
-        return '[{config_filter}]\n'.format(config_filter=config_filter)
+        # This module doesn't understand overlapping filters, so always
+        # terminate previous filter.
+        terminate_filter = ''
+        if config_filter != Filter.ALL:
+            terminate_filter = '[all]\n'
+        return '{}[{config_filter}]\n'.format(terminate_filter,
+                                              config_filter=config_filter)

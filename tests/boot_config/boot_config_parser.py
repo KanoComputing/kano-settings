@@ -82,10 +82,12 @@ dtparam=i2c_arm=on
 dtparam=i2c1=on
 
 # for more options see http://elinux.org/RPi_config.txt
+[all]
 [EDID=VSC-TD2220]
 hdmi_group=2
 hdmi_mode=82
-[rpi3]
+[all]
+[pi3]
 arm_freq=1200
 [all]
 hdmi_group=1
@@ -126,6 +128,7 @@ class CheckParsingConfig(BootConfigParserTest):
         )
 
     def test_dump_same(self):
+        self.maxDiff = 2048
         dump = self.config.dump()
         self.compare_config_dumps(self.base_config, dump)
 
@@ -168,12 +171,12 @@ class CheckGettingConfigValues(BootConfigParserTest):
         self.assertEqual(arm_freq.value, 900)
         self.assertEqual(arm_freq.is_comment, False)
 
-        arm_freq_rpi3 = self.config.get_line('arm_freq', 'rpi3')
+        arm_freq_rpi3 = self.config.get_line('arm_freq', 'pi3')
         self.assertEqual(arm_freq_rpi3.value, 1200)
         self.assertEqual(arm_freq_rpi3.is_comment, False)
 
     def test_get_value(self):
-        arm_freq_rpi3 = self.config.get('arm_freq', 'rpi3')
+        arm_freq_rpi3 = self.config.get('arm_freq', 'pi3')
         self.assertEqual(arm_freq_rpi3, 1200)
 
     def test_getting_commented_line(self):
@@ -200,12 +203,12 @@ class CheckGettingConfigValues(BootConfigParserTest):
         self.assertEqual(hdmi_group_rpi3.is_comment, False)
 
     def test_get_filterless_with_filter(self):
-        line = self.config.get_line('gpu_mem', config_filter='rpi3')
+        line = self.config.get_line('gpu_mem', config_filter='pi3')
         self.assertEqual(line.value, 0)
 
     def test_get_filterless_with_filter_fallback(self):
         line = self.config.get_line(
-            'gpu_mem', config_filter='rpi3', fallback=True
+            'gpu_mem', config_filter='pi3', fallback=True
         )
         self.assertEqual(line.value, 128)
 
@@ -232,13 +235,13 @@ class CheckSettingConfigValues(BootConfigParserTest):
         new_val = 400
         new_rpi3_val = 800
         self.config.set('arm_freq', new_val)
-        self.config.set('arm_freq', new_rpi3_val, 'rpi3')
+        self.config.set('arm_freq', new_rpi3_val, 'pi3')
 
         arm_freq = self.config.get_line('arm_freq')
         self.assertEqual(arm_freq.value, new_val)
         self.assertEqual(arm_freq.is_comment, False)
 
-        arm_freq_rpi3 = self.config.get_line('arm_freq', 'rpi3')
+        arm_freq_rpi3 = self.config.get_line('arm_freq', 'pi3')
         self.assertEqual(arm_freq_rpi3.value, new_rpi3_val)
         self.assertEqual(arm_freq_rpi3.is_comment, False)
 
