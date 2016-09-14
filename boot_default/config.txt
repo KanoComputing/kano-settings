@@ -77,8 +77,13 @@ dtparam=audio=on
 [EDID=ADA-HDMI]
 # Screen kit
 display_rotate=2
-
 [all]
+
+[EDID=MST-HDMI1]
+# Screen kit
+display_rotate=2
+[all]
+
 [pi3]
 # for light board
 enable_uart=1
