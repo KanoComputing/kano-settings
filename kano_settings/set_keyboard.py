@@ -13,7 +13,7 @@ import kano_settings.system.keyboard_layouts as keyboard_layouts
 import kano_settings.system.keyboard_config as keyboard_config
 import kano_settings.common as common
 from kano_settings.templates import Template
-from kano_settings.config_file import get_setting, set_setting
+from kano_settings.config_file import get_setting
 from kano.gtk3.buttons import OrangeButton
 from kano.gtk3.kano_combobox import KanoComboBox
 from kano.utils import detect_kano_keyboard
@@ -355,7 +355,9 @@ class SetKeyboard(Template):
         self.variants_combo.remove_all()
 
         # Get a sorted list of the countries from the dict layout
-        sorted_countries = keyboard_layouts.sorted_countries(continent)
+        sorted_countries = keyboard_layouts.sorted_countries(
+            self.selected_layout
+        )
 
         # Refresh countries combo box
         for country in sorted_countries:

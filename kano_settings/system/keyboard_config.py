@@ -38,7 +38,7 @@ def find_keyboard_variants(country_code):
         return None
 
 
-# Find macintosh index within the variants combobox 
+# Find macintosh index within the variants combobox
 def find_macintosh_index(country_name, layout):
     country_code = find_country_code(country_name, layout)
     variants = find_keyboard_variants(country_code)
@@ -125,17 +125,17 @@ def save_keyboard_settings(locale_code, variant):
     )
 
 
-def set_keyboard(country_code, variant, save=False):
+def set_keyboard(locale_code, variant, save=False):
     if variant == 'generic':
         variant = ''
 
     # Notify and apply changes to the XServer
-    run_cmd("setxkbmap {} {}".format(country_code, variant))
-    set_keyboard_config(country_code, variant)
+    run_cmd("setxkbmap {} {}".format(locale_code, variant))
+    set_keyboard_config(locale.split_locale(locale_code)[0], variant)
     run_cmd("ACTIVE_CONSOLE=guess /bin/setupcon -k </dev/tty1")
 
     if save:
-        save_keyboard_settings(country_code, variant)
+        save_keyboard_settings(locale_code, variant)
 
 
 def set_saved_keyboard():
