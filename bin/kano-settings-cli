@@ -57,7 +57,7 @@ def parse_args():
                 setting = 'default'
                 hdmi_enabled = False
 
-            print_v(_("setting audio to {}").format(unicode(setting)))
+            print_v(_("setting audio to {}").format(_(setting)))
 
             # only import on use, because this is slow
             from kano_settings.system.audio import set_to_HDMI
@@ -78,7 +78,7 @@ def parse_args():
                 else:
                     variant = 'generic'
                 set_keyboard(cc, variant)
-                print_v(_("Setting keyboard to {} {}").format(unicode(cc), unicode(variant)))
+                print_v(_("Setting keyboard to {} {}").format(_(cc), _(variant)))
 
         elif args['gfx_driver']:
             if args['enable']:

@@ -16,7 +16,6 @@ from gi.repository import Gtk
 from kano.gtk3.buttons import KanoButton, OrangeButton
 from kano_settings.components.heading import Heading
 from kano.gtk3.scrolled_window import ScrolledWindow
-from kano.gtk3.kano_dialog import KanoDialog
 
 
 class Template(Gtk.Box):
@@ -221,7 +220,7 @@ class EditableList(Gtk.Grid):
             description = _("\nWe need to make sure the website URL is valid.\n" \
                             "Please enter the full URL as it appears in your browser.\n\n" \
                             "Example: http://www.google.com\n")
-            buttons = "OK:red:1"
+            buttons = _("OK:red:1")
             cmd = 'kano-dialog title="{}" description="{}" buttons="{}" no-taskbar &'.format(
                   title, description, buttons)
             os.system(cmd)
