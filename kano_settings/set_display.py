@@ -45,7 +45,7 @@ class SetDisplay(Template):
         # And the current display resolution
         try:
             current_resolution = get_status()['resolution']
-            info_message += "\n\nCurrent resolution: {}".format(current_resolution)
+            info_message += _("\n\nCurrent resolution: {}").format(_(current_resolution))
         except:
             pass
 

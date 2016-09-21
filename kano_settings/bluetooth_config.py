@@ -81,10 +81,10 @@ class BluetoothDeviceItem(Gtk.Box):
 
         if self.device.connected:
             pair_fn = do_unpair
-            logger.info(_(u"Unpairing {}").format(self.device).encode('utf-8'))
+            logger.info("Unpairing {}".format(self.device))
         else:
             pair_fn = do_pair
-            logger.info(_(u"Pairing {}").format(self.device).encode('utf-8'))
+            logger.info("Pairing {}".format(self.device))
 
         pair_thr = threading.Thread(target=pair_fn)
         pair_thr.start()
@@ -156,7 +156,7 @@ class BluetoothDevicesList(ScrolledWindow):
                 GObject.idle_add(self.set_no_devices_nearby)
 
             for idx, device in enumerate(devices):
-                logger.info(u"Adding device {}".format(device).encode('utf-8'))
+                logger.info("Adding device {}".format(device))
                 GObject.idle_add(self.add_device, device, idx)
 
         if not is_bluetooth_available():
