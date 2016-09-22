@@ -585,7 +585,6 @@ msgid ""
 "effect"
 msgstr ""
 "Si algún navegador se encuentra abierto, reinicia para dar lugar a la nueva configuración "
-msgstr ""
 
 #: ../kano_settings/parental_config.py:181
 msgid "Allow and Block Sites"
