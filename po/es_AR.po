@@ -1,5 +1,6 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR Kano Computing Ltd.
+# Spanish translations for kano-settings package
+# Spanish messages for kano-settings.
+# Copyright (C) 2016 Kano Computing Ltd.
 # This file is distributed under the same license as the kano-settings package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
@@ -14,7 +15,7 @@ msgstr ""
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: ../kano_settings/system/locale.py:95 ../kano_settings/system/locale.py:109
