@@ -10,7 +10,10 @@
 
 import os
 import shutil
-from contextlib import contextmanager
+import unittest
+from contextlib import contextmanager, wraps
+
+import kano.utils.hardware as hw
 
 def test_print(s):
     print '\n        ........{}'.format(s)
@@ -34,3 +37,7 @@ def mock_file(file_path, mock_data=None):
 
     if os.path.exists(original_file):
         shutil.move(original_file, file_path)
+
+
+require_rpi = unittest.skipIf(hw.get_rpi_model() == 'Error getting model name',
+                              'Test must be run on a RPi')

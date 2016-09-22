@@ -67,18 +67,21 @@ def parse_args():
                 set_saved_keyboard()
                 print_v(_("Setting keyboard to value loaded from settings"))
             elif args['--layout']:
-                a = args['<layout_code>']
-                alist = a.split(' ')
-                if len(alist) >= 1:
-                    cc = alist[0]
+                layout_code = args['<layout_code>']
+                layout_code_list = layout_code.split(' ')
+
+                if len(layout_code_list) >= 1:
+                    locale = layout_code_list[0]
                 else:
-                    cc = 'en_US'
-                if len(alist) >= 2:
-                    variant = alist[1]
+                    locale = 'en_US'
+
+                if len(layout_code_list) >= 2:
+                    variant = layout_code_list[1]
                 else:
                     variant = 'generic'
-                set_keyboard(cc, variant)
-                print_v(_("Setting keyboard to {} {}").format(_(cc), _(variant)))
+
+                set_keyboard(locale, variant)
+                print_v(_("Setting keyboard to {} {}").format(_(locale), _(variant)))
 
         elif args['gfx_driver']:
             if args['enable']:

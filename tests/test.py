@@ -2,8 +2,8 @@
 
 # test.py
 #
-# Copyright (C) 2015 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2015-2016 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Runs all the unit tests
 #
@@ -20,6 +20,9 @@ sys.path.insert(1, os.path.abspath(
 SUITE = unittest.TestSuite()
 TESTS = [
     'tests.i18n.test_locale',
+    'tests.boot_config.boot_config_parser',
+    'tests.boot_config.boot_config_line',
+    'tests.display.display',
     'tests.boot_config.test_config'
 ]
 

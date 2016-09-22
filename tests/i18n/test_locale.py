@@ -16,9 +16,10 @@ sys.path.insert(1, os.path.abspath(
     os.path.join(os.path.dirname(__file__), '..')))
 
 import kano_settings.system.locale as locale
+import kano_settings.system.keyboard_layouts as keyboard_layouts
 import kano.utils as utils
 
-from tests.tools import test_print, mock_file
+from tests.tools import test_print, mock_file, require_rpi
 
 
 print '''
@@ -75,37 +76,50 @@ class StandardLocaleToGenfileEntry(unittest.TestCase):
 
 
 class IsLocaleValid(unittest.TestCase):
+    '''
+    These calculate validity through the `/usr/share/i18n/SUPPORTED' file which
+    is not guaranteed to be present on non-linux machines
+    '''
 
+    @require_rpi
     def test_is_en_US_valid(self):
         self.assertTrue(locale.is_locale_valid('en_US.UTF-8'))
 
+    @require_rpi
     def test_is_en_GB_valid(self):
         self.assertTrue(locale.is_locale_valid('en_GB.UTF-8'))
 
+    @require_rpi
     def test_is_random_string_valid(self):
         self.assertFalse(locale.is_locale_valid('some_invalid_locale'))
 
 
 class IsLocaleInstalled(unittest.TestCase):
 
+    @require_rpi
     def test_is_en_US_installed(self):
         self.assertTrue(locale.is_locale_installed('en_US.UTF-8'))
 
+    @require_rpi
     def test_is_en_GB_installed(self):
         self.assertTrue(locale.is_locale_installed('en_GB.UTF-8'))
 
+    @require_rpi
     def test_is_ru_RU_installed(self):
         self.assertFalse(locale.is_locale_installed('ru_RU.UTF-8'))
 
+    @require_rpi
     def test_is_aa_ER_installed(self):
         self.assertFalse(locale.is_locale_installed('aa_ER.UTF-8'))
 
+    @require_rpi
     def test_is_random_string_installed(self):
         self.assertFalse(locale.is_locale_installed('some_ininstalled_locale'))
 
 
 class InstallLocale(unittest.TestCase):
 
+    @require_rpi
     def test_install_locale(self):
         test_locale = 'aa_ER'
         locale_already_installed = locale.is_locale_installed(test_locale)
@@ -130,6 +144,7 @@ class InstallLocale(unittest.TestCase):
 
 class UninstallLocale(unittest.TestCase):
 
+    @require_rpi
     def test_uninstall_locale(self):
         test_locale = 'aa_ER'
         locale_already_installed = locale.is_locale_installed(test_locale)
@@ -164,50 +179,64 @@ class SetLocaleParam(unittest.TestCase):
 
             self.assertTrue(config_line in config)
 
+    @require_rpi
     def test_xsession_rc_file_path(self):
         self.assertEqual(locale.XSESSION_RC_FILE,
                          os.path.join('/home', utils.get_user_unsudoed(),
                                       '.xsessionrc'))
 
+    @require_rpi
     def test_LANGUAGE_set(self):
         self.run_test_for_param('LANGUAGE')
 
+    @require_rpi
     def test_LC_ADDRESS_set(self):
         self.run_test_for_param('LC_ADDRESS')
 
+    @require_rpi
     def test_LC_COLLATE_set(self):
         self.run_test_for_param('LC_COLLATE')
 
+    @require_rpi
     def test_LC_CTYPE_set(self):
         self.run_test_for_param('LC_CTYPE')
 
+    @require_rpi
     def test_LC_MONETARY_set(self):
         self.run_test_for_param('LC_MONETARY')
 
+    @require_rpi
     def test_LC_MEASUREMENT_set(self):
         self.run_test_for_param('LC_MEASUREMENT')
 
+    @require_rpi
     def test_LC_MESSAGES_set(self):
         self.run_test_for_param('LC_MESSAGES')
 
+    @require_rpi
     def test_LC_NUMERIC_set(self):
         self.run_test_for_param('LC_NUMERIC')
 
+    @require_rpi
     def test_LC_PAPER_set(self):
         self.run_test_for_param('LC_PAPER')
 
+    @require_rpi
     def test_LC_RESPONSE_set(self):
         self.run_test_for_param('LC_RESPONSE')
 
+    @require_rpi
     def test_LC_TELEPHONE_set(self):
         self.run_test_for_param('LC_TELEPHONE')
 
+    @require_rpi
     def test_LC_TIME_set(self):
         self.run_test_for_param('LC_TIME')
 
 
 class SetLocale(unittest.TestCase):
 
+    @require_rpi
     def test_set_locale(self):
         with mock_file(locale.XSESSION_RC_FILE):
             params = [
@@ -241,6 +270,7 @@ class SetLocale(unittest.TestCase):
 
 class GetLocale(unittest.TestCase):
 
+    @require_rpi
     def test_get_locale(self):
         locale_param = r'^LANG='
         locale_regex = r'{}\(.*\)$'.format(locale_param)
@@ -252,3 +282,130 @@ class GetLocale(unittest.TestCase):
         locale_setting = locale.get_locale()
 
         self.assertEqual(locale_setting, locale_test)
+
+
+class CountryCodeManipulations(unittest.TestCase):
+    DEFAULT_CONTINENT = 'america'
+    DEFAULT_COUNTRY = 'United States'
+    DEFAULT_VARIANT = ''
+    DEFAULT_CONTINENT_IDX = 1
+    DEFAULT_COUNTRY_IDX = 21
+    DEFAULT_VARIANT_IDX = 0
+
+    def verify_layout_keys_exist(self, continent, country):
+        country_list = keyboard_layouts.layouts.get(continent)
+        self.assertIsInstance(country_list, dict)
+
+        country_code = country_list.get(country)
+        self.assertIsInstance(country_code, basestring)
+        self.assertNotEqual(len(country_code), 0)
+
+
+class CountryCodeToLayoutKeys(CountryCodeManipulations):
+
+    def test_valid_country_code_americas(self):
+        continent, country = locale.country_code_to_layout_keys('AR')
+        self.verify_layout_keys_exist(continent, country)
+
+        self.assertEqual(country, 'Argentina')
+        self.assertEqual(continent, 'america')
+
+    def test_valid_country_code_europe(self):
+        continent, country = locale.country_code_to_layout_keys('GB')
+        self.verify_layout_keys_exist(continent, country)
+
+        self.assertEqual(country, 'United Kingdom')
+        self.assertEqual(continent, 'europe')
+
+
+    def test_invalid_country_code(self):
+        continent, country = locale.country_code_to_layout_keys('XXX')
+        self.verify_layout_keys_exist(continent, country)
+
+        self.assertEqual(country, 'United States')
+        self.assertEqual(continent, 'america')
+
+
+
+class LocaleToLayoutKeys(CountryCodeManipulations):
+
+    def test_valid_locale_americas(self):
+        continent, country = locale.locale_to_layout_keys('es_AR')
+        self.verify_layout_keys_exist(continent, country)
+
+        self.assertEqual(country, 'Argentina')
+        self.assertEqual(continent, 'america')
+
+    def test_valid_locale_europe(self):
+        continent, country = locale.locale_to_layout_keys('en_GB')
+        self.verify_layout_keys_exist(continent, country)
+
+        self.assertEqual(country, 'United Kingdom')
+        self.assertEqual(continent, 'europe')
+
+
+    def test_invalid_locale(self):
+        continent, country = locale.locale_to_layout_keys('XXX_XX')
+        self.verify_layout_keys_exist(continent, country)
+
+        self.assertEqual(continent, self.DEFAULT_CONTINENT)
+        self.assertEqual(country, self.DEFAULT_COUNTRY)
+
+
+class LayoutKeysToIndexes(CountryCodeManipulations):
+
+    def test_valid_keys_americas(self):
+        continent_idx, country_idx = locale.layout_keys_to_indexes(
+            'america', 'Argentina'
+        )
+
+        self.assertEqual(continent_idx, 1)
+        self.assertEqual(country_idx, 0)
+
+    def test_valid_keys_defaults(self):
+        continent_idx, country_idx = locale.layout_keys_to_indexes(
+            self.DEFAULT_CONTINENT, self.DEFAULT_COUNTRY
+        )
+
+        self.assertEqual(continent_idx, self.DEFAULT_CONTINENT_IDX)
+        self.assertEqual(country_idx, self.DEFAULT_COUNTRY_IDX)
+
+    def test_valid_keys_europe(self):
+        continent_idx, country_idx = locale.layout_keys_to_indexes(
+            'europe', 'United Kingdom'
+        )
+
+        self.assertEqual(continent_idx, 4)
+        self.assertEqual(country_idx, 40)
+
+    def test_invalid_continent_key(self):
+        continent_idx, country_idx = locale.layout_keys_to_indexes(
+            'XXX', 'United Kingdom'
+        )
+
+        self.assertEqual(continent_idx, self.DEFAULT_CONTINENT_IDX)
+        self.assertEqual(country_idx, self.DEFAULT_COUNTRY_IDX)
+
+    def test_invalid_country_key(self):
+        continent_idx, country_idx = locale.layout_keys_to_indexes(
+            'europe', 'XXX'
+        )
+
+        self.assertEqual(continent_idx, 4)
+        self.assertEqual(country_idx, self.DEFAULT_COUNTRY_IDX)
+
+    def test_mismatching_keys(self):
+        continent_idx, country_idx = locale.layout_keys_to_indexes(
+            'africa', 'United Kingdom'
+        )
+
+        self.assertEqual(continent_idx, 0)
+        self.assertEqual(country_idx, self.DEFAULT_COUNTRY_IDX)
+
+    def test_invalid_keys(self):
+        continent_idx, country_idx = locale.layout_keys_to_indexes(
+            'XXX', 'XXX'
+        )
+
+        self.assertEqual(continent_idx, self.DEFAULT_CONTINENT_IDX)
+        self.assertEqual(country_idx, self.DEFAULT_COUNTRY_IDX)

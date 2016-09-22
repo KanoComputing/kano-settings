@@ -13,7 +13,7 @@ import kano_settings.system.keyboard_layouts as keyboard_layouts
 import kano_settings.system.keyboard_config as keyboard_config
 import kano_settings.common as common
 from kano_settings.templates import Template
-from kano_settings.config_file import get_setting, set_setting
+from kano_settings.config_file import get_setting
 from kano.gtk3.buttons import OrangeButton
 from kano.gtk3.kano_combobox import KanoComboBox
 from kano.utils import detect_kano_keyboard
@@ -77,7 +77,7 @@ class SetKeyboard(Template):
     selected_country_hr = 'USA'
     selected_variant_hr = 'generic'
     variants_combo = None
-    continents = ['Africa', 'America', 'Asia', 'Australia', 'Europe', 'Others']
+    continents = keyboard_layouts.get_continents()
     kano_keyboard = True
 
     def __init__(self, win):
@@ -211,24 +211,16 @@ class SetKeyboard(Template):
         self.selected_variant_hr = get_setting('Keyboard-variant-human')
 
     def update_config(self):
-        logger.info("set_keyboard.update_config {} {} {} {} {} {}".format(
+        keyboard_config.update_settings_keyboard_conf(
             self.selected_continent_index,
             self.selected_country_index,
             self.selected_variant_index,
             self.selected_continent_hr,
             self.selected_country_hr,
             self.selected_variant_hr
-        ))
+        )
 
-        # Add new configurations to config file.
-        set_setting('Keyboard-continent-index', self.selected_continent_index)
-        set_setting('Keyboard-country-index', self.selected_country_index)
-        set_setting('Keyboard-variant-index', self.selected_variant_index)
-        set_setting('Keyboard-continent-human', self.selected_continent_hr)
-        set_setting('Keyboard-country-human', self.selected_country_hr)
-        set_setting('Keyboard-variant-human', self.selected_variant_hr)
-
-    # setting = 'variant', 'continent' or 'country'
+    # setting = "variant", "continent" or "country"
     def set_defaults(self, setting):
 
         # Set the default info on the dropdown lists
@@ -352,10 +344,9 @@ class SetKeyboard(Template):
     def fill_countries_combo(self, continent):
         continent = continent.lower()
 
-        try:
-            self.selected_layout = keyboard_layouts.layouts[continent]
-        except KeyError:
-            return
+        self.selected_layout = keyboard_layouts.get_countries_for_continent(
+            continent
+        )
 
         self.selected_continent_hr = continent
 
@@ -364,7 +355,9 @@ class SetKeyboard(Template):
         self.variants_combo.remove_all()
 
         # Get a sorted list of the countries from the dict layout
-        sorted_countries = sorted(self.selected_layout)
+        sorted_countries = keyboard_layouts.sorted_countries(
+            self.selected_layout
+        )
 
         # Refresh countries combo box
         for country in sorted_countries:
