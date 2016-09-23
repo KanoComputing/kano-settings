@@ -21,7 +21,7 @@ class Menu_button():
         self.container.props.margin = 20
 
         # Info about the different settings
-        self.title = Gtk.Label(name)
+        self.title = Gtk.Label(_(name))
         self.title.get_style_context().add_class('menu_intro_label')
         self.title.set_alignment(xalign=0, yalign=0)
         self.title.props.margin_top = 10
