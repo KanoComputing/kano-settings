@@ -41,7 +41,7 @@ DEFAULT_CONFIG = {
     'Keyboard-continent-index': 1,
     'Keyboard-country-index': 21,
     'Keyboard-variant-index': 0,
-    'Keyboard-continent-human': _("america"),
+    'Keyboard-continent-human': "america",
     'Keyboard-country-human': _("United States"),
     'Keyboard-variant-human': _("Generic"),
     'Audio': _("Analogue"),
