@@ -63,8 +63,8 @@ class SetAudio(Template):
         # If enter key is pressed or mouse button is clicked
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
-            if (get_setting('Audio') == 'HDMI' and self.HDMI is True) or \
-               (get_setting('Audio') == 'Analogue' and self.HDMI is False):
+            if (get_setting('Audio') == _('HDMI') and self.HDMI is True) or \
+               (get_setting('Audio') == _('Analogue') and self.HDMI is False):
 
                 logger.debug("set_audio / apply_changes: audio settings haven't changed, don't apply new changes")
                 self.win.go_to_home()
