@@ -101,7 +101,7 @@ def change_overclock_value(config, board_name=None):
         return
 
     logger.info(
-        "set_overclock / apply_changes: " \
+        u"set_overclock / apply_changes: " \
         "config:{} arm_freq:{arm_freq} " \
         "core_freq:{core_freq} " \
         "sdram_freq:{sdram_freq} " \
