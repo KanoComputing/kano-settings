@@ -203,7 +203,7 @@ class EditableList(Gtk.Grid):
 
     def rm(self, button=None, event=None):
         selection = self.edit_list.get_selection()
-        _, selected = selection.get_selected()
+        dummy, selected = selection.get_selected()
 
         if not selected:
             return
@@ -222,13 +222,13 @@ class EditableList(Gtk.Grid):
                             "Example: http://www.google.com\n")
             buttons = _("OK:red:1")
             cmd = 'kano-dialog title="{}" description="{}" buttons="{}" no-taskbar &'.format(
-                  title, description, buttons)
+                  title.encode('utf8'), description.encode('utf8'), buttons.encode('utf8'))
             os.system(cmd)
             self.rm()
 
         else:
             selection = self.edit_list.get_selection()
-            _, selected = selection.get_selected()
+            dummy, selected = selection.get_selected()
 
             if new_text and new_text not in self:
                 self.edit_list_store.set_value(selected, 0, new_text)
