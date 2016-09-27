@@ -1,3 +1,9 @@
+kano-settings (3.7.0-1) unstable; urgency=low
+
+  * i18n setup and Spanish translations
+
+ -- Team Kano <dev@kano.me>  Tue, 27 Sep 2016 11:30:00 +0100
+
 kano-settings (3.2.0-1) unstable; urgency=low
 
   * Remove kano_settings.system.advanced.set_user_cookies API
