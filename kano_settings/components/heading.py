@@ -25,9 +25,9 @@ class Heading():
         if is_plug:
             title_hbox = Gtk.Box()
             close_button = Gtk.Button()
-            close_button.set_image(set_from_name("cross"))
-            close_button.get_style_context().add_class("back_button")
-            close_button.connect("clicked", Gtk.main_quit)
+            close_button.set_image(set_from_name('cross'))
+            close_button.get_style_context().add_class('back_button')
+            close_button.connect('clicked', Gtk.main_quit)
             close_button.set_margin_top(15)
             attach_cursor_events(close_button)
             title_hbox.pack_end(close_button, True, True, 0)
@@ -35,15 +35,15 @@ class Heading():
             if back_btn:
                 self.back_button = Gtk.Button()
                 attach_cursor_events(self.back_button)
-                self.back_button.get_style_context().add_class("back_button")
+                self.back_button.get_style_context().add_class('back_button')
                 # TODO: get better back icon
-                self.back_button.set_image(set_from_name("dark_left_arrow"))
+                self.back_button.set_image(set_from_name('dark_left_arrow'))
                 self.back_button.set_margin_top(15)
                 title_hbox.pack_start(self.back_button, True, False, 0)
 
             else:
                 empty_button = Gtk.Button(" ")
-                empty_button.get_style_context().add_class("transparent")
+                empty_button.get_style_context().add_class('transparent')
                 title_hbox.pack_start(empty_button, True, True, 0)
 
         self.title = Gtk.Label(title)
@@ -85,9 +85,9 @@ class Heading():
         self.container.set_margin_bottom(bottom_margin)
 
     def add_plug_styling(self):
-        self.title.get_style_context().add_class("plug")
-        self.description.get_style_context().add_class("plug")
+        self.title.get_style_context().add_class('plug')
+        self.description.get_style_context().add_class('plug')
 
     def set_prev_callback(self, cb):
         if self.back_button:
-            self.back_button.connect("clicked", cb)
+            self.back_button.connect('clicked', cb)

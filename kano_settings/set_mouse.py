@@ -12,7 +12,7 @@ from .config_file import get_setting, set_setting
 from kano_settings.system.mouse import change_mouse_speed
 
 
-MODES = ['Slow', 'Normal', 'Fast']
+MODES = [_("Slow"), _("Normal"), _("Fast")]
 
 
 class SetMouse(RadioButtonTemplate):
@@ -22,13 +22,13 @@ class SetMouse(RadioButtonTemplate):
     def __init__(self, win):
         RadioButtonTemplate.__init__(
             self,
-            "Mouse",
-            "Pick your speed",
-            "APPLY CHANGES",
+            _("Mouse"),
+            _("Pick your speed"),
+            _("APPLY CHANGES"),
             [
-                ["Slow", "REQUIRES LESS MOVE PRECISION"],
-                ["Normal", "DEFAULT"],
-                ["Fast", "BETTER FOR WIDE SCREENS"]
+                [_("Slow"), _("REQUIRES LESS MOVE PRECISION")],
+                [_("Normal"), _("DEFAULT")],
+                [_("Fast"), _("BETTER FOR WIDE SCREENS")]
             ]
         )
         self.win = win
@@ -57,7 +57,7 @@ class SetMouse(RadioButtonTemplate):
         try:
             config = MODES[self.selected_button]
         except IndexError:
-            config = 'Normal'
+            config = _("Normal")
 
         if not config == get_setting('Mouse'):
             set_setting('Mouse', config)

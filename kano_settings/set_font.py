@@ -20,7 +20,7 @@ username = get_user_unsudoed()
 config_file = os.path.join('/home', username, '.config/lxsession/LXDE/desktop.conf')
 
 
-MODES = ['Small', 'Normal', 'Big']
+MODES = [_("Small"), _("Normal"), _("Big")]
 
 
 class SetFont(RadioButtonTemplate):
@@ -30,13 +30,13 @@ class SetFont(RadioButtonTemplate):
     def __init__(self, win):
         RadioButtonTemplate.__init__(
             self,
-            "Font",
-            "Choose a comfortable text size",
-            "APPLY CHANGES",
+            _("Font"),
+            _("Choose a comfortable text size"),
+            _("APPLY CHANGES"),
             [
-                ["Small", "BETTER FOR SMALL SCREENS"],
-                ["Normal", "DEFAULT"],
-                ["Big", "BETTER FOR BIG SCREENS"]
+                [_("Small"), _("BETTER FOR SMALL SCREENS")],
+                [_("Normal"), _("DEFAULT")],
+                [_("Big"), _("BETTER FOR BIG SCREENS")]
             ]
         )
 
@@ -66,7 +66,7 @@ class SetFont(RadioButtonTemplate):
         try:
             config = MODES[self.selected_button]
         except IndexError:
-            config = 'Normal'
+            config = _("Normal")
 
         if not config == get_setting('Font'):
             set_setting('Font', config)

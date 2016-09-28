@@ -64,7 +64,7 @@ class BootConfig:
 
     def ensure_exists(self):
         if not self.exists():
-            f = open_locked(self.path, "w")
+            f = open_locked(self.path, 'w')
             print >>f, "#"  # otherwise set_value thinks the file should not be written to
 
             # make sure changes go to disk
@@ -85,7 +85,7 @@ class BootConfig:
 
         """
         lines = read_file_contents_as_lines(self.path)
-        with open_locked(self.path, "w") as boot_config_file:
+        with open_locked(self.path, 'w') as boot_config_file:
 
             for line in lines:
                 if line == noobs_line:
@@ -147,12 +147,12 @@ class BootConfig:
         if not lines:
             return
 
-        logger.info('writing comment to {} {} {}'.format(self.path, name, value))
+        logger.info("writing comment to {} {} {}".format(self.path, name, value))
 
         comment_str_full = '### {}: {}'.format(name, value)
         comment_str_name = '### {}'.format(name)
 
-        with open_locked(self.path, "w") as boot_config_file:
+        with open_locked(self.path, 'w') as boot_config_file:
             boot_config_file.write(comment_str_full + '\n')
 
             for line in lines:
@@ -204,14 +204,14 @@ class ConfigTransaction:
         # To make the transaction atomic, when any write operation is called,
         # a temporary copy of config.txt is made. This is then used for all read or write
         # opertions until the transaction is ended.
-        #  
+        #
         #  It has three states:
         #  * 0 : IDLE
         #  * 1 : Locked
         #  * 2 : Writable
 
         # The attributes 'lock' and 'temp_config'
-        # and 'temp_path' have different values depending on state - 
+        # and 'temp_path' have different values depending on state -
         # see valid_state().
 
         # To initialise a transaction, we do two things:
@@ -269,7 +269,7 @@ class ConfigTransaction:
     def raise_state_to_locked(self):
         if self.state == 0:
             self.state = 1
-            self.lock = open_locked(self.lockpath, "w", timeout=lock_timeout)
+            self.lock = open_locked(self.lockpath, 'w', timeout=lock_timeout)
 
     def set_state_writable(self):
 
@@ -278,7 +278,7 @@ class ConfigTransaction:
 
         if self.state == 1:
 
-            temp = tempfile.NamedTemporaryFile(mode="w",
+            temp = tempfile.NamedTemporaryFile(mode='w',
                                                delete=False,
                                                prefix="config_tmp_",
                                                dir=self.dir)
@@ -330,7 +330,7 @@ class ConfigTransaction:
 
         # Note that although internal, this function is used in
         # kano-updater post-update scenario beta_310_to_beta_320
-        
+
         self.raise_state_to_locked()
         if self.temp_path:
             path = self.temp_path
@@ -341,7 +341,7 @@ class ConfigTransaction:
     def copy_from(self, src):
         # Note that although internal, this function is used in
         # kano-updater post-update scenario beta_310_to_beta_320
-        
+
         self.set_state_writable()
         shutil.copy2(src, self.temp_path)
 
@@ -390,7 +390,7 @@ def enforce_pi():
     pi_detected = os.path.exists(tvservice_path) and \
         os.path.exists(boot_config_standard_path)
     if not pi_detected:
-        logger.error('need to run on a Raspberry Pi')
+        logger.error("need to run on a Raspberry Pi")
         sys.exit()
 
 

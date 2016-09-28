@@ -34,9 +34,9 @@ class SetKanoKeyboard(Template):
     def __init__(self, win):
         Template.__init__(
             self,
-            "Keyboard",
-            "Kano keyboard detected",
-            "APPLY CHANGES"
+            _("Keyboard"),
+            _("Kano keyboard detected"),
+            _("APPLY CHANGES")
         )
 
         self.win = win
@@ -48,10 +48,10 @@ class SetKanoKeyboard(Template):
         img.set_from_file(common.media + "/Graphics/keyboard.png")
 
         # Link to advance options
-        self.to_advance_button = OrangeButton("Layout options")
-        self.to_advance_button.connect("button_press_event", self.to_advance)
+        self.to_advance_button = OrangeButton(_("Layout options"))
+        self.to_advance_button.connect('button_press_event', self.to_advance)
 
-        self.kano_button.connect("button-release-event", self.win.go_to_home)
+        self.kano_button.connect('button-release-event', self.win.go_to_home)
         self.win.change_prev_callback(self.win.go_to_home)
 
         self.box.pack_start(img, False, False, 0)
@@ -73,9 +73,9 @@ class SetKeyboard(Template):
     selected_country_index = 21
     selected_variant = None
     selected_variant_index = 0
-    selected_continent_hr = "America"
-    selected_country_hr = "USA"
-    selected_variant_hr = "generic"
+    selected_continent_hr = 'America'
+    selected_country_hr = 'USA'
+    selected_variant_hr = 'generic'
     variants_combo = None
     continents = keyboard_layouts.get_continents()
     kano_keyboard = True
@@ -83,9 +83,9 @@ class SetKeyboard(Template):
     def __init__(self, win):
         Template.__init__(
             self,
-            "Keyboard",
-            "Where do you live? So I can set your keyboard.",
-            "APPLY CHANGES"
+            _("Keyboard"),
+            _("Where do you live? So I can set your keyboard."),
+            _("APPLY CHANGES")
         )
 
         self.win = win
@@ -100,7 +100,7 @@ class SetKeyboard(Template):
         else:
             self.win.change_prev_callback(self.win.go_to_home)
 
-        self.kano_button.connect("button-release-event", self.apply_changes)
+        self.kano_button.connect('button-release-event', self.apply_changes)
 
         # Make sure continue button is enabled
         self.kano_button.set_sensitive(False)
@@ -109,31 +109,31 @@ class SetKeyboard(Template):
         self.continents_combo = KanoComboBox(max_display_items=7)
         for c in self.continents:
             self.continents_combo.append(c)
-        self.continents_combo.connect("changed", self.on_continent_changed)
+        self.continents_combo.connect('changed', self.on_continent_changed)
 
         # Create Countries Combo box
         self.countries_combo = KanoComboBox(max_display_items=7)
-        self.countries_combo.connect("changed", self.on_country_changed)
+        self.countries_combo.connect('changed', self.on_country_changed)
         self.countries_combo.props.valign = Gtk.Align.CENTER
 
         # Create Advance mode checkbox
-        advance_button = Gtk.CheckButton("Advanced options")
+        advance_button = Gtk.CheckButton(_("Advanced options"))
         advance_button.set_can_focus(False)
         advance_button.props.valign = Gtk.Align.CENTER
-        advance_button.connect("clicked", self.on_advance_mode)
+        advance_button.connect('clicked', self.on_advance_mode)
         advance_button.set_active(False)
 
         # Create Variants Combo box
         self.variants_combo = KanoComboBox(max_display_items=7)
-        self.variants_combo.connect("changed", self.on_variants_changed)
+        self.variants_combo.connect('changed', self.on_variants_changed)
         self.variants_combo.props.valign = Gtk.Align.CENTER
 
         # Set up default values in dropdown lists
-        self.set_defaults("continent")
+        self.set_defaults('continent')
         self.fill_countries_combo(self.continents_combo.get_selected_item_text())
-        self.set_defaults("country")
+        self.set_defaults('country')
         self.on_country_changed(self.countries_combo)
-        self.set_defaults("variant")
+        self.set_defaults('variant')
 
         # Ceate various dropdown boxes so we can resize the dropdown lists appropriately
         # We create two boxes side by side, and then stack the country dropdow lists in one, and one by itself in the other
@@ -203,12 +203,12 @@ class SetKeyboard(Template):
             self.win.show_all()
 
     def read_config(self):
-        self.selected_continent_index = get_setting("Keyboard-continent-index")
-        self.selected_country_index = get_setting("Keyboard-country-index")
-        self.selected_variant_index = get_setting("Keyboard-variant-index")
-        self.selected_continent_hr = get_setting("Keyboard-continent-human")
-        self.selected_country_hr = get_setting("Keyboard-country-human")
-        self.selected_variant_hr = get_setting("Keyboard-variant-human")
+        self.selected_continent_index = get_setting('Keyboard-continent-index')
+        self.selected_country_index = get_setting('Keyboard-country-index')
+        self.selected_variant_index = get_setting('Keyboard-variant-index')
+        self.selected_continent_hr = get_setting('Keyboard-continent-human')
+        self.selected_country_hr = get_setting('Keyboard-country-human')
+        self.selected_variant_hr = get_setting('Keyboard-variant-human')
 
     def update_config(self):
         keyboard_config.update_settings_keyboard_conf(
@@ -224,15 +224,15 @@ class SetKeyboard(Template):
     def set_defaults(self, setting):
 
         # Set the default info on the dropdown lists
-        # "Keyboard-continent":continents_combo, "Keyboard-country", "Keyboard-variant"]:
+        # 'Keyboard-continent':continents_combo, 'Keyboard-country', 'Keyboard-variant']:
 
-        active_item = get_setting("Keyboard-" + setting + "-index")
+        active_item = get_setting('Keyboard-' + setting + '-index')
 
-        if setting == "continent":
+        if setting == 'continent':
             self.continents_combo.set_selected_item_index(int(active_item))
-        elif setting == "country":
+        elif setting == 'country':
             self.countries_combo.set_selected_item_index(int(active_item))
-        elif setting == "variant":
+        elif setting == 'variant':
             self.variants_combo.set_selected_item_index(int(active_item))
         else:
             logger.error("Bad argument in set_defaults - should be 'continent', 'country' or 'variant'")
@@ -244,7 +244,7 @@ class SetKeyboard(Template):
     def set_variants_to_mac_layout(self):
 
         # If the country is the United States, select the generic setting
-        if self.selected_country_hr.upper() == "UNITED STATES":
+        if self.selected_country_hr.upper() == 'UNITED STATES':
             self.set_variants_to_generic()
             return
 
@@ -294,7 +294,7 @@ class SetKeyboard(Template):
         # Refresh variants combo box
         self.selected_country = keyboard_config.find_country_code(country_text, self.selected_layout)
         variants = keyboard_config.find_keyboard_variants(self.selected_country)
-        self.variants_combo.append("generic")
+        self.variants_combo.append('generic')
         if variants is not None:
             for v in variants:
                 self.variants_combo.append(v[0])
@@ -318,7 +318,7 @@ class SetKeyboard(Template):
 
         self.kano_button.set_sensitive(True)
 
-        if variant_text == "generic":
+        if variant_text == 'generic':
             self.selected_variant = self.selected_variant_hr = variant_text
             self.selected_variant_index = 0
             return

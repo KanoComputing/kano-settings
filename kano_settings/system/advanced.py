@@ -91,10 +91,10 @@ def set_parental_enabled(setting, _password):
         logger.debug('enabling parental controls')
         set_parental_level(get_parental_level())
 
-        msg = "Parental lock enabled!"
+        msg = N_("Parental lock enabled!")
         logger.debug(msg)
 
-        return True, msg
+        return True, _(msg)
 
     # turning off
     else:
@@ -108,17 +108,17 @@ def set_parental_enabled(setting, _password):
             logger.debug('disabling parental controls')
             set_parental_level(-1)
 
-            msg = "Parental lock disabled!"
+            msg = N_("Parental lock disabled!")
             logger.debug(msg)
 
-            return True, msg
+            return True, _(msg)
 
         # password doesn't match
         else:
-            msg = "Password doesn't match\nleaving parental lock enabled!"
+            msg = N_("Password doesn't match\nleaving parental lock enabled!")
             logger.debug(msg)
 
-            return False, msg
+            return False, _(msg)
 
 
 def encrypt_password(str):
@@ -157,11 +157,11 @@ def set_hostname(new_hostname):
     new_hostname = re.sub('[^a-zA-Z0-9]', '', new_hostname).lower()
 
     if new_hostname == '':
-        logger.error('no letters left in username after removing illegal ones')
+        logger.error("no letters left in username after removing illegal ones")
         return
 
     if new_hostname == 'kano':
-        logger.info(' not tryng to set hostname as it is the same as the default')
+        logger.info(" not tryng to set hostname as it is the same as the default")
         return
 
     # check for missing hosts file
@@ -171,7 +171,7 @@ def set_hostname(new_hostname):
     # check if already done
     curr_hosts = read_file_contents_as_lines(hosts_file)
     if hosts_mod_comment in curr_hosts:
-        logger.warn('/etc/hosts already modified, not changing')
+        logger.warn("/etc/hosts already modified, not changing")
         return
 
     # actually edit the hosts file
@@ -192,10 +192,10 @@ def create_empty_hosts():
     hostname = platform.node()
     new_hosts = '127.0.0.1   localhost\n127.0.1.1   {}\n'.format(hostname)
 
-    logger.debug('writing new hosts file')
+    logger.debug("writing new hosts file")
     write_file_contents(hosts_file, new_hosts)
 
-    logger.debug('restoring original hosts permission')
+    logger.debug("restoring original hosts permission")
     os.chmod(hosts_file, 0644)
 
 
@@ -219,7 +219,7 @@ def add_safesearch_blacklist(hosts):
 
     # import pycountry here as it takes a long time to import. 
     import pycountry
-    logger.debug('Applying safesearch settings')
+    logger.debug("Applying safesearch settings")
     # Block search sites
     search_sites = [
         'google.com',
@@ -277,26 +277,26 @@ def add_safesearch_blacklist(hosts):
 def set_hosts_blacklist(enable, block_search,
                         blacklist_file='/usr/share/kano-settings/media/Parental/parental-hosts-blacklist.gz',
                         blocked_sites=None, allowed_sites=None):
-    logger.debug('set_hosts_blacklist: {}'.format(enable))
+    logger.debug("set_hosts_blacklist: {}".format(enable))
 
     if not os.path.exists(hosts_file):
         create_empty_hosts()
 
     if enable:
-        logger.debug('enabling blacklist')
+        logger.debug("enabling blacklist")
 
         if os.path.exists(hosts_file_backup):
-            logger.debug('restoring original backup file')
+            logger.debug("restoring original backup file")
             shutil.copy(hosts_file_backup, hosts_file)
 
         # sanity check: this is a big file, looks like the blacklist is already in place
         if os.path.getsize(hosts_file) > 10000:
-            logger.debug('skipping, hosts file is already too big')
+            logger.debug("skipping, hosts file is already too big")
         else:
-            logger.debug('making a backup of the original hosts file')
+            logger.debug("making a backup of the original hosts file")
             shutil.copy(hosts_file, hosts_file_backup)
 
-            logger.debug('appending the blacklist file')
+            logger.debug("appending the blacklist file")
             zipped_blacklist = gzip.GzipFile(blacklist_file)
             blacklist = zipped_blacklist.readlines()
 
@@ -308,15 +308,15 @@ def set_hosts_blacklist(enable, block_search,
                 for host_entry in blacklist:
                     f.write(host_entry)
 
-            logger.debug('making the file root read-only')
+            logger.debug("making the file root read-only")
             os.chmod(hosts_file, 0644)
 
-        logger.debug('Removing allowed websites')
+        logger.debug("Removing allowed websites")
         if allowed_sites:
             for site in allowed_sites:
                 os.system('sed -i /{}/d {}'.format(site, hosts_file))
 
-        logger.debug('Adding user-specified blacklist websites')
+        logger.debug("Adding user-specified blacklist websites")
         if blocked_sites:
             for site in blocked_sites:
                 blocked_str = ('127.0.0.1    www.{site}\n'
@@ -326,14 +326,14 @@ def set_hosts_blacklist(enable, block_search,
                           .format(str=blocked_str, file=hosts_file))
 
     else:
-        logger.debug('disabling blacklist')
+        logger.debug("disabling blacklist")
 
         if os.path.exists(hosts_file_backup):
-            logger.debug('restoring original backup file')
+            logger.debug("restoring original backup file")
             shutil.copy(hosts_file_backup, hosts_file)
 
         else:
-            logger.debug('cannot restore original backup file, creating new file')
+            logger.debug("cannot restore original backup file, creating new file")
             create_empty_hosts()
 
 
@@ -349,10 +349,10 @@ def set_dns_parental(ultimate, safesearch, opendns):
         restore_dns_interfaces()
         redirect_traffic_to_google()
         if ultimate:
-            set_setting("use_sentry", "whitelist")
+            set_setting('use_sentry', 'whitelist')
             parse_whitelist_to_config_file(sentry_config)
         elif safesearch:
-            set_setting("use_sentry", "safesearch")
+            set_setting('use_sentry', 'safesearch')
             make_safesearch_config_file(sentry_config, opendns)
 
         # Now set resolv.conf to point to localhost
@@ -366,7 +366,7 @@ def set_dns_parental(ultimate, safesearch, opendns):
         redirect_traffic_to_google()
         kill_server()
 
-        set_setting("use_sentry", "")
+        set_setting('use_sentry', '')
 
 
 def redirect_traffic_to_google():
@@ -402,7 +402,7 @@ def parse_whitelist_to_config_file(config):
     )
     new_config += block_everything_else
 
-    logger.debug('new ultimate parental control config: {}'.format(new_config))
+    logger.debug("new ultimate parental control config: {}".format(new_config))
     g = open(config, 'w+')
     g.write(new_config)
     g.close()
@@ -420,10 +420,10 @@ def make_safesearch_config_file(config_file, opendns):
     country_names = [country.alpha2.lower() for country in pycountry.countries]
     country_names.extend(second_level_domains)
     country_names_re = '|'.join(country_names)
-    new_config["rules"].append(rule.format(country_names_re))
-    new_config["rules"].append("resolve ^(.*) using "+servers)
+    new_config['rules'].append(rule.format(country_names_re))
+    new_config['rules'].append("resolve ^(.*) using "+servers)
 
-    logger.debug('new safesearch parental control config: {}'.format(new_config))
+    logger.debug("new safesearch parental control config: {}".format(new_config))
     g = open(config_file, 'w+')
     json.dump(new_config, g)
     g.close()
@@ -440,7 +440,7 @@ def get_whitelist():
         )
         html = urllib2.urlopen(online_whitelist).read()
         text = BeautifulSoup(html).get_text().encode('ascii', 'ignore')
-        logger.debug('Using online whitelist')
+        logger.debug("Using online whitelist")
         return text
     except:
         # If there's an exception, possibly because there is no internet.
@@ -448,7 +448,7 @@ def get_whitelist():
         f = open(whitelist, 'r')
         text = f.read()
         f.close()
-        logger.debug('Using local whitelist')
+        logger.debug("Using local whitelist")
         return text
 
 
@@ -547,7 +547,7 @@ def set_parental_level(level_setting):
         if level <= level_setting:
             enabled = enabled + features
 
-    logger.debug('Setting parental control to level {}'.format(level_setting))
+    logger.debug("Setting parental control to level {}".format(level_setting))
 
     set_dns_parental('ultimate' in enabled, 'forcesafe' in enabled, 'dns' in enabled)
 

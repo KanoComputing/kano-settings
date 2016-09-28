@@ -50,10 +50,10 @@ class BluetoothDeviceItem(Gtk.Box):
 
     def _set_paired_button_state(self, *dummy_args, **dummy_kwargs):
         if not self.device.connected:
-            label = 'Pair'.upper()
+            label = _("PAIR")
             colour = 'green'
         else:
-            label = 'Unpair'.upper()
+            label = _("UNPAIR")
             colour = 'red'
 
         self._pair_button.set_label(label)
@@ -70,21 +70,21 @@ class BluetoothDeviceItem(Gtk.Box):
         @queue_cb(callback=done_pairing, gtk=True)
         def do_pair():
             if not self.device.fuse():
-                GObject.idle_add(self.error, 'Pairing failed')
+                GObject.idle_add(self.error, _("Pairing failed"))
 
         @queue_cb(callback=done_pairing, gtk=True)
         def do_unpair():
             if not self.device.unfuse():
-                GObject.idle_add(self.error, 'Unpairing failed')
+                GObject.idle_add(self.error, _("Unpairing failed"))
 
         self.emit('pairing')
 
         if self.device.connected:
             pair_fn = do_unpair
-            logger.info(u'Unpairing {}'.format(self.device).encode('utf-8'))
+            logger.info("Unpairing {}".format(self.device))
         else:
             pair_fn = do_pair
-            logger.info(u'Pairing {}'.format(self.device).encode('utf-8'))
+            logger.info("Pairing {}".format(self.device))
 
         pair_thr = threading.Thread(target=pair_fn)
         pair_thr.start()
@@ -124,25 +124,25 @@ class BluetoothDevicesList(ScrolledWindow):
             self.dev_view.remove(device)
 
     def set_no_adapter_available(self):
-        no_adapter = Gtk.Label('No bluetooth dongle detected')
+        no_adapter = Gtk.Label(_("No bluetooth dongle detected"))
         no_adapter.get_style_context().add_class('normal_label')
         self.dev_view.pack_start(no_adapter, False, False, 0)
 
         self.dev_view.show_all()
 
     def set_no_devices_nearby(self):
-        no_dev = Gtk.Label('No devices found nearby')
+        no_dev = Gtk.Label(_("No devices found nearby"))
         no_dev.get_style_context().add_class('normal_label')
         self.dev_view.pack_start(no_dev, False, False, 0)
 
         self.dev_view.show_all()
 
     def set_loading(self, *dummy_args, **dummy_kwargs):
-        logger.debug('loading...')
+        logger.debug("loading...")
         self.emit('loading')
 
     def unset_loading(self, *dummy_args, **dummy_kwargs):
-        logger.debug('done loading')
+        logger.debug("done loading")
         self.emit('done-loading')
 
     def populate(self):
@@ -152,15 +152,15 @@ class BluetoothDevicesList(ScrolledWindow):
         @queue_cb(callback=_end_populate, gtk=True)
         def _do_populate(devices):
             if not devices:
-                logger.info('No devices')
+                logger.info("No devices")
                 GObject.idle_add(self.set_no_devices_nearby)
 
             for idx, device in enumerate(devices):
-                logger.info(u'Adding device {}'.format(device).encode('utf-8'))
+                logger.info("Adding device {}".format(device))
                 GObject.idle_add(self.add_device, device, idx)
 
         if not is_bluetooth_available():
-            logger.info('No adapter')
+            logger.info("No adapter")
             self.set_no_adapter_available()
             return
 
@@ -178,9 +178,9 @@ class BluetoothConfig(Template):
     def __init__(self, win):
         Template.__init__(
             self,
-            "Bluetooth",
-            "Connect to bluetooth devices",
-            "APPLY CHANGES",
+            _("Bluetooth"),
+            _("Connect to bluetooth devices"),
+            _("APPLY CHANGES"),
             win.is_plug(),
             back_btn=True
         )
@@ -222,7 +222,7 @@ class BluetoothConfig(Template):
         refresh_button.connect('clicked', self.dev_list.refresh)
         btn_box.pack_start(refresh_button, False, False, 0)
 
-        self._done_button = done_btn = KanoButton('Done'.upper())
+        self._done_button = done_btn = KanoButton(_("DONE"))
         done_btn.connect('clicked', self.win.go_to_home)
         btn_box.pack_start(done_btn, False, False, 0)
 

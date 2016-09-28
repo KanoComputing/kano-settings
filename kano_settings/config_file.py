@@ -41,14 +41,14 @@ DEFAULT_CONFIG = {
     'Keyboard-continent-index': 1,
     'Keyboard-country-index': 21,
     'Keyboard-variant-index': 0,
-    'Keyboard-continent-human': 'america',
-    'Keyboard-country-human': 'United States',
-    'Keyboard-variant-human': 'Generic',
-    'Audio': 'Analogue',
+    'Keyboard-continent-human': "america",
+    'Keyboard-country-human': _("United States"),
+    'Keyboard-variant-human': _("Generic"),
+    'Audio': _("Analogue"),
     'Wifi': '',
     'Wifi-connection-attempted': False,
-    'Mouse': 'Normal',
-    'Font': 'Normal',
+    'Mouse': _("Normal"),
+    'Font': _("Normal"),
     'Wallpaper': 'kanux-background',
     'Parental-level': 0,
     'Locale': 'en_US',
@@ -60,9 +60,9 @@ DEFAULTS = merge_dicts(DEFAULT_CONFIG, get_board_props().DEFAULT_CONFIG)
 
 
 def file_replace(fname, pat, s_after):
-    logger.debug('config_file / file_replace {} "{}" "{}"'.format(fname, pat, s_after))
+    logger.debug("config_file / file_replace {} \"{}\" \"{}\"".format(fname, pat, s_after))
     if not os.path.exists(fname):
-        logger.debug('config_file / file_replace file doesn\'t exists')
+        logger.debug("config_file / file_replace file doesn't exists")
         return -1
 
     # if escape:
@@ -72,13 +72,13 @@ def file_replace(fname, pat, s_after):
     # See if the pattern is even in the file.
     with open(fname) as f:
         if not any(re.search(pat, line) for line in f):
-            logger.debug('config_file / file_replace pattern does not occur in file')
+            logger.debug("config_file / file_replace pattern does not occur in file")
             return -1  # pattern does not occur in file so we are done.
 
     # pattern is in the file, so perform replace operation.
     with open(fname) as f:
         out_fname = fname + ".tmp"
-        out = open(out_fname, "w")
+        out = open(out_fname, 'w')
         for line in f:
             out.write(re.sub(pat, s_after, line))
         out.close()
@@ -89,7 +89,7 @@ def file_replace(fname, pat, s_after):
         # overwriting the old file with the new one
         os.rename(out_fname, fname)
 
-    logger.debug('config_file / file_replace file replaced')
+    logger.debug("config_file / file_replace file replaced")
 
 
 def get_setting(variable):
@@ -98,7 +98,7 @@ def get_setting(variable):
         value = read_json(settings_file)[variable]
     except Exception:
         if variable not in DEFAULTS:
-            logger.info('Defaults not found for variable: {}'.format(variable))
+            logger.info("Defaults not found for variable: {}".format(variable))
         value = DEFAULTS[variable]
     return value
 
@@ -108,7 +108,7 @@ def set_setting(variable, value):
     if username == 'root':
         return
 
-    logger.debug('config_file / set_setting: {} {}'.format(variable, value))
+    logger.debug(u"config_file / set_setting: {} {}".format(variable, value))
 
     data = read_json(settings_file)
     if not data:

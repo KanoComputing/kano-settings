@@ -21,13 +21,13 @@ class Menu_button():
         self.container.props.margin = 20
 
         # Info about the different settings
-        self.title = Gtk.Label(name)
-        self.title.get_style_context().add_class("menu_intro_label")
+        self.title = Gtk.Label(_(name))
+        self.title.get_style_context().add_class('menu_intro_label')
         self.title.set_alignment(xalign=0, yalign=0)
         self.title.props.margin_top = 10
 
         self.description = Gtk.Label(description)
-        self.description.get_style_context().add_class("menu_custom_label")
+        self.description.get_style_context().add_class('menu_custom_label')
         self.description.set_ellipsize(Pango.EllipsizeMode.END)
         self.description.set_size_request(130, 10)
         self.description.set_alignment(xalign=0, yalign=0)

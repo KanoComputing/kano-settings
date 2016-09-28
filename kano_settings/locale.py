@@ -21,9 +21,9 @@ class LocaleConfig(Template):
     def __init__(self, win):
         Template.__init__(
             self,
-            'Locale',
-            'Set your locale (Changing this requires a reboot)',
-            'APPLY CHANGES'
+            _("Locale"),
+            _("Set your locale (Changing this requires a reboot)"),
+            _("APPLY CHANGES")
         )
 
         dropdown_container = Gtk.Box(

@@ -19,7 +19,7 @@ def disconnect_wifi():
 
     kdialog = KanoDialog(
         # Text from the content team.
-        "Disconnect complete - you're now offline.",
+        _("Disconnect complete - you're now offline."),
     )
     kdialog.run()
 

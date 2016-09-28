@@ -23,13 +23,13 @@ class SetNotifications(RadioButtonTemplate):
     def __init__(self, win):
         RadioButtonTemplate.__init__(
             self,
-            "Notifications",
-            "Here you can manage the built-in notification system",
-            "APPLY CHANGES",
+            _("Notifications"),
+            _("Here you can manage the built-in notification system"),
+            _("APPLY CHANGES"),
             [
-                ["Show all notifications", ""],
-                ["Hide all notifications", ""],
-                ["Hide only Kano World notifications", ""]
+                [_("Show all notifications"), ""],
+                [_("Hide all notifications"), ""],
+                [_("Hide only Kano World notifications"), ""]
             ]
         )
 
@@ -45,7 +45,7 @@ class SetNotifications(RadioButtonTemplate):
 
         self._add_led_speaker_checkbox()
 
-        self.kano_button.connect("button-release-event", self.apply_changes)
+        self.kano_button.connect('button-release-event', self.apply_changes)
 
         self.show_configuration()
         self.win.show_all()
@@ -63,14 +63,14 @@ class SetNotifications(RadioButtonTemplate):
                 is_led_speaker_plugged = speaker_led_api.detect()
 
         except Exception as e:
-            logger.error('Something unexpected occured in _add_led_speaker_checkbox'
-                         ' - [{}]'.format(e))
+            logger.error("Something unexpected occured in _add_led_speaker_checkbox" \
+                         " - [{}]".format(e))
 
         if has_min_performance(RPI_2_B_SCORE) and is_led_speaker_plugged:
             self.buttons.append(self.cpu_monitor_checkbox)
             self.label_button_and_pack(
                 self.cpu_monitor_checkbox,
-                'Enable LED Speaker CPU Animation', ''
+                _("Enable LED Speaker CPU Animation"), ''
             )
 
     def configure_all_notifications(self):

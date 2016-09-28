@@ -78,11 +78,11 @@ def switch_display_safe_mode():
                 group = m.split()[0].split(':')[0]
                 mode = m.split()[0].split(':')[1]
             logger.info(
-               'Switching display to safe resolution {} (group={} mode={})'
+               "Switching display to safe resolution {} (group={} mode={})"
                .format(resolution, group, mode))
             set_hdmi_mode_live(group, mode)
     except:
-        logger.error('Error switching display to safe mode')
+        logger.error("Error switching display to safe mode")
 
 
 def launch_pipe():
@@ -171,42 +171,41 @@ def set_hdmi_mode_live(group=None, mode=None, drive='HDMI'):
 
 def set_hdmi_mode(group=None, mode=None):
     if not group or not mode:
-        set_screen_value("hdmi_group", None)
-        set_screen_value("hdmi_mode", None)
+        set_screen_value('hdmi_group', None)
+        set_screen_value('hdmi_mode', None)
         return
 
     group = group.lower()
     mode = int(mode)
 
-    if group == "cea":
-        set_screen_value("hdmi_group", 1)
+    if group == 'cea':
+        set_screen_value('hdmi_group', 1)
     else:
-        set_screen_value("hdmi_group", 2)
+        set_screen_value('hdmi_group', 2)
 
-    set_screen_value("hdmi_mode", mode)
+    set_screen_value('hdmi_mode', mode)
 
 # flip screen 180
 def set_flip(display_rotate=None):
     if display_rotate:
-        set_screen_value("display_rotate", 2)
+        set_screen_value('display_rotate', 2)
     else:
-        set_screen_value("display_rotate", 0)
+        set_screen_value('display_rotate', 0)
 
 def set_safeboot_mode():
     logger.warn("Safe boot requested")
 
-    set_screen_value("hdmi_force_hotplug", 1)
-    set_screen_value("config_hdmi_boost", 4)
+    set_screen_value('hdmi_force_hotplug', 1)
+    set_screen_value('config_hdmi_boost', 4)
 
-    set_screen_value("hdmi_group", 2)
-    set_screen_value("hdmi_mode", 16)
+    set_screen_value('hdmi_group', 2)
+    set_screen_value('hdmi_mode', 16)
 
-    set_screen_value("disable_overscan", 1)
-    set_screen_value("overscan_left", 0)
-    set_screen_value("overscan_right", 0)
-    set_screen_value("overscan_top", 0)
-    set_screen_value("overscan_bottom", 0)
-
+    set_screen_value('disable_overscan', 1)
+    set_screen_value('overscan_left', 0)
+    set_screen_value('overscan_right', 0)
+    set_screen_value('overscan_top', 0)
+    set_screen_value('overscan_bottom', 0)
 
 
 def get_status():
@@ -218,7 +217,7 @@ def get_status():
     elif 'CEA' in status_str:
         status['group'] = 'CEA'
     else:
-        logger.error('status parsing error')
+        logger.error("status parsing error")
         return
 
     status['mode'] = int(status_str.split('(')[1].split(')')[0].strip())
@@ -246,12 +245,12 @@ def is_mode_fallback():
     res = status['resolution']
     parts = res.split('x')
     if len(parts) != 2:
-        logger.error('Error parsing resolution')
+        logger.error("Error parsing resolution")
         return None
     try:
         (w, h) = map(int, parts)
     except:
-        logger.error('Error parsing resolution')
+        logger.error("Error parsing resolution")
         return None
 
     return w == 640 and h == 480
@@ -355,7 +354,7 @@ def read_edid():
     edid_txt, _, rc = run_cmd('{0} -d {1} && edidparser {1}'.format(tvservice_path, edid_dat_path))
     edid_txt = edid_txt.splitlines()
     if rc != 0:
-        logger.error('error getting edid dat')
+        logger.error("error getting edid dat")
         return
     delete_file(edid_dat_path)
     return edid_txt
@@ -388,7 +387,7 @@ def parse_edid(edid_txt):
             elif 'CEA' in l:
                 edid['preferred_group'] = 'CEA'
             else:
-                logger.error('parsing error')
+                logger.error("parsing error")
                 return
 
             res, mode = l.split(':')[2].split('@')
@@ -458,7 +457,7 @@ def set_gfx_driver(enabled):
             try:
                 os.makedirs(os.path.dirname(fpturbo_conf_backup_path))
             except OSError as e:
-                if e.strerror == 'File exists':
+                if e.strerror == "File exists":
                     pass
                 else:
                     raise

@@ -51,8 +51,8 @@ class NetworkScreen(Gtk.Box):
         '''
 
         heading = Heading(
-            "Connect to WiFi",
-            'Choose a network',
+            _("Connect to WiFi"),
+            _("Choose a network"),
             self._win.is_plug(),
             back_btn=False
         )
@@ -106,7 +106,7 @@ class NetworkScreen(Gtk.Box):
         # If the network list is empty, display a message to show it's not
         # broken
         if not len(network_list):
-            no_networks_label = Gtk.Label("No networks detected!")
+            no_networks_label = Gtk.Label(_("No networks detected!"))
             no_networks_label.get_style_context().add_class('no_networks_label')
             no_networks_label.set_margin_top(80)
             network_box.pack_start(no_networks_label, False, False, 0)
@@ -122,7 +122,7 @@ class NetworkScreen(Gtk.Box):
             # an icon
             box = Gtk.Box()
             network_btn.add(box)
-            network_btn.get_style_context().add_class("network_btn")
+            network_btn.get_style_context().add_class('network_btn')
             attach_cursor_events(network_btn)
 
             # Box must contain label of the network name
@@ -142,7 +142,7 @@ class NetworkScreen(Gtk.Box):
                 box.pack_start(tick, False, False, 0)
 
             network_btn.connect(
-                "clicked", self._select_network, network, network_connection
+                'clicked', self._select_network, network, network_connection
             )
 
             # Add padlock to the items that require a password
@@ -163,7 +163,7 @@ class NetworkScreen(Gtk.Box):
         '''
 
         white_foreground = Gtk.EventBox()
-        white_foreground.get_style_context().add_class("white")
+        white_foreground.get_style_context().add_class('white')
         white_foreground.set_margin_left(3)
         white_foreground.set_margin_bottom(3)
         white_foreground.set_margin_top(3)
@@ -172,7 +172,7 @@ class NetworkScreen(Gtk.Box):
         # Pack the scrolled window into an event box to give the illusion of a
         # border
         grey_border = Gtk.EventBox()
-        grey_border.get_style_context().add_class("grey")
+        grey_border.get_style_context().add_class('grey')
         grey_border.add(white_foreground)
 
         white_foreground.add(widget)
@@ -185,7 +185,7 @@ class NetworkScreen(Gtk.Box):
         Returns the button box.
         '''
 
-        self._connect_btn = KanoButton('CONNECT')
+        self._connect_btn = KanoButton(_("CONNECT"))
         self._connect_btn.pack_and_align()
         self.connect_handler = self._connect_btn.connect(
             'clicked', self._first_time_connect
@@ -201,9 +201,9 @@ class NetworkScreen(Gtk.Box):
         buttonbox.pack_start(self._connect_btn.align, False, False, 0)
 
         if self._win.is_plug():
-            self._skip_btn = WhiteButton("Skip")
+            self._skip_btn = WhiteButton(_("Skip"))
             buttonbox.pack_start(self._skip_btn, False, False, 0)
-            self._skip_btn.connect("clicked", self.skip)
+            self._skip_btn.connect('clicked', self.skip)
         else:
             blank_label = Gtk.Label("")
             buttonbox.pack_start(blank_label, False, False, 0)
@@ -223,15 +223,15 @@ class NetworkScreen(Gtk.Box):
             self.connect_handler = self._connect_btn.connect(
                 'clicked', self._first_time_connect
             )
-            self._connect_btn.set_color("green")
-            self._connect_btn.set_label("CONNECT")
+            self._connect_btn.set_color('green')
+            self._connect_btn.set_label(_("CONNECT"))
 
         else:
             self.connect_handler = self._connect_btn.connect(
                 'clicked', self._launch_disconnect_thread
             )
-            self._connect_btn.set_color("red")
-            self._connect_btn.set_label("DISCONNECT")
+            self._connect_btn.set_color('red')
+            self._connect_btn.set_label(_("DISCONNECT"))
 
     def _launch_disconnect_thread(self, widget=None):
         watch_cursor = Gdk.Cursor(Gdk.CursorType.WATCH)
@@ -248,20 +248,20 @@ class NetworkScreen(Gtk.Box):
 
     def _disconnect_screen(self):
         self._win.remove_main_widget()
-        title = "Disconnect complete."
-        description = "You're now offline"
+        title = _("Disconnect complete.")
+        description = _("You're now offline")
         buttons = [
             {
-                "label": "CLOSE",
-                "type": "KanoButton",
-                "color": "red",
-                "callback": Gtk.main_quit
+                'label': _("CLOSE"),
+                'type': 'KanoButton',
+                'color': 'red',
+                'callback': Gtk.main_quit
             },
             {
-                "label": "CONNECT",
-                "type": "KanoButton",
-                "color": "green",
-                "callback": self._go_to_spinner_screen
+                'label': _("CONNECT"),
+                'type': 'KanoButton',
+                'color': 'green',
+                'callback': self._go_to_spinner_screen
             }
         ]
         img_path = os.path.join(img_dir, "no-wifi.png")
@@ -299,13 +299,13 @@ class NetworkScreen(Gtk.Box):
         refresh_icon_filepath = os.path.join(img_dir, "refresh.png")
         refresh_icon = Gtk.Image.new_from_file(refresh_icon_filepath)
         refresh_btn = Gtk.Button()
-        refresh_btn.get_style_context().add_class("refresh_btn")
+        refresh_btn.get_style_context().add_class('refresh_btn')
         refresh_btn.set_image(refresh_icon)
         attach_cursor_events(refresh_btn)
 
         # These are here in case we want to change the icon on mouse over
-        refresh_btn.connect("enter-notify-event", self._set_refresh_hover_icon)
-        refresh_btn.connect("leave-notify-event", self._set_refresh_normal_icon)
+        refresh_btn.connect('enter-notify-event', self._set_refresh_hover_icon)
+        refresh_btn.connect('leave-notify-event', self._set_refresh_normal_icon)
 
         refresh_btn.connect('clicked', self._go_to_spinner_screen)
         return refresh_btn
@@ -353,13 +353,13 @@ class NetworkScreen(Gtk.Box):
 
     def _select_network(self, button, network, network_connection):
         for network_btn in self._network_btns:
-            network_btn.get_style_context().remove_class("selected")
+            network_btn.get_style_context().remove_class('selected')
 
         network_name = network_connection[0]
         connected = network_connection[3]
 
         self._selected_network = network
-        button.get_style_context().add_class("selected")
+        button.get_style_context().add_class('selected')
 
         # If we are already connected to this network,
         # offer option to disconnect.
@@ -391,6 +391,6 @@ class NetworkScreen(Gtk.Box):
 
         # Do we want to block this? Or just make sure the application doesn't
         # fall over afterwards
-        if hasattr(self, "_skip_btn"):
+        if hasattr(self, '_skip_btn'):
             # Skip button should be defined
             self._skip_btn.set_sensitive(sensitivity)

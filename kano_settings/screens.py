@@ -64,9 +64,9 @@ class Screen(object):
         else:
             if self.name == 'wifi':
                 if common.has_internet:
-                    description = 'Connected'
+                    description = _("Connected")
                 else:
-                    description = 'Not connected'
+                    description = _("Not connected")
 
             elif self.name == 'account':
                 description = get_user_unsudoed()
@@ -101,25 +101,25 @@ class ScreenCollection(OrderedDict):
 
 
 SCREENS = ScreenCollection([
-    Screen('keyboard', 'Keyboard', choose_keyboard_screen, screen_no=0,
+    Screen('keyboard', N_("Keyboard"), choose_keyboard_screen, screen_no=0,
            setting_param='Keyboard-country-human'),
-    Screen('mouse', 'Mouse', SetMouse, screen_no=1, setting_param='Mouse'),
-    Screen('audio', 'Audio', SetAudio, screen_no=2, setting_param='Audio'),
-    Screen('display', 'Display', SetDisplay, screen_no=3),
-    Screen('wifi', 'WiFi', SetWifi, screen_no=4),
-    Screen('bluetooth', 'Bluetooth', BluetoothConfig,
+    Screen('mouse', N_("Mouse"), SetMouse, screen_no=1, setting_param='Mouse'),
+    Screen('audio', N_("Audio"), SetAudio, screen_no=2, setting_param='Audio'),
+    Screen('display', N_("Display"), SetDisplay, screen_no=3),
+    Screen('wifi', N_("WiFi"), SetWifi, screen_no=4),
+    Screen('bluetooth', N_("Bluetooth"), BluetoothConfig,
            on_home_screen=is_bluetooth_available()),
-    Screen('overclocking', 'Overclocking', SetOverclock, screen_no=5,
+    Screen('overclocking', N_("Overclocking"), SetOverclock, screen_no=5,
            setting_param='Overclocking'),
-    Screen('account', 'Account', SetAccount, screen_no=6),
-    Screen('appearance', 'Style', SetStyle, screen_no=7,
+    Screen('account', N_("Account"), SetAccount, screen_no=6),
+    Screen('appearance', N_("Style"), SetStyle, screen_no=7,
            on_home_screen=os.environ.get('DESKTOP_MODE'),
            setting_param='Wallpaper'),
-    Screen('font', 'Font', SetFont, screen_no=8, setting_param='Font'),
-    Screen('advanced', 'Advanced', SetAdvanced, screen_no=9),
-    Screen('about', 'About', SetAbout, screen_no=10),
-    Screen('notifications', 'Notifications', SetNotifications, screen_no=11),
-    Screen('no-internet', 'No-internet', NoInternet, screen_no=12,
+    Screen('font', N_("Font"), SetFont, screen_no=8, setting_param='Font'),
+    Screen('advanced', N_("Advanced"), SetAdvanced, screen_no=9),
+    Screen('about', N_("About"), SetAbout, screen_no=10),
+    Screen('notifications', N_("Notifications"), SetNotifications, screen_no=11),
+    Screen('no-internet', N_("No-internet"), NoInternet, screen_no=12,
            on_home_screen=False),
     Screen('proxy', 'proxy', SetProxy, screen_no=13, on_home_screen=False),
     Screen('first-boot-set-wallpaper', 'first-boot-set-wallpaper',
@@ -128,6 +128,6 @@ SCREENS = ScreenCollection([
            screen_no=15, on_home_screen=False),
     # TODO: Add 'Locale' screen to home screen when translations are available.
     # TODO: Add icon for the 'Locale' screen.
-    Screen('locale', 'Locale', LocaleConfig, setting_param='Locale',
+    Screen('locale', _("Locale"), LocaleConfig, setting_param='Locale',
            on_home_screen=False),
 ])

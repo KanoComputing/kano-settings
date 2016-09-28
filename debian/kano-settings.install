@@ -31,3 +31,4 @@ boot_default /usr/share/kano-settings
 overscan/overscan /usr/bin
 
 WHITELIST /usr/share/kano-settings/config/
+locale/* /usr/share/locale

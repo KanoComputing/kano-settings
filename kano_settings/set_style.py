@@ -37,22 +37,22 @@ class SetStyle(Gtk.Notebook):
         screensaver_widget = SetScreensaver(self.win)
         reset_widget = SetResetDesktop(self.win)
 
-        wallpaper_label = Gtk.Label('BACKGROUND')
+        wallpaper_label = Gtk.Label(_("BACKGROUND"))
         wallpaper_label_ebox = Gtk.EventBox()
         wallpaper_label_ebox.add(wallpaper_label)
-        wallpaper_label_ebox.connect("realize", self._set_cursor_to_hand_cb)
+        wallpaper_label_ebox.connect('realize', self._set_cursor_to_hand_cb)
         wallpaper_label_ebox.show_all()
 
-        screensaver_label = Gtk.Label('SCREENSAVER')
+        screensaver_label = Gtk.Label(_("SCREENSAVER"))
         screensaver_label_ebox = Gtk.EventBox()
         screensaver_label_ebox.add(screensaver_label)
-        screensaver_label_ebox.connect("realize", self._set_cursor_to_hand_cb)
+        screensaver_label_ebox.connect('realize', self._set_cursor_to_hand_cb)
         screensaver_label_ebox.show_all()
 
-        general_label = Gtk.Label('GENERAL')
+        general_label = Gtk.Label(_("GENERAL"))
         general_label_ebox = Gtk.EventBox()
         general_label_ebox.add(general_label)
-        general_label_ebox.connect("realize", self._set_cursor_to_hand_cb)
+        general_label_ebox.connect('realize', self._set_cursor_to_hand_cb)
         general_label_ebox.show_all()
 
         # Add the screensaver and wallpaper tabs
@@ -78,7 +78,7 @@ class SetResetDesktop(Gtk.Box):
         self.win = win
         self.get_style_context().add_class('notebook_page')
 
-        reset_button = KanoButton(text='RESET YOUR DESKTOP', color='orange')
+        reset_button = KanoButton(text=_("RESET YOUR DESKTOP"), color='orange')
         reset_button.connect('button-release-event', self.reset_button_cb)
         reset_button.connect('key-release-event', self.reset_button_cb)
         reset_button.pack_and_align()
@@ -92,16 +92,16 @@ class SetResetDesktop(Gtk.Box):
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
             kdialog = KanoDialog(
-                title_text='This will reset your wallpaper and toolbar.',
-                description_text='Do you want to continue?',
+                title_text=_("This will reset your wallpaper and toolbar."),
+                description_text=_("Do you want to continue?"),
                 button_dict=[
                     {
-                        'label': 'YES',
+                        'label': _("YES"),
                         'color': 'green',
                         'return_value': 'yes'
                     },
                     {
-                        'label': 'NO',
+                        'label': _("NO"),
                         'color': 'red',
                         'return_value': 'no'
                     }
