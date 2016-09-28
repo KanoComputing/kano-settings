@@ -70,9 +70,15 @@ dtparam=spi=on
 # Enable speaker
 dtparam=audio=on
 
+# Rotate the display clockwise on the screen (default=0) or flip the display.
+display_rotate=0
+# Decrease audio noise.
+disable_audio_dither=1
+
 
 # for more options see http://elinux.org/RPi_config.txt
 
+# Configuration Filters
 
 [EDID=ADA-HDMI]
 # Screen kit
@@ -88,6 +94,3 @@ display_rotate=2
 # for light board
 enable_uart=1
 [all]
-
-# Decrease audio noise.
-disable_audio_dither=1
