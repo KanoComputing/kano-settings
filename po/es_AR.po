@@ -1083,3 +1083,6 @@ msgstr "¡Ya tienes internet!"
 #: ../kano_wifi_gui/wifi_window.py:188
 msgid "Do you want to change network?"
 msgstr "¿Quieres cambiar de red?"
+
+msgid "Get ready... Kano is starting up."
+msgstr "Prepárate... Kano está empezando."
