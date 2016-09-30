@@ -46,4 +46,5 @@ get_logs()
 
 if (get_boot_space()-get_log_size()) > SPACE_MARGIN:
     os.system("cp {} /boot".format(LOG_DEST))
+    os.system("sync")
     play_sound(SOUND_FILE)
