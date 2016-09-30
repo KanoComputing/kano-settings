@@ -29,6 +29,7 @@ etc_override /usr/share/kano-settings
 boot_default /usr/share/kano-settings
 
 overscan/overscan /usr/bin
+syncfs/syncfs /usr/bin
 
 WHITELIST /usr/share/kano-settings/config/
 locale/* /usr/share/locale
