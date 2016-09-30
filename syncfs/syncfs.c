@@ -7,6 +7,7 @@
  * Sync filesystem containing a file
  * Usage: syncfs </path/to/file
  */
+#define _GNU_SOURCE
 #include <unistd.h>
 int main(int argc, char *argv[]){
     return syncfs(STDIN_FILENO);
