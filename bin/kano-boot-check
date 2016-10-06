@@ -6,7 +6,14 @@
 #
 # Check whether the kit has been shut down safely, or the plug has been pulled.
 
-# FIXME add copyright
+# Usage:
+# kano-boot-check (start|stop|test)
+#  start and stop are intended to be run at bootup and shutdown.
+#  kano-boot-check test returns 0 if:
+#    kano-boot-check stop
+#  was run before the last call to
+#    kano-boot-check start
+
 
 ARG=$1
 SENTINEL_DIR=/boot
