@@ -1,0 +1,34 @@
+#!/bin/sh
+
+### BEGIN INIT INFO
+# Provides:         kano-boot-check
+# Required-Start:   $local_fs
+# Required-Stop:
+# X-Start-Before:   
+# Default-Start:    2
+# Default-Stop:
+### END INIT INFO
+
+. /lib/lsb/init-functions
+
+case "$1" in
+    start)
+	log_action_begin_msg "Running kano-boot-check"
+	/usr/bin/kano-boot-check start
+	log_action_end_msg $?
+	;;
+    stop)
+	log_action_begin_msg "Stopping kano-boot-check"
+	/usr/bin/kano-boot-check stop
+	log_action_end_msg $?
+	;;
+    restart|reload|force-reload|status)
+        echo "Error: argument '$1' not supported" >&2
+        exit 3
+	;;
+    *)
+      echo "Usage: kano-boot-check [start|stop]" >&2
+      exit 3
+      ;;
+esac
+

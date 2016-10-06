@@ -25,6 +25,18 @@ case "$1" in
         # remove kano-settings-onboot from startup
         update-rc.d kano-settings remove
 
+        # remove kano-safeboot-mode from startup
+        update-rc.d kano-safeboot remove
+
+        # remove kano-bootup-sound from startup
+        update-rc.d kano-bootup-sound remove
+
+        # remove kano-reboot-clear from startup
+        update-rc.d kano-reboot-clear remove
+
+        # remove kano-boot-check from startup
+        update-rc.d kano-boot-check remove
+
         ;;
 esac
 
