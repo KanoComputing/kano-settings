@@ -1,0 +1,49 @@
+#!/bin/bash
+# kano-boot-check
+#
+# Copyright (C) 2016 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+# Check whether the kit has been shut down safely, or the plug has been pulled.
+
+# Usage:
+# kano-boot-check (start|stop|test)
+#  start and stop are intended to be run at bootup and shutdown.
+#  kano-boot-check test returns 0 if:
+#    kano-boot-check stop
+#  was run before the last call to
+#    kano-boot-check start
+
+
+ARG=$1
+SENTINEL_DIR=/boot
+SENTINEL_FILE=${SENTINEL_DIR}/kano_boot_sentinel
+
+case $ARG in
+   start)
+     if [ -f ${SENTINEL_FILE} ] ; then
+        echo "BAD" > ${SENTINEL_FILE}
+        syncfs <${SENTINEL_FILE}
+     else
+        mkdir -p ${SENTINEL_DIR}
+        echo "GOOD" > ${SENTINEL_FILE}
+        syncfs <${SENTINEL_FILE}
+     fi
+     ;;
+
+   stop)
+     rm $SENTINEL_FILE
+     syncfs <$/boot/config.txt
+     ;;
+
+   test)
+     if [ "$(cat ${SENTINEL_FILE})" == "GOOD" ] ; then
+        exit 0;
+     fi
+     exit 1;
+     ;;
+
+   *)
+     exit 1;
+     ;;
+esac
