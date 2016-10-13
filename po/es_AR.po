@@ -1084,5 +1084,5 @@ msgstr "¡Ya tienes internet!"
 msgid "Do you want to change network?"
 msgstr "¿Quieres cambiar de red?"
 
-msgid "Get ready... Kano is starting up."
-msgstr "Prepárate... Kano está empezando."
+msgid "Get ready... Kano is starting up.\n"
+msgstr "Prepárate... Kano está empezando.\n"
