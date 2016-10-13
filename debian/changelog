@@ -1,3 +1,9 @@
+kano-settings (3.8.0-1) unstable; urgency=low
+
+  * Add kano-boot-check command to check for improper shutdown.
+
+ -- Team Kano <dev@kano.me>  Thu 13 Oct 2016 17:47:00 +0100
+
 kano-settings (3.7.0-1) unstable; urgency=low
 
   * i18n setup and Spanish translations
