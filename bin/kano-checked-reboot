@@ -55,4 +55,7 @@ os.close(dirfd)
 
 os.system('sync')
 
+# Mark that we are going down even if we have been told to go down quickly
+os.system("systemctl stop kano-boot-check.service")
+
 os.system(cmd_plus_args)
