@@ -32,7 +32,7 @@ def launch_wifi_gui(socket_id=None):
         _("This feature is not available in this OS version."),
     )
     kdialog.run()
-    return 0
+    return 1
 
     # from gi.repository import GObject
     # from kano_wifi_gui.wifi_window import create_wifi_gui
