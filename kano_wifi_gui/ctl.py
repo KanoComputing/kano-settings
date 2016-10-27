@@ -27,12 +27,19 @@ def disconnect_wifi():
 
 
 def launch_wifi_gui(socket_id=None):
-    from gi.repository import GObject
-    from kano_wifi_gui.wifi_window import create_wifi_gui
-
-    GObject.threads_init()
-
-    is_plug = socket_id is not None
-    create_wifi_gui(is_plug, socket_id)
-
+    from kano.gtk3.kano_dialog import KanoDialog
+    kdialog = KanoDialog(
+        _("This feature is not available in this OS version."),
+    )
+    kdialog.run()
     return 0
+
+    # from gi.repository import GObject
+    # from kano_wifi_gui.wifi_window import create_wifi_gui
+
+    # GObject.threads_init()
+
+    # is_plug = socket_id is not None
+    # create_wifi_gui(is_plug, socket_id)
+
+    # return 0
