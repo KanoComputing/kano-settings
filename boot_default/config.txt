@@ -53,7 +53,7 @@ sdram_freq=450
 over_voltage=0
 
 # set memory split: amount allocated to the GPU in MB.
-gpu_mem=128
+gpu_mem=256
 
 # Toggles PiCamera on(1) and off(0)
 start_x=0
