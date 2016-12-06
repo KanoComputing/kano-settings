@@ -16,9 +16,8 @@ from kano_settings.components.heading import Heading
 from kano_profile.tracker import track_data
 
 import kano_settings.common as common
-from kano_settings.boot_config import set_config_comment, get_config_value, \
-    end_config_transaction
-from kano_settings.system.display import get_model, get_status, \
+from kano_settings.boot_config import set_config_comment, end_config_transaction
+from kano_settings.system.display import get_model, get_screen_value, get_status, \
     list_supported_modes, set_hdmi_mode, read_hdmi_mode, \
     find_matching_mode, get_overscan_status, write_overscan_values, \
     set_overscan_status, launch_pipe, set_flip
@@ -100,7 +99,7 @@ class SetDisplay(Template):
         flip_button = Gtk.CheckButton(_("Flip Screen"))
         flip_button.set_can_focus(False)
         flip_button.props.valign = Gtk.Align.CENTER
-        flip_button.set_active(get_config_value('display_rotate') == 2)
+        flip_button.set_active(get_screen_value('display_rotate') == 2)
         flip_button.connect('clicked', self.flip)
 
         self.box.pack_start(flip_button, False, False, 0)
@@ -168,6 +167,7 @@ class SetDisplay(Template):
         end_config_transaction()
         common.need_reboot = True
 
+
 class OverscanTemplate(Gtk.Box):
     def __init__(self, win, title, description, original_overscan=None):
         Gtk.Box.__init__(self, orientation=Gtk.Orientation.VERTICAL)
@@ -210,7 +210,6 @@ class OverscanTemplate(Gtk.Box):
         write_overscan_values(self.overscan_values)
         self.original_overscan = self.overscan_values
 
-
         # Tell user to reboot to see changes
         common.need_reboot = True
 
@@ -251,7 +250,7 @@ class SetSimpleOverscan(OverscanTemplate):
         # Listen for key events
         self.key_press_handler = self.win.connect('key-press-event', self.on_key_press)
 
-        ## slider
+        # slider
         self.t_value = Gtk.Label()
         self.t_value.get_style_context().add_class('slider_label')
         self.t_scale = Gtk.HScale.new_with_range(0, get_overscan_limit(), 1)
@@ -310,7 +309,7 @@ class SetSimpleOverscan(OverscanTemplate):
             set_overscan_status(self.overscan_values)
             self.t_scale.set_value(self.overscan_values['top'])
             return
-         # Left arrow (65361)
+        # Left arrow (65361)
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Left:
             self.overscan_values['top'] -= 1
             self.overscan_values['bottom'] -= 1
@@ -348,25 +347,25 @@ class SetAdvancedOverscan(OverscanTemplate):
         self.l_value = Gtk.Label()
         self.r_value = Gtk.Label()
 
-        ## Top slider
+        # Top slider
         t_value, self.t_scale, top_label = self.generate_slider_label('top')
         grid.attach(self.t_scale, 1, 0, 1, 1)
         grid.attach(top_label, 0, 0, 1, 1)
         grid.attach(t_value, 2, 0, 1, 1)
 
-        ## Bottom slider
+        # Bottom slider
         b_value, self.b_scale, bottom_label = self.generate_slider_label('bottom')
         grid.attach(self.b_scale, 1, 1, 1, 1)
         grid.attach(bottom_label, 0, 1, 1, 1)
         grid.attach(b_value, 2, 1, 1, 1)
 
-        ## Left slider
+        # Left slider
         l_value, self.l_scale, left_label = self.generate_slider_label('left')
         grid.attach(self.l_scale, 1, 2, 1, 1)
         grid.attach(left_label, 0, 2, 1, 1)
         grid.attach(l_value, 2, 2, 1, 1)
 
-        ## Right slider
+        # Right slider
         r_value, self.r_scale, right_label = self.generate_slider_label('right')
         grid.attach(right_label, 0, 3, 1, 1)
         grid.attach(self.r_scale, 1, 3, 1, 1)
