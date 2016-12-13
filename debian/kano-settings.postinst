@@ -6,6 +6,11 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
+# System and parental control DNS hosts files for Minecraft local hostname
+HOSTS_FILE="/etc/hosts"
+HOSTS_FILE_BACKUP="/etc/kano-hosts-parental-backup"
+HOST_ENTRY="127.0.0.1\tminecraft-kit.kano.me"
+
 TMP_FILE=/tmp/kano-settings_conf
 rclocal_backup="/etc/rc.local.backup"
 
@@ -73,6 +78,21 @@ case "$1" in
             sed -i $fsck_sed $systemd_fsck_other
         fi
 
+        # Add a local hostname for Minecraft so that we can track its usage
+        grep "minecraft-kit" "$HOSTS_FILE" > /dev/null 2>&1
+        out=`grep "minecraft-kit" "$HOSTS_FILE"`
+        if [ "$?" != "0" ]; then
+            # Insert Minecraft hostname at the top of the hosts file
+            sed -i "1i${HOST_ENTRY}" $HOSTS_FILE
+        fi
+
+        # Maintain the parental control backup file accurate
+        if [ -f $HOSTS_FILE_BACKUP ]; then
+            grep "minecraft-kit" "$HOSTS_FILE_BACKUP" > /dev/null 2>&1
+            if [ "$?" != "0" ]; then
+                sed -i "1i${HOST_ENTRY}" $HOSTS_FILE_BACKUP
+            fi
+        fi
         ;;
 esac
 
