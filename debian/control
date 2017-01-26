@@ -26,3 +26,8 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, python, udhcpc,
          rxvt-unicode-256color, kano-toolset, libkdesk-dev, libkano-networking
 Description: Software to make Kanux connect over Wireless networks
  automatically.
+
+Package: kano-settings-i18n-orig
+Architecture: all
+Description: Data for working on translations of kano-settings
+Multi-Arch: foreign
