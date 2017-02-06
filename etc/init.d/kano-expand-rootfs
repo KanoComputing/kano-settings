@@ -1,0 +1,44 @@
+#!/bin/sh
+# 
+# kano-expand-rootfs
+#
+# Copyright (C) 2017 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+
+
+### BEGIN INIT INFO
+# Provides:         kano-expand-rootfs
+# Required-Start:   $local_fs $all kano-settings kano-safeboot
+# Required-Stop:
+# X-Start-Before:
+# Default-Start:    2 3 4 5
+# Default-Stop:
+### END INIT INFO
+
+
+# This script calls expand-rootfs to ensure we are using the whole SD card.
+
+. /lib/lsb/init-functions
+
+case "$1" in
+    start)
+        # Display a welcome message to the bootup terminal
+	log_action_begin_msg "Running kano-expand-rootfs"
+	(
+	    /usr/bin/expand-rootfs
+	) &
+	log_action_end_msg $?
+	;;
+    stop)
+	;;
+    restart|reload|force-reload|status)
+        echo "Error: argument '$1' not supported" >&2
+        exit 3
+	;;
+    *)
+      echo "Usage: kano-expand-rootfs [start|stop]" >&2
+      exit 3
+      ;;
+esac
+

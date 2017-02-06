@@ -66,6 +66,9 @@ case "$1" in
         # add kano-boot-check to startup
         update-rc.d kano-boot-check defaults
 
+        # add kano-expand-rootfs to startup
+        update-rc.d kano-expand-rootfs defaults
+
 	# Check for default hostname and set to name of first user
 	python -c "from kano_settings.system.advanced import set_hostname_postinst; set_hostname_postinst()"
 

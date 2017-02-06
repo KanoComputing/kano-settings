@@ -37,6 +37,9 @@ case "$1" in
         # remove kano-boot-check from startup
         update-rc.d kano-boot-check remove
 
+        # remove kano-expand-rootfs from startup
+        update-rc.d kano-expand-rootfs remove
+
         ;;
 esac
 
