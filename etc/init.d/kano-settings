@@ -10,11 +10,13 @@
 ### END INIT INFO
 
 . /lib/lsb/init-functions
+. gettext.sh
+export TEXTDOMAIN="kano-settings"
 
 case "$1" in
     start)
         # Display a welcome message to the bootup terminal
-	gettext -e kano-settings "Get ready... Kano is starting up.\n" > /dev/tty1
+        eval_gettext "Get ready... Kano is starting up.\n" > /dev/tty1
 
         # If Dashboard Onboot is installed (soft dependency),
         # call him now. He enforces the kit to always go to Dashboard/Greeter.
