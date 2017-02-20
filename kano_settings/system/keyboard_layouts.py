@@ -105,7 +105,7 @@ layouts = {
         'Tanzania': 'tz',
     },
     'america': {
-        'Argentina': 'es',
+        'Argentina': 'es',  # This was originally latam, but changed to match the Kano keyboard.
         'Bolivia': 'latam',
         'Brazil': 'br',
         'Canada': 'ca',
