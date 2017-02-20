@@ -80,7 +80,7 @@ def parse_args():
                 else:
                     variant = 'generic'
 
-                set_keyboard(locale, variant)
+                set_keyboard(locale, variant, save=True)
                 print_v(_("Setting keyboard to {} {}").format(_(locale), _(variant)))
 
         elif args['gfx_driver']:
