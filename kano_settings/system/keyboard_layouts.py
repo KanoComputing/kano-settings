@@ -105,7 +105,7 @@ layouts = {
         'Tanzania': 'tz',
     },
     'america': {
-        'Argentina': 'latam',
+        'Argentina': 'es',
         'Bolivia': 'latam',
         'Brazil': 'br',
         'Canada': 'ca',
