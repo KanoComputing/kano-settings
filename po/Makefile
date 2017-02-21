@@ -26,6 +26,10 @@ xgettext -f PYPOTFILES -L Python --force-po -o messages.pot \
     --keyword=N_ --package-name=$(APPNAME) --copyright-holder=$(ORG)
 xgettext -o messages.pot -j -L Shell --keyword=eval_gettext ../etc/init.d/kano-settings \
     --keyword=N_ --package-name=$(APPNAME) --copyright-holder=$(ORG)
+xgettext -o messages.pot -j -L C --keyword=Q_ ../lxpanel-plugin/*.c \
+    --keyword=N_ --package-name=$(APPNAME) --copyright-holder=$(ORG)
+xgettext -o messages.pot -j -L C --keyword=Q_ ../lxpanel-plugin-internet/*.c \
+    --keyword=N_ --package-name=$(APPNAME) --copyright-holder=$(ORG)
 endef
 
 messages:

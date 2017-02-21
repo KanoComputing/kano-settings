@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: kano-settings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-01-30 11:22+0000\n"
+"POT-Creation-Date: 2017-02-21 12:06+0000\n"
 "PO-Revision-Date: 2017-02-13 12:35+0000\n"
 "Last-Translator: Delfina <delfina.dalfonso@educarycrecer.org>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -22,7 +22,8 @@ msgstr ""
 
 #: ../bin/kano-settings-cli:47
 msgid "Error: Settings must be executed with root privileges"
-msgstr "Error: Los ajustes deben ejecutarse con privilegios de root (superusuario)"
+msgstr ""
+"Error: Los ajustes deben ejecutarse con privilegios de root (superusuario)"
 
 #: ../bin/kano-settings-cli:60
 msgid "setting audio to {}"
@@ -71,76 +72,42 @@ msgstr ""
 "Continente: {}, País: {}, Variante: {}\n"
 "(índices - Continente: {}, País: {}, Variante: {})"
 
-#: ../kano_wifi_gui/ConnectToNetwork.py:34
-msgid "Connecting to {}"
-msgstr "Conectando a {}"
+#: ../kano_wifi_gui/NetworkScreen.py:54
+msgid "Connect to WiFi"
+msgstr "Conectar a WiFi"
 
-#: ../kano_wifi_gui/ConnectToNetwork.py:35
-#: ../kano_wifi_gui/RefreshNetworks.py:25
-msgid "Any minute now"
-msgstr "Enseguida"
+#: ../kano_wifi_gui/NetworkScreen.py:55
+msgid "Choose a network"
+msgstr "Elige una red"
 
-#: ../kano_wifi_gui/ConnectToNetwork.py:61
-msgid "Cannot connect!"
-msgstr "¡Imposible conectar!"
+#: ../kano_wifi_gui/NetworkScreen.py:109
+msgid "No networks detected!"
+msgstr "¡No se encontraron redes!"
 
-#: ../kano_wifi_gui/ConnectToNetwork.py:62
-msgid "Maybe the signal was too weak to connect."
-msgstr "Tal vez la señal era demasiado débil para conectarse."
-
-#: ../kano_wifi_gui/ConnectToNetwork.py:68 ../kano_wifi_gui/wifi_window.py:117
-#: ../kano_settings/set_account.py:325 ../kano_settings/set_advanced.py:314
-msgid "TRY AGAIN"
-msgstr "INTENTAR NUEVAMENTE"
-
-#: ../kano_wifi_gui/ConnectToNetwork.py:75
-msgid "QUIT"
-msgstr "ABANDONAR"
-
-#: ../kano_wifi_gui/ConnectToNetwork.py:94
-#: ../kano_settings/set_advanced.py:347
-msgid "Success"
-msgstr "Conexión exitosa"
-
-#: ../kano_wifi_gui/ConnectToNetwork.py:95
-#: ../kano_wifi_gui/PasswordScreen.py:157
-msgid "You're connected"
-msgstr "Estás conectado"
-
-#: ../kano_wifi_gui/ConnectToNetwork.py:98
-#: ../kano_wifi_gui/PasswordScreen.py:160 ../kano_settings/set_wifi.py:330
-#: ../kano_settings/set_account.py:134
-msgid "OK"
-msgstr "OK"
-
-#: ../kano_wifi_gui/PasswordScreen.py:52
-msgid "Connect to the network"
-msgstr "Conectarse a la red"
-
-#: ../kano_wifi_gui/PasswordScreen.py:72 ../kano_settings/set_wifi.py:210
-msgid "Password"
-msgstr "Contraseña"
-
-#: ../kano_wifi_gui/PasswordScreen.py:85 ../kano_wifi_gui/NetworkScreen.py:188
-#: ../kano_wifi_gui/NetworkScreen.py:227 ../kano_wifi_gui/NetworkScreen.py:261
+#: ../kano_wifi_gui/NetworkScreen.py:188 ../kano_wifi_gui/NetworkScreen.py:227
+#: ../kano_wifi_gui/NetworkScreen.py:261 ../kano_wifi_gui/PasswordScreen.py:85
 msgid "CONNECT"
 msgstr "CONECTAR"
 
-#: ../kano_wifi_gui/PasswordScreen.py:92
-msgid "Show password"
-msgstr "Mostrar contraseña"
+#: ../kano_wifi_gui/NetworkScreen.py:204 ../kano_wifi_gui/wifi_window.py:124
+msgid "Skip"
+msgstr "Saltear"
 
-#: ../kano_wifi_gui/PasswordScreen.py:114
-msgid "Password incorrect"
-msgstr "Contraseña incorrecta"
+#: ../kano_wifi_gui/NetworkScreen.py:234
+msgid "DISCONNECT"
+msgstr "DESCONECTAR"
 
-#: ../kano_wifi_gui/PasswordScreen.py:156
-msgid "Success!"
-msgstr "¡Exitosa!"
+#: ../kano_wifi_gui/NetworkScreen.py:251
+msgid "Disconnect complete."
+msgstr "Desconexión completada."
 
-#: ../kano_wifi_gui/RefreshNetworks.py:24
-msgid "Searching for networks"
-msgstr "Buscando redes"
+#: ../kano_wifi_gui/NetworkScreen.py:252
+msgid "You're now offline"
+msgstr "Ahora estás desconectado"
+
+#: ../kano_wifi_gui/NetworkScreen.py:255
+msgid "CLOSE"
+msgstr "CERRAR"
 
 #: ../kano_wifi_gui/wifi_window.py:57 ../kano_wifi_gui/wifi_window.py:63
 msgid "Kano WiFi"
@@ -158,9 +125,10 @@ msgstr ""
 msgid "Plug one in and try again"
 msgstr "Enchufa uno e intenta nuevamente"
 
-#: ../kano_wifi_gui/wifi_window.py:124 ../kano_wifi_gui/NetworkScreen.py:204
-msgid "Skip"
-msgstr "Saltear"
+#: ../kano_wifi_gui/wifi_window.py:117 ../kano_wifi_gui/ConnectToNetwork.py:68
+#: ../kano_settings/set_advanced.py:314 ../kano_settings/set_account.py:325
+msgid "TRY AGAIN"
+msgstr "INTENTAR NUEVAMENTE"
 
 #: ../kano_wifi_gui/wifi_window.py:145
 msgid "You are already connected via ethernet."
@@ -188,100 +156,175 @@ msgstr "¡Ya tienes internet!"
 msgid "Do you want to change network?"
 msgstr "¿Quieres cambiar de red?"
 
-#: ../kano_wifi_gui/NetworkScreen.py:54
-msgid "Connect to WiFi"
-msgstr "Conectar a WiFi"
+#: ../kano_wifi_gui/RefreshNetworks.py:24
+msgid "Searching for networks"
+msgstr "Buscando redes"
 
-#: ../kano_wifi_gui/NetworkScreen.py:55
-msgid "Choose a network"
-msgstr "Elige una red"
+#: ../kano_wifi_gui/RefreshNetworks.py:25
+#: ../kano_wifi_gui/ConnectToNetwork.py:35
+msgid "Any minute now"
+msgstr "Enseguida"
 
-#: ../kano_wifi_gui/NetworkScreen.py:109
-msgid "No networks detected!"
-msgstr "¡No se encontraron redes!"
+#: ../kano_wifi_gui/PasswordScreen.py:52
+msgid "Connect to the network"
+msgstr "Conectarse a la red"
 
-#: ../kano_wifi_gui/NetworkScreen.py:234
-msgid "DISCONNECT"
-msgstr "DESCONECTAR"
+#: ../kano_wifi_gui/PasswordScreen.py:72 ../kano_settings/set_wifi.py:210
+msgid "Password"
+msgstr "Contraseña"
 
-#: ../kano_wifi_gui/NetworkScreen.py:251
-msgid "Disconnect complete."
-msgstr "Desconexión completada."
+#: ../kano_wifi_gui/PasswordScreen.py:92
+msgid "Show password"
+msgstr "Mostrar contraseña"
 
-#: ../kano_wifi_gui/NetworkScreen.py:252
-msgid "You're now offline"
-msgstr "Ahora estás desconectado"
+#: ../kano_wifi_gui/PasswordScreen.py:114
+msgid "Password incorrect"
+msgstr "Contraseña incorrecta"
 
-#: ../kano_wifi_gui/NetworkScreen.py:255
-msgid "CLOSE"
-msgstr "CERRAR"
+#: ../kano_wifi_gui/PasswordScreen.py:156
+msgid "Success!"
+msgstr "¡Exitosa!"
+
+#: ../kano_wifi_gui/PasswordScreen.py:157
+#: ../kano_wifi_gui/ConnectToNetwork.py:95
+msgid "You're connected"
+msgstr "Estás conectado"
+
+#: ../kano_wifi_gui/PasswordScreen.py:160
+#: ../kano_wifi_gui/ConnectToNetwork.py:98 ../kano_settings/set_account.py:134
+#: ../kano_settings/set_wifi.py:330
+msgid "OK"
+msgstr "OK"
+
+#: ../kano_wifi_gui/ConnectToNetwork.py:34
+msgid "Connecting to {}"
+msgstr "Conectando a {}"
+
+#: ../kano_wifi_gui/ConnectToNetwork.py:61
+msgid "Cannot connect!"
+msgstr "¡Imposible conectar!"
+
+#: ../kano_wifi_gui/ConnectToNetwork.py:62
+msgid "Maybe the signal was too weak to connect."
+msgstr "Tal vez la señal era demasiado débil para conectarse."
+
+#: ../kano_wifi_gui/ConnectToNetwork.py:75
+msgid "QUIT"
+msgstr "ABANDONAR"
+
+#: ../kano_wifi_gui/ConnectToNetwork.py:94
+#: ../kano_settings/set_advanced.py:347
+msgid "Success"
+msgstr "Conexión exitosa"
 
 #: ../kano_wifi_gui/ctl.py:22
 msgid "Disconnect complete - you're now offline."
 msgstr "Desconectado - ahora estás offline."
 
-#: ../kano_settings/set_mouse.py:15 ../kano_settings/set_mouse.py:29
-msgid "Slow"
-msgstr "Lenta"
+#: ../kano_settings/parental_config.py:29 ../kano_settings/set_advanced.py:68
+msgid "Parental lock"
+msgstr "Control de padres"
 
-#: ../kano_settings/set_mouse.py:15 ../kano_settings/set_mouse.py:30
-#: ../kano_settings/set_mouse.py:60 ../kano_settings/config_file.py:50
-#: ../kano_settings/config_file.py:51 ../kano_settings/set_font.py:23
-#: ../kano_settings/set_font.py:38 ../kano_settings/set_font.py:69
-msgid "Normal"
-msgstr "Normal"
+#: ../kano_settings/parental_config.py:30
+msgid "Configure your parental lock settings"
+msgstr "Configura los ajustes del control de padres"
 
-#: ../kano_settings/set_mouse.py:15 ../kano_settings/set_mouse.py:31
-msgid "Fast"
-msgstr "Rápida"
-
-#: ../kano_settings/set_mouse.py:25 ../kano_settings/screens.py:106
-msgid "Mouse"
-msgstr "Mouse"
-
-#: ../kano_settings/set_mouse.py:26
-msgid "Pick your speed"
-msgstr "Elige la velocidad"
-
-#: ../kano_settings/set_mouse.py:27 ../kano_settings/set_font.py:35
-#: ../kano_settings/set_keyboard.py:39 ../kano_settings/set_keyboard.py:88
-#: ../kano_settings/locale.py:26 ../kano_settings/bluetooth_config.py:183
-#: ../kano_settings/set_display.py:55 ../kano_settings/set_display.py:175
-#: ../kano_settings/set_screensaver.py:159
+#: ../kano_settings/parental_config.py:31
+#: ../kano_settings/parental_config.py:183 ../kano_settings/set_display.py:55
+#: ../kano_settings/set_display.py:175 ../kano_settings/set_keyboard.py:39
+#: ../kano_settings/set_keyboard.py:88 ../kano_settings/set_screensaver.py:159
+#: ../kano_settings/set_advanced.py:26 ../kano_settings/set_mouse.py:27
 #: ../kano_settings/set_overclock.py:45
 #: ../kano_settings/set_notifications.py:28
-#: ../kano_settings/parental_config.py:31
-#: ../kano_settings/parental_config.py:183 ../kano_settings/set_advanced.py:26
-#: ../kano_settings/set_audio.py:25
+#: ../kano_settings/bluetooth_config.py:183 ../kano_settings/set_font.py:35
+#: ../kano_settings/set_audio.py:25 ../kano_settings/locale.py:26
 msgid "APPLY CHANGES"
 msgstr "APLICAR CAMBIOS"
 
-#: ../kano_settings/set_mouse.py:29
-msgid "REQUIRES LESS MOVE PRECISION"
-msgstr "REQUIERE MENOS PRECISIÓN DE MOVIMIENTO"
+#: ../kano_settings/parental_config.py:48
+msgid "Low Settings"
+msgstr "Configuración baja"
 
-#: ../kano_settings/set_mouse.py:30 ../kano_settings/set_font.py:38
-msgid "DEFAULT"
-msgstr "PREDETERMINADA"
+#: ../kano_settings/parental_config.py:49
+msgid ""
+"Block predefined blacklisted websites and\n"
+"activates SafeSearch on Google and Youtube"
+msgstr ""
+"Bloquea sitios denegados predefinidos y\n"
+"activa BúsquedaSegura en Google y YouTube"
 
-#: ../kano_settings/set_mouse.py:31
-msgid "BETTER FOR WIDE SCREENS"
-msgstr "MEJOR PARA PANTALLAS GRANDES"
+#: ../kano_settings/parental_config.py:52
+msgid "Medium Settings"
+msgstr "Configuración Media"
 
-#: ../kano_settings/config_file.py:45
-#: ../kano_settings/system/supported_locales.py:8
-msgid "United States"
-msgstr "Estados Unidos"
+#: ../kano_settings/parental_config.py:53
+msgid "Use safe DNS servers to filter all traffic"
+msgstr "Usa servidores DNS seguros para filtrar el tráfico"
 
-#: ../kano_settings/config_file.py:46
-msgid "Generic"
-msgstr "Genérico"
+#: ../kano_settings/parental_config.py:56
+msgid "High Settings"
+msgstr "Configuración Alta"
 
-#: ../kano_settings/config_file.py:47 ../kano_settings/system/audio.py:75
-#: ../kano_settings/system/audio.py:109 ../kano_settings/system/audio.py:110
-#: ../kano_settings/set_audio.py:67
-msgid "Analogue"
-msgstr "Analógico"
+#: ../kano_settings/parental_config.py:57
+msgid "Enable all filters and restrict search engine access"
+msgstr "Habilita todos los filtros y restringe accesos al motor de búsqueda"
+
+#: ../kano_settings/parental_config.py:60
+msgid "Ultimate Settings"
+msgstr "Configuración Extrema"
+
+#: ../kano_settings/parental_config.py:61
+msgid "Only allow access to Kano World activities"
+msgstr "Sólo permite el acceso a actividades de Kano World"
+
+#: ../kano_settings/parental_config.py:65
+msgid "Configure allowed/blocked"
+msgstr "Configura permitidos/bloqueados"
+
+#: ../kano_settings/parental_config.py:120 ../kano_settings/main_window.py:65
+#: ../kano_settings/main_window.py:69 ../lxpanel-plugin/kano_settings.c:136
+msgid "Settings"
+msgstr "Ajustes"
+
+#: ../kano_settings/parental_config.py:121
+msgid ""
+"If any browsers are open, please relaunch them for this setting to take "
+"effect"
+msgstr ""
+"Si algún navegador se encuentra abierto, reinicia para dar lugar a la nueva "
+"configuración "
+
+#: ../kano_settings/parental_config.py:181
+msgid "Allow and Block Sites"
+msgstr "Sitios bloqueados y permitidos"
+
+#: ../kano_settings/parental_config.py:182
+msgid "Add extra sites to block or allow"
+msgstr "Añade sitios bloqueados o permitidos"
+
+#: ../kano_settings/parental_config.py:206
+msgid "Add extra sites to block"
+msgstr "Añade sitios bloqueados"
+
+#: ../kano_settings/parental_config.py:211
+msgid "Something blocked that shouldn't be?"
+msgstr "¿Hay algo bloqueado que no debería?"
+
+#: ../kano_settings/parental_config.py:266
+msgid "Parental Authentication"
+msgstr "Autenticación de Padres"
+
+#: ../kano_settings/parental_config.py:267
+msgid "Enter your parental password:"
+msgstr "Introduce tu contraseña de padres:"
+
+#: ../kano_settings/parental_config.py:281
+msgid "Try again?"
+msgstr "¿Intentar de neuvo?"
+
+#: ../kano_settings/parental_config.py:282
+msgid "The password was incorrect. Changes not applied"
+msgstr "Contraseña incorrecta. No se aplicaron cambios"
 
 #: ../kano_settings/set_style.py:40
 msgid "BACKGROUND"
@@ -307,32 +350,49 @@ msgstr "Esto restablecerá tu imagen de fondo y barra de herramientas."
 msgid "Do you want to continue?"
 msgstr "¿Quieres continuar?"
 
-#: ../kano_settings/set_font.py:23 ../kano_settings/set_font.py:37
-msgid "Small"
-msgstr "Pequeño"
+#: ../kano_settings/set_display.py:42
+msgid " (Changing this requires a reboot)"
+msgstr " (Cambiar esto requiere reiniciar el sistema)"
 
-#: ../kano_settings/set_font.py:23 ../kano_settings/set_font.py:39
-msgid "Big"
-msgstr "Grande"
+#: ../kano_settings/set_display.py:47
+msgid ""
+"\n"
+"\n"
+"Current resolution: {}"
+msgstr ""
+"\n"
+"\n"
+"Resolución actual: {}"
 
-#: ../kano_settings/set_font.py:33 ../kano_settings/screens.py:118
-msgid "Font"
-msgstr "Fuente"
+#: ../kano_settings/set_display.py:53 ../kano_settings/screens.py:108
+#: ../lxpanel-plugin/kano_settings.c:160
+msgid "Display"
+msgstr "Pantalla"
 
-#: ../kano_settings/set_font.py:34
-msgid "Choose a comfortable text size"
-msgstr "Elige el tamaño del texto"
+#: ../kano_settings/set_display.py:92 ../kano_settings/set_display.py:243
+#: ../kano_settings/set_display.py:332
+msgid "Overscan"
+msgstr "Encoger pantalla"
 
-#: ../kano_settings/set_font.py:37
-msgid "BETTER FOR SMALL SCREENS"
-msgstr "MEJOR PARA PANTALLAS PEQUEÑAS"
+#: ../kano_settings/set_display.py:99
+msgid "Flip Screen"
+msgstr "Voltear la pantalla"
 
-#: ../kano_settings/set_font.py:39
-msgid "BETTER FOR BIG SCREENS"
-msgstr "MEJOR PARA PANTALLAS GRANDES"
+#: ../kano_settings/set_display.py:244
+msgid "This setting lets you adjust your screen's size."
+msgstr "Estos ajustes te permiten ajustar el tamaño de tu pantalla."
+
+#: ../kano_settings/set_display.py:275 ../kano_settings/screens.py:119
+msgid "Advanced"
+msgstr "Avanzado"
+
+#: ../kano_settings/set_display.py:333
+msgid "This setting lets you adjust your screen's size, edge by edge."
+msgstr ""
+"Estos ajustes te permiten ajustar el tamaño de tu pantalla, lado por lado."
 
 #: ../kano_settings/set_keyboard.py:37 ../kano_settings/set_keyboard.py:86
-#: ../kano_settings/screens.py:104
+#: ../kano_settings/screens.py:104 ../lxpanel-plugin/kano_settings.c:142
 msgid "Keyboard"
 msgstr "Teclado"
 
@@ -352,45 +412,456 @@ msgstr "¿Dónde vives? Así puedo configurar tu teclado."
 msgid "Advanced options"
 msgstr "Opciones avanzadas"
 
-#: ../kano_settings/templates.py:179
-msgid "ADD"
-msgstr "AÑADIR"
+#: ../kano_settings/set_screensaver.py:34
+msgid "Change your screensaver"
+msgstr "Cambia tu salvapantallas"
 
-#: ../kano_settings/templates.py:181
-msgid "REMOVE"
-msgstr "ELIMINAR"
+#: ../kano_settings/set_screensaver.py:36
+msgid "CHANGE SCREENSAVER"
+msgstr "CAMBIAR SALVAPANTALLAS"
 
-#: ../kano_settings/templates.py:219
-msgid "Invalid website given"
-msgstr "Dirección web inválida"
+#: ../kano_settings/set_screensaver.py:37
+msgid "Advanced Options"
+msgstr "Opciones Avanzadas"
 
-#: ../kano_settings/templates.py:220
+#: ../kano_settings/set_screensaver.py:157
+msgid "Screensaver - advanced"
+msgstr "Salvapantallas - avanzado"
+
+#: ../kano_settings/set_screensaver.py:176
+msgid "Turn on screensaver"
+msgstr "Activar salvapantallas"
+
+#: ../kano_settings/set_screensaver.py:184
 msgid ""
-"\n"
-"We need to make sure the website URL is valid.\n"
-"Please enter the full URL as it appears in your browser.\n"
-"\n"
-"Example: http://www.google.com\n"
+"Length of time in minutes\n"
+"before screensaver launches"
 msgstr ""
-"\n"
-"Necesitamos estar seguros de que la URL del sitio es válido.\n"
-"Por favor ingresa la URL completa tal y como aparece en tu navegador.\n"
-"\n"
-"Ejemplo: http://www.google.com\n"
+"Tiempo en minutos\n"
+"antes de que se active el salvapantallas"
 
-# What is this?
-#: ../kano_settings/templates.py:223
-msgid "OK:red:1"
-msgstr "OK:red:1"
+#: ../kano_settings/set_advanced.py:25
+msgid "Toggle parental lock and debug mode"
+msgstr "Activar el control de padres y el modo depuración "
 
-# I assume this is Region settings but not sure - where can I find it?
-#: ../kano_settings/locale.py:24 ../kano_settings/screens.py:131
-msgid "Locale"
-msgstr "Región"
+#: ../kano_settings/set_advanced.py:60
+msgid ""
+"Use different levels to:\n"
+"- Block mature content in browser and YouTube\n"
+"- Or restrict internet access to only Kano World activity"
+msgstr ""
+"Usa diferentes niveles para:\n"
+"- Bloquear contenido para mayores en el navegador y YouTube\n"
+"- O restringir el acceso a internet únicamente a activiades de Kano World"
 
-#: ../kano_settings/locale.py:25
-msgid "Set your locale (Changing this requires a reboot)"
-msgstr "Configura tu región (Este cambio requiere un reinicio)"
+#: ../kano_settings/set_advanced.py:85 ../kano_settings/set_wifi.py:134
+msgid "Configure"
+msgstr "Configurar"
+
+#: ../kano_settings/set_advanced.py:98
+msgid ""
+"Having problems?\n"
+"1) Enable this mode\n"
+"2) Report a bug with the ? tool on the Desktop"
+msgstr ""
+"¿Estás teniendo problemas?\n"
+"1) Activar este modo\n"
+"2) Reportar un error haciendo click en ? que se encuentra en el Escritorio"
+
+#: ../kano_settings/set_advanced.py:105 ../kano_settings/set_advanced.py:150
+msgid "Debug mode"
+msgstr "Modo de depuración"
+
+#: ../kano_settings/set_advanced.py:143
+msgid "Activated"
+msgstr "Activado"
+
+#: ../kano_settings/set_advanced.py:148
+msgid "De-activated"
+msgstr "Desactivado"
+
+#: ../kano_settings/set_advanced.py:180
+msgid "Unlock parental lock"
+msgstr "Desbloquer el control de padres"
+
+#: ../kano_settings/set_advanced.py:181
+msgid "Enter your password"
+msgstr "Ingresa tu contraseña"
+
+#: ../kano_settings/set_advanced.py:182
+msgid "UNLOCK"
+msgstr "DESBLOQUEAR"
+
+#: ../kano_settings/set_advanced.py:188
+msgid "Enter your selected password"
+msgstr "Ingresa la contraseña elegida"
+
+#: ../kano_settings/set_advanced.py:197
+msgid "Set up parental lock"
+msgstr "Establecer el control de padres"
+
+#: ../kano_settings/set_advanced.py:198
+msgid "Choose a password"
+msgstr "Elige una contraseña"
+
+#: ../kano_settings/set_advanced.py:199
+msgid "LOCK"
+msgstr "BLOQUEAR"
+
+#: ../kano_settings/set_advanced.py:205
+msgid "Select password"
+msgstr "Elige una contraseña"
+
+#: ../kano_settings/set_advanced.py:209
+msgid "Confirm password"
+msgstr "Confirma la contraseña"
+
+#: ../kano_settings/set_advanced.py:278
+msgid "Careful"
+msgstr "Cuidado"
+
+#: ../kano_settings/set_advanced.py:279
+msgid "The passwords don't match! Try again"
+msgstr "¡Las contraseñas no coinciden! Intenta nuevamente"
+
+#: ../kano_settings/set_advanced.py:309 ../kano_settings/set_account.py:320
+msgid "GO BACK"
+msgstr "VOLVER"
+
+#: ../kano_settings/set_advanced.py:349
+msgid "Error"
+msgstr "Error"
+
+#: ../kano_settings/set_mouse.py:15 ../kano_settings/set_mouse.py:29
+msgid "Slow"
+msgstr "Lenta"
+
+#: ../kano_settings/set_mouse.py:15 ../kano_settings/set_mouse.py:30
+#: ../kano_settings/set_mouse.py:60 ../kano_settings/config_file.py:50
+#: ../kano_settings/config_file.py:51 ../kano_settings/set_font.py:23
+#: ../kano_settings/set_font.py:38 ../kano_settings/set_font.py:69
+msgid "Normal"
+msgstr "Normal"
+
+#: ../kano_settings/set_mouse.py:15 ../kano_settings/set_mouse.py:31
+msgid "Fast"
+msgstr "Rápida"
+
+#: ../kano_settings/set_mouse.py:25 ../kano_settings/screens.py:106
+#: ../lxpanel-plugin/kano_settings.c:148
+msgid "Mouse"
+msgstr "Mouse"
+
+#: ../kano_settings/set_mouse.py:26
+msgid "Pick your speed"
+msgstr "Elige la velocidad"
+
+#: ../kano_settings/set_mouse.py:29
+msgid "REQUIRES LESS MOVE PRECISION"
+msgstr "REQUIERE MENOS PRECISIÓN DE MOVIMIENTO"
+
+#: ../kano_settings/set_mouse.py:30 ../kano_settings/set_font.py:38
+msgid "DEFAULT"
+msgstr "PREDETERMINADA"
+
+#: ../kano_settings/set_mouse.py:31
+msgid "BETTER FOR WIDE SCREENS"
+msgstr "MEJOR PARA PANTALLAS GRANDES"
+
+#: ../kano_settings/set_wallpaper.py:26
+msgid "Choose a background"
+msgstr "Escoge un fondo"
+
+#: ../kano_settings/set_wallpaper.py:30
+msgid "TRY"
+msgstr "INTENTAR"
+
+#: ../kano_settings/set_wallpaper.py:30
+msgid "CHOOSE"
+msgstr "ESCOGER"
+
+#: ../kano_settings/set_wallpaper.py:260
+msgid "Pick your background"
+msgstr "Escoge tu fondo"
+
+#: ../kano_settings/set_wallpaper.py:261
+msgid "New wallpapers unlocked! Level up to get more."
+msgstr ""
+"¡Nuevas imágenes de fondo desbloqueadas! Sube de nivel para conseguir más."
+
+#: ../kano_settings/get_window.py:31
+msgid "Application"
+msgstr "Aplicación"
+
+#: ../kano_settings/config_file.py:45
+#: ../kano_settings/system/supported_locales.py:8
+msgid "United States"
+msgstr "Estados Unidos"
+
+#: ../kano_settings/config_file.py:46
+msgid "Generic"
+msgstr "Genérico"
+
+#: ../kano_settings/config_file.py:47 ../kano_settings/system/audio.py:75
+#: ../kano_settings/system/audio.py:109 ../kano_settings/system/audio.py:110
+#: ../kano_settings/set_audio.py:67
+msgid "Analogue"
+msgstr "Analógico"
+
+#: ../kano_settings/set_account.py:39
+msgid "System account settings"
+msgstr "Configuración de la cuenta"
+
+#: ../kano_settings/set_account.py:40
+msgid "Set your account"
+msgstr "Configura tu cuenta"
+
+#: ../kano_settings/set_account.py:43 ../kano_settings/set_account.py:189
+msgid "CHANGE PASSWORD"
+msgstr "CAMBIAR CONTRASEÑA"
+
+#: ../kano_settings/set_account.py:48
+msgid "ADD ACCOUNT"
+msgstr "AÑADIR CUENTA"
+
+#: ../kano_settings/set_account.py:53
+msgid "REMOVE ACCOUNT"
+msgstr "ELIMINAR CUENTA"
+
+#: ../kano_settings/set_account.py:66
+msgid "Accounts"
+msgstr "Cuentas"
+
+#: ../kano_settings/set_account.py:67
+msgid "Add or remove accounts"
+msgstr "Agrega o elimina cuentas"
+
+#: ../kano_settings/set_account.py:103
+msgid "Error creating new user"
+msgstr "Error al crear nuevo usuario"
+
+#: ../kano_settings/set_account.py:109
+msgid "Reboot the system"
+msgstr "Reiniciar el sistema"
+
+#: ../kano_settings/set_account.py:110
+msgid "A new account will be created next time you reboot."
+msgstr "Una nueva cuenta será creada la próxima vez que reinicies."
+
+#: ../kano_settings/set_account.py:125
+msgid "Are you sure you want to delete the current user?"
+msgstr "¿Estás seguro de que quieres eliminar el usuario actual?"
+
+#: ../kano_settings/set_account.py:126
+msgid "You will lose all the data on this account!"
+msgstr "¡Perderás toda la información de tu cuenta!"
+
+#: ../kano_settings/set_account.py:129
+msgid "CANCEL"
+msgstr "CANCELAR"
+
+#: ../kano_settings/set_account.py:148
+msgid "Error deleting user"
+msgstr "Error al eliminar usuario"
+
+#: ../kano_settings/set_account.py:155
+msgid "To finish removing this account, you need to reboot"
+msgstr "Para terminar de eliminar esta cuenta tienes que reiniciar el sistema"
+
+#: ../kano_settings/set_account.py:156
+msgid "Do you want to reboot?"
+msgstr "¿Quieres reiniciar?"
+
+#: ../kano_settings/set_account.py:159 ../kano_settings/main_window.py:130
+msgid "LATER"
+msgstr "MÁS TARDE"
+
+#: ../kano_settings/set_account.py:164 ../kano_settings/main_window.py:135
+msgid "REBOOT NOW"
+msgstr "REINICIAR AHORA"
+
+#: ../kano_settings/set_account.py:187
+msgid "Change your password"
+msgstr "Cambia tu contraseña"
+
+#: ../kano_settings/set_account.py:193 ../kano_settings/set_account.py:201
+msgid "Old password"
+msgstr "Contraseña anterior"
+
+#: ../kano_settings/set_account.py:193
+msgid "\"kano\" is default"
+msgstr "\"kano\" es la predeterminada"
+
+#: ../kano_settings/set_account.py:194 ../kano_settings/set_account.py:206
+msgid "New password"
+msgstr "Contraseña nueva"
+
+#: ../kano_settings/set_account.py:195 ../kano_settings/set_account.py:211
+msgid "Repeat new password"
+msgstr "Repite tu nueva contraseña"
+
+#: ../kano_settings/set_account.py:253 ../kano_settings/set_account.py:258
+#: ../kano_settings/set_account.py:288 ../kano_settings/set_account.py:314
+msgid "Could not change password"
+msgstr "No se pudo guardar la contraseña"
+
+#: ../kano_settings/set_account.py:254
+msgid "Your old password is incorrect!"
+msgstr "¡Tu contraseña anterior es incorrecta!"
+
+#: ../kano_settings/set_account.py:259
+msgid "Your new passwords don't match! Try again."
+msgstr "¡Tus contraseñas nuevas no coinciden! Intenta nuevamente."
+
+#: ../kano_settings/set_account.py:289
+msgid "Your new password is not long enough or contains special characters."
+msgstr ""
+"Tu nueva contraseña no es suficientemente larga o contiene caracteres "
+"especiales."
+
+#: ../kano_settings/set_account.py:291
+msgid "Password changed!"
+msgstr "¡Contraseña cambiada!"
+
+#: ../kano_settings/set_overclock.py:43
+msgid "Overclock your processor"
+msgstr "Aumenta frecuencia de procesador"
+
+#: ../kano_settings/set_overclock.py:44
+msgid "Make your computer's brain think faster, but run hotter."
+msgstr ""
+"Haz que el cerebro de tu computadora piense más rápido, aunque se caliente "
+"más."
+
+#: ../kano_settings/set_overclock.py:80
+msgid "Warning"
+msgstr "Advertencia"
+
+#: ../kano_settings/set_overclock.py:82
+msgid ""
+"For a small percentage of users, this setting makes the Pi behave "
+"unpredictably. Do you want to continue?"
+msgstr ""
+"Para un pequeño porcentaje de usuarios, esta configuración hace que su Pi se "
+"comporte de manera impredecible. ¿Quieres continuar?"
+
+#: ../kano_settings/set_notifications.py:26 ../kano_settings/screens.py:121
+msgid "Notifications"
+msgstr "Notificaciones"
+
+#: ../kano_settings/set_notifications.py:27
+msgid "Here you can manage the built-in notification system"
+msgstr "Aquí puedes controlar el sistema de notificaciones"
+
+#: ../kano_settings/set_notifications.py:30
+msgid "Show all notifications"
+msgstr "Mostrar todas las notificaciones"
+
+#: ../kano_settings/set_notifications.py:31
+msgid "Hide all notifications"
+msgstr "Ocultar todas las notificaciones"
+
+#: ../kano_settings/set_notifications.py:32
+msgid "Hide only Kano World notifications"
+msgstr "Ocultar únicamente notificaciones de Kano World"
+
+# What is this? Can anybody clarify in English please?
+#: ../kano_settings/set_notifications.py:73
+#, fuzzy
+msgid "Enable LED Speaker CPU Animation"
+msgstr "Activar animación de CPU al LED del parlante"
+
+#: ../kano_settings/system/audio.py:70 ../kano_settings/system/audio.py:102
+#: ../kano_settings/system/audio.py:103 ../kano_settings/set_audio.py:66
+msgid "HDMI"
+msgstr "HDMI"
+
+#: ../kano_settings/system/advanced.py:94
+msgid "Parental lock enabled!"
+msgstr "¡Control de padres activado!"
+
+#: ../kano_settings/system/advanced.py:111
+msgid "Parental lock disabled!"
+msgstr "¡Control de padres desactivado!"
+
+#: ../kano_settings/system/advanced.py:118
+msgid ""
+"Password doesn't match\n"
+"leaving parental lock enabled!"
+msgstr ""
+"La contraseña no coincide\n"
+"¡control de padres permanece activado!"
+
+#: ../kano_settings/system/supported_locales.py:3
+msgid "English"
+msgstr "Inglés"
+
+#: ../kano_settings/system/supported_locales.py:4
+msgid "German"
+msgstr "Alemán"
+
+#: ../kano_settings/system/supported_locales.py:9
+msgid "United Kingdom"
+msgstr "Reino Unido"
+
+#: ../kano_settings/system/supported_locales.py:10
+msgid "Germany"
+msgstr "Alemania"
+
+#: ../kano_settings/system/boards/rpi_1.py:13
+#: ../kano_settings/system/boards/rpi_1.py:17
+#: ../kano_settings/system/boards/rpi_1.py:18
+#: ../kano_settings/system/boards/rpi_1.py:39
+msgid "High"
+msgstr "Alto"
+
+#: ../kano_settings/system/boards/rpi_1.py:17
+#: ../kano_settings/system/boards/rpi_1.py:21
+msgid "None"
+msgstr "Ninguno"
+
+#: ../kano_settings/system/boards/rpi_1.py:17
+#: ../kano_settings/system/boards/rpi_1.py:27
+msgid "Modest"
+msgstr "Moderado"
+
+#: ../kano_settings/system/boards/rpi_1.py:17
+#: ../kano_settings/system/boards/rpi_1.py:33
+msgid "Medium"
+msgstr "Mediano"
+
+#: ../kano_settings/system/boards/rpi_1.py:17
+#: ../kano_settings/system/boards/rpi_1.py:19
+#: ../kano_settings/system/boards/rpi_1.py:45
+msgid "Turbo"
+msgstr "Turbo"
+
+#: ../kano_settings/system/boards/rpi_3.py:11
+#: ../kano_settings/system/boards/rpi_3.py:15
+#: ../kano_settings/system/boards/rpi_3.py:16
+#: ../kano_settings/system/boards/rpi_3.py:19
+#: ../kano_settings/system/boards/rpi_2.py:11
+#: ../kano_settings/system/boards/rpi_2.py:15
+#: ../kano_settings/system/boards/rpi_2.py:16
+#: ../kano_settings/system/boards/rpi_2.py:19
+msgid "Standard"
+msgstr "Estándar"
+
+#: ../kano_settings/system/boards/rpi_2.py:15
+#: ../kano_settings/system/boards/rpi_2.py:17
+#: ../kano_settings/system/boards/rpi_2.py:26
+msgid "Overclocked"
+msgstr "Overclockeado"
+
+#: ../kano_settings/system/screensaver.py:21
+msgid "Could not find in home kdesk"
+msgstr "No se pudo encontrar en home kdesk"
+
+#: ../kano_settings/system/locale.py:101 ../kano_settings/system/locale.py:115
+msgid "You need to be root to change install a locale"
+msgstr ""
+"Necesitas ser usuario de root (superusuario) para cambiar o instalar la "
+"configuración regional"
 
 #: ../kano_settings/set_about.py:44
 #, python-brace-format
@@ -459,27 +930,118 @@ msgstr "Conectarse a dispositivos Bluetooth"
 msgid "DONE"
 msgstr "HECHO"
 
-#: ../kano_settings/get_window.py:31
-msgid "Application"
-msgstr "Aplicación"
+#: ../kano_settings/set_font.py:23 ../kano_settings/set_font.py:37
+msgid "Small"
+msgstr "Pequeño"
+
+#: ../kano_settings/set_font.py:23 ../kano_settings/set_font.py:39
+msgid "Big"
+msgstr "Grande"
+
+#: ../kano_settings/set_font.py:33 ../kano_settings/screens.py:118
+msgid "Font"
+msgstr "Fuente"
+
+#: ../kano_settings/set_font.py:34
+msgid "Choose a comfortable text size"
+msgstr "Elige el tamaño del texto"
+
+#: ../kano_settings/set_font.py:37
+msgid "BETTER FOR SMALL SCREENS"
+msgstr "MEJOR PARA PANTALLAS PEQUEÑAS"
+
+#: ../kano_settings/set_font.py:39
+msgid "BETTER FOR BIG SCREENS"
+msgstr "MEJOR PARA PANTALLAS GRANDES"
+
+#: ../kano_settings/set_audio.py:23 ../kano_settings/screens.py:107
+#: ../lxpanel-plugin/kano_settings.c:154
+msgid "Audio"
+msgstr "Audio"
+
+#: ../kano_settings/set_audio.py:24
+msgid "Get sound from your speaker or your TV"
+msgstr "Trae el sonido desde el parlante o desde tu TV"
+
+#: ../kano_settings/set_audio.py:38
+msgid "Speaker"
+msgstr "Parlante"
+
+#: ../kano_settings/set_audio.py:42
+msgid "TV     "
+msgstr "TV     "
+
+#: ../kano_settings/main_window.py:126
+msgid "Reboot?"
+msgstr "¿Reiniciar?"
+
+#: ../kano_settings/main_window.py:127
+msgid "Your Kano needs to reboot for changes to apply"
+msgstr "Tu Kano necesita reiniciarse para aplicar los cambios"
+
+# I assume this is Region settings but not sure - where can I find it?
+#: ../kano_settings/locale.py:24 ../kano_settings/screens.py:131
+msgid "Locale"
+msgstr "Región"
+
+#: ../kano_settings/locale.py:25
+msgid "Set your locale (Changing this requires a reboot)"
+msgstr "Configura tu región (Este cambio requiere un reinicio)"
+
+#: ../kano_settings/templates.py:179
+msgid "ADD"
+msgstr "AÑADIR"
+
+#: ../kano_settings/templates.py:181
+msgid "REMOVE"
+msgstr "ELIMINAR"
+
+#: ../kano_settings/templates.py:219
+msgid "Invalid website given"
+msgstr "Dirección web inválida"
+
+#: ../kano_settings/templates.py:220
+msgid ""
+"\n"
+"We need to make sure the website URL is valid.\n"
+"Please enter the full URL as it appears in your browser.\n"
+"\n"
+"Example: http://www.google.com\n"
+msgstr ""
+"\n"
+"Necesitamos estar seguros de que la URL del sitio es válido.\n"
+"Por favor ingresa la URL completa tal y como aparece en tu navegador.\n"
+"\n"
+"Ejemplo: http://www.google.com\n"
+
+# What is this?
+#: ../kano_settings/templates.py:223
+msgid "OK:red:1"
+msgstr "OK:red:1"
+
+#: ../kano_settings/no_internet_screen.py:27
+msgid "Later"
+msgstr "Más tarde"
+
+#: ../kano_settings/no_internet_screen.py:30
+msgid "CONNECT NOW"
+msgstr "CONECTAR AHORA"
+
+#: ../kano_settings/no_internet_screen.py:51
+msgid "You need internet to continue"
+msgstr "Necesitas internet para continuar"
 
 #: ../kano_settings/screens.py:67
+#: ../lxpanel-plugin-internet/kano_internet.c:270
 msgid "Connected"
 msgstr "Conectado"
 
 #: ../kano_settings/screens.py:69
+#: ../lxpanel-plugin-internet/kano_internet.c:257
 msgid "Not connected"
 msgstr "Desconectado"
 
-#: ../kano_settings/screens.py:107 ../kano_settings/set_audio.py:23
-msgid "Audio"
-msgstr "Audio"
-
-#: ../kano_settings/screens.py:108 ../kano_settings/set_display.py:53
-msgid "Display"
-msgstr "Pantalla"
-
-#: ../kano_settings/screens.py:109
+#: ../kano_settings/screens.py:109 ../lxpanel-plugin/kano_settings.c:166
 msgid "WiFi"
 msgstr "WiFi"
 
@@ -495,74 +1057,13 @@ msgstr "Cuenta"
 msgid "Style"
 msgstr "Estilo"
 
-#: ../kano_settings/screens.py:119 ../kano_settings/set_display.py:275
-msgid "Advanced"
-msgstr "Avanzado"
-
 #: ../kano_settings/screens.py:120
 msgid "About"
 msgstr "Acerca"
 
-#: ../kano_settings/screens.py:121 ../kano_settings/set_notifications.py:26
-msgid "Notifications"
-msgstr "Notificaciones"
-
 #: ../kano_settings/screens.py:122
 msgid "No-internet"
 msgstr "Sin-Internet"
-
-#: ../kano_settings/main_window.py:65 ../kano_settings/main_window.py:69
-#: ../kano_settings/parental_config.py:120
-msgid "Settings"
-msgstr "Ajustes"
-
-#: ../kano_settings/main_window.py:126
-msgid "Reboot?"
-msgstr "¿Reiniciar?"
-
-#: ../kano_settings/main_window.py:127
-msgid "Your Kano needs to reboot for changes to apply"
-msgstr "Tu Kano necesita reiniciarse para aplicar los cambios"
-
-#: ../kano_settings/main_window.py:130 ../kano_settings/set_account.py:159
-msgid "LATER"
-msgstr "MÁS TARDE"
-
-#: ../kano_settings/main_window.py:135 ../kano_settings/set_account.py:164
-msgid "REBOOT NOW"
-msgstr "REINICIAR AHORA"
-
-#: ../kano_settings/set_display.py:42
-msgid " (Changing this requires a reboot)"
-msgstr " (Cambiar esto requiere reiniciar el sistema)"
-
-#: ../kano_settings/set_display.py:47
-msgid ""
-"\n"
-"\n"
-"Current resolution: {}"
-msgstr ""
-"\n"
-"\n"
-"Resolución actual: {}"
-
-#: ../kano_settings/set_display.py:92 ../kano_settings/set_display.py:243
-#: ../kano_settings/set_display.py:332
-msgid "Overscan"
-msgstr "Encoger pantalla"
-
-#: ../kano_settings/set_display.py:99
-msgid "Flip Screen"
-msgstr "Voltear la pantalla"
-
-#: ../kano_settings/set_display.py:244
-msgid "This setting lets you adjust your screen's size."
-msgstr "Estos ajustes te permiten ajustar el tamaño de tu pantalla."
-
-#: ../kano_settings/set_display.py:333
-msgid "This setting lets you adjust your screen's size, edge by edge."
-msgstr ""
-"Estos ajustes te permiten ajustar el tamaño de tu pantalla, lado por lado."
 
 #: ../kano_settings/set_wifi.py:27
 msgid "to be set"
@@ -616,10 +1117,6 @@ msgstr "Estás en una conexión cableada"
 msgid "You're on a wireless network"
 msgstr "Estás en una conexión inalámbrica"
 
-#: ../kano_settings/set_wifi.py:134 ../kano_settings/set_advanced.py:85
-msgid "Configure"
-msgstr "Configurar"
-
 #: ../kano_settings/set_wifi.py:186
 msgid "Proxy"
 msgstr "Proxy"
@@ -664,502 +1161,47 @@ msgstr "Proxy habilitado de manera exitosa"
 msgid "Successfully disabled proxy"
 msgstr "Proxy deshabilitado de manera exitosa"
 
-#: ../kano_settings/set_wallpaper.py:26
-msgid "Choose a background"
-msgstr "Escoge un fondo"
+#: ../etc/init.d/kano-settings:19
+#, fuzzy, sh-format
+msgid "Get ready... Kano is starting up.\\n"
+msgstr "Prepárate... Kano está empezando.\n"
 
-#: ../kano_settings/set_wallpaper.py:30
-msgid "TRY"
-msgstr "INTENTAR"
-
-#: ../kano_settings/set_wallpaper.py:30
-msgid "CHOOSE"
-msgstr "ESCOGER"
-
-#: ../kano_settings/set_wallpaper.py:260
-msgid "Pick your background"
-msgstr "Escoge tu fondo"
-
-#: ../kano_settings/set_wallpaper.py:261
-msgid "New wallpapers unlocked! Level up to get more."
-msgstr ""
-"¡Nuevas imágenes de fondo desbloqueadas! Sube de nivel para conseguir más."
-
-#: ../kano_settings/system/locale.py:101 ../kano_settings/system/locale.py:115
-msgid "You need to be root to change install a locale"
-msgstr ""
-"Necesitas ser usuario de root (superusuario) para cambiar o instalar la "
-"configuración regional"
-
-#: ../kano_settings/system/advanced.py:94
-msgid "Parental lock enabled!"
-msgstr "¡Control de padres activado!"
-
-#: ../kano_settings/system/advanced.py:111
-msgid "Parental lock disabled!"
-msgstr "¡Control de padres desactivado!"
-
-#: ../kano_settings/system/advanced.py:118
-msgid ""
-"Password doesn't match\n"
-"leaving parental lock enabled!"
-msgstr ""
-"La contraseña no coincide\n"
-"¡control de padres permanece activado!"
-
-#: ../kano_settings/system/screensaver.py:21
-msgid "Could not find in home kdesk"
-msgstr "No se pudo encontrar en home kdesk"
-
-#: ../kano_settings/system/audio.py:70 ../kano_settings/system/audio.py:102
-#: ../kano_settings/system/audio.py:103 ../kano_settings/set_audio.py:66
-msgid "HDMI"
-msgstr "HDMI"
-
-#: ../kano_settings/system/boards/rpi_3.py:11
-#: ../kano_settings/system/boards/rpi_3.py:15
-#: ../kano_settings/system/boards/rpi_3.py:16
-#: ../kano_settings/system/boards/rpi_3.py:19
-#: ../kano_settings/system/boards/rpi_2.py:11
-#: ../kano_settings/system/boards/rpi_2.py:15
-#: ../kano_settings/system/boards/rpi_2.py:16
-#: ../kano_settings/system/boards/rpi_2.py:19
-msgid "Standard"
-msgstr "Estándar"
-
-#: ../kano_settings/system/boards/rpi_1.py:13
-#: ../kano_settings/system/boards/rpi_1.py:17
-#: ../kano_settings/system/boards/rpi_1.py:18
-#: ../kano_settings/system/boards/rpi_1.py:39
-msgid "High"
-msgstr "Alto"
-
-#: ../kano_settings/system/boards/rpi_1.py:17
-#: ../kano_settings/system/boards/rpi_1.py:21
-msgid "None"
-msgstr "Ninguno"
-
-#: ../kano_settings/system/boards/rpi_1.py:17
-#: ../kano_settings/system/boards/rpi_1.py:27
-msgid "Modest"
-msgstr "Moderado"
-
-#: ../kano_settings/system/boards/rpi_1.py:17
-#: ../kano_settings/system/boards/rpi_1.py:33
-msgid "Medium"
-msgstr "Mediano"
-
-#: ../kano_settings/system/boards/rpi_1.py:17
-#: ../kano_settings/system/boards/rpi_1.py:19
-#: ../kano_settings/system/boards/rpi_1.py:45
-msgid "Turbo"
-msgstr "Turbo"
-
-#: ../kano_settings/system/boards/rpi_2.py:15
-#: ../kano_settings/system/boards/rpi_2.py:17
-#: ../kano_settings/system/boards/rpi_2.py:26
-msgid "Overclocked"
-msgstr "Overclockeado"
-
-#: ../kano_settings/system/supported_locales.py:3
-msgid "English"
-msgstr "Inglés"
-
-#: ../kano_settings/system/supported_locales.py:4
-msgid "German"
-msgstr "Alemán"
-
-#: ../kano_settings/system/supported_locales.py:9
-msgid "United Kingdom"
-msgstr "Reino Unido"
-
-#: ../kano_settings/system/supported_locales.py:10
-msgid "Germany"
-msgstr "Alemania"
-
-#: ../kano_settings/set_account.py:39
-msgid "System account settings"
-msgstr "Configuración de la cuenta"
-
-#: ../kano_settings/set_account.py:40
-msgid "Set your account"
-msgstr "Configura tu cuenta"
-
-#: ../kano_settings/set_account.py:43 ../kano_settings/set_account.py:189
-msgid "CHANGE PASSWORD"
-msgstr "CAMBIAR CONTRASEÑA"
-
-#: ../kano_settings/set_account.py:48
-msgid "ADD ACCOUNT"
-msgstr "AÑADIR CUENTA"
-
-#: ../kano_settings/set_account.py:53
-msgid "REMOVE ACCOUNT"
-msgstr "ELIMINAR CUENTA"
-
-#: ../kano_settings/set_account.py:66
-msgid "Accounts"
-msgstr "Cuentas"
-
-#: ../kano_settings/set_account.py:67
-msgid "Add or remove accounts"
-msgstr "Agrega o elimina cuentas"
-
-#: ../kano_settings/set_account.py:103
-msgid "Error creating new user"
-msgstr "Error al crear nuevo usuario"
-
-#: ../kano_settings/set_account.py:109
-msgid "Reboot the system"
-msgstr "Reiniciar el sistema"
-
-#: ../kano_settings/set_account.py:110
-msgid "A new account will be created next time you reboot."
-msgstr "Una nueva cuenta será creada la próxima vez que reinicies."
-
-#: ../kano_settings/set_account.py:125
-msgid "Are you sure you want to delete the current user?"
-msgstr "¿Estás seguro de que quieres eliminar el usuario actual?"
-
-#: ../kano_settings/set_account.py:126
-msgid "You will lose all the data on this account!"
-msgstr "¡Perderás toda la información de tu cuenta!"
-
-#: ../kano_settings/set_account.py:129
-msgid "CANCEL"
-msgstr "CANCELAR"
-
-#: ../kano_settings/set_account.py:148
-msgid "Error deleting user"
-msgstr "Error al eliminar usuario"
-
-#: ../kano_settings/set_account.py:155
-msgid "To finish removing this account, you need to reboot"
-msgstr "Para terminar de eliminar esta cuenta tienes que reiniciar el sistema"
-
-#: ../kano_settings/set_account.py:156
-msgid "Do you want to reboot?"
-msgstr "¿Quieres reiniciar?"
-
-#: ../kano_settings/set_account.py:187
-msgid "Change your password"
-msgstr "Cambia tu contraseña"
-
-#: ../kano_settings/set_account.py:193 ../kano_settings/set_account.py:201
-msgid "Old password"
-msgstr "Contraseña anterior"
-
-#: ../kano_settings/set_account.py:193
-msgid "\"kano\" is default"
-msgstr "\"kano\" es la predeterminada"
-
-#: ../kano_settings/set_account.py:194 ../kano_settings/set_account.py:206
-msgid "New password"
-msgstr "Contraseña nueva"
-
-#: ../kano_settings/set_account.py:195 ../kano_settings/set_account.py:211
-msgid "Repeat new password"
-msgstr "Repite tu nueva contraseña"
-
-#: ../kano_settings/set_account.py:253 ../kano_settings/set_account.py:258
-#: ../kano_settings/set_account.py:288 ../kano_settings/set_account.py:314
-msgid "Could not change password"
-msgstr "No se pudo guardar la contraseña"
-
-#: ../kano_settings/set_account.py:254
-msgid "Your old password is incorrect!"
-msgstr "¡Tu contraseña anterior es incorrecta!"
-
-#: ../kano_settings/set_account.py:259
-msgid "Your new passwords don't match! Try again."
-msgstr "¡Tus contraseñas nuevas no coinciden! Intenta nuevamente."
-
-#: ../kano_settings/set_account.py:289
-msgid "Your new password is not long enough or contains special characters."
-msgstr ""
-"Tu nueva contraseña no es suficientemente larga o contiene caracteres "
-"especiales."
-
-#: ../kano_settings/set_account.py:291
-msgid "Password changed!"
-msgstr "¡Contraseña cambiada!"
-
-#: ../kano_settings/set_account.py:320 ../kano_settings/set_advanced.py:309
-msgid "GO BACK"
-msgstr "VOLVER"
-
-#: ../kano_settings/set_screensaver.py:34
-msgid "Change your screensaver"
-msgstr "Cambia tu salvapantallas"
-
-#: ../kano_settings/set_screensaver.py:36
-msgid "CHANGE SCREENSAVER"
-msgstr "CAMBIAR SALVAPANTALLAS"
-
-#: ../kano_settings/set_screensaver.py:37
-msgid "Advanced Options"
-msgstr "Opciones Avanzadas"
-
-#: ../kano_settings/set_screensaver.py:157
-msgid "Screensaver - advanced"
-msgstr "Salvapantallas - avanzado"
-
-#: ../kano_settings/set_screensaver.py:176
-msgid "Turn on screensaver"
-msgstr "Activar salvapantallas"
-
-#: ../kano_settings/set_screensaver.py:184
-msgid ""
-"Length of time in minutes\n"
-"before screensaver launches"
-msgstr ""
-"Tiempo en minutos\n"
-"antes de que se active el salvapantallas"
-
-#: ../kano_settings/set_overclock.py:43
-msgid "Overclock your processor"
-msgstr "Aumenta frecuencia de procesador"
-
-#: ../kano_settings/set_overclock.py:44
-msgid "Make your computer's brain think faster, but run hotter."
-msgstr ""
-"Haz que el cerebro de tu computadora piense más rápido, aunque se caliente "
-"más."
-
-#: ../kano_settings/set_overclock.py:80
-msgid "Warning"
-msgstr "Advertencia"
-
-#: ../kano_settings/set_overclock.py:82
-msgid ""
-"For a small percentage of users, this setting makes the Pi behave "
-"unpredictably. Do you want to continue?"
-msgstr ""
-"Para un pequeño porcentaje de usuarios, esta configuración hace que su Pi se "
-"comporte de manera impredecible. ¿Quieres continuar?"
-
-#: ../kano_settings/set_notifications.py:27
-msgid "Here you can manage the built-in notification system"
-msgstr "Aquí puedes controlar el sistema de notificaciones"
-
-#: ../kano_settings/set_notifications.py:30
-msgid "Show all notifications"
-msgstr "Mostrar todas las notificaciones"
-
-#: ../kano_settings/set_notifications.py:31
-msgid "Hide all notifications"
-msgstr "Ocultar todas las notificaciones"
-
-#: ../kano_settings/set_notifications.py:32
-msgid "Hide only Kano World notifications"
-msgstr "Ocultar únicamente notificaciones de Kano World"
-
-# What is this? Can anybody clarify in English please?
-#: ../kano_settings/set_notifications.py:73
+#: ../lxpanel-plugin/kano_settings.c:35 ../lxpanel-plugin/kano_settings.c:254
 #, fuzzy
-msgid "Enable LED Speaker CPU Animation"
-msgstr "Activar animación de CPU al LED del parlante"
-
-#: ../kano_settings/parental_config.py:29 ../kano_settings/set_advanced.py:68
-msgid "Parental lock"
-msgstr "Control de padres"
-
-#: ../kano_settings/parental_config.py:30
-msgid "Configure your parental lock settings"
-msgstr "Configura los ajustes del control de padres"
-
-#: ../kano_settings/parental_config.py:48
-msgid "Low Settings"
+msgid "Kano Settings"
 msgstr "Configuración baja"
 
-#: ../kano_settings/parental_config.py:49
-msgid ""
-"Block predefined blacklisted websites and\n"
-"activates SafeSearch on Google and Youtube"
+#: ../lxpanel-plugin/kano_settings.c:172
+#, fuzzy
+msgid "All settings"
+msgstr "Ajustes"
+
+#: ../lxpanel-plugin/kano_settings.c:255
+msgid "A quick access to important settings."
 msgstr ""
-"Bloquea sitios denegados predefinidos y\n"
-"activa BúsquedaSegura en Google y YouTube"
 
-#: ../kano_settings/parental_config.py:52
-msgid "Medium Settings"
-msgstr "Configuración Media"
-
-#: ../kano_settings/parental_config.py:53
-msgid "Use safe DNS servers to filter all traffic"
-msgstr "Usa servidores DNS seguros para filtrar el tráfico"
-
-#: ../kano_settings/parental_config.py:56
-msgid "High Settings"
-msgstr "Configuración Alta"
-
-#: ../kano_settings/parental_config.py:57
-msgid "Enable all filters and restrict search engine access"
-msgstr "Habilita todos los filtros y restringe accesos al motor de búsqueda"
-
-#: ../kano_settings/parental_config.py:60
-msgid "Ultimate Settings"
-msgstr "Configuración Extrema"
-
-#: ../kano_settings/parental_config.py:61
-msgid "Only allow access to Kano World activities"
-msgstr "Sólo permite el acceso a actividades de Kano World"
-
-#: ../kano_settings/parental_config.py:65
-msgid "Configure allowed/blocked"
-msgstr "Configura permitidos/bloqueados"
-
-#: ../kano_settings/parental_config.py:121
-msgid ""
-"If any browsers are open, please relaunch them for this setting to take "
-"effect"
+#: ../lxpanel-plugin-internet/kano_internet.c:39
+msgid "Internet status"
 msgstr ""
-"Si algún navegador se encuentra abierto, reinicia para dar lugar a la nueva "
-"configuración "
 
-#: ../kano_settings/parental_config.py:181
-msgid "Allow and Block Sites"
-msgstr "Sitios bloqueados y permitidos"
+#: ../lxpanel-plugin-internet/kano_internet.c:262
+#, fuzzy
+msgid "Connect"
+msgstr "Conectado"
 
-#: ../kano_settings/parental_config.py:182
-msgid "Add extra sites to block or allow"
-msgstr "Añade sitios bloqueados o permitidos"
+#: ../lxpanel-plugin-internet/kano_internet.c:277
+#, fuzzy
+msgid "Disconnect"
+msgstr "Desconexión completada."
 
-#: ../kano_settings/parental_config.py:206
-msgid "Add extra sites to block"
-msgstr "Añade sitios bloqueados"
+#: ../lxpanel-plugin-internet/kano_internet.c:360
+#, fuzzy
+msgid "Kano Internet"
+msgstr "Sin-Internet"
 
-#: ../kano_settings/parental_config.py:211
-msgid "Something blocked that shouldn't be?"
-msgstr "¿Hay algo bloqueado que no debería?"
-
-#: ../kano_settings/parental_config.py:266
-msgid "Parental Authentication"
-msgstr "Autenticación de Padres"
-
-#: ../kano_settings/parental_config.py:267
-msgid "Enter your parental password:"
-msgstr "Introduce tu contraseña de padres:"
-
-#: ../kano_settings/parental_config.py:281
-msgid "Try again?"
-msgstr "¿Intentar de neuvo?"
-
-#: ../kano_settings/parental_config.py:282
-msgid "The password was incorrect. Changes not applied"
-msgstr "Contraseña incorrecta. No se aplicaron cambios"
-
-#: ../kano_settings/no_internet_screen.py:27
-msgid "Later"
-msgstr "Más tarde"
-
-#: ../kano_settings/no_internet_screen.py:30
-msgid "CONNECT NOW"
-msgstr "CONECTAR AHORA"
-
-#: ../kano_settings/no_internet_screen.py:51
-msgid "You need internet to continue"
-msgstr "Necesitas internet para continuar"
-
-#: ../kano_settings/set_advanced.py:25
-msgid "Toggle parental lock and debug mode"
-msgstr "Activar el control de padres y el modo depuración "
-
-#: ../kano_settings/set_advanced.py:60
-msgid ""
-"Use different levels to:\n"
-"- Block mature content in browser and YouTube\n"
-"- Or restrict internet access to only Kano World activity"
+#: ../lxpanel-plugin-internet/kano_internet.c:361
+msgid "Shows the status of your internet connection."
 msgstr ""
-"Usa diferentes niveles para:\n"
-"- Bloquear contenido para mayores en el navegador y YouTube\n"
-"- O restringir el acceso a internet únicamente a activiades de Kano World"
-
-#: ../kano_settings/set_advanced.py:98
-msgid ""
-"Having problems?\n"
-"1) Enable this mode\n"
-"2) Report a bug with the ? tool on the Desktop"
-msgstr ""
-"¿Estás teniendo problemas?\n"
-"1) Activar este modo\n"
-"2) Reportar un error haciendo click en ? que se encuentra en el Escritorio"
-
-#: ../kano_settings/set_advanced.py:105 ../kano_settings/set_advanced.py:150
-msgid "Debug mode"
-msgstr "Modo de depuración"
-
-#: ../kano_settings/set_advanced.py:143
-msgid "Activated"
-msgstr "Activado"
-
-#: ../kano_settings/set_advanced.py:148
-msgid "De-activated"
-msgstr "Desactivado"
-
-#: ../kano_settings/set_advanced.py:180
-msgid "Unlock parental lock"
-msgstr "Desbloquer el control de padres"
-
-#: ../kano_settings/set_advanced.py:181
-msgid "Enter your password"
-msgstr "Ingresa tu contraseña"
-
-#: ../kano_settings/set_advanced.py:182
-msgid "UNLOCK"
-msgstr "DESBLOQUEAR"
-
-#: ../kano_settings/set_advanced.py:188
-msgid "Enter your selected password"
-msgstr "Ingresa la contraseña elegida"
-
-#: ../kano_settings/set_advanced.py:197
-msgid "Set up parental lock"
-msgstr "Establecer el control de padres"
-
-#: ../kano_settings/set_advanced.py:198
-msgid "Choose a password"
-msgstr "Elige una contraseña"
-
-#: ../kano_settings/set_advanced.py:199
-msgid "LOCK"
-msgstr "BLOQUEAR"
-
-#: ../kano_settings/set_advanced.py:205
-msgid "Select password"
-msgstr "Elige una contraseña"
-
-#: ../kano_settings/set_advanced.py:209
-msgid "Confirm password"
-msgstr "Confirma la contraseña"
-
-#: ../kano_settings/set_advanced.py:278
-msgid "Careful"
-msgstr "Cuidado"
-
-#: ../kano_settings/set_advanced.py:279
-msgid "The passwords don't match! Try again"
-msgstr "¡Las contraseñas no coinciden! Intenta nuevamente"
-
-#: ../kano_settings/set_advanced.py:349
-msgid "Error"
-msgstr "Error"
-
-#: ../kano_settings/set_audio.py:24
-msgid "Get sound from your speaker or your TV"
-msgstr "Trae el sonido desde el parlante o desde tu TV"
-
-#: ../kano_settings/set_audio.py:38
-msgid "Speaker"
-msgstr "Parlante"
-
-#: ../kano_settings/set_audio.py:42
-msgid "TV     "
-msgstr "TV     "
-
-#: ../etc/init.d/kano-settings:19
-#, sh-format
-msgid "Get ready... Kano is starting up.\n"
-msgstr "Prepárate... Kano está empezando.\n"
 
 #~ msgid "america"
 #~ msgstr "América"
