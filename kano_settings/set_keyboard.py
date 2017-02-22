@@ -182,6 +182,9 @@ class SetKeyboard(Template):
                     # Apply the keyboard changes
                     keyboard_config.set_keyboard(self.selected_country, self.selected_variant)
 
+                    # A reboot is needed to apply the new keyboard to QT5 apps
+                    common.need_reboot = True
+                    
                 # The callback runs a GUI task, so wrap it!
                 GObject.idle_add(self.work_finished_cb)
 
