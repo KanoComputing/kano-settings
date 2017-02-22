@@ -1162,9 +1162,8 @@ msgid "Successfully disabled proxy"
 msgstr "Proxy deshabilitado de manera exitosa"
 
 #: ../etc/init.d/kano-settings:19
-#, fuzzy, sh-format
-msgid "Get ready... Kano is starting up.\\n"
-msgstr "Prepárate... Kano está empezando.\n"
+msgid "Get ready... Kano is starting up."
+msgstr "Prepárate... Kano está empezando."
 
 #: ../lxpanel-plugin/kano_settings.c:35 ../lxpanel-plugin/kano_settings.c:254
 #, fuzzy

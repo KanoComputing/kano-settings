@@ -16,7 +16,10 @@ export TEXTDOMAIN="kano-settings"
 case "$1" in
     start)
         # Display a welcome message to the bootup terminal
-        eval_gettext "Get ready... Kano is starting up.\n" > /dev/tty1
+        eval_gettext "Get ready... Kano is starting up." > /dev/tty1
+
+        # A new line, to position the shell prompt underneath
+        echo "" > /dev/tty1
 
         # If Dashboard Onboot is installed (soft dependency),
         # call him now. He enforces the kit to always go to Dashboard/Greeter.
