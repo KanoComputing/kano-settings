@@ -16,6 +16,7 @@ from kano.gtk3.buttons import OrangeButton, KanoButton
 from kano_profile.paths import legal_dir
 from kano_settings.common import media
 from kano.network import launch_browser
+from kano.utils import read_file_contents
 from kano_settings.system.about import (
     get_current_version, get_space_available, get_temperature, get_model_name
 )
@@ -36,10 +37,18 @@ class SetAbout(Gtk.Box):
 
         image = Gtk.Image.new_from_file(media + "/Graphics/about-screen.png")
 
+        version_number, os_name = get_current_version()
+        os_variant = read_file_contents('/etc/kanux_version_variant')
+
         version_align = self.create_align(
-            "Kano OS v.{version}".format(version=get_current_version()),
+            "Kano OS: {name} v{version}".format(name=os_name, version=version_number),
             'about_version'
         )
+        if os_variant:
+            variant_align = self.create_align(
+                "{variant}".format(variant=os_variant),
+                'about_version'
+            )
         space_align = self.create_align(
             _("Disk space used: {used}B / {total}B").format(**get_space_available())
         )
@@ -78,6 +87,8 @@ class SetAbout(Gtk.Box):
         image.set_margin_top(10)
         self.pack_start(image, False, False, 10)
         self.pack_start(version_align, False, False, 2)
+        if os_variant:
+            self.pack_start(variant_align, False, False, 2)
         self.pack_start(space_align, False, False, 1)
         self.pack_start(temperature_align, False, False, 1)
         self.pack_start(model_align, False, False, 1)

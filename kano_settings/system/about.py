@@ -11,12 +11,17 @@ from kano.utils.shell import run_cmd
 from kano.utils.hardware import get_board_property, get_rpi_model
 
 
+def _split_helper(os, devstage, number="?", name="?", *args):
+    if args:
+        print "DEV ERROR: Too many values in version string!"
+    return os, devstage, number, name
+
+
 def get_current_version():
-    version_number = "?"
     with open('/etc/kanux_version', 'r') as f:
         output = f.read().strip()
-        version_number = output.split('-')[-1]
-    return version_number
+        dummy1, dummy2, number, name = _split_helper(*output.split("-"))
+    return number, name
 
 
 def get_space_available():
