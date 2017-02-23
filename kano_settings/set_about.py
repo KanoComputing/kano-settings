@@ -64,18 +64,12 @@ class SetAbout(Gtk.Box):
             'button_release_event', self.show_credits
         )
 
-        changelog_button = OrangeButton(_("Changelog"))
-        changelog_button.connect(
-            'button_release_event', self.show_changelog
-        )
-
         self.kano_button = KanoButton(_("BACK"))
         self.kano_button.pack_and_align()
 
         hbox = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, spacing=0)
         hbox.pack_start(terms_and_conditions, False, False, 4)
         hbox.pack_start(credits_button, False, False, 4)
-        hbox.pack_start(changelog_button, False, False, 4)
         hbutton_container = Gtk.Alignment(
             xalign=0.5, xscale=0, yalign=0, yscale=0
         )
@@ -132,19 +126,3 @@ class SetAbout(Gtk.Box):
             "rgba:0000/0000/0000/FFFF -title 'Credits' -e "
             "/usr/bin/kano-credits'\""
         )
-
-    def show_changelog(self, widget, event):
-        '''Launch chromium with the link of the relevent changelog
-        '''
-
-        # Assuming current_version is of the form 1.3.4
-        current_version = get_current_version()
-
-        # Full link should be analogous to
-        # http://world.kano.me/forum/topic/kanux-beta-v1.2.3
-        link = "http://world.kano.me/forum/topic/kanux-beta-v{}".format(
-            current_version
-        )
-
-        launch_browser(link)
-        return
