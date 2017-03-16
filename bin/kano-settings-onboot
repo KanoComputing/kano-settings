@@ -38,7 +38,7 @@ if __name__ == '__main__' and __package__ is None:
 from kano.utils import run_cmd, enforce_root
 from kano.logging import logger
 from kano_settings.system.display import get_status, get_model, set_hdmi_mode, \
-    get_edid, is_mode_fallback, set_safeboot_mode, set_screen_value
+    get_edid, is_mode_fallback, set_safeboot_mode, set_screen_value, list_supported_modes
 from kano_settings.boot_config import set_config_value, set_config_comment, \
     get_config_comment, get_config_value, has_config_comment, \
     enforce_pi, is_safe_boot, safe_mode_backup_config, \
@@ -151,11 +151,8 @@ def compare_and_set_overscan():
 def compare_and_set_optimal_resolution():
     global edid, status
 
-    # TODO: Try to use the screen preferred resolution, change to 1024 otherwise
-    edid['preferred_res'] = '1024x768'
-    set_screen_value('framebuffer_width', '1024')
-    set_screen_value('framebuffer_height', '768')
-    logger.info('edid preferred_res: {}'.format(edid['preferred_res']))
+    # collect supported modes, and choose the best "mode".
+    print json.dumps(list_supported_modes(stringify=False), indent=4)
     return True
 
 

@@ -115,7 +115,7 @@ def get_supported_modes(group):
     return modes
 
 
-def list_supported_modes():
+def list_supported_modes(stringify=True):
     cea_modes = get_supported_modes("CEA")
     dmt_modes = get_supported_modes("DMT")
     modes = []
@@ -139,13 +139,20 @@ def list_supported_modes():
 
     for key in sorted(cea_modes):
         values = cea_modes[key]
-        cea_string = "cea:{:d}  {}  {}  {}".format(key, values[0], values[1], values[2])
+        if stringify:
+            cea_string = "cea:{:d}  {}  {}  {}".format(key, values[0], values[1], values[2])
+        else:
+            cea_string = { 'group': '1', 'mode': key, 'resolution': values[0], 'freq': values[1], 'aspect': values[2] }
         if is_resolution_supported(values[0]):
             modes.append(cea_string)
 
     for key in sorted(dmt_modes):
         values = dmt_modes[key]
-        dmt_string = "dmt:{:d}  {}  {}  {}".format(key, values[0], values[1], values[2])
+        if stringify:
+            dmt_string = "dmt:{:d}  {}  {}  {}".format(key, values[0], values[1], values[2])
+        else:
+            dmt_string = { 'group': '2', 'mode': key, 'resolution': values[0], 'freq': values[1], 'aspect': values[2] }
+
         if is_resolution_supported(values[0]):
             modes.append(dmt_string)
 
