@@ -17,6 +17,7 @@
 #  --force     : apply changes even if they are not needed
 #  --dump      : dump the screen information and exit (used to --test)
 #  --test:file : use --dump data for testing specific screens
+#  --noreboot  : do not reboot the kit
 #
 # Exit code is 0 if the screen has been reconfigured, non-zero otherwise.
 # Advise to take a backup copy of /boot/config.txt before running --test modes.
@@ -151,16 +152,18 @@ def compare_and_set_optimal_resolution():
     global edid, status
 
     # TODO: Try to use screen preferred resolution, 1024 otherwise
+    logger.info('trying to force 1024x768')
     edid['preferred_res'] = '1024x768'
     return True
 
 
-def reboot():
+def reboot(dry_run=False):
     '''
     Flush logs to disk and reboot the kit
     '''
-    logger.sync()
-    run_cmd('kano-checked-reboot changes systemctl reboot --force')
+    if not dry_run:
+        logger.sync()
+        run_cmd('kano-checked-reboot changes systemctl reboot --force')
 
 
 def get_screen_information(screen_log_path='/boot/screen.log', dry_run=False):
@@ -209,6 +212,7 @@ if __name__ == '__main__':
     force_mode = '--force' in sys.argv
     dump_mode = '--dump' in sys.argv
     verbose = '--verbose' in sys.argv
+    noreboot = '--noreboot' in sys.argv
     test_file = None
     reboot_now = False
 
@@ -282,7 +286,7 @@ if __name__ == '__main__':
         if dry_run:
             logger.debug("dry run rebooting")
         else:
-            reboot()
+            reboot(dry_run=noreboot)
         sys.exit(0)
 
     if is_safe_boot():
@@ -312,12 +316,14 @@ if __name__ == '__main__':
         sys.exit(1)
 
     # If the hdmi_group and hdmi_mode values are set explicitly,
-    # or we have a mark saying this is a screen kit,
     # then skip the detection.
     if get_config_value('hdmi_group') != 0 and get_config_value('hdmi_mode') != 0:
 
-        if not has_config_comment('kano_screen_used') or \
-                get_config_comment('kano_screen_used', model):
+        logger.info('is comment kano_screen_used? {}'.format(has_config_comment('kano_screen_used')))
+        logger.info('is comment kano_screen_used({})? {}'.format(model, get_config_comment('kano_screen_used', model)))
+
+        if not force_mode and (not has_config_comment('kano_screen_used') or \
+                                   get_config_comment('kano_screen_used', model)):
 
             # The screen is either the same or not set at all
             logger.info('Explicit HDMI configuration detected, exiting.')
@@ -358,7 +364,7 @@ if __name__ == '__main__':
         if dry_run:
             logger.debug("dry_run rebooting due to config changes")
         else:
-            reboot()
+            reboot(dry_run=noreboot)
 
         sys.exit(0)
     else:
