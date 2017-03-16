@@ -132,7 +132,7 @@ def compare_and_set_overscan():
         return True
 
 
-def get_screen_information(screen_log_path='/boot/screen.log'):
+def get_screen_information(screen_log_path='/boot/screen.log', dry_run=False):
     '''
     Retrieves the information about the current screen.
     The data will be logged to the bootpartition for
@@ -144,8 +144,9 @@ def get_screen_information(screen_log_path='/boot/screen.log'):
         "status": get_status()
     }
 
-    with open(screen_log_path, 'w') as f:
-        json.dump(info, f, sort_keys=True, indent=4, separators=(',', ': '))
+    if not dry_run:
+        with open(screen_log_path, 'w') as f:
+            json.dump(info, f, sort_keys=True, indent=4, separators=(',', ': '))
 
     return info
 
@@ -199,7 +200,7 @@ if __name__ == '__main__':
         reboot_now = True
 
     # Gather and log data about the current screen
-    screen_data = get_screen_information()
+    screen_data = get_screen_information(dry_run=dry_run)
     if verbose:
         pp = pprint.PrettyPrinter(depth=6)
         pp.pprint(screen_data)
