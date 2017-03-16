@@ -19,6 +19,7 @@ import os
 import sys
 import shutil
 import json
+import pprint
 
 # Allows for testing this module from a local repository clone
 if __name__ == '__main__' and __package__ is None:
@@ -39,13 +40,6 @@ from kano_settings.system.audio import is_HDMI, set_to_HDMI
 from kano_settings.system.overclock_chip_support import check_clock_config_matches_chip
 from kano.utils.hardware import get_rpi_model, get_board_property
 
-# TODO: what is this?
-overrides = {
-    '32V3H-H6A':     { 'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True },
-    'AS4637_______': { 'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True },
-    'BMD_HDMI':      { 'target_group': 'CEA', 'target_mode': 33, 'is_monitor': True },
-}
-
 
 def check_model_present(model):
     '''
@@ -58,7 +52,18 @@ def check_model_present(model):
 
 
 def override_models():
-    global overrides, edid, model
+    '''
+    This function sets specific modes for screens that require special treatment
+    '''
+    print 'quepasa'
+    overrides = {
+        '32V3H-H6A':     { 'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True },
+        'AS4637_______': { 'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True },
+        'BMD_HDMI':      { 'target_group': 'CEA', 'target_mode': 33, 'is_monitor': True },
+        }
+
+    global edid, model
+
     for override_model, override_rules in overrides.iteritems():
         if override_model == model:
             edid['target_group'] = override_rules['target_group']
@@ -149,6 +154,7 @@ def ensure_correct_browser():
     Makes sure we point to the supported browser
     depending on the Raspberry model performance.
     '''
+    browser_link='x-www-browser'
     model = get_rpi_model()
     arch = get_board_property(model, 'arch')
     chromium_support = arch not in ['armv6']
@@ -159,32 +165,32 @@ def ensure_correct_browser():
         browser = 'epiphany-browser'
 
     if dry_run:
-        logger.debug("browser should be {}".format(browser))
+        logger.debug("browser should be: {}".format(browser))
     else:
-        run_cmd('update-alternatives --set x-www-browser /usr/bin/{}'.format(browser))
+        run_cmd('update-alternatives --set {} /usr/bin/{}'.format(browser_link, browser))
 
 
 
 if __name__ == '__main__':
 
-    logger.force_log_level('info')
     dry_run = '--dry-run' in sys.argv
     force_mode = '--force' in sys.argv
+    verbose = '--verbose' in sys.argv
+    reboot_now = False
 
     # sanity checks
+    logger.force_log_level('info')
     enforce_pi()
     enforce_root('Need to be root!')
 
-    # dry-run does not change config.txt file
+    # dry-run mode does not change config.txt file
     if dry_run:
         print "dry_run_mode"
         set_dry_run()
         logger.force_log_level('debug')
         logger.force_debug_level('debug')
 
-    # Shared reboot flag for reconfiguring for rpi1/2 and video
-    reboot_now = False
-
+    # TODO: Move this task away, it is not related to screen management
     ensure_correct_browser()
 
     # Check for corrupt config file
@@ -194,6 +200,9 @@ if __name__ == '__main__':
 
     # Gather and log data about the current screen
     screen_data = get_screen_information()
+    if verbose:
+        pp = pprint.PrettyPrinter(depth=6)
+        pp.pprint(screen_data)
 
     # Rpi1 and Rpi2 have different clock rate defaults, but only one
     # set of config options. Swap the config options if we have booted on the other
