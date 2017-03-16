@@ -1,17 +1,26 @@
 #!/usr/bin/env python
+#
 # kano-settings-onboot
 #
-# Copyright (C) 2014, 2015 Kano Computing Ltd.
+# Copyright (C) 2014, 2015, 2017 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 # Configure HDMI settings on boot.
+# Also calls code to set clock config, to avoid need for an extra reboot.
 #
-# Also calls code to set clock config, to avoid need to an extra reboot.
+# TODO: Explain better what this tool is actually doing.
+# TODO: Rectify exit codes to understand what happened
+#
+# Call "sudo kano-logs config -l debug -o debug" to see what this tool decides to do.
+# Then invoke it with --dry-run to run it without actually doing anything.
+#
+
 import os
 import sys
 import shutil
 import json
 
+# Allows for testing this module from a local repository clone
 if __name__ == '__main__' and __package__ is None:
     dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     if dir_path != '/usr':
@@ -30,36 +39,26 @@ from kano_settings.system.audio import is_HDMI, set_to_HDMI
 from kano_settings.system.overclock_chip_support import check_clock_config_matches_chip
 from kano.utils.hardware import get_rpi_model, get_board_property
 
-logger.force_log_level('info')
-
-dry_run = '--dry-run' in sys.argv
-if dry_run:
-    print "dry_run_mode"
-    set_dry_run()
-    logger.force_log_level('debug')
-    logger.force_debug_level('debug')
-    
-
-screen_log_path = '/boot/screen.log'
-
+# TODO: what is this?
 overrides = {
-    '32V3H-H6A': {'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True},
-    'AS4637_______': {'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True},
-    'BMD_HDMI': {'target_group': 'CEA', 'target_mode': 33, 'is_monitor': True},
+    '32V3H-H6A':     { 'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True },
+    'AS4637_______': { 'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True },
+    'BMD_HDMI':      { 'target_group': 'CEA', 'target_mode': 33, 'is_monitor': True },
 }
 
 
-
-
 def check_model_present(model):
+    '''
+    Returns True if the requested screen model is active
+    '''
     if get_config_comment('kano_screen_used', model):
-        logger.info('The unit was configured for this model already, exiting.')
-        sys.exit()
+        return True
+    else:
+        return False
 
 
 def override_models():
     global overrides, edid, model
-
     for override_model, override_rules in overrides.iteritems():
         if override_model == model:
             edid['target_group'] = override_rules['target_group']
@@ -70,18 +69,15 @@ def override_models():
 
 def calculate_is_monitor():
     global edid
-
     edid['target_full_range'] = edid['is_monitor']
 
 
 def compare_and_set_mode():
     global edid, status
-
     if status['group'] == edid['target_group'] and \
        status['mode'] == edid['target_mode']:
         logger.info('mode change not needed')
         return False
-
     else:
         logger.info('mode change needed')
         modes = '{} {}'.format(edid['target_group'], edid['target_mode'])
@@ -93,11 +89,9 @@ def compare_and_set_mode():
 
 def compare_and_set_full_range():
     global edid, status
-
     if status['full_range'] == edid['target_full_range']:
         logger.info('fullrange change not needed')
         return False
-
     else:
         logger.info('fullrange change needed')
         msg = 'setting fullrange to: {}'.format(edid['target_full_range'])
@@ -112,11 +106,9 @@ def compare_and_set_full_range():
 
 def compare_and_set_overscan():
     global edid, status
-
     if status['overscan'] == edid['target_overscan']:
         logger.info('overscan change not needed')
         return False
-
     else:
         logger.info('overscan change needed')
         logger.info('setting overscan to: {}'.format(edid['target_overscan']))
@@ -135,13 +127,12 @@ def compare_and_set_overscan():
         return True
 
 
-def get_screen_information():
-    """ Retrieves the information about the current screen.
-
-        The data will be logged to the bootpartition for
-        troubleshooting purposes.
-    """
-
+def get_screen_information(screen_log_path='/boot/screen.log'):
+    '''
+    Retrieves the information about the current screen.
+    The data will be logged to the bootpartition for
+    troubleshooting purposes.
+    '''
     info = {
         "edid": get_edid(),
         "model": get_model(),
@@ -154,8 +145,12 @@ def get_screen_information():
     return info
 
 def ensure_correct_browser():
+    '''
+    Makes sure we point to the supported browser
+    depending on the Raspberry model performance.
+    '''
     model = get_rpi_model()
-    arch = get_board_property(model,'arch')
+    arch = get_board_property(model, 'arch')
     chromium_support = arch not in ['armv6']
 
     if chromium_support:
@@ -168,128 +163,138 @@ def ensure_correct_browser():
     else:
         run_cmd('update-alternatives --set x-www-browser /usr/bin/{}'.format(browser))
 
-# Shared reboot flag for reconfiguring for rpi1/2 and video
-reboot_now = False
-
-# main program
-enforce_pi()
-enforce_root('Need to be root!')
-
-# ensure browser is configured to be one that works on the board
-ensure_correct_browser()
-
-# Check for corrupt config file
-if check_corrupt_config():
-    logger.error("Found corrupt config file! Restoring default.")
-    reboot_now = True
-
-# Gather and log data about the current screen
-screen_data = get_screen_information()
-
-# Rpi1 and Rpi2 have different clock rate defaults, but only one
-# set of config options. Swap the config options if we have booted on the other
-# chip.
-
-if check_clock_config_matches_chip():
-    reboot_now = True
-
-# If we are in NOOBS mode, remove the config lines generated by noobs
-# Because the duplicate our config entries and override them.
-# And we expect only one instance of a config entry.
-if remove_noobs_defaults():
-    logger.info("removed NOOBS defaults")
-    reboot_now = True
-
-# Reconfigure and reboot if the user requested safe mode
-# Or if the cable appears not to have been plugged in.
-if is_mode_fallback():
-    logger.warn("executing fallback boot")
-
-    # Backup the config file
-    safe_mode_backup_config()
-
-    set_safeboot_mode()
-
-    # Trigger a reboot
-    reboot_now = True
 
 
-# If we need to set anything to do with config.txt, reboot
-if reboot_now:
-    end_config_transaction()
+if __name__ == '__main__':
+
+    logger.force_log_level('info')
+    dry_run = '--dry-run' in sys.argv
+    force_mode = '--force' in sys.argv
+
+    # sanity checks
+    enforce_pi()
+    enforce_root('Need to be root!')
+
+    # dry-run does not change config.txt file
     if dry_run:
-        logger.debug("rebooting")
-    else:
-        logger.sync()
-        run_cmd('kano-checked-reboot reboot_now systemctl reboot --force')
-    sys.exit()
+        print "dry_run_mode"
+        set_dry_run()
+        logger.force_log_level('debug')
+        logger.force_debug_level('debug')
+
+    # Shared reboot flag for reconfiguring for rpi1/2 and video
+    reboot_now = False
+
+    ensure_correct_browser()
+
+    # Check for corrupt config file
+    if check_corrupt_config():
+        logger.error("Found corrupt config file! Restoring default.")
+        reboot_now = True
+
+    # Gather and log data about the current screen
+    screen_data = get_screen_information()
+
+    # Rpi1 and Rpi2 have different clock rate defaults, but only one
+    # set of config options. Swap the config options if we have booted on the other
+    # chip.
+    if check_clock_config_matches_chip():
+        reboot_now = True
+
+    # If we are in NOOBS mode, remove the config lines generated by noobs
+    # Because the duplicate our config entries and override them.
+    # And we expect only one instance of a config entry.
+    if remove_noobs_defaults():
+        logger.info("removed NOOBS defaults")
+        reboot_now = True
+
+    # Reconfigure and reboot if the user requested safe mode
+    # Or if the cable appears not to have been plugged in.
+    if is_mode_fallback():
+        # Backup the config file and reboot into safe mode
+        logger.warn("executing fallback boot")
+        safe_mode_backup_config()
+        set_safeboot_mode()
+        reboot_now = True
 
 
-if is_safe_boot():
-    logger.info("In safe boot mode, restoring config.txt, skipping autoconfig")
-
-    # Restore the config.txt file
-    safe_mode_restore_config()
-    end_config_transaction()
-
-    sys.exit()
-
-
-# model and model comment check
-model = screen_data['model']
-logger.info('Screen model: {}'.format(model))
-if '--force' not in sys.argv:
-    check_model_present(model)
-
-# read status
-status = screen_data['status']
-if not status:
-    sys.exit(1)
-
-# get edid
-edid = screen_data['edid']
-if not edid:
-    sys.exit(1)
+    # If we need to set anything to do with config.txt, reboot
+    if reboot_now:
+        end_config_transaction()
+        if dry_run:
+            logger.debug("dry run rebooting")
+        else:
+            logger.sync()
+            run_cmd('kano-checked-reboot reboot_now systemctl reboot --force')
+        sys.exit(0)
 
 
-# If the hdmi_group and hdmi_mode values are set explicitely in the config
-# file, skip the detection.
-if get_config_value('hdmi_group') != 0 and get_config_value('hdmi_mode') != 0:
-    if not has_config_comment('kano_screen_used') or \
-       get_config_comment('kano_screen_used', model):
-        # The screen is either the same or not set at all
-        logger.info('Explicit HDMI configuration detected, exiting.')
-        sys.exit()
-    else:
-        # New screen detected, will reconfigure
-        logger.info('New screen was detected.')
-
-# override modes, calculate is_monitor
-override_models()
-calculate_is_monitor()
-
-# output
-logger.debug(status)
-logger.debug(edid)
-
-# fix hdmi audio status
-if not edid['hdmi_audio'] and is_HDMI():
-    msg = 'hdmi audio not supported on this screen, changing to analogue'
-    logger.info(msg)
-    set_to_HDMI(False)
+    if is_safe_boot():
+        logger.info("In safe boot mode, restoring config.txt, skipping autoconfig")
+        safe_mode_restore_config()
+        end_config_transaction()
+        sys.exit(0)
 
 
-# changes
-changes = compare_and_set_mode() or compare_and_set_full_range() or \
-    compare_and_set_overscan()
+    # model and model comment check
+    # TODO: what is this?
+    model = screen_data['model']
+    logger.info('Screen model: {}'.format(model))
+    if '--force' not in sys.argv and check_model_present(model):
+        logger.info('The unit was configured for this model already, exiting.')
+        sys.exit(0)
 
-if changes:
-    # write comment to config
-    set_config_comment('kano_screen_used', model)
-    end_config_transaction()
-    # reboot
-    if dry_run:
-        logger.debug("rebooting due to config changes")
-    else:
-        logger.sync()
-        run_cmd('kano-checked-reboot changes systemctl reboot --force')
+    # TODO: what does a wrong status mean to exit abruptly?
+    status = screen_data['status']
+    if not status:
+        sys.exit(1)
+
+    # TODO: same as above
+    edid = screen_data['edid']
+    if not edid:
+        sys.exit(1)
+
+    # If the hdmi_group and hdmi_mode values are set explicitly
+    # in the config file, skip the detection.
+    if get_config_value('hdmi_group') != 0 and get_config_value('hdmi_mode') != 0:
+        if not has_config_comment('kano_screen_used') or \
+                get_config_comment('kano_screen_used', model):
+            # The screen is either the same or not set at all
+            logger.info('Explicit HDMI configuration detected, exiting.')
+            sys.exit()
+        else:
+            # New screen detected, will reconfigure
+            logger.info('New screen was detected.')
+
+    # override modes, calculate is_monitor
+    override_models()
+    calculate_is_monitor()
+
+    # output
+    logger.debug(status)
+    logger.debug(edid)
+
+    # fix hdmi audio status
+    if not edid['hdmi_audio'] and is_HDMI():
+        msg = 'hdmi audio not supported on this screen, changing to analogue'
+        logger.info(msg)
+        set_to_HDMI(False)
+
+    # changes
+    changes = compare_and_set_mode() or \
+        compare_and_set_full_range() or \
+        compare_and_set_overscan()
+
+    if changes:
+        # write comment to config
+        set_config_comment('kano_screen_used', model)
+        end_config_transaction()
+        # reboot
+        if dry_run:
+            logger.debug("rebooting due to config changes")
+        else:
+            logger.sync()
+            run_cmd('kano-checked-reboot changes systemctl reboot --force')
+        sys.exit(0)
+
+    sys.exit(0)
