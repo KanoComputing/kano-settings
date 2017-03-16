@@ -132,6 +132,12 @@ def compare_and_set_overscan():
         return True
 
 
+def reboot():
+    logger.sync()
+    run_cmd('kano-checked-reboot changes systemctl reboot --force')
+
+
+
 def get_screen_information(screen_log_path='/boot/screen.log', dry_run=False):
     '''
     Retrieves the information about the current screen.
@@ -227,17 +233,14 @@ if __name__ == '__main__':
         set_safeboot_mode()
         reboot_now = True
 
-
     # If we need to set anything to do with config.txt, reboot
     if reboot_now:
         end_config_transaction()
         if dry_run:
             logger.debug("dry run rebooting")
         else:
-            logger.sync()
-            run_cmd('kano-checked-reboot reboot_now systemctl reboot --force')
+            reboot()
         sys.exit(0)
-
 
     if is_safe_boot():
         logger.info("In safe boot mode, restoring config.txt, skipping autoconfig")
@@ -303,8 +306,7 @@ if __name__ == '__main__':
         if dry_run:
             logger.debug("rebooting due to config changes")
         else:
-            logger.sync()
-            run_cmd('kano-checked-reboot changes systemctl reboot --force')
+            reboot()
         sys.exit(0)
 
     sys.exit(0)
