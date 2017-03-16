@@ -153,7 +153,10 @@ def compare_and_set_optimal_resolution():
 
     # TODO: Try to use screen preferred resolution, 1024 otherwise
     logger.info('trying to force 1024x768')
-    edid['preferred_res'] = '1024x768'
+    logger.info('status resolution: {}'.format(status['resolution']))
+
+    edid['preferred_res'] = '1025x769'
+    logger.info('edid preferred_res: {}'.format(edid['preferred_res']))
     return True
 
 
