@@ -9,7 +9,8 @@
 # Also calls code to set clock config, to avoid need for an extra reboot.
 #
 # TODO: Explain better what this tool is actually doing.
-# TODO: Rectify exit codes to understand what happened
+#
+# Exit code is 0 if the screen has been reconfigured, non-zero otherwise.
 #
 # Call "sudo kano-logs config -l debug -o debug" to see what this tool decides to do.
 # Then invoke it with --dry-run to run it without actually doing anything.
@@ -55,7 +56,6 @@ def override_models():
     '''
     This function sets specific modes for screens that require special treatment
     '''
-    print 'quepasa'
     overrides = {
         '32V3H-H6A':     { 'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True },
         'AS4637_______': { 'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True },
@@ -194,7 +194,7 @@ if __name__ == '__main__':
 
     # dry-run mode does not change config.txt file
     if dry_run:
-        print "dry_run_mode"
+        print "dry_run_mode, not applying any changes"
         set_dry_run()
         logger.force_log_level('debug')
         logger.force_debug_level('debug')
@@ -257,31 +257,31 @@ if __name__ == '__main__':
     logger.info('Screen model: {}'.format(model))
     if '--force' not in sys.argv and check_model_present(model):
         logger.info('The unit was configured for this model already, exiting.')
-        sys.exit(0)
+        sys.exit(1)
 
-
-    # TODO: what does a wrong status mean to exit abruptly?
+    # Sanity checks, we need current screen status and EDID info
     status = screen_data['status']
     if not status:
         logger.debug("could not determine current screen status, aborting")
         sys.exit(1)
 
-    # TODO: same as above
     edid = screen_data['edid']
     if not edid:
         logger.debug("could not determine screen EDID information, aborting")
         sys.exit(1)
 
 
-    # If the hdmi_group and hdmi_mode values are set explicitly
-    # in the config file, skip the detection.
+    # If the hdmi_group and hdmi_mode values are set explicitly,
+    # or we have a mark saying this is a screen kit,
+    # then skip the detection.
     if get_config_value('hdmi_group') != 0 and get_config_value('hdmi_mode') != 0:
+
         if not has_config_comment('kano_screen_used') or \
                 get_config_comment('kano_screen_used', model):
 
             # The screen is either the same or not set at all
             logger.info('Explicit HDMI configuration detected, exiting.')
-            sys.exit()
+            sys.exit(1)
         else:
             logger.info('New screen was detected, reconfiguring...')
 
@@ -289,7 +289,7 @@ if __name__ == '__main__':
     override_models()
     calculate_is_monitor()
 
-    if verboose:
+    if verbose:
         # Explain the new screen settings
         logger.debug(status)
         logger.debug(edid)
