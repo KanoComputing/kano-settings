@@ -143,6 +143,10 @@ class BootConfig:
         return config.get(name, config_filter=config_filter, fallback=fallback)
 
     def set_comment(self, name, value, config_filter=Filter.ALL):
+        '''
+        Adds a custom Kano comment key to the config file
+        in the form: ### my_comment_name: value
+        '''
         lines = read_file_contents_as_lines(self.path)
         if not lines:
             return
@@ -166,6 +170,10 @@ class BootConfig:
             os.fsync(boot_config_file.fileno())
 
     def get_comment(self, name, value):
+        '''
+        Query a custom Kano comment key from the config file
+        in the form: ### my_comment_name: value
+        '''
         lines = read_file_contents_as_lines(self.path)
         if not lines:
             return False

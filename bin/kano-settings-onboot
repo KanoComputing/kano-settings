@@ -7,20 +7,26 @@
 #
 # Configure HDMI settings on boot.
 # Also calls code to set clock config, to avoid need for an extra reboot.
-#
 # TODO: Explain better what this tool is actually doing.
 #
-# Exit code is 0 if the screen has been reconfigured, non-zero otherwise.
+# Available options:
 #
-# Call "sudo kano-logs config -l debug -o debug" to see what this tool decides to do.
-# Then invoke it with --dry-run to run it without actually doing anything.
+#  --dry-run   : do not change anything, just say what it would be done
+#                call "sudo kano-logs config -l debug -o debug"
+#  --verbose   : explain more things to the terminal
+#  --force     : apply changes even if they are not needed
+#  --dump      : dump the screen information and exit (used to --test)
+#  --test:file : use --dump data for testing specific screens
+#
+# Exit code is 0 if the screen has been reconfigured, non-zero otherwise.
+# Advise to take a backup copy of /boot/config.txt before running --test modes.
 #
 
 import os
 import sys
 import shutil
 import json
-import pprint
+
 
 # Allows for testing this module from a local repository clone
 if __name__ == '__main__' and __package__ is None:
@@ -78,6 +84,9 @@ def calculate_is_monitor():
 
 
 def compare_and_set_mode():
+    '''
+    Returns True if mode is changed
+    '''
     global edid, status
     if status['group'] == edid['target_group'] and \
        status['mode'] == edid['target_mode']:
@@ -93,6 +102,9 @@ def compare_and_set_mode():
 
 
 def compare_and_set_full_range():
+    '''
+    Returns True if full range is changed
+    '''
     global edid, status
     if status['full_range'] == edid['target_full_range']:
         logger.info('fullrange change not needed')
@@ -110,6 +122,9 @@ def compare_and_set_full_range():
 
 
 def compare_and_set_overscan():
+    '''
+    Returns True if overscan is changed
+    '''
     global edid, status
     if status['overscan'] == edid['target_overscan']:
         logger.info('overscan change not needed')
@@ -130,6 +145,14 @@ def compare_and_set_overscan():
         set_config_value('overscan_top', overscan_value)
         set_config_value('overscan_bottom', overscan_value)
         return True
+
+
+def compare_and_set_optimal_resolution():
+    global edid, status
+
+    # TODO: Try to use screen preferred resolution, 1024 otherwise
+    edid['preferred_res'] = '1024x768'
+    return True
 
 
 def reboot():
@@ -184,8 +207,18 @@ if __name__ == '__main__':
 
     dry_run = '--dry-run' in sys.argv
     force_mode = '--force' in sys.argv
+    dump_mode = '--dump' in sys.argv
     verbose = '--verbose' in sys.argv
+    test_file = None
     reboot_now = False
+
+    # test mode allows to feed EDID information directly from a custom file
+    for arg in sys.argv:
+        if arg.startswith('--test:'):
+            test_file=arg[7:]
+            if not os.path.isfile(test_file):
+                logger.error("Cannot find test file: {}".format(test_file))
+                sys.exit(1)
 
     # sanity checks
     logger.force_log_level('info')
@@ -207,11 +240,19 @@ if __name__ == '__main__':
         logger.error("Found corrupt config file! Restoring default.")
         reboot_now = True
 
-    # Gather and log data about the current screen
-    screen_data = get_screen_information(dry_run=dry_run)
-    if verbose:
-        pp = pprint.PrettyPrinter(depth=6)
-        pp.pprint(screen_data)
+    if (test_file):
+        # screen information is taken from a --dump data file for testing
+        print 'EDID test mode:', test_file
+        screen_data = json.loads(open(test_file, 'r').read())
+        if verbose:
+            print json.dumps(screen_data, indent=4)
+    else:
+        # Gather and log data about the current screen
+        screen_data = get_screen_information(dry_run=dry_run)
+        if verbose or dump_mode:
+            print json.dumps(screen_data, indent=4)
+            if dump_mode:
+                exit(1)
 
     # Rpi1 and Rpi2 have different clock rate defaults, but only one
     # set of config options. Swap the config options if we have booted
@@ -270,7 +311,6 @@ if __name__ == '__main__':
         logger.debug("could not determine screen EDID information, aborting")
         sys.exit(1)
 
-
     # If the hdmi_group and hdmi_mode values are set explicitly,
     # or we have a mark saying this is a screen kit,
     # then skip the detection.
@@ -291,8 +331,8 @@ if __name__ == '__main__':
 
     if verbose:
         # Explain the new screen settings
-        logger.debug(status)
-        logger.debug(edid)
+        print 'New status:', json.dumps(status, indent=4)
+        print 'New EDID:', json.dumps(edid, indent=4)
 
     # fix hdmi audio status
     if not edid['hdmi_audio'] and is_HDMI():
@@ -302,12 +342,13 @@ if __name__ == '__main__':
     # calculate changes needed
     changes = compare_and_set_mode() or \
         compare_and_set_full_range() or \
-        compare_and_set_overscan()
+        compare_and_set_overscan() or \
+        compare_and_set_optimal_resolution()
 
     if changes:
 
         if verbose:
-            print 'changes:', changes
+            print 'changes applied:', changes
 
         # write comment to config
         set_config_comment('kano_screen_used', model)
@@ -318,8 +359,8 @@ if __name__ == '__main__':
             logger.debug("dry_run rebooting due to config changes")
         else:
             reboot()
+
         sys.exit(0)
     else:
         logger.info('could not calculate changes for screen, nothing done')
-
-    sys.exit(0)
+        sys.exit(1)
