@@ -169,7 +169,7 @@ def compare_and_set_optimal_resolution():
 
     On success, the new mode is enforced (hdmi_group / hdmi_mode) and True is returned.
     '''
-    global edid, status, supported
+    global edid, status, supported, verbose
     preferred_mode = preferred_group = preferred_aspect_ratio = optimal_mode = None
 
     logger.info('Searching for the best optimal resolution')
@@ -227,6 +227,9 @@ def compare_and_set_optimal_resolution():
         optimal_mode = find_best_resolution_aspect(None, 1280, 800)
 
     if optimal_mode:
+        if verbose:
+            print 'Applying optimal mode:', optimal_mode
+        
         logger.info('Applying optimal mode: {}'.format(optimal_mode))
         set_hdmi_mode(optimal_mode['group'], optimal_mode['mode'])
         return True
@@ -326,8 +329,6 @@ if __name__ == '__main__':
         # screen information is taken from a --dump data file for testing
         print 'EDID test mode:', test_file
         screen_data = json.loads(open(test_file, 'r').read())
-        if verbose:
-            print json.dumps(screen_data, indent=4)
     else:
         # Gather and log data about the current screen
         screen_data = get_screen_information(dry_run=dry_run)
