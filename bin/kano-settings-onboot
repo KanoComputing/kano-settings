@@ -21,6 +21,9 @@
 # Exit code is 0 if the screen has been reconfigured, non-zero otherwise.
 # Advise to take a backup copy of /boot/config.txt before running --test modes.
 #
+# To get your screen details directly from the firmware:
+#  $ tvservice -d info.edid ; edidparser info.edid | less
+#
 
 import os
 import sys
@@ -148,10 +151,79 @@ def compare_and_set_overscan():
 
 
 def compare_and_set_optimal_resolution():
-    global edid, status, supported
+    '''
+    This function tries to set the best performance resolution mode on the kit.
+    It tries to find the preferred screen mode and aspect ratio, to try and match
+    an optimal resolution. If all fails, a default resolution is still tried.
 
-    # collect supported modes, and choose the best "mode".
-    return True
+    The end result is to stop having the Raspberry run at the highest possible resolution,
+    which slows down a number of graphical heavyweight applications.
+
+    On success, the new mode is enforced (hdmi_group / hdmi_mode) and True is returned.
+    '''
+    global edid, status, supported
+    preferred_mode = preferred_group = preferred_aspect_ratio = optimal_mode = None
+
+    logger.info('Searching for the best optimal resolution')
+
+    def find_best_resolution_aspect(aspect, width, height):
+        '''
+        Finds the screen mode at the given resolution and aspect ratio,
+        If aspect is None, the first matching resolution mode will be returned, if found.
+        '''
+        for mode in supported:
+            w = int(mode['resolution'].split('x')[0])
+            h = int(mode['resolution'].split('x')[1])
+            if w == width and h == height:
+
+                # If we care about aspect ratio, skip it if no match
+                if aspect and aspect != mode['aspect']:
+                    continue
+
+                logger.info('Found best mode at {}x{} mode: {} aspect: {}'.format(
+                        width, height, mode['mode'], mode['aspect']))
+                return mode
+
+        return None
+
+    # Try to identify the preferred screen mode and aspect ratio
+    try:
+        preferred_mode = edid['preferred_mode']
+        preferred_group = edid['preferred_group']
+        preferred_group = '2' if preferred_group == 'DMT' else '1'
+
+        # Now find the aspect ratio for this mode
+        for mode in supported:
+            if mode['mode'] == preferred_mode and mode['group'] == preferred_group:
+                preferred_aspect_ratio = mode['aspect']
+                logger.info('Reported preferred mode is {} group {} aspect ratio: {}'.format(
+                        preferred_mode, preferred_group, preferred_aspect_ratio))
+    except:
+        logger.warn('Preferred screen mode and aspect ratio could not de determined')
+
+    if preferred_aspect_ratio:
+        # We found the aspect/ratio, try to set the best resolution
+        if preferred_aspect_ratio == '4:3':
+            optimal_mode = find_best_resolution_aspect(preferred_aspect_ratio, 1024, 768)
+        elif preferred_aspect_ratio == '16:9':
+            optimal_mode = find_best_resolution_aspect(preferred_aspect_ratio, 1366, 768)
+            if not optimal_mode:
+                optimal_mode = find_best_resolution_aspect(preferred_aspect_ratio, 1360, 768)
+                if not optimal_mode:
+                    optimal_mode = find_best_resolution_aspect(preferred_aspect_ratio, 1280, 720)
+        elif preferred_aspect_ratio == '16:10':
+            optimal_mode = find_best_resolution_aspect(preferred_aspect_ratio, 1280, 800)
+
+    if not optimal_mode:
+        logger.info('Could not match an optimal mode, trying to limit resolution')
+        optimal_mode = find_best_resolution_aspect(None, 1280, 800)
+
+    if optimal_mode:
+        logger.info('Applying optimal mode: {}'.format(optimal_mode))
+        set_hdmi_mode(optimal_mode['group'], optimal_mode['mode'])
+        return True
+
+    return False
 
 
 def reboot(dry_run=False):
