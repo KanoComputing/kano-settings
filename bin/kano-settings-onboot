@@ -5,14 +5,16 @@
 # Copyright (C) 2014, 2015, 2017 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
-# Configure HDMI settings on boot.
-# Also calls code to set clock config, to avoid need for an extra reboot.
-# TODO: Explain better what this tool is actually doing.
+# Configure HDMI settings on boot, by checking the configuration against the current screen.
+# Additionally, an optimal resolution algorithm is in place, in order to avoid running
+# at high modes which would slow down expensive apps like Youtube.
+#
+# It also calls code to set the clock config, to avoid the need for an extra reboot.
+# This is needed for cases where the sdcard has previously booted on a different RPI model.
 #
 # Available options:
 #
-#  --dry-run   : do not change anything, just say what it would be done
-#                call "sudo kano-logs config -l debug -o debug"
+#  --dry-run   : do not change anything or reboot, just say what would be done
 #  --verbose   : explain more things to the terminal
 #  --force     : apply changes even if they are not needed
 #  --dump      : dump the screen information and exit (used to --test)
@@ -20,6 +22,12 @@
 #
 # Exit code is 0 if the screen has been reconfigured, non-zero otherwise.
 # Advise to take a backup copy of /boot/config.txt before running --test modes.
+#
+# In order to test a specific screen:
+#
+#  * sudo kano-logs config -l debug -o debug
+#  * sudo kano-settings-on-boot --dump > myscreen.dump
+#  * sudo kano-settings --dry-run --force --test:myscreen.dump
 #
 # To get your screen details directly from the firmware:
 #  $ tvservice -d info.edid ; edidparser info.edid | less
@@ -390,8 +398,7 @@ if __name__ == '__main__':
         logger.debug("could not determine list of screen supported modes, aborting")
         sys.exit(1)
 
-    # If the hdmi_group and hdmi_mode values are set explicitly,
-    # then skip the detection.
+    # If the hdmi_group and hdmi_mode values are set explicitly then skip the detection.
     if get_config_value('hdmi_group') != 0 and get_config_value('hdmi_mode') != 0:
 
         logger.info('is comment kano_screen_used? {}'.format(has_config_comment('kano_screen_used')))
