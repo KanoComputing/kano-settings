@@ -17,7 +17,6 @@
 #  --force     : apply changes even if they are not needed
 #  --dump      : dump the screen information and exit (used to --test)
 #  --test:file : use --dump data for testing specific screens
-#  --noreboot  : do not reboot the kit
 #
 # Exit code is 0 if the screen has been reconfigured, non-zero otherwise.
 # Advise to take a backup copy of /boot/config.txt before running --test modes.
@@ -149,10 +148,9 @@ def compare_and_set_overscan():
 
 
 def compare_and_set_optimal_resolution():
-    global edid, status
+    global edid, status, supported
 
     # collect supported modes, and choose the best "mode".
-    print json.dumps(list_supported_modes(stringify=False), indent=4)
     return True
 
 
@@ -174,7 +172,8 @@ def get_screen_information(screen_log_path='/boot/screen.log', dry_run=False):
     info = {
         "edid": get_edid(),
         "model": get_model(),
-        "status": get_status()
+        "status": get_status(),
+        "supported": list_supported_modes(stringify=False)
     }
 
     if not dry_run:
@@ -182,6 +181,7 @@ def get_screen_information(screen_log_path='/boot/screen.log', dry_run=False):
             json.dump(info, f, sort_keys=True, indent=4, separators=(',', ': '))
 
     return info
+
 
 def ensure_correct_browser():
     '''
@@ -211,7 +211,6 @@ if __name__ == '__main__':
     force_mode = '--force' in sys.argv
     dump_mode = '--dump' in sys.argv
     verbose = '--verbose' in sys.argv
-    noreboot = '--noreboot' in sys.argv
     test_file = None
     reboot_now = False
 
@@ -285,7 +284,7 @@ if __name__ == '__main__':
         if dry_run:
             logger.debug("dry run rebooting")
         else:
-            reboot(dry_run=noreboot)
+            reboot(dry_run=dry_run)
         sys.exit(0)
 
     if is_safe_boot():
@@ -312,6 +311,11 @@ if __name__ == '__main__':
     edid = screen_data['edid']
     if not edid:
         logger.debug("could not determine screen EDID information, aborting")
+        sys.exit(1)
+
+    supported = screen_data['supported']
+    if not supported:
+        logger.debug("could not determine list of screen supported modes, aborting")
         sys.exit(1)
 
     # If the hdmi_group and hdmi_mode values are set explicitly,
@@ -363,7 +367,7 @@ if __name__ == '__main__':
         if dry_run:
             logger.debug("dry_run rebooting due to config changes")
         else:
-            reboot(dry_run=noreboot)
+            reboot(dry_run=dry_run)
 
         sys.exit(0)
     else:
