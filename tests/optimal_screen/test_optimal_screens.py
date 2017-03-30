@@ -24,7 +24,9 @@ import unittest
 import sys
 sys.path.insert(1, '../../')
 
+verbose=False
 app='sudo ../../bin/kano-settings-onboot'
+
 
 class TestOptimalScreen(unittest.TestCase):
 
