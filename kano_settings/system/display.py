@@ -263,6 +263,13 @@ def is_mode_fallback():
     return w == 640 and h == 480
 
 
+def is_screen_kit():
+    '''
+    Returns True if the screen is a Kano Screen Kit.
+    '''
+    return get_edid_name(use_cached=False) in ('ADA-HDMI', 'MST-HDMI1')
+
+
 def get_model():
     '''
     Get the display device model name

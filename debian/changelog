@@ -1,3 +1,9 @@
+kano-settings (3.9.1-1) unstable; urgency=low
+
+  * Add API to detect the Kano Screen Kit
+
+ -- Team Kano <dev@kano.me>  Thu 30 Mar 2017 17:24:00 +0100
+
 kano-settings (3.9.0-1) unstable; urgency=low
 
   * Add Minecraft local hostname
