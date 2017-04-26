@@ -53,24 +53,31 @@ class SetNotifications(RadioButtonTemplate):
     def _add_led_speaker_checkbox(self):
         self.cpu_monitor_checkbox = Gtk.CheckButton()
         is_led_speaker_plugged = False
+        is_pi_hat_plugged = False
 
         try:
             from kano_peripherals.speaker_leds.driver.high_level import \
                 get_speakerleds_interface
+            from kano_peripherals.pi_hat.driver.high_level import \
+                get_pihat_interface
 
             speaker_led_api = get_speakerleds_interface()
             if speaker_led_api:  # can be None
                 is_led_speaker_plugged = speaker_led_api.detect()
 
+            pi_hat_api = get_pihat_interface()
+            if pi_hat_api:  # can be None
+                is_pi_hat_plugged = pi_hat_api.detect()
+
         except Exception as e:
-            logger.error("Something unexpected occured in _add_led_speaker_checkbox" \
+            logger.error("Something unexpected occured in _add_led_speaker_checkbox"
                          " - [{}]".format(e))
 
-        if has_min_performance(RPI_2_B_SCORE) and is_led_speaker_plugged:
+        if has_min_performance(RPI_2_B_SCORE) and (is_led_speaker_plugged or is_pi_hat_plugged):
             self.buttons.append(self.cpu_monitor_checkbox)
             self.label_button_and_pack(
                 self.cpu_monitor_checkbox,
-                _("Enable LED Speaker CPU Animation"), ''
+                _("Enable LED ring CPU Animation"), ''
             )
 
     def configure_all_notifications(self):
