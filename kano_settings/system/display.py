@@ -121,7 +121,7 @@ def list_supported_modes(stringify=True):
     modes = []
 
 
-    def is_resolution_supported(cea_dmt_resolution, min_x=1024, min_y=768):
+    def is_resolution_supported(cea_dmt_resolution, min_x=1024, min_y=720):
         '''
         Returns True if CEA/DMT resolution is supported by Kano.
         The string Format is expected in the form "widthxheight".
@@ -185,7 +185,7 @@ def set_hdmi_mode(group=None, mode=None):
     group = group.lower()
     mode = int(mode)
 
-    if group == 'cea':
+    if group == 'cea' or group == '1':
         set_screen_value('hdmi_group', 1)
     else:
         set_screen_value('hdmi_group', 2)
