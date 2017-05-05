@@ -63,6 +63,7 @@ def get_screen_value(key, fallback=True):
         key, config_filter=monitor_edid_filter, fallback=fallback
     )
 
+
 def switch_display_safe_mode():
     # NB this function appears to be unused
 
@@ -78,8 +79,8 @@ def switch_display_safe_mode():
                 group = m.split()[0].split(':')[0]
                 mode = m.split()[0].split(':')[1]
             logger.info(
-               "Switching display to safe resolution {} (group={} mode={})"
-               .format(resolution, group, mode))
+                "Switching display to safe resolution {} (group={} mode={})"
+                .format(resolution, group, mode))
             set_hdmi_mode_live(group, mode)
     except:
         logger.error("Error switching display to safe mode")
@@ -120,12 +121,11 @@ def list_supported_modes(stringify=True):
     dmt_modes = get_supported_modes("DMT")
     modes = []
 
-
     def is_resolution_supported(cea_dmt_resolution, min_x=1024, min_y=720):
-        '''
+        """
         Returns True if CEA/DMT resolution is supported by Kano.
         The string Format is expected in the form "widthxheight".
-        '''
+        """
         try:
             mode_x, mode_y = cea_dmt_resolution.lower().split('x')
             if int(mode_x) >= min_x and int(mode_y) >= min_y:
@@ -136,13 +136,18 @@ def list_supported_modes(stringify=True):
             # Unrecognized entry
             return True
 
-
     for key in sorted(cea_modes):
         values = cea_modes[key]
         if stringify:
             cea_string = "cea:{:d}  {}  {}  {}".format(key, values[0], values[1], values[2])
         else:
-            cea_string = { 'group': '1', 'mode': key, 'resolution': values[0], 'freq': values[1], 'aspect': values[2] }
+            cea_string = {
+                'group': 'CEA',
+                'mode': key,
+                'resolution': values[0],
+                'freq': values[1],
+                'aspect': values[2]
+            }
         if is_resolution_supported(values[0]):
             modes.append(cea_string)
 
@@ -151,12 +156,19 @@ def list_supported_modes(stringify=True):
         if stringify:
             dmt_string = "dmt:{:d}  {}  {}  {}".format(key, values[0], values[1], values[2])
         else:
-            dmt_string = { 'group': '2', 'mode': key, 'resolution': values[0], 'freq': values[1], 'aspect': values[2] }
+            dmt_string = {
+                'group': 'DMT',
+                'mode': key,
+                'resolution': values[0],
+                'freq': values[1],
+                'aspect': values[2]
+            }
 
         if is_resolution_supported(values[0]):
             modes.append(dmt_string)
 
     return modes
+
 
 def set_hdmi_mode_live(group=None, mode=None, drive='HDMI'):
     success = False
@@ -167,8 +179,10 @@ def set_hdmi_mode_live(group=None, mode=None, drive='HDMI'):
     # ask tvservice to switch to the given mode immediately
     status_str, _, rc = run_cmd(tvservice_path + ' -e "{} {} {}"'.format(group, mode, drive))
     if rc == 0 and os.path.exists(fbset_path) and os.path.exists(xrefresh_path):
-        # refresh the Xserver screen because most probably it has become black as a result of the graphic mode switch.
-        # we wait a tiny bit because on some occassions it happens to early and has no effect (leaves the screen black).
+        # Refresh the Xserver screen because most probably it has become
+        # black as a result of the graphic mode switch. We wait a tiny bit
+        # because on some occassions it happens to early and has no
+        # effect (leaves the screen black).
         time.sleep(2)
         _, _, _ = run_cmd('{} -depth 8 ; {} -depth 16'.format(fbset_path, fbset_path))
         _, _, _ = run_cmd(xrefresh_path)
@@ -176,7 +190,16 @@ def set_hdmi_mode_live(group=None, mode=None, drive='HDMI'):
 
     return success
 
+
 def set_hdmi_mode(group=None, mode=None):
+    """
+    Set the HDMI group and mode to select a different display setting for
+    resolution, frequency, etc. (see tvservice -m CEA && tvservice -m DMT).
+
+    Args:
+        group - str representing the group, e.g. 'cea'
+        mode  - str for the hdmi mode number, e.g. '28'
+    """
     if not group or not mode:
         set_screen_value('hdmi_group', None)
         set_screen_value('hdmi_mode', None)
@@ -185,19 +208,23 @@ def set_hdmi_mode(group=None, mode=None):
     group = group.lower()
     mode = int(mode)
 
-    if group == 'cea' or group == '1':
+    if group == 'cea':
         set_screen_value('hdmi_group', 1)
     else:
         set_screen_value('hdmi_group', 2)
 
     set_screen_value('hdmi_mode', mode)
 
-# flip screen 180
+
 def set_flip(display_rotate=None):
+    """
+    Flip screen 180.
+    """
     if display_rotate:
         set_screen_value('display_rotate', 2)
     else:
         set_screen_value('display_rotate', 0)
+
 
 def set_safeboot_mode():
     logger.warn("Safe boot requested")
@@ -264,16 +291,16 @@ def is_mode_fallback():
 
 
 def is_screen_kit():
-    '''
+    """
     Returns True if the screen is a Kano Screen Kit.
-    '''
+    """
     return get_edid_name(use_cached=False) in ('ADA-HDMI', 'MST-HDMI1')
 
 
 def get_model():
-    '''
+    """
     Get the display device model name
-    '''
+    """
     cmd = '{} -n'.format(tvservice_path)
     display_name, _, _ = run_cmd(cmd)
     display_name = display_name[16:].rstrip()
@@ -461,8 +488,10 @@ def get_edid():
 
     return parse_edid(edid_txt)
 
+
 def get_gfx_driver():
     return get_setting('Use_GLX')
+
 
 def set_gfx_driver(enabled):
     if enabled:

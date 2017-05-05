@@ -35,7 +35,6 @@
 
 import os
 import sys
-import shutil
 import json
 
 
@@ -61,26 +60,24 @@ from kano.utils.hardware import get_rpi_model, get_board_property
 
 
 def check_model_present(model):
-    '''
+    """
     Returns True if the requested screen model is active
-    '''
+    """
     if get_config_comment('kano_screen_used', model):
         return True
     else:
         return False
 
 
-def override_models():
-    '''
+def override_models(edid, model):
+    """
     This function sets specific modes for screens that require special treatment
-    '''
+    """
     overrides = {
         '32V3H-H6A':     {'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True},
         'AS4637_______': {'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True},
         'BMD_HDMI':      {'target_group': 'CEA', 'target_mode': 33, 'is_monitor': True},
     }
-
-    global edid, model
 
     for override_model, override_rules in overrides.iteritems():
         if override_model == model:
@@ -90,16 +87,14 @@ def override_models():
             return
 
 
-def calculate_is_monitor():
-    global edid
+def calculate_is_monitor(edid):
     edid['target_full_range'] = edid['is_monitor']
 
 
-def compare_and_set_mode():
-    '''
+def compare_and_set_mode(edid, status):
+    """
     Returns True if mode is changed
-    '''
-    global edid, status
+    """
     if status['group'] == edid['target_group'] and \
        status['mode'] == edid['target_mode']:
         logger.info('mode change not needed')
@@ -113,11 +108,10 @@ def compare_and_set_mode():
         return True
 
 
-def compare_and_set_full_range():
-    '''
+def compare_and_set_full_range(edid, status):
+    """
     Returns True if full range is changed
-    '''
-    global edid, status
+    """
     if status['full_range'] == edid['target_full_range']:
         logger.info('fullrange change not needed')
         return False
@@ -133,11 +127,10 @@ def compare_and_set_full_range():
         return True
 
 
-def compare_and_set_overscan():
-    '''
+def compare_and_set_overscan(edid, status):
+    """
     Returns True if overscan is changed
-    '''
-    global edid, status
+    """
     if status['overscan'] == edid['target_overscan']:
         logger.info('overscan change not needed')
         return False
@@ -159,15 +152,15 @@ def compare_and_set_overscan():
         return True
 
 
-def set_resolution_for_screen_kit():
-    '''
+def set_resolution_for_screen_kit(supported):
+    """
     This function sets a predefined resolution for a Kano Screen Kit.
 
     Returns:
         changes - bool whether or not there were changes made
-    '''
+    """
     if is_screen_kit():
-        optimal_mode = find_best_resolution_aspect(None, 1280, 800)
+        optimal_mode = find_best_resolution_aspect(supported, None, 1280, 800)
         if optimal_mode:
             if verbose:
                 print 'Applying SK optimal mode:', optimal_mode
@@ -181,16 +174,14 @@ def set_resolution_for_screen_kit():
     return False
 
 
-def set_resolution_for_unflashed_screen():
-    '''
+def set_resolution_for_unflashed_screen(status):
+    """
     This function sets a predefined resolution for a display
     without EDID information.
 
     Returns:
         changes - bool whether or not there were changes made
-    '''
-    global status
-
+    """
     UNFLASHED_SCREEN_WIDTH = 1280
     UNFLASHED_SCREEN_HEIGHT = 800
 
@@ -208,7 +199,7 @@ def set_resolution_for_unflashed_screen():
         return False
 
     # Attempt to set the resolution.
-    optimal_mode = {'group': '2', 'mode': 28}
+    optimal_mode = {'group': 'dmt', 'mode': '28'}
     if verbose:
         print 'Applying unflashed optimal mode:', optimal_mode
 
@@ -217,13 +208,11 @@ def set_resolution_for_unflashed_screen():
     return True
 
 
-def find_best_resolution_aspect(aspect, width, height):
-    '''
+def find_best_resolution_aspect(supported, aspect, width, height):
+    """
     Finds the screen mode at the given resolution and aspect ratio,
     If aspect is None, the first matching resolution mode will be returned, if found.
-    '''
-    global supported
-
+    """
     for mode in supported:
         w = int(mode['resolution'].split('x')[0])
         h = int(mode['resolution'].split('x')[1])
@@ -233,15 +222,17 @@ def find_best_resolution_aspect(aspect, width, height):
             if aspect and aspect != mode['aspect']:
                 continue
 
-            logger.info('Found best mode at {}x{} mode: {} aspect: {}'.format(
-                width, height, mode['mode'], mode['aspect']))
+            logger.info(
+                'Found best mode at {}x{} mode: {} aspect: {}'
+                .format(width, height, mode['mode'], mode['aspect'])
+            )
             return mode
 
     return None
 
 
-def compare_and_set_optimal_resolution():
-    '''
+def compare_and_set_optimal_resolution(edid, status, supported, verbose):
+    """
     This function tries to set the best performance resolution mode on the kit.
     It tries to find the preferred screen mode and aspect ratio, to try and match
     an optimal resolution. If all fails, a default resolution is still tried.
@@ -250,8 +241,7 @@ def compare_and_set_optimal_resolution():
     which slows down a number of graphical heavyweight applications.
 
     On success, the new mode is enforced (hdmi_group / hdmi_mode) and True is returned.
-    '''
-    global edid, status, supported, verbose
+    """
     preferred_mode = preferred_group = preferred_aspect_ratio = optimal_mode = None
 
     logger.info('Searching for the best optimal resolution')
@@ -260,33 +250,34 @@ def compare_and_set_optimal_resolution():
     try:
         preferred_mode = edid['preferred_mode']
         preferred_group = edid['preferred_group']
-        preferred_group = '2' if preferred_group == 'DMT' else '1'
 
         # Now find the aspect ratio for this mode
         for mode in supported:
             if mode['mode'] == preferred_mode and mode['group'] == preferred_group:
                 preferred_aspect_ratio = mode['aspect']
-                logger.info('Reported preferred mode is {} group {} aspect ratio: {}'.format(
-                    preferred_mode, preferred_group, preferred_aspect_ratio))
+                logger.info(
+                    'Reported preferred mode is {} group {} aspect ratio: {}'
+                    .format(preferred_mode, preferred_group, preferred_aspect_ratio)
+                )
     except:
         logger.warn('Preferred screen mode and aspect ratio could not de determined')
 
     if preferred_aspect_ratio:
         # We found the aspect/ratio, try to set the best resolution
         if preferred_aspect_ratio == '4:3':
-            optimal_mode = find_best_resolution_aspect(preferred_aspect_ratio, 1024, 768)
+            optimal_mode = find_best_resolution_aspect(supported, preferred_aspect_ratio, 1024, 768)
         elif preferred_aspect_ratio == '16:9':
-            optimal_mode = find_best_resolution_aspect(preferred_aspect_ratio, 1366, 768)
+            optimal_mode = find_best_resolution_aspect(supported, preferred_aspect_ratio, 1366, 768)
             if not optimal_mode:
-                optimal_mode = find_best_resolution_aspect(preferred_aspect_ratio, 1360, 768)
+                optimal_mode = find_best_resolution_aspect(supported, preferred_aspect_ratio, 1360, 768)
                 if not optimal_mode:
-                    optimal_mode = find_best_resolution_aspect(preferred_aspect_ratio, 1280, 720)
+                    optimal_mode = find_best_resolution_aspect(supported, preferred_aspect_ratio, 1280, 720)
         elif preferred_aspect_ratio == '16:10':
-            optimal_mode = find_best_resolution_aspect(preferred_aspect_ratio, 1280, 800)
+            optimal_mode = find_best_resolution_aspect(supported, preferred_aspect_ratio, 1280, 800)
 
     if not optimal_mode:
         logger.info('Could not match an optimal mode, trying to limit resolution')
-        optimal_mode = find_best_resolution_aspect(None, 1280, 800)
+        optimal_mode = find_best_resolution_aspect(supported, None, 1280, 800)
 
     if optimal_mode:
         if verbose:
@@ -300,20 +291,20 @@ def compare_and_set_optimal_resolution():
 
 
 def reboot(dry_run=False):
-    '''
+    """
     Flush logs to disk and reboot the kit
-    '''
+    """
     if not dry_run:
         logger.sync()
         run_cmd('kano-checked-reboot changes systemctl reboot --force')
 
 
 def get_screen_information(screen_log_path='/boot/screen.log', dry_run=False):
-    '''
+    """
     Retrieves the information about the current screen.
     The data will be logged to the bootpartition for
     troubleshooting purposes.
-    '''
+    """
     info = {
         "edid": get_edid(),
         "model": get_model(),
@@ -329,10 +320,10 @@ def get_screen_information(screen_log_path='/boot/screen.log', dry_run=False):
 
 
 def ensure_correct_browser():
-    '''
+    """
     Makes sure we point to the supported browser
     depending on the Raspberry model performance.
-    '''
+    """
     browser_link = 'x-www-browser'
     model = get_rpi_model()
     arch = get_board_property(model, 'arch')
@@ -411,15 +402,6 @@ if __name__ == '__main__':
         logger.info("removed NOOBS defaults")
         reboot_now = True
 
-    # # Reconfigure and reboot if the user requested safe mode
-    # # Or if the cable appears not to have been plugged in.
-    # if is_mode_fallback():
-    #     # Backup the config file and reboot into safe mode
-    #     logger.warn("executing fallback boot")
-    #     safe_mode_backup_config()
-    #     set_safeboot_mode()
-    #     reboot_now = True
-
     # If we need to set anything to do with config.txt, reboot
     if reboot_now:
         end_config_transaction()
@@ -456,8 +438,7 @@ if __name__ == '__main__':
 
     edid = screen_data['edid']
     if not edid:
-        changes = set_resolution_for_unflashed_screen()
-        if changes:
+        if set_resolution_for_unflashed_screen(status):
             reboot(dry_run=dry_run)
         sys.exit(0)
 
@@ -477,8 +458,8 @@ if __name__ == '__main__':
             logger.info('New screen was detected, reconfiguring...')
 
     # override modes, calculate is_monitor
-    override_models()
-    calculate_is_monitor()
+    override_models(edid, model)
+    calculate_is_monitor(edid)
 
     if verbose:
         # Explain the new screen settings
@@ -491,19 +472,20 @@ if __name__ == '__main__':
         set_to_HDMI(False)
 
     # calculate changes needed
-    overrall_changes = False
+    overall_changes = False
 
-    changes = compare_and_set_mode()
-    overrall_changes = overrall_changes or changes
+    changes = compare_and_set_mode(edid, status)
+    overall_changes = overall_changes or changes
 
-    changes = compare_and_set_full_range()
-    overrall_changes = overrall_changes or changes
+    changes = compare_and_set_full_range(edid, status)
+    overall_changes = overall_changes or changes
 
-    changes = compare_and_set_overscan()
-    overrall_changes = overrall_changes or changes
+    changes = compare_and_set_overscan(edid, status)
+    overall_changes = overall_changes or changes
 
-    changes = set_resolution_for_screen_kit() or compare_and_set_optimal_resolution()
-    overrall_changes = overrall_changes or changes
+    changes = set_resolution_for_screen_kit(supported) or \
+              compare_and_set_optimal_resolution(edid, status, supported, verbose)
+    overall_changes = overall_changes or changes
 
     if changes:
         if verbose:
