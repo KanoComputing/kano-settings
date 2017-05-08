@@ -8,7 +8,7 @@
 # Contains the audio backend functions
 
 
-from kano_settings.config_file import get_setting, set_setting, file_replace
+from kano_settings.config_file import get_setting, set_setting
 from kano_settings.boot_config import set_config_value, end_config_transaction
 from kano.utils import run_cmd
 from kano.logging import logger
@@ -29,7 +29,6 @@ analogue_cmd = "amixer -c 0 cset numid=3 1"
 hdmi_cmd = "amixer -c 0 cset numid=3 2"
 
 
-
 def is_hdmi_audio_supported():
     '''
     Returns True if the display is HDMI and has audio support
@@ -48,7 +47,7 @@ def is_hdmi_audio_supported():
 is_hdmi_audio_supported.hdmi_supported = None
 
 
-def set_to_HDMI(HDMI):
+def set_to_HDMI(HDMI, force=False):
     '''
     Set audio output to HDMI if supported by the display,
     otherwise set it to Analogue output.
@@ -56,7 +55,7 @@ def set_to_HDMI(HDMI):
     Returns 'HDMI' or 'Analogue', whichever was applied.
     '''
 
-    if not is_hdmi_audio_supported():
+    if not is_hdmi_audio_supported() and not force:
         HDMI = False
 
     # 1 analog
