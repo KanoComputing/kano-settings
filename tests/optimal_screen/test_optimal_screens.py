@@ -26,7 +26,9 @@ sys.path.insert(1, '../../')
 
 verbose = False
 script_path = os.path.dirname(os.path.realpath(__file__))
-app = 'sudo ' + os.path.join(script_path, '..', '..', 'bin', 'kano-settings-onboot')
+app = 'sudo ' + os.path.abspath(os.path.join(
+    script_path, '..', '..', 'bin', 'kano-settings-onboot'
+))
 
 
 class TestOptimalScreen(unittest.TestCase):
@@ -40,6 +42,7 @@ class TestOptimalScreen(unittest.TestCase):
         os.system('sudo kano-logs config -l none -o none')
 
     def _test_dump(self, dumpfile):
+        print dumpfile
         command = '{} --dry-run --verbose --force --test:{}'.format(app, dumpfile)
         output = os.popen(command).read()
         if verbose:
@@ -47,7 +50,9 @@ class TestOptimalScreen(unittest.TestCase):
         return output
 
     def test_adafruit_hdmi(self):
-        data = self._test_dump(os.path.join(script_path, 'screen-adafruit-hdmi.dump'))
+        data = self._test_dump(os.path.abspath(os.path.join(
+            script_path, 'screen-adafruit-hdmi.dump'
+        )))
         self.assertIn('Applying optimal mode', data)
         self.assertIn('changes applied: True', data)
         self.assertIn("u'resolution': u'1280x800', u'mode': 28, u'aspect': u'16:10'", data)
