@@ -26,13 +26,13 @@ def disconnect_wifi():
     return 0
 
 
-def launch_wifi_gui(socket_id=None):
+def launch_wifi_gui(socket_id=None, no_confirm_ether=False):
     from gi.repository import GObject
     from kano_wifi_gui.wifi_window import create_wifi_gui
 
     GObject.threads_init()
 
     is_plug = socket_id is not None
-    create_wifi_gui(is_plug, socket_id)
+    create_wifi_gui(is_plug, socket_id, no_confirm_ether)
 
     return 0

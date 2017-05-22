@@ -14,13 +14,13 @@
 kano-wifi-gui shows the different screens for connecting and disconnecting to the internet.
 
 Usage:
-  kano-wifi-gui [--disconnect] [--plug=<socket-id>]
+  kano-wifi-gui [--disconnect] [--plug=<socket-id>] [--no-confirm-ether]
 
 Options:
    -h, --help              Show this message.
    -d, --disconnect        Disconnect from the internet
    -p, --plug=<socket-id>  Put the application in a Gtk.Plug
-
+   --no-confirm-ether      If already connected via ethernet, do now show the confirm.
 """
 
 
@@ -52,7 +52,7 @@ def main():
         return disconnect_wifi()
 
     socket_id = args['--plug']
-    return launch_wifi_gui(socket_id)
+    return launch_wifi_gui(socket_id, args['--no-confirm-ether'])
 
 
 if __name__ == '__main__':

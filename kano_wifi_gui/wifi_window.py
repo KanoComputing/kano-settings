@@ -7,9 +7,10 @@
 
 
 import os
+import sys
 from gi.repository import Gtk
 
-from kano.network import is_internet, is_ethernet_plugged, is_device, IWList
+from kano.network import is_internet, is_ethernet_plugged, is_device
 from kano_networking.ifaces import get_wlan_device
 from kano.gtk3.top_bar import TopBar
 from kano.gtk3.apply_styles import apply_common_to_screen, \
@@ -22,12 +23,12 @@ from kano_wifi_gui.paths import css_dir, img_dir
 from kano_wifi_gui.Template import Template
 
 
-def create_wifi_gui(is_plug, socket_id):
+def create_wifi_gui(is_plug, socket_id, no_confirm_ether=False):
     base_class = get_window_class(is_plug)
     wifi_gui = get_wifi_gui(base_class)
 
     iface = get_wlan_device()  # this is now redundant, moved to _launch_application
-    win = wifi_gui(socket_id=socket_id, wiface=iface)
+    win = wifi_gui(socket_id=socket_id, wiface=iface, no_confirm_ether=no_confirm_ether)
     win.show_all()
     Gtk.main()
 
@@ -40,10 +41,11 @@ def get_wifi_gui(base_class):
         width = 350
         height = 450
 
-        def __init__(self, wiface='wlan0', socket_id=0):
+        def __init__(self, wiface='wlan0', socket_id=0, no_confirm_ether=False):
 
             self.wiface = wiface
             self.network_list = []
+            self.no_confirm_ether = no_confirm_ether
 
             # Default basic styling
             apply_common_to_screen()
@@ -83,6 +85,9 @@ def get_wifi_gui(base_class):
             has_internet = is_internet()
             ethernet_plugged = is_ethernet_plugged()
             dongle_is_plugged_in = is_device(self.wiface)
+
+            if has_internet and ethernet_plugged and self.no_confirm_ether:
+                sys.exit(0)
 
             # For testing
             # dongle_is_plugged_in = False
