@@ -415,13 +415,19 @@ def make_safesearch_config_file(config_file, opendns):
     else:
         # use google servers 
         servers = ', '.join(google_servers)
+
     import pycountry, json
-    rule = "cname ^(?!forcesafesearch)(.*).(?:google|youtube).(?:{}) to forcesafesearch.google.com using "+servers    
+
+    rule_google = "cname ^(?:www.google.)(?:{}) to forcesafesearch.google.com using " + servers
+    rule_youtube = "cname ^(?:www.youtube.|m.youtube.|youtubei.googleapis.|youtube.googleapis.|www.youtube-nocookie.)(?:{}) " \
+        "to restrict.youtube.com using " + servers
+
     country_names = [country.alpha2.lower() for country in pycountry.countries]
     country_names.extend(second_level_domains)
     country_names_re = '|'.join(country_names)
-    new_config['rules'].append(rule.format(country_names_re))
-    new_config['rules'].append("resolve ^(.*) using "+servers)
+    new_config['rules'].append(rule_google.format(country_names_re))
+    new_config['rules'].append(rule_youtube.format(country_names_re))
+    new_config['rules'].append("resolve ^(.*) using " + servers)
 
     logger.debug("new safesearch parental control config: {}".format(new_config))
     g = open(config_file, 'w+')
