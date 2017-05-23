@@ -443,7 +443,8 @@ if __name__ == '__main__':
         sys.exit(0)
 
     # If the hdmi_group and hdmi_mode values are set explicitly then skip the detection.
-    if get_config_value('hdmi_group') != 0 and get_config_value('hdmi_mode') != 0:
+    if get_config_value('hdmi_group', ignore_comments=True) != 0 and \
+       get_config_value('hdmi_mode', ignore_comments=True) != 0:
 
         logger.info('is comment kano_screen_used? {}'.format(has_config_comment('kano_screen_used')))
         logger.info('is comment kano_screen_used({})? {}'.format(model, get_config_comment('kano_screen_used', model)))

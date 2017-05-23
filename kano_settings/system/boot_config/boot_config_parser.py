@@ -80,14 +80,14 @@ class BootConfigParser(object):
 
         return True
 
-    def get_line(self, setting, config_filter=Filter.ALL, fallback=False):
+    def get_line(self, setting, config_filter=Filter.ALL, fallback=False, ignore_comments=False):
         search = {
             'setting': setting,
             'filter': config_filter
         }
 
         for line in reversed(self.config):
-            if line == search:
+            if line == search and not (ignore_comments and line.is_comment):
                 return line
 
         if fallback and config_filter != Filter.ALL:
@@ -98,10 +98,13 @@ class BootConfigParser(object):
             'filter': config_filter
         })
 
-    def get(self, setting, config_filter=Filter.ALL, fallback=False):
+    def get(self, setting, config_filter=Filter.ALL, fallback=False, ignore_comments=False):
         return self.get_line(
-            setting, config_filter=config_filter, fallback=fallback
-            ).value
+            setting,
+            config_filter=config_filter,
+            fallback=fallback,
+            ignore_comments=ignore_comments
+        ).value
 
     def set(self, setting, value, config_filter=Filter.ALL):
         # NB if value is None, we comment out the setting

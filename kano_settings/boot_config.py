@@ -18,7 +18,6 @@ import shutil
 import tempfile
 
 from kano.utils.file_operations import read_file_contents_as_lines, open_locked
-from kano.utils.misc import is_number
 from kano.logging import logger
 
 from kano_settings.system.boot_config.boot_config_parser import BootConfigParser
@@ -35,6 +34,7 @@ noobs_line = "# NOOBS Auto-generated Settings:"
 
 dry_run = False
 lock_timeout = 5
+
 
 def set_dry_run():
     """
@@ -97,7 +97,6 @@ class BootConfig:
             boot_config_file.flush()
             os.fsync(boot_config_file.fileno())
 
-
     def check_corrupt(self):
         # Quick check for corrpution in config file.
         # Check that is has at least some expected data
@@ -114,7 +113,6 @@ class BootConfig:
                 if m in l:
                     found.add(m)
         return must_contain != found
-
 
     def set_value(self, name, value=None, config_filter=Filter.ALL):
         # if the value argument is None, the option will be commented out
@@ -134,13 +132,18 @@ class BootConfig:
             boot_config_file.flush()
             os.fsync(boot_config_file.fileno())
 
-    def get_value(self, name, config_filter=Filter.ALL, fallback=True):
+    def get_value(self, name, config_filter=Filter.ALL, fallback=True, ignore_comments=False):
         lines = read_file_contents_as_lines(self.path)
         if not lines:
             return 0
 
         config = BootConfigParser(lines)
-        return config.get(name, config_filter=config_filter, fallback=fallback)
+        return config.get(
+            name,
+            config_filter=config_filter,
+            fallback=fallback,
+            ignore_comments=ignore_comments
+        )
 
     def set_comment(self, name, value, config_filter=Filter.ALL):
         '''
@@ -304,10 +307,13 @@ class ConfigTransaction:
         self.set_state_writable()
         self.temp_config.set_value(name, value, config_filter)
 
-    def get_config_value(self, name, config_filter=Filter.ALL, fallback=True):
+    def get_config_value(self, name, config_filter=Filter.ALL, fallback=True, ignore_comments=False):
         self.raise_state_to_locked()
         return self.temp_config.get_value(
-            name, config_filter=config_filter, fallback=fallback
+            name,
+            config_filter=config_filter,
+            fallback=fallback,
+            ignore_comments=ignore_comments
         )
 
     def set_config_comment(self, name, value):
@@ -404,6 +410,7 @@ def enforce_pi():
 
 _transaction = None
 
+
 def _trans():
     # Note that although internal, this function is used in
     # kano-updater post-update scenario beta_310_to_beta_320
@@ -412,13 +419,17 @@ def _trans():
         _transaction = ConfigTransaction(boot_config_standard_path)
     return _transaction
 
+
 def set_config_value(name, value=None, config_filter=Filter.ALL):
     _trans().set_config_value(name, value, config_filter)
 
 
-def get_config_value(name, config_filter=Filter.ALL, fallback=True):
+def get_config_value(name, config_filter=Filter.ALL, fallback=True, ignore_comments=False):
     return _trans().get_config_value(
-        name, config_filter=config_filter, fallback=fallback
+        name,
+        config_filter=config_filter,
+        fallback=fallback,
+        ignore_comments=ignore_comments
     )
 
 
