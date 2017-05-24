@@ -91,7 +91,7 @@ class BootConfigParser(object):
                 return line
 
         if fallback and config_filter != Filter.ALL:
-            return self.get_line(setting, config_filter=Filter.ALL)
+            return self.get_line(setting, config_filter=Filter.ALL, ignore_comments=ignore_comments)
 
         return BootConfigLine({
             'setting': setting,
