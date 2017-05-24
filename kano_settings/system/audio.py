@@ -8,6 +8,8 @@
 # Contains the audio backend functions
 
 
+from kano_peripherals.pi_hat.driver.high_level import get_pihat_interface
+
 from kano_settings.config_file import get_setting, set_setting
 from kano_settings.boot_config import set_config_value, end_config_transaction
 from kano.utils import run_cmd
@@ -45,6 +47,25 @@ def is_hdmi_audio_supported():
 
 # local static variable to avoid calling tvservice more than once
 is_hdmi_audio_supported.hdmi_supported = None
+
+
+def is_analogue_audio_supported():
+    """
+    Check the system to see if audio through the jack is available.
+
+    Unfortunately, the hardware for the PiHat on CK2 Lite requires disabling audio
+    through the jack. This is the only instance we need to prevent jack audio.
+
+    Returns:
+        supported - True if audio can be set to play through jack, False otherwise
+    """
+    supported = True
+
+    pihat_iface = get_pihat_interface()
+    if pihat_iface and pihat_iface.is_plugged():
+        supported = False
+
+    return supported
 
 
 def set_to_HDMI(HDMI, force=False):

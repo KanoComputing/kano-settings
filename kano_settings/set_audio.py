@@ -11,7 +11,8 @@ import kano_settings.common as common
 from kano_settings.templates import Template
 from kano.logging import logger
 from kano_settings.config_file import get_setting
-from kano_settings.system.audio import set_to_HDMI, is_HDMI, is_hdmi_audio_supported
+from kano_settings.system.audio import set_to_HDMI, is_HDMI, is_hdmi_audio_supported, \
+    is_analogue_audio_supported
 
 
 class SetAudio(Template):
@@ -77,14 +78,17 @@ class SetAudio(Template):
             self.win.go_to_home()
 
     def current_setting(self):
-        if not is_hdmi_audio_supported():
-            self.hdmi_button.set_active(False)
-            self.hdmi_button.set_sensitive(False)
-            self.analog_button.set_active(True)
-        else:
-            hdmi = is_HDMI()
-            self.hdmi_button.set_active(hdmi)
-            self.analog_button.set_active(not hdmi)
+        hdmi_supported = is_hdmi_audio_supported()
+        analogue_supported = is_analogue_audio_supported()
+        hdmi_selected = is_HDMI()
+
+        # Disable radio buttons based on available features.
+        self.hdmi_button.set_sensitive(hdmi_supported)
+        self.analog_button.set_sensitive(analogue_supported)
+
+        # Tick the radio button based on what is set on the system.
+        self.hdmi_button.set_active(hdmi_selected)
+        self.analog_button.set_active(not hdmi_selected)
 
     def on_button_toggled(self, button):
         self.HDMI = button.get_active()
