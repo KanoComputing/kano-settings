@@ -96,6 +96,12 @@ case "$1" in
                 sed -i "1i${HOST_ENTRY}" $HOSTS_FILE_BACKUP
             fi
         fi
+
+        # Disable the setup console service, as it takes 35% of boot time,
+        # and we do not use console apps anymore. See rc.others for console font.
+        if [ -x "/etc/init.d/console-setup" ]; then
+            insserv -r console-setup
+        fi
         ;;
 esac
 

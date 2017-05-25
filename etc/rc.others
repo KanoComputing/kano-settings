@@ -30,3 +30,12 @@ control alt     keycode  8 = Console_7
 "
 
 echo "$new_keymaps" | /usr/bin/loadkeys -
+
+# Set a larger console font for very early bootup messages
+font_file="/usr/share/consolefonts/Uni3-TerminusBold32x16.psf.gz"
+font_file_unzipped="/tmp/console-font.psf"
+if [ -f "$font_file" ]; then
+    /bin/gunzip -c "$font_file" > "$font_file_unzipped"
+    /bin/setfont -C /dev/tty1 "$font_file_unzipped" -v
+    rm -f "$font_file_unzipped"
+fi
