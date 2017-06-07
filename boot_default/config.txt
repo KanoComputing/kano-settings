@@ -90,6 +90,11 @@ display_rotate=2
 display_rotate=2
 [all]
 
+[EDID=MST-HDMI]
+# Screen kit
+display_rotate=0
+[all]
+
 [pi3]
 # for light board
 enable_uart=1
