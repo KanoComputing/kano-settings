@@ -294,7 +294,7 @@ def is_screen_kit():
     """
     Returns True if the screen is a Kano Screen Kit.
     """
-    return get_edid_name(use_cached=False) in ('ADA-HDMI', 'MST-HDMI1')
+    return get_edid_name(use_cached=False) in ('ADA-HDMI', 'MST-HDMI1', 'MST-HDMI')
 
 
 def get_model():
