@@ -37,20 +37,49 @@ class SetAudio(Template):
 
         # Analog radio button
         self.analog_button = Gtk.RadioButton.new_with_label_from_widget(None, _("Speaker"))
+        # TODO: This message should come from is_analogue_audio_supported() and in
+        # turn from whomever disabled it. This is the only case we have for now.
+        self.disabled_analogue_label = Gtk.Label(_(
+            "To play sound through a\n"
+            "speaker, remove your kit's light\n"
+            "hat and re-open this menu"
+        ))
 
         # HDMI radio button
+
         self.hdmi_button = Gtk.RadioButton.new_from_widget(self.analog_button)
         self.hdmi_button.set_label(_("TV     "))
         self.hdmi_button.connect('toggled', self.on_button_toggled)
+        hdmi_button_align = Gtk.Alignment(xalign=1, xscale=0, yalign=0, yscale=0)
+        hdmi_button_align.add(self.hdmi_button)
+        # TODO: This message should come from is_hdmi_audio_supported() and in
+        # turn from whomever disabled it. This is the only case we have for now.
+        self.disabled_hdmi_label = Gtk.Label(_(
+            "To play sound through HDMI,\n"
+            "connect to a screen with\n"
+            "speakers"
+        ))
+        disabled_hdmi_label_align = Gtk.Alignment(xalign=1, xscale=0, yalign=0, yscale=0)
+        disabled_hdmi_label_align.add(self.disabled_hdmi_label)
 
         # height is 106px
         self.current_img = Gtk.Image()
         self.current_img.set_from_file(common.media + "/Graphics/Audio-jack.png")
 
+        self.hdmi_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.hdmi_box.pack_start(Gtk.Label(_("\n\n")), False, False, 10)
+        self.hdmi_box.pack_start(hdmi_button_align, False, False, 10)
+        self.hdmi_box.pack_start(disabled_hdmi_label_align, False, False, 10)
+
+        self.analogue_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.analogue_box.pack_start(Gtk.Label(_("\n\n")), False, False, 10)
+        self.analogue_box.pack_start(self.analog_button, False, False, 10)
+        self.analogue_box.pack_start(self.disabled_analogue_label, False, False, 10)
+
         self.horizontal_box = Gtk.Box()
-        self.horizontal_box.pack_start(self.hdmi_button, False, False, 10)
+        self.horizontal_box.pack_start(self.hdmi_box, False, False, 10)
         self.horizontal_box.pack_start(self.current_img, False, False, 10)
-        self.horizontal_box.pack_start(self.analog_button, False, False, 10)
+        self.horizontal_box.pack_start(self.analogue_box, False, False, 10)
 
         self.box.add(self.horizontal_box)
         self.align.set_padding(0, 0, 25, 0)
@@ -81,6 +110,12 @@ class SetAudio(Template):
         hdmi_supported = is_hdmi_audio_supported()
         analogue_supported = is_analogue_audio_supported()
         hdmi_selected = is_HDMI()
+
+        if not hdmi_supported:
+            self.disabled_hdmi_label.get_style_context().add_class('normal_label')
+
+        if not analogue_supported:
+            self.disabled_analogue_label.get_style_context().add_class('normal_label')
 
         # Disable radio buttons based on available features.
         self.hdmi_button.set_sensitive(hdmi_supported)
