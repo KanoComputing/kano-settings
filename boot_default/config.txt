@@ -95,6 +95,11 @@ display_rotate=2
 display_rotate=0
 [all]
 
+[pi2]
+# Give more current to the USB ports for the Pixel Kit.
+max_usb_current=1
+[all]
+
 [pi3]
 # for light board
 enable_uart=1
