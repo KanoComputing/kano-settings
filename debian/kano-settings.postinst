@@ -57,8 +57,10 @@ case "$1" in
         # add kano-safeboot-mode to startup
         update-rc.d kano-safeboot defaults
 
+        # TODO: Re enable the bootup sound when we find a way to enable
+        # the sound driver at boot time (see kano-peripherals repo)
         # add kano-bootup-sound to startup
-        update-rc.d kano-bootup-sound defaults
+        #update-rc.d kano-bootup-sound defaults
 
         # add kano-reboot-clear to startup
         update-rc.d kano-reboot-clear defaults

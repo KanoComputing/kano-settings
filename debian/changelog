@@ -1,3 +1,9 @@
+kano-settings (4.0.1-0) unstable; urgency=low
+
+  * Disable bootup sound init script, as alsa driver is disabled
+
+ -- Team Kano <dev@kano.me>  Thu 13 Jul 2017 17:41:09 +0100
+
 kano-settings (4.0.0-0) unstable; urgency=low
 
   * Add Speed up boot times into Dashboard
