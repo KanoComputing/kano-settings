@@ -2,7 +2,7 @@
 
 # advanced.py
 #
-# Copyright (C) 2014, 2015 Kano Computing Ltd.
+# Copyright (C) 2014-2017 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 # Contains the advanced backend functions
@@ -24,7 +24,7 @@ from kano_settings.system.get_username import get_first_username
 from kano_settings.common import settings_dir
 from kano.utils import read_file_contents, write_file_contents, \
     read_file_contents_as_lines, read_json, write_json, ensure_dir, \
-    get_user_unsudoed, chown_path
+    get_user_unsudoed
 from kano.network import set_dns, restore_dns_interfaces, \
     clear_dns_interfaces, refresh_resolvconf
 from kano_settings.config_file import get_setting, set_setting
@@ -217,7 +217,7 @@ def add_safesearch_blacklist(hosts):
     Prevents surfing to generic search engine sites by adding them to the blacklist
     '''
 
-    # import pycountry here as it takes a long time to import. 
+    # import pycountry here as it takes a long time to import.
     import pycountry
     logger.debug("Applying safesearch settings")
     # Block search sites
@@ -266,7 +266,6 @@ def add_safesearch_blacklist(hosts):
 
         add_blacklist_host(hosts, '{}.info.com'.format(country.alpha2.lower()))
         add_blacklist_host(hosts, '{}.alhea.com'.format(country.alpha2.lower()))
-
 
     for subdomain in second_level_domains:
         add_blacklist_host(hosts, 'google.{}'.format(subdomain))
@@ -360,7 +359,6 @@ def set_dns_parental(ultimate, safesearch, opendns):
         redirect_traffic_to_localhost()
         launch_sentry_server(sentry_config)
 
-
     else:
         restore_dns_interfaces()
         redirect_traffic_to_google()
@@ -408,15 +406,17 @@ def parse_whitelist_to_config_file(config):
     g.close()
     logger.debug("finished writing new ultimate parental control to {}".format(config))
 
+
 def make_safesearch_config_file(config_file, opendns):
-    new_config = { "port": 53, "host": "127.0.0.1", "rules":[]}
+    new_config = {"port": 53, "host": "127.0.0.1", "rules": []}
     if opendns:
         servers = ', '.join(opendns_servers)
     else:
-        # use google servers 
+        # use google servers
         servers = ', '.join(google_servers)
 
-    import pycountry, json
+    import pycountry
+    import json
 
     rule_google = "cname ^(?:www.google.)(?:{}) to forcesafesearch.google.com using " + servers
     rule_youtube = "cname ^(?:www.youtube.|m.youtube.|youtubei.googleapis.|youtube.googleapis.|www.youtube-nocookie.)(?:{}) " \
@@ -433,7 +433,7 @@ def make_safesearch_config_file(config_file, opendns):
     g = open(config_file, 'w+')
     json.dump(new_config, g)
     g.close()
-    logger.debug("finished writing new safesearch parental control to {}".format(config_file))    
+    logger.debug("finished writing new safesearch parental control to {}".format(config_file))
 
 
 def get_whitelist():
@@ -565,3 +565,46 @@ def set_parental_level(level_setting):
 
     set_hosts_blacklist('blacklist' in enabled, 'search_engines' in enabled,
                         blocked_sites=blacklist, allowed_sites=whitelist)
+
+
+def is_ssh_enabled():
+    """
+    Checks the status of the Dropbear SSH client.
+    Requires sudo.
+
+    Returns:
+        enabled - bool whether the client is enabled and is running
+    """
+    return (os.system('systemctl is-active -q dropbear.service') == 0)
+
+
+def set_ssh_enabled(enabled, with_logging=True):
+    """
+    Sets the Dropbear SSH client between disabled and enabled.
+    Requires sudo.
+
+    Args:
+        enabled - bool to enable & start or disabled & stop the SSH service
+        with_logging - bool to control whether or not the operation logs messages
+    Returns:
+        successful - bool whether the operation succeeded or not
+    """
+    if enabled:
+        rc = os.system("systemctl enable dropbear.service")
+        rc = rc or os.system("systemctl start dropbear.service")
+
+        if rc == 0 and with_logging:
+            logger.info('set_ssh_enabled: Enabled and started Dropbear SSH')
+        elif rc != 0 and with_logging:
+            logger.error('set_ssh_enabled: Failed to enable and start Dropbear SSH')
+
+    else:
+        rc = os.system("systemctl disable dropbear.service")
+        rc = rc or os.system("systemctl stop dropbear.service")
+
+        if rc == 0 and with_logging:
+            logger.info('set_ssh_enabled: Disabled and stopped Dropbear SSH')
+        elif rc != 0 and with_logging:
+            logger.error('set_ssh_enabled: Failed to disable and stop Dropbear SSH')
+
+    return (rc == 0)

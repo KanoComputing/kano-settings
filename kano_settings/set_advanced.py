@@ -2,7 +2,7 @@
 
 # set_advance.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
+# Copyright (C) 2014-2017 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
@@ -12,7 +12,8 @@ from kano.gtk3.buttons import OrangeButton
 
 from kano import logging
 from kano_settings.templates import Template, LabelledListTemplate
-from system.advanced import get_parental_enabled, set_parental_enabled
+from system.advanced import get_parental_enabled, set_parental_enabled, is_ssh_enabled, \
+    set_ssh_enabled
 from parental_config import ParentalConfig
 
 
@@ -30,19 +31,24 @@ class SetAdvanced(Template):
 
         parental_box = self.create_parental_button()
         debug_box = self.create_debug_button()
+        ssh_box = self.create_ssh_button()
 
         self.box.set_spacing(20)
         self.box.pack_start(parental_box, False, False, 0)
         self.box.pack_start(debug_box, False, False, 0)
+        self.box.pack_start(ssh_box, False, False, 0)
 
         self.win = win
 
         debug_mode = self.get_stored_debug_mode()
+        self.ssh_preference = is_ssh_enabled()
 
         self.parental_button.set_active(get_parental_enabled())
         self.parental_button.connect('clicked', self.go_to_password)
         self.debug_button.set_active(debug_mode)
         self.debug_button.connect('clicked', self.on_debug_toggled)
+        self.ssh_button.set_active(self.ssh_preference)
+        self.ssh_button.connect('clicked', self.on_ssh_button_clicked)
 
         self.win.set_main_widget(self)
 
@@ -57,8 +63,8 @@ class SetAdvanced(Template):
 
     def create_parental_button(self):
         desc = (
-            _("Use different levels to:\n" \
-              "- Block mature content in browser and YouTube\n" \
+            _(" Use different levels to:\n"
+              "- Block mature content in browser and YouTube\n"
               "- Or restrict internet access to only Kano World activity")
         ).split('\n')
 
@@ -68,24 +74,13 @@ class SetAdvanced(Template):
             _("Parental lock"),
             desc[0])
 
-        grid = Gtk.Grid()
-        grid.attach(box, 0, 0, 1, 1)
-
-        i = 1
-
-        for text in desc[1:]:
-            label = Gtk.Label(text)
-            label.set_alignment(xalign=0, yalign=0.5)
-            label.set_padding(xpad=25, ypad=0)
-            label.get_style_context().add_class('normal_label')
-            grid.attach(label, 0, i, 1, 1)
-            i = i + 1
+        grid = self._labelled_list_helper(desc, box)
 
         if get_parental_enabled():
             parental_config_button = OrangeButton(_("Configure"))
             parental_config_button.connect('button-press-event',
                                            self.go_to_parental_config)
-            grid.attach(parental_config_button, 0, i, 1, 1)
+            grid.attach(parental_config_button, 0, len(desc), 1, 1)
 
         return grid
 
@@ -95,8 +90,8 @@ class SetAdvanced(Template):
 
     def create_debug_button(self):
         desc = (
-            _("Having problems?\n" \
-              "1) Enable this mode\n" \
+            _(" Having problems?\n"
+              "1) Enable this mode\n"
               "2) Report a bug with the ? tool on the Desktop")
         ).split('\n')
         self.debug_button = Gtk.CheckButton()
@@ -105,7 +100,21 @@ class SetAdvanced(Template):
             _("Debug mode"),
             desc[0]
         )
+        return self._labelled_list_helper(desc, box)
 
+    def create_ssh_button(self):
+        desc = (
+            _(" Connect securely to your Kano from another computer")
+        ).split('\n')
+        self.ssh_button = Gtk.CheckButton()
+        box = LabelledListTemplate.label_button(
+            self.ssh_button,
+            _("SSH client"),
+            desc[0]
+        )
+        return self._labelled_list_helper(desc, box)
+
+    def _labelled_list_helper(self, desc, box):
         grid = Gtk.Grid()
         grid.attach(box, 0, 0, 1, 1)
 
@@ -128,6 +137,9 @@ class SetAdvanced(Template):
     def apply_changes(self, button, event):
         # If enter key is pressed or mouse button is clicked
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
+
+            if self.ssh_preference is not is_ssh_enabled():
+                set_ssh_enabled(self.ssh_preference)
 
             old_debug_mode = self.get_stored_debug_mode()
             new_debug_mode = self.debug_button.get_active()
@@ -161,6 +173,9 @@ class SetAdvanced(Template):
         debug_mode = ll == 'debug'
         logging.Logger().debug("stored debug-mode: {}".format(debug_mode))
         return debug_mode
+
+    def on_ssh_button_clicked(self, checkbutton):
+        self.ssh_preference = checkbutton.get_active()
 
 
 class SetPassword(Template):
