@@ -8,6 +8,7 @@ bin/start-sentry-server /usr/bin
 bin/kano-checked-reboot /usr/bin
 bin/kano-boot-check /usr/bin
 bin/kano-capture-logs /usr/bin
+bin/check-enable-ssh /usr/bin
 
 kano_settings/* /usr/lib/python2.7/dist-packages/kano_settings
 media/kano-settings/* /usr/share/kano-settings/media
@@ -34,3 +35,5 @@ syncfs/syncfs /usr/bin
 
 WHITELIST /usr/share/kano-settings/config/
 locale/* /usr/share/locale
+
+systemd/* /usr/lib/systemd

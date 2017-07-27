@@ -1,0 +1,20 @@
+# check-enable-ssh.service
+#
+# Copyright (C) 2017 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
+#
+# Unit file to check if dropbear ssh should be enabled at boot.
+
+
+[Unit]
+Description=Check and Enable SSH
+DefaultDependencies=true
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/check-enable-ssh
+Restart=no
+RemainAfterExit=yes
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,46 @@
+#!/usr/bin/env python
+
+# check-enable-ssh
+#
+# Copyright (C) 2017 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
+#
+# Small script that checks if dropbear SSH should be enabled and started.
+# It follows the same mechanism implemented in Raspbian Pixel.
+#
+# This is run by the check-enable-ssh.service with systemd at bootup.
+# Requires root.
+
+
+import os
+import sys
+
+
+RC_SUCCESS = 0
+RC_UNEXPECTED_ERROR = 1
+RC_NOT_ROOT = 2
+RC_CMDS_FAILED = 3
+
+SSH_FILE_FLAG_PATH = '/boot/ssh'
+
+
+def main():
+    if os.getuid() != 0:
+        print 'Must execute this as root'
+        return RC_NOT_ROOT
+
+    try:
+        if os.path.isfile(SSH_FILE_FLAG_PATH):
+            print 'Enabling ssh..'
+            os.remove(SSH_FILE_FLAG_PATH)
+
+            from kano_settings.system.advanced import set_ssh_enabled
+            if not set_ssh_enabled(True):
+                return RC_CMDS_FAILED
+
+    except:
+        return RC_UNEXPECTED_ERROR
+
+
+if __name__ == "__main__":
+    sys.exit(main() or RC_SUCCESS)

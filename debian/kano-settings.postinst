@@ -71,8 +71,8 @@ case "$1" in
         # add kano-expand-rootfs to startup
         update-rc.d kano-expand-rootfs defaults
 
-	# Check for default hostname and set to name of first user
-	python -c "from kano_settings.system.advanced import set_hostname_postinst; set_hostname_postinst()"
+        # Check for default hostname and set to name of first user
+        python -c "from kano_settings.system.advanced import set_hostname_postinst; set_hostname_postinst()"
 
         # On Jessie, tell systemd.fsck service to send messages to journal only (no console)
         if [ -f "$systemd_fsck_root" ]; then
@@ -104,6 +104,8 @@ case "$1" in
         if [ -x "/etc/init.d/console-setup" ]; then
             insserv -r console-setup
         fi
+
+        systemctl enable check-enable-ssh
         ;;
 esac
 
