@@ -122,11 +122,18 @@ class ScreensaverTable(ImageTable):
 
         self.images = {}
 
-        # Currently we only return one screensaver
+        # Currently we provide two screen savers
+        self.images['qmlmatrix'] = {
+            'program': '/usr/bin/qmlmatrix',
+            'path': os.path.join(screensaver_path, 'qmlmatrix.png'),
+            'selected': True,
+            'unlocked': True
+        }
+
         self.images['orange-cube'] = {
             'program': '/usr/bin/kdesk-eglsaver',
             'path': os.path.join(screensaver_path, 'orange-cube.png'),
-            'selected': True,
+            'selected': False,
             'unlocked': True
         }
 
