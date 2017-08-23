@@ -20,8 +20,7 @@ from kano.utils import read_file_contents
 from kano_settings.system.about import (
     get_current_version, get_space_available, get_temperature, get_model_name
 )
-from kano.utils import get_user_unsudoed
-from kano.utils.hardware import get_cpu_id
+from kano.utils import get_user_unsudoed, get_cpu_id
 
 
 class SetAbout(Gtk.Box):
@@ -65,7 +64,7 @@ class SetAbout(Gtk.Box):
             _("Model: {model}").format(model=get_model_name())
         )
         cpu_id_align = self.create_align(
-            "CPU ID: {id}".format(id=cpu_id)
+            _("CPU ID: {id}").format(id=cpu_id)
         )
 
         terms_and_conditions = OrangeButton(_("Terms and conditions"))
