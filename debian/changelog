@@ -4,6 +4,7 @@ kano-settings (4.0.1-0) unstable; urgency=low
   * Added the new Matrix screen saver selection into kano-settings
   * User preference in Advanced to enable or disable the SSH client
   * Mechanism to enable SSH client at boot with a /boot/ssh file
+  * CPU id displayed in about section
 
  -- Team Kano <dev@kano.me>  Thu 13 Jul 2017 17:41:09 +0100
 
