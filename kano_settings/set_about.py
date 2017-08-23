@@ -21,6 +21,7 @@ from kano_settings.system.about import (
     get_current_version, get_space_available, get_temperature, get_model_name
 )
 from kano.utils import get_user_unsudoed
+from kano.utils.hardware import get_cpu_id
 
 
 class SetAbout(Gtk.Box):
@@ -39,6 +40,7 @@ class SetAbout(Gtk.Box):
 
         version_number, os_name = get_current_version()
         os_variant = read_file_contents('/etc/kanux_version_variant')
+        cpu_id = get_cpu_id()
 
         version_align = self.create_align(
             "Kano OS: {name} v{version}".format(name=os_name, version=version_number),
@@ -61,6 +63,9 @@ class SetAbout(Gtk.Box):
         )
         model_align = self.create_align(
             _("Model: {model}").format(model=get_model_name())
+        )
+        cpu_id_align = self.create_align(
+            "CPU ID: {id}".format(id=cpu_id)
         )
 
         terms_and_conditions = OrangeButton(_("Terms and conditions"))
@@ -92,6 +97,7 @@ class SetAbout(Gtk.Box):
         self.pack_start(space_align, False, False, 1)
         self.pack_start(temperature_align, False, False, 1)
         self.pack_start(model_align, False, False, 1)
+        self.pack_start(cpu_id_align, False, False, 1)
         self.pack_start(hbutton_container, False, False, 3)
         self.pack_start(self.kano_button.align, False, False, 10)
 
