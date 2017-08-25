@@ -103,4 +103,7 @@ max_usb_current=1
 [pi3]
 # for light board
 enable_uart=1
+
+# Disable temperature and low voltage overlay warnings only, safety is still ON.
+avoid_warnings=1
 [all]
