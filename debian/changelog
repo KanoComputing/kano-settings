@@ -4,8 +4,9 @@ kano-settings (4.0.4-0) unstable; urgency=low
   * Reduced execution time of kano-safeboot-mode reducing time to boot by ~3.5s
   * Migrated parental whitelist over to use the master branch
   * Added CKC speaker claim page to whitelist
+  * Removed duplication of configuring /etc/hosts for Hack Minecraft
 
- -- Team Kano <dev@kano.me>  Mon, 23 Oct 2017 14:08:15 +0100
+ -- Team Kano <dev@kano.me>  Mon, 30 Oct 2017 12:21:15 +0100
 
 kano-settings (4.0.3-0) unstable; urgency=low
 
