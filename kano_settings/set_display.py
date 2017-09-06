@@ -75,9 +75,18 @@ class SetDisplay(Template):
         # Fill list of modes
         modes = list_supported_modes()
         self.mode_combo.append('auto')
+        mode_string = '{hdmi_mode}:{hdmi_group} {width}x{height} {refresh_rate}Hz {aspect_ratio}'
+
         if modes:
-            for v in modes:
-                self.mode_combo.append(v)
+            for mode in modes:
+                self.mode_combo.append(mode_string.format(
+                    hdmi_mode=mode['mode'],
+                    hdmi_group=mode['group'],
+                    width=mode['width'],
+                    height=mode['height'],
+                    refresh_rate=mode['rate'],
+                    aspect_ratio=mode['aspect_ratio']
+                ))
 
         horizontal_container.pack_start(self.mode_combo, False, False, 0)
         self.mode_combo.props.valign = Gtk.Align.CENTER

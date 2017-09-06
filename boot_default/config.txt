@@ -28,12 +28,12 @@ hdmi_pixel_encoding=2
 hdmi_force_hotplug=1
 
 # uncomment to force a specific HDMI mode (this will force VGA)
-#hdmi_group=1
-#hdmi_mode=1
+hdmi_group=2
+hdmi_mode=28
 
 # uncomment to force a HDMI mode rather than DVI. This can make audio work in
 # DMT (computer monitor) modes
-hdmi_drive=2
+#hdmi_drive=2
 
 # uncomment to increase signal to HDMI, if you have interference, blanking, or
 # no display
@@ -80,18 +80,34 @@ disable_audio_dither=1
 
 # Configuration Filters
 
+
+# Kano Screen Kit
 [EDID=ADA-HDMI]
-# Screen kit
+# Set the resolution to DMT 1280x800 @ 60Hz.
+hdmi_group=2
+hdmi_mode=28
+
+# Rotate the display 180 degrees since panel is rotated.
 display_rotate=2
 [all]
 
+# Kano Screen Kit
 [EDID=MST-HDMI1]
-# Screen kit
+# Set the resolution to DMT 1280x800 @ 60Hz.
+hdmi_group=2
+hdmi_mode=28
+
+# Rotate the display 180 degrees since panel is rotated.
 display_rotate=2
 [all]
 
+# Kano Screen Kit
 [EDID=MST-HDMI]
-# Screen kit
+# Set the resolution to DMT 1280x800 @ 60Hz.
+hdmi_group=2
+hdmi_mode=28
+
+# No display rotation is needed.
 display_rotate=0
 [all]
 

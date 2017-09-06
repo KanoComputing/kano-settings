@@ -36,9 +36,10 @@ from kano.utils.shell import run_cmd
 from kano.utils.hardware import get_rpi_model, get_board_property
 from kano.logging import logger
 
-from kano_settings.system.display import get_status, get_model, set_hdmi_mode, \
+from kano_settings.system.display import get_status, get_edid_name, set_hdmi_mode, \
     get_edid, is_mode_fallback, set_safeboot_mode, set_screen_value, \
     list_supported_modes, is_screen_kit
+from kano_settings.system.boot_config import Filter
 from kano_settings.boot_config import set_config_value, set_config_comment, \
     get_config_comment, get_config_value, has_config_comment, \
     enforce_pi, is_safe_boot, safe_mode_backup_config, \
@@ -48,7 +49,7 @@ from kano_settings.system.audio import is_HDMI, set_to_HDMI
 from kano_settings.system.overclock_chip_support import check_clock_config_matches_chip
 
 from kano_settings.return_codes import RC_SUCCESS, RC_REQUIRES_ROOT, RC_INCORRECT_ARGS, \
-    RC_EDID_NO_STATUS, RC_EDID_NO_SUPPORTED
+    RC_EDID_NO_MODEL, RC_EDID_NO_STATUS, RC_EDID_NO_SUPPORTED
 
 
 def main(args):
@@ -61,7 +62,7 @@ def main(args):
 
     # Check for corrupt config file
     if check_corrupt_config():
-        logger.error('Found corrupt config file! Restored to default.')
+        logger.warning('Found corrupt config file! Restored to default.')
         reboot_now = True
 
     # Rpi1 and Rpi2 have different clock rate defaults, but only one
@@ -93,50 +94,45 @@ def main(args):
         return RC_SUCCESS
 
     # Gather and log data about the current screen
-    screen_data = get_screen_information(dry_run=dry_run)
+    # screen_data = get_screen_information(dry_run=dry_run)
     # if verbose or dump_mode:
     #     print json.dumps(screen_data, indent=4)
 
-    # Sanity checks, we need current screen status and EDID info
-    model = screen_data['model']  # TODO: or 'uSK'
-    logger.info('Screen model: {}'.format(model))
-    was_screen_configured = get_config_comment('kano_screen_used', model)
-    logger.info('is comment kano_screen_used({})? {}'.format(model, was_screen_configured))
+    # If the display model cannot be retrieved it is a strong indication that
+    # the screen is unflashed or the EDID is corrupt.
+    model = get_edid_name()  # TODO: or 'uSK'
+    if not model:
+        logger.error('Could not get the model of the screen. Will use config.txt defaults.')
+        return RC_EDID_NO_MODEL
 
-    if was_screen_configured:
-        logger.info('The unit was configured for this model already, exiting.')
+    # Check if the screen was already configured by looking for the hdmi_mode option
+    # set for this display only.
+    was_screen_configured = get_config_value(
+        'hdmi_mode',
+        config_filter=Filter.get_edid_filter(model),
+        fallback=False,
+        ignore_comments=True
+    )
+    if was_screen_configured and not force_mode:
+        logger.debug('The unit was configured for this model already, exiting.')
         return RC_SUCCESS
 
-    status = screen_data['status']
+    # Sanity checks, we need current screen status, EDID info, and list of display modes.
+    status = get_status()
     if not status:
-        logger.debug("Could not determine current screen status, aborting.")
+        logger.error('Could not determine current screen status, aborting.')
         return RC_EDID_NO_STATUS
 
-    supported = screen_data['supported']
-    if not supported:
-        logger.debug("Could not determine list of screen supported modes, aborting.")
+    supported_modes = list_supported_modes(stringify=False)
+    if not supported_modes:
+        logger.error('Could not determine list of screen supported modes, aborting.')
         return RC_EDID_NO_SUPPORTED
 
-    edid = screen_data['edid']
+    edid = get_edid()
     if not edid:
-        if set_resolution_for_unflashed_screen(status):
-            # TODO: enable the lines below
-            # set_config_comment('kano_screen_used', 'uSK')
-            # end_config_transaction()
-            logger.info('No EDID found. Set resolution for an unflashed SK.')
-            reboot(dry_run=dry_run)
-            return RC_SUCCESS
-
-    # If the hdmi_group and hdmi_mode values are set explicitly then skip the detection.
-    if get_config_value('hdmi_group', ignore_comments=True) != 0 and \
-       get_config_value('hdmi_mode', ignore_comments=True) != 0:
-
-        if not force_mode and was_screen_configured:
-            # The screen is either the same or not set at all
-            logger.info('Explicit HDMI configuration detected, exiting.')
-            return RC_SUCCESS
-        else:
-            logger.info('New screen was detected, reconfiguring...')
+        logger.error('No EDID found. Set resolution for an unflashed SK.')
+        reboot(dry_run=dry_run)
+        return RC_SUCCESS
 
     # override modes, calculate is_monitor
     override_models(edid, model)
@@ -149,14 +145,14 @@ def main(args):
             set_to_HDMI(False)
 
     # Calculate changes needed.
-    changes = compare_and_set_mode(edid, status)
-    changes = changes or compare_and_set_full_range(edid, status)
+    # changes = compare_and_set_mode(edid, status)
+    changes = compare_and_set_full_range(edid, status)
     changes = changes or compare_and_set_overscan(edid, status)
-    resolution_changes = (
-        set_resolution_for_screen_kit(supported) or
-        compare_and_set_optimal_resolution(edid, status, supported, verbose)
-    )
-    changes = changes or resolution_changes
+
+    if is_screen_kit():
+        changes = set_resolution_for_screen_kit(supported_modes)
+    else:
+        changes = compare_and_set_optimal_resolution(edid, status, supported_modes, verbose)
 
     if changes:
         # write comment to config
@@ -181,29 +177,30 @@ def ensure_correct_browser(dry_run=False):
     chromium_support = arch not in ['armv6']
     browser = 'chromium-browser' if chromium_support else 'epiphany-browser'
 
-    logger.debug("Browser should be: {}".format(browser))
+    logger.info("Set browser to be: {}".format(browser))
     if dry_run:
         run_cmd('update-alternatives --set {} /usr/bin/{}'.format(browser_link, browser))
 
 
-def get_screen_information(screen_log_path='/boot/screen.log', dry_run=False):
+# def get_screen_information(screen_log_path='/boot/screen.log', dry_run=False):
     """
+    TODO: Decide what to do with this.
     Retrieves the information about the current screen.
     The data will be logged to the bootpartition for
     troubleshooting purposes.
     """
-    info = {
-        "edid": get_edid(),
-        "model": get_model(),
-        "status": get_status(),
-        "supported": list_supported_modes(stringify=False)
-    }
+    # info = {
+    #     "edid": get_edid(),
+    #     "model": get_model(),
+    #     "status": get_status(),
+    #     "supported": list_supported_modes(stringify=False)
+    # }
 
-    if not dry_run:
-        with open(screen_log_path, 'w') as f:
-            json.dump(info, f, sort_keys=True, indent=4, separators=(',', ': '))
+    # if not dry_run:
+    #     with open(screen_log_path, 'w') as f:
+    #         json.dump(info, f, sort_keys=True, indent=4, separators=(',', ': '))
 
-    return info
+    # return info
 
 
 def override_models(edid, model):
@@ -224,6 +221,150 @@ def override_models(edid, model):
     # Set the configured options for the model to the EDID of the given screen.
     for option, value in overrides[model].iteritems():
         edid[option] = value
+
+
+def calculate_is_monitor(edid):
+    """
+    TODO: What is this for?
+    """
+    edid['target_full_range'] = edid['is_monitor']
+
+
+def compare_and_set_full_range(edid, status, model, dry_run=False):
+    """
+    Returns True if full range is changed
+
+    TODO: What is this for?
+    """
+    if status['full_range'] == edid['target_full_range']:
+        logger.debug('Config full range change not needed.')
+        return False
+
+    hdmi_pixel_encoding = 2 if edid['target_full_range'] else 0
+
+    logger.info(
+        'Config full range change needed. Setting hdmi_pixel_encoding to {}'
+        .format(hdmi_pixel_encoding)
+    )
+    if dry_run:
+        return True
+
+    set_config_value(
+        'hdmi_pixel_encoding',
+        hdmi_pixel_encoding,
+        config_filter=Filter.get_edid_filter(model)
+    )
+    return True
+
+
+def compare_and_set_overscan(edid, status, model, dry_run=False):
+    """
+    Returns True if overscan is changed
+
+    TODO: Description
+    """
+    if status['overscan'] == edid['target_overscan']:
+        logger.debug('Config overscan change not needed.')
+        return False
+
+    if edid['target_overscan']:
+        disable_overscan = 0
+        overscan_value = -48  # TODO: where does this value come from?
+    else:
+        disable_overscan = 1
+        overscan_value = 0
+
+    logger.info(
+        'Overscan change needed. Setting disable_overscan to {} and overscan to {}'
+        .format(disable_overscan, overscan_value)
+    )
+    if dry_run:
+        return True
+
+    set_config_value(
+        'disable_overscan',
+        disable_overscan,
+        config_filter=Filter.get_edid_filter(model)
+    )
+    for overscan in ['overscan_left', 'overscan_right', 'overscan_top', 'overscan_bottom']:
+        set_config_value(
+            overscan,
+            overscan_value,
+            config_filter=Filter.get_edid_filter(model)
+        )
+    return True
+
+
+def compare_and_set_optimal_resolution(edid, status, model, dry_run=False):
+    """
+    TODO: Description
+    """
+    if status['group'] == edid['target_group'] and \
+       status['mode'] == edid['target_mode']:
+        logger.info('mode change not needed')
+        return False
+    else:
+        logger.info('mode change needed')
+        modes = '{} {}'.format(edid['target_group'], edid['target_mode'])
+        logger.info('setting mode: {}'.format(modes))
+
+        set_hdmi_mode(edid['target_group'], edid['target_mode'])
+        return True
+
+
+def get_optimal_resolution(edid, supported_modes):
+    """
+    TODO: Description
+    """
+    PREFERRED_RESOLUTIONS = {
+        '4:3': [
+            {'width': 1280, 'height': 960},
+            {'width': 1024, 'height': 768},
+        ],
+        '16:9': [
+            {'width': 1366, 'height': 768},
+            {'width': 1360, 'height': 768},
+            {'width': 1280, 'height': 720},
+        ],
+        '16:10': [
+            {'width': 1280, 'height': 800},
+            {'width': 1440, 'height': 900},
+        ],
+    }
+
+    optimal_resolution = None
+
+    # Split the resolution into width and height.
+    # TODO: This should be moved to system.display.parse_edid
+    parts = edid['preferred_res'].strip('p').split('x')
+    edid['preferred_width'] = int(parts[0])
+    edid['preferred_height'] = int(parts[1])
+
+    # Set the preferred aspect ratio for the preferred resolution.
+    # The easiest conversion would be to look through supported resolutions, but it's
+    # not the most comprehensive way. Hopefully, the preferred mode should be supported.
+    for mode in supported_modes:
+        if mode['mode'] == edid['preferred_mode'] and \
+           mode['group'] == edid['preferred_group']:
+
+            edid['preferred_aspect_ratio'] = mode['aspect']
+
+    if 'preferred_aspect_ratio' not in edid:
+        return
+
+    for resolution in PREFERRED_RESOLUTIONS[edid['preferred_aspect_ratio']]:
+        for mode in supported_modes:
+            if resolution['width'] == edid['preferred_width'] and \
+               resolution['height'] == edid['preferred_height']:
+
+            optimal_resolution = resolution
+            break
+
+    optimal_resolution = optimal_resolution or {
+        'width': edid['preferred_width'],
+        'height': edid['preferred_height']
+    }
+    return optimal_resolution
 
 
 def reboot(dry_run=False):

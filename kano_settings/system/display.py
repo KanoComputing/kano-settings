@@ -12,6 +12,7 @@ import os
 import re
 import subprocess
 import time
+import json
 import shutil
 
 from kano_settings.boot_config import set_config_value, get_config_value, \
@@ -93,81 +94,48 @@ def launch_pipe():
         run_cmd('mknod {} c 100 0'.format(overscan_pipe))
 
 
-# Group must be either 'DMT' or 'CEA'
-def get_supported_modes(group):
-    modes = {}
+def get_supported_modes(group, min_width=1024, min_height=720):
+    """
+    # Group must be either 'CEA' or 'DMT' rather than 1 or 2 respectively.
 
+    TODO: Description
+    """
     if not os.path.isfile(tvservice_path):
-        return modes
+        return list()
 
-    cea_modes = subprocess.check_output([tvservice_path, "-m", group.upper()])
-    cea_modes = cea_modes.decode()
-    cea_modes = cea_modes.split("\n")[1:]
-    mode_line_re = r'mode (\d+): (\d+x\d+) @ (\d+Hz) (\d+:\d+)'
-    for line in cea_modes:
-        mode_line_match = re.search(mode_line_re, line)
-        if mode_line_match:
-            number = mode_line_match.group(1)
-            res = mode_line_match.group(2)
-            freq = mode_line_match.group(3)
-            aspect = mode_line_match.group(4)
-            modes[int(number)] = [res, freq, aspect]
+    modes = subprocess.check_output([tvservice_path, '--modes', group.upper(), '--json'])
+    try:
+        modes = json.loads(modes)
+    except:
+        import traceback
+        logger.error(
+            'get_supported_modes: Unexpected error caught:\n{}'
+            .format(traceback.format_exc())
+        )
 
-    return modes
+    supported_modes = list()
+
+    for mode in modes:
+        # Add the group to the supported mode and rename the 'code' key to 'mode'
+        # to be consistent with hdmi_group and hdmi_mode options.
+        mode[u'group'] = group
+        mode[u'mode'] = mode['code']
+        mode.pop('code')
+
+        if mode['width'] >= min_width and mode['height'] >= min_height:
+            supported_modes.append(mode)
+
+    return supported_modes
 
 
-def list_supported_modes(stringify=True):
-    cea_modes = get_supported_modes("CEA")
-    dmt_modes = get_supported_modes("DMT")
-    modes = []
+def list_supported_modes(min_width=1024, min_height=720):
+    """
+    TODO: Description
+    """
+    cea_modes = get_supported_modes('CEA', min_width=min_width, min_height=min_height)
+    dmt_modes = get_supported_modes('DMT', min_width=min_width, min_height=min_height)
 
-    def is_resolution_supported(cea_dmt_resolution, min_x=1024, min_y=720):
-        """
-        Returns True if CEA/DMT resolution is supported by Kano.
-        The string Format is expected in the form "widthxheight".
-        """
-        try:
-            mode_x, mode_y = cea_dmt_resolution.lower().split('x')
-            if int(mode_x) >= min_x and int(mode_y) >= min_y:
-                return True
-            else:
-                return False
-        except:
-            # Unrecognized entry
-            return True
-
-    for key in sorted(cea_modes):
-        values = cea_modes[key]
-        if stringify:
-            cea_string = "cea:{:d}  {}  {}  {}".format(key, values[0], values[1], values[2])
-        else:
-            cea_string = {
-                'group': 'CEA',
-                'mode': key,
-                'resolution': values[0],
-                'freq': values[1],
-                'aspect': values[2]
-            }
-        if is_resolution_supported(values[0]):
-            modes.append(cea_string)
-
-    for key in sorted(dmt_modes):
-        values = dmt_modes[key]
-        if stringify:
-            dmt_string = "dmt:{:d}  {}  {}  {}".format(key, values[0], values[1], values[2])
-        else:
-            dmt_string = {
-                'group': 'DMT',
-                'mode': key,
-                'resolution': values[0],
-                'freq': values[1],
-                'aspect': values[2]
-            }
-
-        if is_resolution_supported(values[0]):
-            modes.append(dmt_string)
-
-    return modes
+    return cea_modes + dmt_modes
 
 
 def set_hdmi_mode_live(group=None, mode=None, drive='HDMI'):
@@ -305,6 +273,11 @@ def is_screen_kit(use_cached=False):
 def get_model():
     """
     Get the display device model name
+
+    NOTE: DO NOT USE THIS FUNCTION. USE get_edid_name INSTEAD.
+
+    TODO: The implementation of this function should be that of get_edid_name
+          and it's signature is much more intelligible than get_edid_name
     """
     cmd = '{} -n'.format(tvservice_path)
     display_name, _, _ = run_cmd(cmd)
