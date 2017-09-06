@@ -334,12 +334,6 @@ def get_optimal_resolution(edid, supported_modes):
 
     optimal_resolution = None
 
-    # Split the resolution into width and height.
-    # TODO: This should be moved to system.display.parse_edid
-    parts = edid['preferred_res'].strip('p').split('x')
-    edid['preferred_width'] = int(parts[0])
-    edid['preferred_height'] = int(parts[1])
-
     # Set the preferred aspect ratio for the preferred resolution.
     # The easiest conversion would be to look through supported resolutions, but it's
     # not the most comprehensive way. Hopefully, the preferred mode should be supported.

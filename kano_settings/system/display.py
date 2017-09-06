@@ -9,7 +9,6 @@
 #
 
 import os
-import re
 import subprocess
 import time
 import json
@@ -31,7 +30,9 @@ fpturbo_conf_path = '/usr/share/X11/xorg.conf.d/99-fbturbo.conf'
 fpturbo_conf_backup_path = '/var/cache/kano-settings/99-fbturbo.conf'
 
 
-MONITOR_EDID_NAME = None
+MONITOR_EDID_NAME = str()
+CEA_MODES = list()
+DMT_MODES = list()
 
 
 def get_edid_name(use_cached=True):
@@ -128,14 +129,19 @@ def get_supported_modes(group, min_width=1024, min_height=720):
     return supported_modes
 
 
-def list_supported_modes(min_width=1024, min_height=720):
+def list_supported_modes(min_width=1024, min_height=720, use_cached=True):
     """
     TODO: Description
     """
-    cea_modes = get_supported_modes('CEA', min_width=min_width, min_height=min_height)
-    dmt_modes = get_supported_modes('DMT', min_width=min_width, min_height=min_height)
+    global CEA_MODES, DMT_MODES
 
-    return cea_modes + dmt_modes
+    if use_cached and CEA_MODES and DMT_MODES:
+        return CEA_MODES + DMT_MODES
+
+    CEA_MODES = get_supported_modes('CEA', min_width=min_width, min_height=min_height)
+    DMT_MODES = get_supported_modes('DMT', min_width=min_width, min_height=min_height)
+
+    return CEA_MODES + DMT_MODES
 
 
 def set_hdmi_mode_live(group=None, mode=None, drive='HDMI'):
@@ -357,10 +363,12 @@ def read_hdmi_mode():
 
 
 def find_matching_mode(modes, group, mode):
-    string = '{}:{}'.format(group.lower(), mode)
-    for i, m in enumerate(modes):
-        if m.startswith(string):
-            return i + 1
+    """
+    TODO: Description
+    """
+    for index, current_mode in enumerate(modes):
+        if current_mode['mode'] == mode and current_mode['group'] == group:
+            return index + 1
 
     # 0 for auto
     return 0
@@ -396,7 +404,7 @@ def parse_edid(edid_txt):
         # model name
         elif 'monitor name is' in l:
             # Some displays return garbage, on old firmwares it can also be random.
-            model=l.split('monitor name is')[1].strip()
+            model = l.split('monitor name is')[1].strip()
             edid['model'] = model.decode('ascii', 'ignore')
 
         # preferred
@@ -411,6 +419,9 @@ def parse_edid(edid_txt):
 
             res, mode = l.split(':')[2].split('@')
             edid['preferred_res'] = res.strip()
+            parts = edid['preferred_res'].strip('p').split('x')
+            edid['preferred_width'] = int(parts[0])
+            edid['preferred_height'] = int(parts[1])
             hz, mode = mode.split(' Hz (')
             edid['preferred_hz'] = float(hz.strip())
             edid['preferred_mode'] = int(mode[:-1])

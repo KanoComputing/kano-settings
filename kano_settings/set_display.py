@@ -75,13 +75,13 @@ class SetDisplay(Template):
         # Fill list of modes
         modes = list_supported_modes()
         self.mode_combo.append('auto')
-        mode_string = '{hdmi_mode}:{hdmi_group} {width}x{height} {refresh_rate}Hz {aspect_ratio}'
+        mode_string = '{hdmi_group}:{hdmi_mode}  {width}x{height}  {refresh_rate}Hz  {aspect_ratio}'
 
         if modes:
             for mode in modes:
                 self.mode_combo.append(mode_string.format(
-                    hdmi_mode=mode['mode'],
                     hdmi_group=mode['group'],
+                    hdmi_mode=mode['mode'],
                     width=mode['width'],
                     height=mode['height'],
                     refresh_rate=mode['rate'],
