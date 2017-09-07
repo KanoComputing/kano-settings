@@ -54,9 +54,14 @@ from kano_settings.boot_config import set_config_value, set_config_comment, \
     enforce_pi, is_safe_boot, safe_mode_backup_config, \
     safe_mode_restore_config, remove_noobs_defaults, set_dry_run, \
     end_config_transaction, check_corrupt_config
-from kano_settings.system.audio import is_HDMI, set_to_HDMI
+from kano_settings.system.audio import is_HDMI, set_to_HDMI, set_alsa_config_max_dB, \
+    restart_alsa
 from kano_settings.system.overclock_chip_support import check_clock_config_matches_chip
 from kano.utils.hardware import get_rpi_model, get_board_property
+from kano_pi_hat.ck2_pro_hat import CK2ProHat
+
+
+DEFAULT_CKC_MAX_DB = -2.0
 
 
 def check_model_present(model):
@@ -340,6 +345,21 @@ def ensure_correct_browser():
         run_cmd('update-alternatives --set {} /usr/bin/{}'.format(browser_link, browser))
 
 
+def ensure_correct_volume_levels():
+    """
+    Sets the default max_dB option in ALSA for CKC and other.
+    """
+    ck2_pro_hat = CK2ProHat()
+    ck2_pro_hat.initialise()
+
+    if ck2_pro_hat.is_connected():
+        changes = set_alsa_config_max_dB(DEFAULT_CKC_MAX_DB)
+        logger.debug('On CKC, ALSA max_dB changes {}'.format(changes))
+
+    if changes:
+        restart_alsa()
+
+
 if __name__ == '__main__':
 
     dry_run = '--dry-run' in sys.argv
@@ -371,6 +391,9 @@ if __name__ == '__main__':
 
     # TODO: Move this task away, it is not related to screen management
     ensure_correct_browser()
+
+    # Correct the maximum volume gain for CKC.
+    ensure_correct_volume_levels()
 
     # Check for corrupt config file
     if check_corrupt_config():
