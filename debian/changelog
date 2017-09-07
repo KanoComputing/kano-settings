@@ -1,9 +1,15 @@
+kano-settings (4.0.2-1) unstable; urgency=low
+
+  * Migrate Busybox dhcp client to a more modern implementation
+	
+ -- Team Kano <dev@kano.me>  Fri, 8 Sep 2017 11:48:00 +0100
+
 kano-settings (4.0.2-0) unstable; urgency=low
 
   * Changes for Kano OS 3.12.0:
   * Ensuring maximum volume level on CKC and other
 
- -- Team Kano <dev@kano.me>  Fri, 8 Sep 2017 10:48:00 +0100
+ -- Team Kano <dev@kano.me>  Thu, 7 Sep 2017 18:11:09 +0100
 
 kano-settings (4.0.1-0) unstable; urgency=low
 
@@ -13,19 +19,19 @@ kano-settings (4.0.1-0) unstable; urgency=low
   * Mechanism to enable SSH client at boot with a /boot/ssh file
   * CPU id displayed in about section
 
- -- Team Kano <dev@kano.me>  Thu 13 Jul 2017 17:41:09 +0100
+ -- Team Kano <dev@kano.me>  Thu, 13 Jul 2017 17:41:09 +0100
 
 kano-settings (4.0.0-0) unstable; urgency=low
 
   * Add Speed up boot times into Dashboard
 
- -- Team Kano <dev@kano.me>  Thu 25 May 2017 16:38:00 +0100
+ -- Team Kano <dev@kano.me>  Thu, 25 May 2017 16:38:00 +0100
 
 kano-settings (3.9.1-1) unstable; urgency=low
 
   * Add API to detect the Kano Screen Kit
 
- -- Team Kano <dev@kano.me>  Thu 30 Mar 2017 17:24:00 +0100
+ -- Team Kano <dev@kano.me>  Thu, 30 Mar 2017 17:24:00 +0100
 
 kano-settings (3.9.0-1) unstable; urgency=low
 
@@ -37,7 +43,7 @@ kano-settings (3.8.0-1) unstable; urgency=low
 
   * Add kano-boot-check command to check for improper shutdown.
 
- -- Team Kano <dev@kano.me>  Thu 13 Oct 2016 17:47:00 +0100
+ -- Team Kano <dev@kano.me>  Thu, 13 Oct 2016 17:47:00 +0100
 
 kano-settings (3.7.0-1) unstable; urgency=low
 

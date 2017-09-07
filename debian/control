@@ -22,7 +22,7 @@ Description: Graphical tool to set different system settings
 
 Package: kano-connect
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, python, udhcpc,
+Depends: ${shlibs:Depends}, ${misc:Depends}, python, dhcpcd5,
          rxvt-unicode-256color, kano-toolset, libkdesk-dev, libkano-networking
 Description: Software to make Kanux connect over Wireless networks
  automatically.
