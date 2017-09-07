@@ -30,16 +30,16 @@ fpturbo_conf_path = '/usr/share/X11/xorg.conf.d/99-fbturbo.conf'
 fpturbo_conf_backup_path = '/var/cache/kano-settings/99-fbturbo.conf'
 
 
-MONITOR_EDID_NAME = str()
-CEA_MODES = list()
-DMT_MODES = list()
+_g_monitor_edid_name = str()
+_g_cea_modes = list()
+_g_dmt_modes = list()
 
 
 def get_edid_name(use_cached=True):
-    global MONITOR_EDID_NAME
+    global _g_monitor_edid_name
 
-    if use_cached and MONITOR_EDID_NAME:
-        return MONITOR_EDID_NAME
+    if use_cached and _g_monitor_edid_name:
+        return _g_monitor_edid_name
 
     edid_line, dummy, rc = run_cmd(
         '{tvservice} -n'.format(tvservice=tvservice_path)
@@ -49,9 +49,9 @@ def get_edid_name(use_cached=True):
         logger.error('Error getting EDID name')
         return
 
-    MONITOR_EDID_NAME = edid_line.split('=')[-1].strip().rstrip()
+    _g_monitor_edid_name = edid_line.split('=')[-1].strip().rstrip()
 
-    return MONITOR_EDID_NAME
+    return _g_monitor_edid_name
 
 
 def set_screen_value(key, value):
@@ -133,15 +133,15 @@ def list_supported_modes(min_width=1024, min_height=720, use_cached=True):
     """
     TODO: Description
     """
-    global CEA_MODES, DMT_MODES
+    global _g_cea_modes, _g_dmt_modes
 
-    if use_cached and CEA_MODES and DMT_MODES:
-        return CEA_MODES + DMT_MODES
+    if use_cached and _g_cea_modes and _g_dmt_modes:
+        return _g_cea_modes + _g_dmt_modes
 
-    CEA_MODES = get_supported_modes('CEA', min_width=min_width, min_height=min_height)
-    DMT_MODES = get_supported_modes('DMT', min_width=min_width, min_height=min_height)
+    _g_cea_modes = get_supported_modes('CEA', min_width=min_width, min_height=min_height)
+    _g_dmt_modes = get_supported_modes('DMT', min_width=min_width, min_height=min_height)
 
-    return CEA_MODES + DMT_MODES
+    return _g_cea_modes + _g_dmt_modes
 
 
 def set_hdmi_mode_live(group=None, mode=None, drive='HDMI'):

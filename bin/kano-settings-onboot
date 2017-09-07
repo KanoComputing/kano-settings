@@ -332,7 +332,8 @@ def get_optimal_resolution(edid, supported_modes):
         ],
     }
 
-    optimal_resolution = None
+    preferred_mode = dict()
+    optimal_mode = dict()
 
     # Set the preferred aspect ratio for the preferred resolution.
     # The easiest conversion would be to look through supported resolutions, but it's
@@ -342,23 +343,24 @@ def get_optimal_resolution(edid, supported_modes):
            mode['group'] == edid['preferred_group']:
 
             edid['preferred_aspect_ratio'] = mode['aspect']
+            preferred_mode = mode
+            logger.debug('Found preferred mode {}'.format(preferred_mode))
+            break
 
     if 'preferred_aspect_ratio' not in edid:
         return
 
     for resolution in PREFERRED_RESOLUTIONS[edid['preferred_aspect_ratio']]:
         for mode in supported_modes:
-            if resolution['width'] == edid['preferred_width'] and \
-               resolution['height'] == edid['preferred_height']:
+            if resolution['width'] == mode['width'] and \
+               resolution['height'] == mode['height'] and \
+               mode['group'] == edid['preferred_group']:
 
-            optimal_resolution = resolution
-            break
+                optimal_mode = mode
+                logger.debug('Found optimal mode {}'.format(optimal_mode))
+                break
 
-    optimal_resolution = optimal_resolution or {
-        'width': edid['preferred_width'],
-        'height': edid['preferred_height']
-    }
-    return optimal_resolution
+    return optimal_mode or preferred_mode
 
 
 def reboot(dry_run=False):
