@@ -61,7 +61,7 @@ from kano.utils.hardware import get_rpi_model, get_board_property
 from kano_pi_hat.ck2_pro_hat import CK2ProHat
 
 
-DEFAULT_CKC_MAX_DB = -2.0
+DEFAULT_CKC_MAX_DB = -11.9
 
 
 def check_model_present(model):
