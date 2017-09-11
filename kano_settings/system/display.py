@@ -29,6 +29,45 @@ xrefresh_path = '/usr/bin/xrefresh'
 fpturbo_conf_path = '/usr/share/X11/xorg.conf.d/99-fbturbo.conf'
 fpturbo_conf_backup_path = '/var/cache/kano-settings/99-fbturbo.conf'
 
+PREFERRED_RESOLUTIONS = {
+    '4:3': [
+        {'width': 1280, 'height': 960},
+        {'width': 1024, 'height': 768},
+    ],
+    '16:9': [
+        {'width': 1366, 'height': 768},
+        {'width': 1360, 'height': 768},
+        {'width': 1280, 'height': 720},
+    ],
+    '16:10': [
+        {'width': 1280, 'height': 800},
+        {'width': 1440, 'height': 900},
+    ],
+}
+
+SCREEN_KIT_NAMES = [
+    'ADA-HDMI',
+    'MST-HDMI1',
+    'MST-HDMI',
+]
+
+EDID_OVERRIDES = {
+    '32V3H-H6A': {
+        'target_group': 'DMT',
+        'target_mode': 16,
+        'is_monitor': True
+    },
+    'AS4637_______': {
+        'target_group': 'DMT',
+        'target_mode': 16,
+        'is_monitor': True
+    },
+    'BMD_HDMI': {
+        'target_group': 'CEA',
+        'target_mode': 33,
+        'is_monitor': True
+    },
+}
 
 _g_monitor_edid_name = str()
 _g_cea_modes = list()
@@ -268,11 +307,6 @@ def is_screen_kit(use_cached=False):
     """
     Returns True if the screen is a Kano Screen Kit.
     """
-    SCREEN_KIT_NAMES = [
-        'ADA-HDMI',
-        'MST-HDMI1',
-        'MST-HDMI'
-    ]
     return get_edid_name(use_cached=use_cached) in SCREEN_KIT_NAMES
 
 
@@ -507,3 +541,141 @@ def set_gfx_driver(enabled):
                 logger.error("Error restoring fpturbo_config", exception=e)
     end_config_transaction()
     set_setting('Use_GLX', enabled)
+
+
+def override_models(edid, model):
+    """
+    This function sets specific modes for screens that require special treatment.
+
+    TODO: Description
+    """
+    if model not in EDID_OVERRIDES:
+        return
+
+    # Set the configured options for the model to the EDID of the given screen.
+    for option, value in EDID_OVERRIDES[model].iteritems():
+        edid[option] = value
+
+
+def compare_and_set_full_range(edid, status, model, dry_run=False):
+    """
+    Returns True if full range is changed
+
+    TODO: What is this for?
+    """
+    if status['full_range'] == edid['target_full_range']:
+        logger.debug('Config full range change not needed.')
+        return False
+
+    hdmi_pixel_encoding = 2 if edid['target_full_range'] else 0
+
+    logger.info(
+        'Config full range change needed. Setting hdmi_pixel_encoding to {}'
+        .format(hdmi_pixel_encoding)
+    )
+    if dry_run:
+        return True
+
+    set_config_value(
+        'hdmi_pixel_encoding',
+        hdmi_pixel_encoding,
+        config_filter=Filter.get_edid_filter(model)
+    )
+    return True
+
+
+def compare_and_set_overscan(edid, status, model, dry_run=False):
+    """
+    Returns True if overscan is changed
+
+    TODO: Description
+    """
+    if status['overscan'] == edid['target_overscan']:
+        logger.debug('Config overscan change not needed.')
+        return False
+
+    if edid['target_overscan']:
+        disable_overscan = 0
+        overscan_value = -48  # TODO: where does this value come from?
+    else:
+        disable_overscan = 1
+        overscan_value = 0
+
+    logger.info(
+        'Overscan change needed. Setting disable_overscan to {} and overscan to {}'
+        .format(disable_overscan, overscan_value)
+    )
+    if dry_run:
+        return True
+
+    set_config_value(
+        'disable_overscan',
+        disable_overscan,
+        config_filter=Filter.get_edid_filter(model)
+    )
+    for overscan in ['overscan_left', 'overscan_right', 'overscan_top', 'overscan_bottom']:
+        set_config_value(
+            overscan,
+            overscan_value,
+            config_filter=Filter.get_edid_filter(model)
+        )
+    return True
+
+
+def compare_and_set_optimal_resolution(edid, status, supported_modes, dry_run=False):
+    """
+    TODO: Description
+    """
+
+    target_mode = get_optimal_resolution_mode(edid, supported_modes)
+
+    if status['group'] == target_mode['group'] and \
+       status['mode'] == target_mode['mode']:
+        logger.info('Resolution mode/group change not needed.')
+        return False
+
+    logger.info(
+        'Resolution change needed. Setting hdmi_group to {} and hdmi_mode to {}.'
+        .format(target_mode['group'], target_mode['group'])
+    )
+    if dry_run:
+        return True
+
+    # Apply the hdmi_group and hdmi_mode config options for this screen (with filter).
+    set_hdmi_mode(target_mode['group'], target_mode['mode'])
+    return True
+
+
+def get_optimal_resolution_mode(edid, supported_modes):
+    """
+    TODO: Description
+    """
+    preferred_mode = dict()
+    optimal_mode = dict()
+
+    # Set the preferred aspect ratio for the preferred resolution.
+    # The easiest conversion would be to look through supported resolutions, but it's not
+    # the most comprehensive way. Hopefully, the preferred mode should be also supported.
+    for mode in supported_modes:
+        if mode['mode'] == edid['preferred_mode'] and \
+           mode['group'] == edid['preferred_group']:
+
+            edid['preferred_aspect_ratio'] = mode['aspect_ratio']
+            preferred_mode = mode
+            logger.debug('Found preferred mode {}'.format(preferred_mode))
+            break
+
+    if 'preferred_aspect_ratio' not in edid:
+        return
+
+    for resolution in PREFERRED_RESOLUTIONS[edid['preferred_aspect_ratio']]:
+        for mode in supported_modes:
+            if resolution['width'] == mode['width'] and \
+               resolution['height'] == mode['height'] and \
+               mode['group'] == edid['preferred_group']:
+
+                optimal_mode = mode
+                logger.debug('Found optimal mode {}'.format(optimal_mode))
+                break
+
+    return optimal_mode or preferred_mode

@@ -23,7 +23,6 @@ Options:
 
 import os
 import sys
-import json
 import docopt
 
 # Allows for testing this module from a local repository clone
@@ -36,15 +35,13 @@ from kano.utils.shell import run_cmd
 from kano.utils.hardware import get_rpi_model, get_board_property
 from kano.logging import logger
 
-from kano_settings.system.display import get_status, get_edid_name, set_hdmi_mode, \
-    get_edid, is_mode_fallback, set_safeboot_mode, set_screen_value, \
-    list_supported_modes, is_screen_kit
-from kano_settings.system.boot_config import Filter
-from kano_settings.boot_config import set_config_value, set_config_comment, \
-    get_config_comment, get_config_value, has_config_comment, \
-    enforce_pi, is_safe_boot, safe_mode_backup_config, \
-    safe_mode_restore_config, remove_noobs_defaults, set_dry_run, \
-    end_config_transaction, check_corrupt_config
+from kano_settings.system.display import get_status, get_edid_name, \
+    get_edid, list_supported_modes, override_models, compare_and_set_full_range, \
+    compare_and_set_overscan, compare_and_set_optimal_resolution
+from kano_settings.system.boot_config.boot_config_filter import Filter
+from kano_settings.boot_config import set_config_comment, is_safe_boot, \
+    safe_mode_restore_config, remove_noobs_defaults, end_config_transaction, \
+    check_corrupt_config, get_config_value
 from kano_settings.system.audio import is_HDMI, set_to_HDMI
 from kano_settings.system.overclock_chip_support import check_clock_config_matches_chip
 
@@ -56,6 +53,8 @@ def main(args):
 
     force_mode = args['--force']
     dry_run = args['--dry-run']
+
+    reboot_now = False
 
     # TODO: Move this task away, it is not related to screen management
     ensure_correct_browser(dry_run=dry_run)
@@ -123,7 +122,7 @@ def main(args):
         logger.error('Could not determine current screen status, aborting.')
         return RC_EDID_NO_STATUS
 
-    supported_modes = list_supported_modes(stringify=False)
+    supported_modes = list_supported_modes()
     if not supported_modes:
         logger.error('Could not determine list of screen supported modes, aborting.')
         return RC_EDID_NO_SUPPORTED
@@ -144,21 +143,13 @@ def main(args):
         if not dry_run:
             set_to_HDMI(False)
 
-    # Calculate changes needed.
-    # changes = compare_and_set_mode(edid, status)
-    changes = compare_and_set_full_range(edid, status)
-    changes = changes or compare_and_set_overscan(edid, status)
+    # Calculate changes needed...
+    changes = compare_and_set_full_range(edid, status, model, dry_run=dry_run)
+    changes = changes or compare_and_set_overscan(edid, status, model, dry_run=dry_run)
+    changes = changes or compare_and_set_optimal_resolution(edid, status, supported_modes, dry_run=dry_run)
 
-    if is_screen_kit():
-        changes = set_resolution_for_screen_kit(supported_modes)
-    else:
-        changes = compare_and_set_optimal_resolution(edid, status, supported_modes, verbose)
-
+    # ... and reboot if needed.
     if changes:
-        # write comment to config
-        set_config_comment('kano_screen_used', model)
-        end_config_transaction()
-
         reboot(dry_run=dry_run)
 
     return RC_SUCCESS
@@ -203,164 +194,11 @@ def ensure_correct_browser(dry_run=False):
     # return info
 
 
-def override_models(edid, model):
-    """
-    This function sets specific modes for screens that require special treatment.
-
-    TODO: Description
-    """
-    overrides = {
-        '32V3H-H6A': {'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True},
-        'AS4637_______': {'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True},
-        'BMD_HDMI': {'target_group': 'CEA', 'target_mode': 33, 'is_monitor': True},
-    }
-
-    if model not in overrides:
-        return
-
-    # Set the configured options for the model to the EDID of the given screen.
-    for option, value in overrides[model].iteritems():
-        edid[option] = value
-
-
 def calculate_is_monitor(edid):
     """
     TODO: What is this for?
     """
     edid['target_full_range'] = edid['is_monitor']
-
-
-def compare_and_set_full_range(edid, status, model, dry_run=False):
-    """
-    Returns True if full range is changed
-
-    TODO: What is this for?
-    """
-    if status['full_range'] == edid['target_full_range']:
-        logger.debug('Config full range change not needed.')
-        return False
-
-    hdmi_pixel_encoding = 2 if edid['target_full_range'] else 0
-
-    logger.info(
-        'Config full range change needed. Setting hdmi_pixel_encoding to {}'
-        .format(hdmi_pixel_encoding)
-    )
-    if dry_run:
-        return True
-
-    set_config_value(
-        'hdmi_pixel_encoding',
-        hdmi_pixel_encoding,
-        config_filter=Filter.get_edid_filter(model)
-    )
-    return True
-
-
-def compare_and_set_overscan(edid, status, model, dry_run=False):
-    """
-    Returns True if overscan is changed
-
-    TODO: Description
-    """
-    if status['overscan'] == edid['target_overscan']:
-        logger.debug('Config overscan change not needed.')
-        return False
-
-    if edid['target_overscan']:
-        disable_overscan = 0
-        overscan_value = -48  # TODO: where does this value come from?
-    else:
-        disable_overscan = 1
-        overscan_value = 0
-
-    logger.info(
-        'Overscan change needed. Setting disable_overscan to {} and overscan to {}'
-        .format(disable_overscan, overscan_value)
-    )
-    if dry_run:
-        return True
-
-    set_config_value(
-        'disable_overscan',
-        disable_overscan,
-        config_filter=Filter.get_edid_filter(model)
-    )
-    for overscan in ['overscan_left', 'overscan_right', 'overscan_top', 'overscan_bottom']:
-        set_config_value(
-            overscan,
-            overscan_value,
-            config_filter=Filter.get_edid_filter(model)
-        )
-    return True
-
-
-def compare_and_set_optimal_resolution(edid, status, model, dry_run=False):
-    """
-    TODO: Description
-    """
-    if status['group'] == edid['target_group'] and \
-       status['mode'] == edid['target_mode']:
-        logger.info('mode change not needed')
-        return False
-    else:
-        logger.info('mode change needed')
-        modes = '{} {}'.format(edid['target_group'], edid['target_mode'])
-        logger.info('setting mode: {}'.format(modes))
-
-        set_hdmi_mode(edid['target_group'], edid['target_mode'])
-        return True
-
-
-def get_optimal_resolution(edid, supported_modes):
-    """
-    TODO: Description
-    """
-    PREFERRED_RESOLUTIONS = {
-        '4:3': [
-            {'width': 1280, 'height': 960},
-            {'width': 1024, 'height': 768},
-        ],
-        '16:9': [
-            {'width': 1366, 'height': 768},
-            {'width': 1360, 'height': 768},
-            {'width': 1280, 'height': 720},
-        ],
-        '16:10': [
-            {'width': 1280, 'height': 800},
-            {'width': 1440, 'height': 900},
-        ],
-    }
-
-    preferred_mode = dict()
-    optimal_mode = dict()
-
-    # Set the preferred aspect ratio for the preferred resolution.
-    # The easiest conversion would be to look through supported resolutions, but it's
-    # not the most comprehensive way. Hopefully, the preferred mode should be supported.
-    for mode in supported_modes:
-        if mode['mode'] == edid['preferred_mode'] and \
-           mode['group'] == edid['preferred_group']:
-
-            edid['preferred_aspect_ratio'] = mode['aspect']
-            preferred_mode = mode
-            logger.debug('Found preferred mode {}'.format(preferred_mode))
-            break
-
-    if 'preferred_aspect_ratio' not in edid:
-        return
-
-    for resolution in PREFERRED_RESOLUTIONS[edid['preferred_aspect_ratio']]:
-        for mode in supported_modes:
-            if resolution['width'] == mode['width'] and \
-               resolution['height'] == mode['height'] and \
-               mode['group'] == edid['preferred_group']:
-
-                optimal_mode = mode
-                logger.debug('Found optimal mode {}'.format(optimal_mode))
-                break
-
-    return optimal_mode or preferred_mode
 
 
 def reboot(dry_run=False):
@@ -377,7 +215,7 @@ def reboot(dry_run=False):
 if __name__ == '__main__':
     logger.force_log_level('info')
 
-    if os.geteuid() == 0:
+    if os.geteuid() != 0:
         logger.error('Program must be executed with root priviledges.')
         sys.exit(RC_REQUIRES_ROOT)
 
