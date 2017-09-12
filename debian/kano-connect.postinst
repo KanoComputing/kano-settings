@@ -26,13 +26,8 @@ case "$1" in
         mv $TMP_FILE /etc/sudoers.d/
 
         if [ -e /etc/kanux_version ]; then
-
             # setting wireless module parameters
             cp /usr/share/kano-network/etc/modprobe.d/* /etc/modprobe.d/
-
-            # updating the /etc/network/interfaces
-            cp /usr/share/kano-network/etc/network/* /etc/network/
-
         fi
 	;;
 
