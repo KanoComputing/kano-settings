@@ -36,6 +36,9 @@ hdmi_force_hotplug=1
 hdmi_group=2
 hdmi_mode=28
 
+# Rotate the display clockwise on the screen (default=0) or flip the display.
+display_rotate=0
+
 # uncomment to force a HDMI mode rather than DVI. This can make audio work in
 # DMT (computer monitor) modes
 #hdmi_drive=2
@@ -62,8 +65,6 @@ dtparam=spi=on
 # Enable speaker
 dtparam=audio=on
 
-# Rotate the display clockwise on the screen (default=0) or flip the display.
-display_rotate=0
 # Decrease audio noise.
 disable_audio_dither=1
 
@@ -141,4 +142,5 @@ hdmi_mode=28
 display_rotate=0
 [all]
 
+# ---------------------------------------------------------------------------------------
 # for more options see http://elinux.org/RPi_config.txt
