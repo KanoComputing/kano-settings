@@ -1,7 +1,7 @@
 kano-settings (4.0.2-1) unstable; urgency=low
 
   * Migrate Busybox dhcp client to a more modern implementation
-	
+
  -- Team Kano <dev@kano.me>  Fri, 8 Sep 2017 11:48:00 +0100
 
 kano-settings (4.0.2-0) unstable; urgency=low
