@@ -6,6 +6,8 @@
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 
+interfaces_file=/etc/network/interfaces
+
 case "$1" in
     remove|upgrade)
         # Remove config file
@@ -22,6 +24,10 @@ case "$1" in
         # remove the control file to force kano-connect into multihomed
         rm -rf /var/opt/kano-connect/
 
+        # remove previous interfaces file, for udhcpd5 migration
+        if [ -f $interfaces_file ]; then
+            rm -f $interfaces_file
+        fi
         ;;
 esac
 
