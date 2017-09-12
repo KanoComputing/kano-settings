@@ -2,9 +2,12 @@
 
 # postinst
 #
-# Copyright (C) 2014 Kano Computing Ltd.
+# Copyright (C) 2014-2017 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
+
+interfaces_file=/etc/network/interfaces
+interfaces_file_backup=/etc/network/interfaces-backup
 
 TMP_FILE=/tmp/kano-connect_conf
 
@@ -28,6 +31,15 @@ case "$1" in
         if [ -e /etc/kanux_version ]; then
             # setting wireless module parameters
             cp /usr/share/kano-network/etc/modprobe.d/* /etc/modprobe.d/
+        fi
+
+        # remove previous interfaces file, for udhcpd5 migration
+        if [ -f $interfaces_file ]; then
+            rm -f $interfaces_file
+        fi
+
+        if [ -f $interfaces_file_backup ]; then
+            rm -f $interfaces_file_backup
         fi
 	;;
 
