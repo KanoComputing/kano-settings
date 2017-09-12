@@ -53,24 +53,24 @@ case "$1" in
         cp -r /usr/share/kano-settings/etc_override/* /etc
 
         # add kano-settings-onboot to startup
-        update-rc.d kano-settings defaults
+        systemctl enable kano-settings
 
         # add kano-safeboot-mode to startup
-        update-rc.d kano-safeboot defaults
+        systemctl enable kano-safeboot
 
         # TODO: Re enable the bootup sound when we find a way to enable
         # the sound driver at boot time (see kano-peripherals repo)
         # add kano-bootup-sound to startup
-        #update-rc.d kano-bootup-sound defaults
+        #systemctl enable kano-bootup-sound
 
         # add kano-reboot-clear to startup
-        update-rc.d kano-reboot-clear defaults
+        systemctl enable kano-reboot-clear
 
         # add kano-boot-check to startup
-        update-rc.d kano-boot-check defaults
+        systemctl enable kano-boot-check
 
         # add kano-expand-rootfs to startup
-        update-rc.d kano-expand-rootfs defaults
+        systemctl enable kano-expand-rootfs
 
         # Check for default hostname and set to name of first user
         python -c "from kano_settings.system.advanced import set_hostname_postinst; set_hostname_postinst()"

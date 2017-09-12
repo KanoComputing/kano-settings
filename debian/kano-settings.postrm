@@ -23,22 +23,22 @@ case "$1" in
         rm -f /lib/arm-linux-gnueabihf/libc.so
 
         # remove kano-settings-onboot from startup
-        update-rc.d kano-settings remove
+        systemctl disable kano-settings
 
         # remove kano-safeboot-mode from startup
-        update-rc.d kano-safeboot remove
+        systemctl disable kano-safeboot
 
         # remove kano-bootup-sound from startup
-        update-rc.d kano-bootup-sound remove
+        systemctl disable kano-bootup-sound
 
         # remove kano-reboot-clear from startup
-        update-rc.d kano-reboot-clear remove
+        systemctl disable kano-reboot-clear
 
         # remove kano-boot-check from startup
-        update-rc.d kano-boot-check remove
+        systemctl disable kano-boot-check
 
         # remove kano-expand-rootfs from startup
-        update-rc.d kano-expand-rootfs remove
+        systemctl disable kano-expand-rootfs
 
         systemctl disable check-enable-ssh
         ;;
