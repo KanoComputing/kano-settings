@@ -16,6 +16,8 @@ from kano_peripherals.pi_hat.driver.high_level import get_pihat_interface
 from kano_settings.config_file import get_setting, set_setting
 from kano_settings.boot_config import set_config_value, end_config_transaction
 
+from kano_settings.paths import ASOUND_CONF_PATH
+
 
 amixer_control = "name='PCM Playback Route'"
 
@@ -30,8 +32,6 @@ amixer_get_cmd = "amixer -c 0 cget {control}".format(control=amixer_control)
 
 analogue_cmd = "amixer -c 0 cset numid=3 1"
 hdmi_cmd = "amixer -c 0 cset numid=3 2"
-
-ASOUND_CONF_PATH = '/etc/asound.conf'
 
 
 def is_hdmi_audio_supported():

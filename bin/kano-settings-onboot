@@ -1,353 +1,151 @@
 #!/usr/bin/env python
-#
+
 # kano-settings-onboot
 #
-# Copyright (C) 2014, 2015, 2017 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2014-2017 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
-# Configure HDMI settings on boot, by checking the configuration against the current screen.
-# Additionally, an optimal resolution algorithm is in place, in order to avoid running
-# at high modes which would slow down expensive apps like Youtube.
+# Kano OS settings-related script executed at bootup.
 #
-# It also calls code to set the clock config, to avoid the need for an extra reboot.
-# This is needed for cases where the sdcard has previously booted on a different RPI model.
+# It ensures that the following characteristics are configured correctly:
+#   1. Corrupt /boot/config.txt file
+#   2. Launches OS into Safe Mode
+#   3. CPU clock speeds for moving an SD from one Pi to another (TODO: remove this)
+#   4. Removes configurations made by an image built with NOOBS
+#   5. The default browser is set accordingly (Chromium or Midori)
+#   6. Correct ALSA volume levels on P0 CKC speaker
+#   7. Lower default resolution for added performance
 #
-# Available options:
-#
-#  --dry-run   : do not change anything or reboot, just say what would be done
-#  --verbose   : explain more things to the terminal
-#  --force     : apply changes even if they are not needed
-#  --dump      : dump the screen information and exit (used to --test)
-#  --test:file : use --dump data for testing specific screens
-#
-# Exit code is 0 if the screen has been reconfigured, non-zero otherwise.
-# Advise to take a backup copy of /boot/config.txt before running --test modes.
-#
-# In order to test a specific screen:
-#
-#  * sudo kano-logs config -l debug -o debug
-#  * sudo kano-settings-on-boot --dump > myscreen.dump
-#  * sudo kano-settings --dry-run --force --test:myscreen.dump
-#
-# To get your screen details directly from the firmware:
-#  $ tvservice -d info.edid ; edidparser info.edid | less
-#
+# When changes that require a reboot to take effect were made, it calls onto
+# the kano-checked-reboot script to do so.
+
+
+"""
+kano-settings-onboot Kano OS settings-related script executed at bootup.
+
+Usage:
+    kano-settings-onboot [options]
+
+Options:
+    -f, --force     Reconfigure settings even when the status says it's not needed.
+    -s, --dry-run   Execute the script, but do not apply any changes.
+    -h, --help      Show this message.
+"""
+
 
 import os
 import sys
-import json
-
+import docopt
 
 # Allows for testing this module from a local repository clone
 if __name__ == '__main__' and __package__ is None:
     dir_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
     if dir_path != '/usr':
-        sys.path.insert(1, dir_path)
+        sys.path.insert(0, dir_path)
 
-from kano.utils import run_cmd, enforce_root
-from kano.logging import logger
-from kano_settings.system.display import get_status, get_model, set_hdmi_mode, \
-    get_edid, is_mode_fallback, set_safeboot_mode, set_screen_value, \
-    list_supported_modes, is_screen_kit
-from kano_settings.boot_config import set_config_value, set_config_comment, \
-    get_config_comment, get_config_value, has_config_comment, \
-    enforce_pi, is_safe_boot, safe_mode_backup_config, \
-    safe_mode_restore_config, remove_noobs_defaults, set_dry_run, \
-    end_config_transaction, check_corrupt_config
-from kano_settings.system.audio import is_HDMI, set_to_HDMI, set_alsa_config_max_dB, \
-    restart_alsa
-from kano_settings.system.overclock_chip_support import check_clock_config_matches_chip
+from kano.utils.shell import run_cmd
 from kano.utils.hardware import get_rpi_model, get_board_property
+from kano.logging import logger
 from kano_pi_hat.ck2_pro_hat import CK2ProHat
+
+from kano_settings.system.display import get_status, get_edid_name, \
+    get_edid, list_supported_modes, override_models, compare_and_set_full_range, \
+    compare_and_set_overscan, compare_and_set_optimal_resolution
+from kano_settings.system.boot_config.boot_config_filter import Filter
+from kano_settings.boot_config import is_safe_boot, safe_mode_restore_config, \
+    remove_noobs_defaults, end_config_transaction, check_corrupt_config, get_config_value
+from kano_settings.system.audio import is_HDMI, set_to_HDMI, restart_alsa, \
+    set_alsa_config_max_dB
+from kano_settings.system.overclock_chip_support import check_clock_config_matches_chip
+
+from kano_settings.return_codes import RC_SUCCESS, RC_REQUIRES_ROOT, RC_INCORRECT_ARGS, \
+    RC_EDID_NO_MODEL, RC_EDID_NO_STATUS, RC_EDID_NO_SUPPORTED, RC_NO_EDID
 
 
 DEFAULT_CKC_MAX_DB = -11.9
 
 
-def check_model_present(model):
-    """
-    Returns True if the requested screen model is active
-    """
-    if get_config_comment('kano_screen_used', model):
-        return True
-    else:
-        return False
+def main(args):
+
+    force_mode = args['--force']
+    dry_run = args['--dry-run']
+
+    reboot_required = False
+
+    # Check for corrupt config file.
+    if check_corrupt_config():
+        logger.warning('Found corrupt config file! Restored to default.')
+        reboot(dry_run=dry_run)
+        return RC_SUCCESS
+
+    # Check for switch to Safe Mode to debug OS issues.
+    if is_safe_boot():
+        logger.info('In safe boot mode, restoring config.txt, skipping autoconfig.')
+        safe_mode_restore_config()
+        end_config_transaction()
+        return RC_SUCCESS
+
+    # Rpi1 and Rpi2 have different clock rate defaults, but only one
+    # set of config options. Swap the config options if we have booted
+    # on the other chip.
+    if check_clock_config_matches_chip():
+        logger.info('Adjusted clock speeds for new chipset.')
+        reboot_required = True
+
+    # If we are in NOOBS mode, remove the config lines generated by noobs
+    # because they duplicate our config entries and override them and
+    # we expect only one instance of a config entry.
+    if remove_noobs_defaults():
+        logger.info('Removed NOOBS config.txt defaults.')
+        reboot_required = True
+
+    # TODO: Is this still required?
+    ensure_correct_browser(dry_run=dry_run)
+
+    # Correct the maximum volume gain for CKC.
+    ensure_correct_volume_levels()
+
+    # Gather and log data about the current screen.
+    # screen_data = get_screen_information(dry_run=dry_run)
+    # if verbose or dump_mode:
+    #     print json.dumps(screen_data, indent=4)
+
+    # Lower the screen preferred resolution.
+    (rv, rc) = ensure_optimal_screen_resolution(dry_run=dry_run, force_mode=force_mode)
+    reboot_required = reboot_required or rv
+    if rc != RC_SUCCESS:
+        return rc
+
+    # ... and reboot if needed.
+    if reboot_required:
+        logger.info('Made changes that require a reboot.')
+        end_config_transaction()
+        reboot(dry_run=dry_run)
+
+    return rc or RC_SUCCESS
 
 
-def override_models(edid, model):
-    """
-    This function sets specific modes for screens that require special treatment
-    """
-    overrides = {
-        '32V3H-H6A':     {'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True},
-        'AS4637_______': {'target_group': 'DMT', 'target_mode': 16, 'is_monitor': True},
-        'BMD_HDMI':      {'target_group': 'CEA', 'target_mode': 33, 'is_monitor': True},
-    }
-
-    for override_model, override_rules in overrides.iteritems():
-        if override_model == model:
-            edid['target_group'] = override_rules['target_group']
-            edid['target_mode'] = override_rules['target_mode']
-            edid['is_monitor'] = override_rules['is_monitor']
-            return
-
-
-def calculate_is_monitor(edid):
-    edid['target_full_range'] = edid['is_monitor']
-
-
-def compare_and_set_mode(edid, status):
-    """
-    Returns True if mode is changed
-    """
-    if status['group'] == edid['target_group'] and \
-       status['mode'] == edid['target_mode']:
-        logger.info('mode change not needed')
-        return False
-    else:
-        logger.info('mode change needed')
-        modes = '{} {}'.format(edid['target_group'], edid['target_mode'])
-        logger.info('setting mode: {}'.format(modes))
-
-        set_hdmi_mode(edid['target_group'], edid['target_mode'])
-        return True
-
-
-def compare_and_set_full_range(edid, status):
-    """
-    Returns True if full range is changed
-    """
-    if status['full_range'] == edid['target_full_range']:
-        logger.info('fullrange change not needed')
-        return False
-    else:
-        logger.info('fullrange change needed')
-        msg = 'setting fullrange to: {}'.format(edid['target_full_range'])
-        logger.info(msg)
-
-        if edid['target_full_range']:
-            set_config_value('hdmi_pixel_encoding', 2)
-        else:
-            set_config_value('hdmi_pixel_encoding', 0)
-        return True
-
-
-def compare_and_set_overscan(edid, status):
-    """
-    Returns True if overscan is changed
-    """
-    if status['overscan'] == edid['target_overscan']:
-        logger.info('overscan change not needed')
-        return False
-    else:
-        logger.info('overscan change needed')
-        logger.info('setting overscan to: {}'.format(edid['target_overscan']))
-
-        if edid['target_overscan']:
-            set_config_value('disable_overscan', 0)
-            overscan_value = -48
-        else:
-            set_config_value('disable_overscan', 1)
-            overscan_value = 0
-
-        set_config_value('overscan_left', overscan_value)
-        set_config_value('overscan_right', overscan_value)
-        set_config_value('overscan_top', overscan_value)
-        set_config_value('overscan_bottom', overscan_value)
-        return True
-
-
-def set_resolution_for_screen_kit(supported):
-    """
-    This function sets a predefined resolution for a Kano Screen Kit.
-
-    Returns:
-        changes - bool whether or not there were changes made
-    """
-    if is_screen_kit():
-        optimal_mode = find_best_resolution_aspect(supported, None, 1280, 800)
-        if optimal_mode:
-            if verbose:
-                print 'Applying SK optimal mode:', optimal_mode
-
-            logger.info('Applying SK optimal mode: {}'.format(optimal_mode))
-            set_hdmi_mode(optimal_mode['group'], optimal_mode['mode'])
-            return True
-        else:
-            logger.debug('Could not set the 1280x800 resolution for a SK!')
-
-    return False
-
-
-def set_resolution_for_unflashed_screen(status):
-    """
-    This function sets a predefined resolution for a display
-    without EDID information.
-
-    Returns:
-        changes - bool whether or not there were changes made
-    """
-    UNFLASHED_SCREEN_WIDTH = 1280
-    UNFLASHED_SCREEN_HEIGHT = 800
-
-    # Check if we've set this resolution already.
-    if 'resolution' in status:
-        (w, h) = map(int, status['resolution'].split('x'))
-        if w == UNFLASHED_SCREEN_WIDTH and h == UNFLASHED_SCREEN_HEIGHT:
-            # Nothing to do, already set to what's expected.
-            return False
-        else:
-            # Resolution will have to be set.
-            pass
-    else:
-        # Woops.
-        return False
-
-    # Attempt to set the resolution.
-    optimal_mode = {'group': 'dmt', 'mode': '28'}
-    if verbose:
-        print 'Applying unflashed optimal mode:', optimal_mode
-
-    logger.info('Applying unflashed optimal mode: {}'.format(optimal_mode))
-    set_hdmi_mode(optimal_mode['group'], optimal_mode['mode'])
-    return True
-
-
-def find_best_resolution_aspect(supported, aspect, width, height):
-    """
-    Finds the screen mode at the given resolution and aspect ratio,
-    If aspect is None, the first matching resolution mode will be returned, if found.
-    """
-    for mode in supported:
-        w = int(mode['resolution'].split('x')[0])
-        h = int(mode['resolution'].split('x')[1])
-        if w == width and h == height:
-
-            # If we care about aspect ratio, skip it if no match
-            if aspect and aspect != mode['aspect']:
-                continue
-
-            logger.info(
-                'Found best mode at {}x{} mode: {} aspect: {}'
-                .format(width, height, mode['mode'], mode['aspect'])
-            )
-            return mode
-
-    return None
-
-
-def compare_and_set_optimal_resolution(edid, status, supported, verbose):
-    """
-    This function tries to set the best performance resolution mode on the kit.
-    It tries to find the preferred screen mode and aspect ratio, to try and match
-    an optimal resolution. If all fails, a default resolution is still tried.
-
-    The end result is to stop having the Raspberry run at the highest possible resolution,
-    which slows down a number of graphical heavyweight applications.
-
-    On success, the new mode is enforced (hdmi_group / hdmi_mode) and True is returned.
-    """
-    preferred_mode = preferred_group = preferred_aspect_ratio = optimal_mode = None
-
-    logger.info('Searching for the best optimal resolution')
-
-    # Try to identify the preferred screen mode and aspect ratio
-    try:
-        preferred_mode = edid['preferred_mode']
-        preferred_group = edid['preferred_group']
-
-        # Now find the aspect ratio for this mode
-        for mode in supported:
-            if mode['mode'] == preferred_mode and mode['group'] == preferred_group:
-                preferred_aspect_ratio = mode['aspect']
-                logger.info(
-                    'Reported preferred mode is {} group {} aspect ratio: {}'
-                    .format(preferred_mode, preferred_group, preferred_aspect_ratio)
-                )
-    except:
-        logger.warn('Preferred screen mode and aspect ratio could not de determined')
-
-    if preferred_aspect_ratio:
-        # We found the aspect/ratio, try to set the best resolution
-        if preferred_aspect_ratio == '4:3':
-            optimal_mode = find_best_resolution_aspect(supported, preferred_aspect_ratio, 1024, 768)
-        elif preferred_aspect_ratio == '16:9':
-            optimal_mode = find_best_resolution_aspect(supported, preferred_aspect_ratio, 1366, 768)
-            if not optimal_mode:
-                optimal_mode = find_best_resolution_aspect(supported, preferred_aspect_ratio, 1360, 768)
-                if not optimal_mode:
-                    optimal_mode = find_best_resolution_aspect(supported, preferred_aspect_ratio, 1280, 720)
-        elif preferred_aspect_ratio == '16:10':
-            optimal_mode = find_best_resolution_aspect(supported, preferred_aspect_ratio, 1280, 800)
-
-    if not optimal_mode:
-        logger.info('Could not match an optimal mode, trying to limit resolution')
-        optimal_mode = find_best_resolution_aspect(supported, None, 1280, 800)
-
-    if optimal_mode:
-        if verbose:
-            print 'Applying optimal mode:', optimal_mode
-
-        logger.info('Applying optimal mode: {}'.format(optimal_mode))
-        set_hdmi_mode(optimal_mode['group'], optimal_mode['mode'])
-        return True
-
-    return False
-
-
-def reboot(dry_run=False):
-    """
-    Flush logs to disk and reboot the kit
-    """
-    if not dry_run:
-        logger.sync()
-        run_cmd('kano-checked-reboot changes systemctl reboot --force')
-
-
-def get_screen_information(screen_log_path='/boot/screen.log', dry_run=False):
-    """
-    Retrieves the information about the current screen.
-    The data will be logged to the bootpartition for
-    troubleshooting purposes.
-    """
-    info = {
-        "edid": get_edid(),
-        "model": get_model(),
-        "status": get_status(),
-        "supported": list_supported_modes(stringify=False)
-    }
-
-    if not dry_run:
-        with open(screen_log_path, 'w') as f:
-            json.dump(info, f, sort_keys=True, indent=4, separators=(',', ': '))
-
-    return info
-
-
-def ensure_correct_browser():
+def ensure_correct_browser(dry_run=False):
     """
     Makes sure we point to the supported browser
     depending on the Raspberry model performance.
     """
     browser_link = 'x-www-browser'
+
     model = get_rpi_model()
     arch = get_board_property(model, 'arch')
+
     chromium_support = arch not in ['armv6']
+    browser = 'chromium-browser' if chromium_support else 'epiphany-browser'
 
-    if chromium_support:
-        browser = 'chromium-browser'
-    else:
-        browser = 'epiphany-browser'
-
+    logger.info("Set browser to be: {}".format(browser))
     if dry_run:
-        logger.debug("browser should be: {}".format(browser))
-    else:
         run_cmd('update-alternatives --set {} /usr/bin/{}'.format(browser_link, browser))
 
 
 def ensure_correct_volume_levels():
     """
-    Sets the default max_dB option in ALSA for CKC and other.
+    Sets the default max_dB option in ALSA for CKC only.
     """
     ck2_pro_hat = CK2ProHat()
     ck2_pro_hat.initialise()
@@ -361,172 +159,132 @@ def ensure_correct_volume_levels():
         restart_alsa()
 
 
-if __name__ == '__main__':
+# def get_screen_information(screen_log_path='/boot/screen.log', dry_run=False):
+    """
+    TODO: Decide what to do with this.
 
-    dry_run = '--dry-run' in sys.argv
-    force_mode = '--force' in sys.argv
-    dump_mode = '--dump' in sys.argv
-    verbose = '--verbose' in sys.argv
-    test_file = None
-    reboot_now = False
+    Retrieves the information about the current screen.
+    The data will be logged to the bootpartition for
+    troubleshooting purposes.
+    """
+    # info = {
+    #     "edid": get_edid(),
+    #     "model": get_model(),
+    #     "status": get_status(),
+    #     "supported": list_supported_modes(stringify=False)
+    # }
 
-    # test mode allows to feed EDID information directly from a custom file
-    for arg in sys.argv:
-        if arg.startswith('--test:'):
-            test_file = arg[7:]
-            if not os.path.isfile(test_file):
-                logger.error("Cannot find test file: {}".format(test_file))
-                sys.exit(1)
+    # if not dry_run:
+    #     with open(screen_log_path, 'w') as f:
+    #         json.dump(info, f, sort_keys=True, indent=4, separators=(',', ': '))
 
-    # sanity checks
-    logger.force_log_level('info')
-    enforce_pi()
-    enforce_root('Need to be root!')
+    # return info
 
-    # dry-run mode does not change config.txt file
-    if dry_run:
-        print "dry_run_mode, not applying any changes"
-        set_dry_run()
-        logger.force_log_level('debug')
-        logger.force_debug_level('debug')
 
-    # TODO: Move this task away, it is not related to screen management
-    ensure_correct_browser()
+def ensure_optimal_screen_resolution(dry_run=False, force_mode=False):
+    """
+    Set a lower resolution than the screen preferred one.
 
-    # Correct the maximum volume gain for CKC.
-    ensure_correct_volume_levels()
+    This is used in order to increase performance for anything GPU heavy.
+    It uses EDID filters in config.txt to configure the current screen if
+    it hasn't been configured already. The function preserves the display
+    mode (CEA or DMT), aspect ratio, refresh rate, etc.
 
-    # Check for corrupt config file
-    if check_corrupt_config():
-        logger.error("Found corrupt config file! Restoring default.")
-        reboot_now = True
+    Args:
+        dry_run - bool run the function, but do not apply any changes
+        force_mode - bool reconfigure settings even when the status says it's not needed
 
-    if (test_file):
-        # screen information is taken from a --dump data file for testing
-        print 'EDID test mode:', test_file
-        screen_data = json.loads(open(test_file, 'r').read())
-    else:
-        # Gather and log data about the current screen
-        screen_data = get_screen_information(dry_run=dry_run)
-        if verbose or dump_mode:
-            print json.dumps(screen_data, indent=4)
-            if dump_mode:
-                exit(1)
+    Returns:
+        (reboot_required, rc) - tuple of bool whether changes which require a reboot
+            were made and int as a return code if something went wrong
+    """
+    reboot_required = False
 
-    # Rpi1 and Rpi2 have different clock rate defaults, but only one
-    # set of config options. Swap the config options if we have booted
-    # on the other chip.
-    if check_clock_config_matches_chip():
-        reboot_now = True
+    # If the display model cannot be retrieved it is a strong indication that
+    # the screen is unflashed or the EDID is corrupt.
+    model = get_edid_name()
+    if not model:
+        logger.error('Could not get the model of the screen. Will use config.txt defaults.')
+        return (reboot_required, RC_EDID_NO_MODEL)
 
-    # If we are in NOOBS mode, remove the config lines generated by noobs
-    # Because they duplicate our config entries and override them,
-    # we expect only one instance of a config entry.
-    if remove_noobs_defaults():
-        logger.info("removed NOOBS defaults")
-        reboot_now = True
+    # Check if the screen was already configured by looking for the hdmi_mode option
+    # set for this display only.
+    was_screen_configured = get_config_value(
+        'hdmi_mode',
+        config_filter=Filter.get_edid_filter(model),
+        fallback=False,
+        ignore_comments=True
+    )
+    if was_screen_configured and not force_mode:
+        logger.debug('The unit was configured for this model already, exiting.')
+        return (reboot_required, RC_SUCCESS)
 
-    # If we need to set anything to do with config.txt, reboot
-    if reboot_now:
-        end_config_transaction()
-        if dry_run:
-            logger.debug("dry run rebooting")
-        else:
-            reboot(dry_run=dry_run)
-        sys.exit(0)
-
-    if is_safe_boot():
-        logger.info("In safe boot mode, restoring config.txt, skipping autoconfig")
-        safe_mode_restore_config()
-        end_config_transaction()
-        sys.exit(0)
-
-    # model and model comment check
-    # TODO: what is this?
-    model = screen_data['model']
-    logger.info('Screen model: {}'.format(model))
-    if '--force' not in sys.argv and check_model_present(model):
-        logger.info('The unit was configured for this model already, exiting.')
-        sys.exit(1)
-
-    # Sanity checks, we need current screen status and EDID info
-    status = screen_data['status']
+    # Sanity checks, we need current screen status, EDID info, and list of display modes.
+    status = get_status()
     if not status:
-        logger.debug("could not determine current screen status, aborting")
-        sys.exit(1)
+        logger.error('Could not determine current screen status, aborting.')
+        return (reboot_required, RC_EDID_NO_STATUS)
 
-    supported = screen_data['supported']
-    if not supported:
-        logger.debug("could not determine list of screen supported modes, aborting")
-        sys.exit(1)
+    supported_modes = list_supported_modes()
+    if not supported_modes:
+        logger.error('Could not determine list of screen supported modes, aborting.')
+        return (reboot_required, RC_EDID_NO_SUPPORTED)
 
-    edid = screen_data['edid']
+    edid = get_edid()
     if not edid:
-        if set_resolution_for_unflashed_screen(status):
-            reboot(dry_run=dry_run)
-        sys.exit(0)
+        logger.error('No EDID found. Relying on the defaults already set in config.')
+        return (reboot_required, RC_NO_EDID)
 
-    # If the hdmi_group and hdmi_mode values are set explicitly then skip the detection.
-    if get_config_value('hdmi_group', ignore_comments=True) != 0 and \
-       get_config_value('hdmi_mode', ignore_comments=True) != 0:
-
-        logger.info('is comment kano_screen_used? {}'.format(has_config_comment('kano_screen_used')))
-        logger.info('is comment kano_screen_used({})? {}'.format(model, get_config_comment('kano_screen_used', model)))
-
-        if not force_mode and (not has_config_comment('kano_screen_used') or
-                                   get_config_comment('kano_screen_used', model)):
-
-            # The screen is either the same or not set at all
-            logger.info('Explicit HDMI configuration detected, exiting.')
-            sys.exit(1)
-        else:
-            logger.info('New screen was detected, reconfiguring...')
-
-    # override modes, calculate is_monitor
+    # Apply any corrections to the EDID data and set if screen is monitor.
     override_models(edid, model)
     calculate_is_monitor(edid)
 
-    if verbose:
-        # Explain the new screen settings
-        print 'New status:', json.dumps(status, indent=4)
-        print 'New EDID:', json.dumps(edid, indent=4)
-
-    # fix hdmi audio status
+    # Fix HDMI audio status.
     if not edid['hdmi_audio'] and is_HDMI():
-        logger.info('hdmi audio not supported on this screen, changing to analogue')
-        set_to_HDMI(False)
+        logger.info('HDMI audio not supported on this screen, changing to analogue.')
+        if not dry_run:
+            set_to_HDMI(False)
 
-    # calculate changes needed
-    overall_changes = False
+    # Calculate changes needed...
+    changes = compare_and_set_full_range(edid, status, model, dry_run=dry_run, force=force_mode)
+    reboot_required = reboot_required or changes
 
-    changes = compare_and_set_mode(edid, status)
-    overall_changes = overall_changes or changes
+    changes = compare_and_set_overscan(edid, status, model, dry_run=dry_run, force=force_mode)
+    reboot_required = reboot_required or changes
 
-    changes = compare_and_set_full_range(edid, status)
-    overall_changes = overall_changes or changes
+    changes = compare_and_set_optimal_resolution(edid, status, supported_modes, dry_run=dry_run, force=force_mode)
+    reboot_required = reboot_required or changes
 
-    changes = compare_and_set_overscan(edid, status)
-    overall_changes = overall_changes or changes
+    return (reboot_required, RC_SUCCESS)
 
-    changes = set_resolution_for_screen_kit(supported) or \
-              compare_and_set_optimal_resolution(edid, status, supported, verbose)
-    overall_changes = overall_changes or changes
 
-    if overall_changes:
-        if verbose:
-            print 'changes applied:', changes
+def calculate_is_monitor(edid):
+    """
+    TODO: What is this for?
+    """
+    edid['target_full_range'] = edid['is_monitor']
 
-        # write comment to config
-        set_config_comment('kano_screen_used', model)
-        end_config_transaction()
 
-        # reboot
-        if dry_run:
-            logger.debug("dry_run rebooting due to config changes")
-        else:
-            reboot(dry_run=dry_run)
+def reboot(dry_run=False):
+    """
+    Flush logs to disk and reboot the kit.
+    """
+    if not dry_run:
+        logger.sync()
+        run_cmd('kano-checked-reboot changes systemctl reboot --force')
 
-        sys.exit(0)
-    else:
-        logger.info('could not calculate changes for screen, nothing done')
-        sys.exit(1)
+
+if __name__ == '__main__':
+    logger.force_log_level('info')
+
+    if os.getuid() != 0:
+        logger.error('Program must be executed with root priviledges.')
+        sys.exit(RC_REQUIRES_ROOT)
+
+    try:
+        args = docopt.docopt(__doc__)
+    except docopt.DocoptExit:
+        print __doc__
+        sys.exit(RC_INCORRECT_ARGS)
+
+    sys.exit(main(args) or RC_SUCCESS)

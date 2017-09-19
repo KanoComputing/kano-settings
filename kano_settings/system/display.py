@@ -2,24 +2,27 @@
 
 # display.py
 #
-# Copyright (C) 2014-2016 Kano Computing Ltd.
+# Copyright (C) 2014-2017 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
-# Change screen resolution and other settings
-#
+# Change screen resolution and other settings.
+
 
 import os
-import re
-import subprocess
 import time
+import json
 import shutil
+import subprocess
+
+from kano.utils import run_cmd, delete_file
+from kano.logging import logger
 
 from kano_settings.boot_config import set_config_value, get_config_value, \
     end_config_transaction
 from kano_settings.config_file import get_setting, set_setting
 from kano_settings.system.boot_config.boot_config_filter import Filter
-from kano.utils import run_cmd, delete_file
-from kano.logging import logger
+
+from kano_settings.paths import TMP_EDID_DAT_PATH
 
 
 tvservice_path = '/usr/bin/tvservice'
@@ -29,27 +32,80 @@ xrefresh_path = '/usr/bin/xrefresh'
 fpturbo_conf_path = '/usr/share/X11/xorg.conf.d/99-fbturbo.conf'
 fpturbo_conf_backup_path = '/var/cache/kano-settings/99-fbturbo.conf'
 
+OPTIMAL_RESOLUTIONS = {
+    '4:3': [
+        {'width': 1280, 'height': 960},
+        {'width': 1024, 'height': 768},
+    ],
+    '16:9': [
+        {'width': 1366, 'height': 768},
+        {'width': 1360, 'height': 768},
+        {'width': 1280, 'height': 720},
+    ],
+    '16:10': [
+        {'width': 1280, 'height': 800},
+        {'width': 1440, 'height': 900},
+    ],
+}
 
-MONITOR_EDID_NAME = None
+SCREEN_KIT_NAMES = [
+    'ADA-HDMI',
+    'MST-HDMI1',
+    'MST-HDMI',
+]
+
+# NOTE: There is a risk here that indexing EDIDs by model alone will eventually produce
+#   conflicts. There may be different screens out there with the same model but
+#   different characteristics. One solution could be to also use the md5 or the raw EDID.
+EDID_OVERRIDES = {
+    '32V3H-H6A': {
+        'preferred_group': 'DMT',
+        'preferred_mode': 16,
+        'is_monitor': True
+    },
+    'AS4637_______': {
+        'preferred_group': 'DMT',
+        'preferred_mode': 16,
+        'is_monitor': True
+    },
+    'BMD_HDMI': {
+        'preferred_group': 'CEA',
+        'preferred_mode': 33,
+        'is_monitor': True
+    },
+    'MST-HDMI': {
+        'preferred_group': 'DMT',
+        'preferred_mode': 28,
+        'is_monitor': True
+    },
+    'MST-HDMI1': {
+        'preferred_group': 'DMT',
+        'preferred_mode': 28,
+        'is_monitor': True
+    },
+}
+
+_g_monitor_edid_name = str()
+_g_cea_modes = list()
+_g_dmt_modes = list()
 
 
 def get_edid_name(use_cached=True):
-    global MONITOR_EDID_NAME
+    global _g_monitor_edid_name
 
-    if use_cached and MONITOR_EDID_NAME:
-        return MONITOR_EDID_NAME
+    if use_cached and _g_monitor_edid_name:
+        return _g_monitor_edid_name
 
-    edid_line, dummy, rc = run_cmd(
-        '{tvservice} -n'.format(tvservice=tvservice_path)
-    )
+    cmd = '{tvservice} --name'.format(tvservice=tvservice_path)
+    edid_line, dummy, rc = run_cmd(cmd)
 
     if rc != 0:
         logger.error('Error getting EDID name')
         return
 
-    MONITOR_EDID_NAME = edid_line.split('=')[-1].strip().rstrip()
+    _g_monitor_edid_name = edid_line.strip('device_name=').strip()
 
-    return MONITOR_EDID_NAME
+    return _g_monitor_edid_name
 
 
 def set_screen_value(key, value):
@@ -93,81 +149,80 @@ def launch_pipe():
         run_cmd('mknod {} c 100 0'.format(overscan_pipe))
 
 
-# Group must be either 'DMT' or 'CEA'
-def get_supported_modes(group):
-    modes = {}
+def get_supported_modes(group, min_width=1024, min_height=720):
+    """
+    Get the supported modes of the screen for an HDMI group.
 
+    Args:
+        group - str 'CEA' or 'DMT' rather than 1 or 2 respectively
+        min_width - int minimum width resolution of modes to be returned
+        min_height - int minimum height resolution of modes to be returned
+
+    Returns:
+        supported_modes - list of dicts each describing an HDMI mode for the given group.
+
+    Structure of a mode is: {
+        'group': str ('CEA' or 'DMT'),
+        'mode': int,
+        'width': int,
+        'height': int,
+        'rate': int (refresh rate, Hz),
+        'aspect_ratio': str ('4:3', '16:9', etc),
+        'scan': str ('p' progressive, 'i' interlaced),
+        '3d_modes': list
+    }
+    """
     if not os.path.isfile(tvservice_path):
-        return modes
+        return list()
 
-    cea_modes = subprocess.check_output([tvservice_path, "-m", group.upper()])
-    cea_modes = cea_modes.decode()
-    cea_modes = cea_modes.split("\n")[1:]
-    mode_line_re = r'mode (\d+): (\d+x\d+) @ (\d+Hz) (\d+:\d+)'
-    for line in cea_modes:
-        mode_line_match = re.search(mode_line_re, line)
-        if mode_line_match:
-            number = mode_line_match.group(1)
-            res = mode_line_match.group(2)
-            freq = mode_line_match.group(3)
-            aspect = mode_line_match.group(4)
-            modes[int(number)] = [res, freq, aspect]
+    modes = subprocess.check_output([tvservice_path, '--modes', group.upper(), '--json'])
+    try:
+        modes = json.loads(modes)
+    except:
+        import traceback
+        logger.error(
+            'get_supported_modes: Unexpected error caught:\n{}'
+            .format(traceback.format_exc())
+        )
+        return list()
 
-    return modes
+    supported_modes = list()
+
+    for mode in modes:
+        # Add the group to the supported mode and rename the 'code' key to 'mode'
+        # to be consistent with hdmi_group and hdmi_mode options.
+        mode[u'group'] = group
+        mode[u'mode'] = mode['code']
+        mode.pop('code')
+
+        if mode['width'] >= min_width and mode['height'] >= min_height:
+            supported_modes.append(mode)
+
+    return supported_modes
 
 
-def list_supported_modes(stringify=True):
-    cea_modes = get_supported_modes("CEA")
-    dmt_modes = get_supported_modes("DMT")
-    modes = []
+def list_supported_modes(min_width=1024, min_height=720, use_cached=True):
+    """
+    Get all the HDMI modes for all HDMI groups.
 
-    def is_resolution_supported(cea_dmt_resolution, min_x=1024, min_y=720):
-        """
-        Returns True if CEA/DMT resolution is supported by Kano.
-        The string Format is expected in the form "widthxheight".
-        """
-        try:
-            mode_x, mode_y = cea_dmt_resolution.lower().split('x')
-            if int(mode_x) >= min_x and int(mode_y) >= min_y:
-                return True
-            else:
-                return False
-        except:
-            # Unrecognized entry
-            return True
+    Args:
+        min_width - int minimum width resolution of modes to be returned
+        min_height - int minimum height resolution of modes to be returned
+        use_cached - bool get the modes already in the cache rather than re-interrogating
 
-    for key in sorted(cea_modes):
-        values = cea_modes[key]
-        if stringify:
-            cea_string = "cea:{:d}  {}  {}  {}".format(key, values[0], values[1], values[2])
-        else:
-            cea_string = {
-                'group': 'CEA',
-                'mode': key,
-                'resolution': values[0],
-                'freq': values[1],
-                'aspect': values[2]
-            }
-        if is_resolution_supported(values[0]):
-            modes.append(cea_string)
+    Returns:
+        supported_modes - list of dicts each describing an HDMI mode.
+                          See get_supported_modes for more info.
+    """
+    global _g_cea_modes, _g_dmt_modes
 
-    for key in sorted(dmt_modes):
-        values = dmt_modes[key]
-        if stringify:
-            dmt_string = "dmt:{:d}  {}  {}  {}".format(key, values[0], values[1], values[2])
-        else:
-            dmt_string = {
-                'group': 'DMT',
-                'mode': key,
-                'resolution': values[0],
-                'freq': values[1],
-                'aspect': values[2]
-            }
+    if use_cached and _g_cea_modes and _g_dmt_modes:
+        return _g_cea_modes + _g_dmt_modes
 
-        if is_resolution_supported(values[0]):
-            modes.append(dmt_string)
+    _g_cea_modes = get_supported_modes('CEA', min_width=min_width, min_height=min_height)
+    _g_dmt_modes = get_supported_modes('DMT', min_width=min_width, min_height=min_height)
 
-    return modes
+    return _g_cea_modes + _g_dmt_modes
 
 
 def set_hdmi_mode_live(group=None, mode=None, drive='HDMI'):
@@ -245,7 +300,8 @@ def set_safeboot_mode():
 def get_status():
     status = dict()
 
-    status_str, _, _ = run_cmd(tvservice_path + ' -s')
+    cmd = '{tvservice} --status'.format(tvservice=tvservice_path)
+    status_str, _, _ = run_cmd(cmd)
     if 'DMT' in status_str:
         status['group'] = 'DMT'
     elif 'CEA' in status_str:
@@ -290,18 +346,23 @@ def is_mode_fallback():
     return w == 640 and h == 480
 
 
-def is_screen_kit():
+def is_screen_kit(use_cached=False):
     """
     Returns True if the screen is a Kano Screen Kit.
     """
-    return get_edid_name(use_cached=False) in ('ADA-HDMI', 'MST-HDMI1', 'MST-HDMI')
+    return get_edid_name(use_cached=use_cached) in SCREEN_KIT_NAMES
 
 
 def get_model():
     """
     Get the display device model name
+
+    NOTE: DO NOT USE THIS FUNCTION. USE get_edid_name INSTEAD.
+
+    TODO: The implementation of this function should be that of get_edid_name
+          and it's signature is much more intelligible than get_edid_name
     """
-    cmd = '{} -n'.format(tvservice_path)
+    cmd = '{tvservice} --name'.format(tvservice=tvservice_path)
     display_name, _, _ = run_cmd(cmd)
     display_name = display_name[16:].rstrip()
     return display_name
@@ -379,25 +440,30 @@ def read_hdmi_mode():
 
 
 def find_matching_mode(modes, group, mode):
-    string = '{}:{}'.format(group.lower(), mode)
-    for i, m in enumerate(modes):
-        if m.startswith(string):
-            return i + 1
+    """ Get the index of the mode in the list from the HDMI group and HDMI mode. """
+
+    for index, current_mode in enumerate(modes):
+        if current_mode['mode'] == mode and current_mode['group'] == group:
+            return index + 1
 
     # 0 for auto
     return 0
 
 
 def read_edid():
-    edid_dat_path = '/tmp/edid.dat'
+    delete_file(TMP_EDID_DAT_PATH)
 
-    delete_file(edid_dat_path)
-    edid_txt, _, rc = run_cmd('{0} -d {1} && edidparser {1}'.format(tvservice_path, edid_dat_path))
+    cmd = '{tvservice} --dumpedid {edid_dat} && edidparser {edid_dat}'.format(
+        tvservice=tvservice_path, edid_dat=TMP_EDID_DAT_PATH
+    )
+    edid_txt, _, rc = run_cmd(cmd)
     edid_txt = edid_txt.splitlines()
+
     if rc != 0:
         logger.error("error getting edid dat")
         return
-    delete_file(edid_dat_path)
+
+    delete_file(TMP_EDID_DAT_PATH)
     return edid_txt
 
 
@@ -418,7 +484,7 @@ def parse_edid(edid_txt):
         # model name
         elif 'monitor name is' in l:
             # Some displays return garbage, on old firmwares it can also be random.
-            model=l.split('monitor name is')[1].strip()
+            model = l.split('monitor name is')[1].strip()
             edid['model'] = model.decode('ascii', 'ignore')
 
         # preferred
@@ -433,6 +499,9 @@ def parse_edid(edid_txt):
 
             res, mode = l.split(':')[2].split('@')
             edid['preferred_res'] = res.strip()
+            parts = edid['preferred_res'].strip('p').split('x')
+            edid['preferred_width'] = int(parts[0])
+            edid['preferred_height'] = int(parts[1])
             hz, mode = mode.split(' Hz (')
             edid['preferred_hz'] = float(hz.strip())
             edid['preferred_mode'] = int(mode[:-1])
@@ -518,3 +587,182 @@ def set_gfx_driver(enabled):
                 logger.error("Error restoring fpturbo_config", exception=e)
     end_config_transaction()
     set_setting('Use_GLX', enabled)
+
+
+def override_models(edid, model):
+    """
+    Correct the EDID data for a given model.
+
+    EDID data is notorious for being inconsistent. Given a dataset of corrections,
+    this function corrects data in the EDID for a given model.
+
+    Args:
+        edid - dict as returned by the function get_edid(); will be changed inplace
+        model - str as return by the function get_edid_name()
+    """
+    if model not in EDID_OVERRIDES:
+        return
+
+    # Set the configured options for the model to the EDID of the given screen.
+    for option, value in EDID_OVERRIDES[model].iteritems():
+        edid[option] = value
+
+
+def compare_and_set_full_range(edid, status, model, dry_run=False, force=False):
+    """
+    Returns True if full range is changed
+
+    TODO: What is this for?
+    """
+    if status['full_range'] == edid['target_full_range'] and not force:
+        logger.debug('Config full range change not needed.')
+        return False
+
+    hdmi_pixel_encoding = 2 if edid['target_full_range'] else 0
+
+    logger.info(
+        'Config full range change needed. Setting hdmi_pixel_encoding to {}'
+        .format(hdmi_pixel_encoding)
+    )
+    if dry_run and not force:
+        return True
+
+    set_config_value(
+        'hdmi_pixel_encoding',
+        hdmi_pixel_encoding,
+        config_filter=Filter.get_edid_filter(model)
+    )
+    return True
+
+
+def compare_and_set_overscan(edid, status, model, dry_run=False, force=False):
+    """
+    Check the overscan status and set it as required from EDID.
+
+    Args:
+        edid - dict as returned by the function get_edid()
+        status - dict as returned by the function get_status()
+        model - str as return by the function get_edid_name()
+        dry_run - bool run the function, but do not apply any changes
+        force - bool reconfigure settings even when the status says it's not needed
+
+    Returns:
+        changes - bool whether or not changes were applied
+    """
+    if status['overscan'] == edid['target_overscan'] and not force:
+        logger.debug('Config overscan change not needed.')
+        return False
+
+    if edid['target_overscan']:
+        disable_overscan = 0
+        overscan_value = -48  # TODO: where does this value come from?
+    else:
+        disable_overscan = 1
+        overscan_value = 0
+
+    logger.info(
+        'Overscan change needed. Setting disable_overscan to {} and overscan to {}'
+        .format(disable_overscan, overscan_value)
+    )
+    if dry_run and not force:
+        return True
+
+    set_config_value(
+        'disable_overscan',
+        disable_overscan,
+        config_filter=Filter.get_edid_filter(model)
+    )
+    for overscan in ['overscan_left', 'overscan_right', 'overscan_top', 'overscan_bottom']:
+        set_config_value(
+            overscan,
+            overscan_value,
+            config_filter=Filter.get_edid_filter(model)
+        )
+    return True
+
+
+def compare_and_set_optimal_resolution(edid, status, supported_modes, dry_run=False, force=False):
+    """
+    Check the current resolution and set an optimal one if needed.
+
+    Args:
+        edid - dict as returned by the function get_edid()
+        status - dict as returned by the function get_status()
+        supported_modes - list as returned by the function list_supported_modes()
+        dry_run - bool run the function, but do not apply any changes
+        force - bool reconfigure settings even when the status says it's not needed
+
+    Returns:
+        changes - bool whether or not changes were applied
+    """
+    optimal_mode = get_optimal_resolution_mode(edid, supported_modes)
+
+    if status['group'] == optimal_mode['group'] and \
+       status['mode'] == optimal_mode['mode'] and \
+       not force:
+        logger.info('Resolution mode/group change not needed.')
+        return False
+
+    logger.info(
+        'Resolution change needed. Setting hdmi_group to {} and hdmi_mode to {}.'
+        .format(optimal_mode['group'], optimal_mode['mode'])
+    )
+    if dry_run and not force:
+        return True
+
+    # Apply the hdmi_group and hdmi_mode config options for this screen (with filter).
+    set_hdmi_mode(optimal_mode['group'], optimal_mode['mode'])
+    return True
+
+
+def get_optimal_resolution_mode(edid, supported_modes):
+    """
+    Get the optimal resolution for the current screen.
+
+    Using the preferred HDMI group (CEA/DMT) and the list of supported modes, it tries
+    to find a lower resolution that matches the characteristics of the screen.
+
+    Args:
+        edid - dict as returned by the function get_edid()
+        supported_modes - list as returned by the function list_supported_modes()
+
+    Returns:
+        mode - dict as returned by function list_supported_modes()
+    """
+    preferred_mode = dict()
+
+    # Set the preferred aspect ratio for the preferred resolution.
+    # The easiest conversion would be to look through supported resolutions, but it's not
+    # the most comprehensive way. Hopefully, the preferred mode should be also supported.
+    for mode in supported_modes:
+        if mode['mode'] == edid['preferred_mode'] and \
+           mode['group'] == edid['preferred_group']:
+
+            edid['preferred_aspect_ratio'] = mode['aspect_ratio']
+            preferred_mode = mode
+            logger.debug('Found preferred mode {}'.format(preferred_mode))
+            break
+
+    if 'preferred_aspect_ratio' not in edid:
+        return
+
+    # Go through the optimal resolutions list for the aspect ratio...
+    for resolution in OPTIMAL_RESOLUTIONS[edid['preferred_aspect_ratio']]:
+
+        # If preferred mode has the optimal resolution, return it.
+        if resolution['width'] == preferred_mode['width'] and \
+           resolution['height'] == preferred_mode['height']:
+            return preferred_mode
+
+        # If the optimal mode matches the screen preferences, return it.
+        for mode in supported_modes:
+            if resolution['width'] == mode['width'] and \
+               resolution['height'] == mode['height'] and \
+               mode['group'] == edid['preferred_group'] and \
+               mode['rate'] == edid['preferred_hz']:
+
+                logger.debug('Found optimal mode {}'.format(mode))
+                return mode
+
+    # An optimal resolution was not found, returning the screen preferred mode.
+    return preferred_mode
