@@ -1,0 +1,176 @@
+#!/usr/bin/env python
+
+# generate-rpi-edid-dumps
+#
+# Copyright (C) 2017 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
+#
+# Generate three files: raw EDID, tvservice & edidparser dumps, and expected
+# kano_settings.system.display function outputs. These files are then added to
+# res/edid in the project and part of our testing dataset.
+#
+# This script is intended to be run on a RPi without sudo.
+
+
+import os
+import sys
+import json
+import subprocess
+
+
+BASE_DIR = os.path.join(os.path.expanduser('~'), 'edid-dumps')
+
+# NOTE: If you change the file names below, update kano_settings.paths!
+RAW_EDID_PATH = os.path.join(BASE_DIR, '{filename}.edid')
+EDID_DUMPS_PATH = os.path.join(BASE_DIR, '{filename}.dumps.json')
+EXPECTED_EDID_DATA_PATH = os.path.join(BASE_DIR, '{filename}.expected.json')
+
+EDID_DUMPS = {
+    'parsed_edid': '',
+    'device_name': '',
+    'cea_modes': '',
+    'dmt_modes': '',
+}
+
+EXPECTED_EDID_DATA = {
+    'edid': {},
+    'model': '',
+    'preferred_mode': {},  # write manually
+    'optimal_mode': {},    # write manually
+    'cea_modes': [],
+    'dmt_modes': [],
+}
+
+RC_SUCCESS = 0
+RC_NOT_USER = 1
+RC_ERR_DEVICE_NAME = 2
+RC_ERR_DUMP_RAW_EDID = 3
+RC_ERR_PARSE_RAW_EDID = 4
+RC_ERR_CEA_MODES = 5
+RC_ERR_DMT_MODES = 6
+RC_ERR_HDMI_STATUS = 7
+RC_ERR_MD5 = 8
+
+
+def run_cmd(cmd):
+    """
+    Run a shell command.
+
+    Args:
+        cmd - str the shell command to run
+
+    Returns
+        (stdout, stderr, returncode) - tuple of values as returned from the cmd
+    """
+    process = subprocess.Popen(
+        cmd,
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE
+    )
+    stdout, stderr = process.communicate()
+    returncode = process.returncode
+    return stdout, stderr, returncode
+
+
+def main():
+    # Ensure the destination output directory.
+    if not os.path.exists(BASE_DIR):
+        os.makedirs(BASE_DIR)
+
+    edid_dumps = EDID_DUMPS
+
+    # Get the model name of the display.
+    out, err, rc = run_cmd('tvservice --name')
+    if rc:
+        print 'Could not get the screen model!\n rc = {}\n err = {}'.format(rc, err)
+        return RC_ERR_DEVICE_NAME
+
+    edid_dumps['device_name'] = out
+
+    # Get the raw EDID data from the display and create the raw EDID file.
+    out, err, rc = run_cmd('tvservice --dumpedid {}'.format(RAW_EDID_PATH.format(filename='tmp')))
+    if rc:
+        print 'Could not dump raw EDID!\n rc = {}\n err = {}'.format(rc, err)
+        return RC_ERR_DUMP_RAW_EDID
+
+    out, err, rc = run_cmd('md5sum {}'.format(RAW_EDID_PATH.format(filename='tmp')))
+    if rc:
+        print 'Could not get the md5 of the EDID!\n rc = {}\n err = {}'.format(rc, err)
+        return RC_ERR_MD5
+
+    model = edid_dumps['device_name'].strip().strip('device_name=')
+    md5sum = out.split(' ', 1)[0]
+    model_md5 = '{}-{}'.format(model, md5sum)
+
+    # The filenames will be composed from the display model and md5 sum of the raw
+    # EDID. The latter is necessary because there may be different screens that
+    # report the same model name.
+    raw_edid_path = RAW_EDID_PATH.format(filename=model_md5)
+    edid_dumps_path = EDID_DUMPS_PATH.format(filename=model_md5)
+    expected_edid_data_path = EXPECTED_EDID_DATA_PATH.format(filename=model_md5)
+    os.rename(RAW_EDID_PATH.format(filename='tmp'), raw_edid_path)
+
+    print 'Generated {}'.format(raw_edid_path)
+
+    # Get a human readable format of the raw EDID.
+    out, err, rc = run_cmd('edidparser {}'.format(raw_edid_path))
+    if rc:
+        print 'Could not parse the raw edid!\n rc = {}\n err = {}'.format(rc, err)
+        return RC_ERR_PARSE_RAW_EDID
+
+    edid_dumps['parsed_edid'] = out
+
+    # Get the supported modes for the CEA HDMI group.
+    out, err, rc = run_cmd('tvservice --modes CEA --json')
+    if rc:
+        print 'Could not get the CEA modes!\n rc = {}\n err = {}'.format(rc, err)
+        return RC_ERR_CEA_MODES
+
+    edid_dumps['cea_modes'] = out
+
+    # Get the supported modes for the DMT HDMI group.
+    out, err, rc = run_cmd('tvservice --modes DMT --json')
+    if rc:
+        print 'Could not get the DMT modes!\n rc = {}\n err = {}'.format(rc, err)
+        return RC_ERR_DMT_MODES
+
+    edid_dumps['dmt_modes'] = out
+
+    with open(edid_dumps_path, 'w') as edid_dumps_file:
+        json.dump(edid_dumps, edid_dumps_file, indent=4)
+
+    print 'Generated {}'.format(edid_dumps_path)
+
+    # --- Generate the expected values from kano_settings.system.display ----------------
+    # NOTE: Not all values are generated here to avoid reimplementing kano-settings...
+
+    expected_edid_data = EXPECTED_EDID_DATA
+
+    expected_edid_data['model'] = edid_dumps['device_name'].strip('device_name=').strip()
+
+    expected_edid_data['cea_modes'] = list()
+    for mode in json.loads(edid_dumps['cea_modes']):
+        mode['group'] = 'CEA'
+        mode['mode'] = mode['code']
+        mode.pop('code')
+        expected_edid_data['cea_modes'].append(mode)
+
+    expected_edid_data['dmt_modes'] = list()
+    for mode in json.loads(edid_dumps['dmt_modes']):
+        mode['group'] = 'DMT'
+        mode['mode'] = mode['code']
+        mode.pop('code')
+        expected_edid_data['dmt_modes'].append(mode)
+
+    with open(expected_edid_data_path, 'w') as expected_edid_file:
+        json.dump(expected_edid_data, expected_edid_file, indent=4)
+
+    print 'Generated {}'.format(expected_edid_data_path)
+
+if __name__ == '__main__':
+    if os.geteuid() == 0:
+        print 'Program must NOT be run as root.'
+        sys.exit(RC_NOT_USER)
+
+    sys.exit(main() or RC_SUCCESS)

@@ -1,0 +1,245 @@
+{
+    "edid": {
+        "preferred_group": "CEA",
+        "preferred_mode": 16,
+        "preferred_width": 1920,
+        "preferred_height": 1080,
+        "preferred_res": "1920x1080p",
+        "preferred_hz": 60
+    },
+    "model": "GSM-LG_TV",
+    "preferred_mode": {
+        "group": "CEA",
+        "scan": "p",
+        "height": 1080,
+        "3d_modes": [],
+        "width": 1920,
+        "rate": 60,
+        "mode": 16,
+        "aspect_ratio": "16:9"
+    },
+    "optimal_mode": {
+        "group": "CEA",
+        "scan": "p",
+        "height": 720,
+        "3d_modes": [],
+        "width": 1280,
+        "rate": 60,
+        "mode": 4,
+        "aspect_ratio": "16:9"
+    },
+    "cea_modes": [
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 480,
+            "3d_modes": [],
+            "width": 640,
+            "rate": 60,
+            "mode": 1,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 480,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 60,
+            "mode": 2,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 480,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 60,
+            "mode": 3,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 720,
+            "3d_modes": [],
+            "width": 1280,
+            "rate": 60,
+            "mode": 4,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "i",
+            "height": 1080,
+            "3d_modes": [],
+            "width": 1920,
+            "rate": 60,
+            "mode": 5,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 1080,
+            "3d_modes": [],
+            "width": 1920,
+            "rate": 60,
+            "mode": 16,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 576,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 50,
+            "mode": 17,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 576,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 50,
+            "mode": 18,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 720,
+            "3d_modes": [],
+            "width": 1280,
+            "rate": 50,
+            "mode": 19,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "i",
+            "height": 1080,
+            "3d_modes": [],
+            "width": 1920,
+            "rate": 50,
+            "mode": 20,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "i",
+            "height": 576,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 50,
+            "mode": 21,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 1080,
+            "3d_modes": [],
+            "width": 1920,
+            "rate": 50,
+            "mode": 31,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 1080,
+            "3d_modes": [],
+            "width": 1920,
+            "rate": 24,
+            "mode": 32,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 1080,
+            "3d_modes": [],
+            "width": 1920,
+            "rate": 25,
+            "mode": 33,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 1080,
+            "3d_modes": [],
+            "width": 1920,
+            "rate": 30,
+            "mode": 34,
+            "aspect_ratio": "16:9"
+        }
+    ],
+    "dmt_modes": [
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 480,
+            "3d_modes": [],
+            "width": 640,
+            "rate": 60,
+            "mode": 4,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 600,
+            "3d_modes": [],
+            "width": 800,
+            "rate": 60,
+            "mode": 9,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 768,
+            "3d_modes": [],
+            "width": 1024,
+            "rate": 60,
+            "mode": 16,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 800,
+            "3d_modes": [],
+            "width": 1280,
+            "rate": 60,
+            "mode": 28,
+            "aspect_ratio": "16:10"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 1024,
+            "3d_modes": [],
+            "width": 1280,
+            "rate": 60,
+            "mode": 35,
+            "aspect_ratio": "5:4"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 768,
+            "3d_modes": [],
+            "width": 1360,
+            "rate": 60,
+            "mode": 39,
+            "aspect_ratio": "16:9"
+        }
+    ]
+}

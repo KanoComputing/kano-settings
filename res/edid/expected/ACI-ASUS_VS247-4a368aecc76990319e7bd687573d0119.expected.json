@@ -1,0 +1,365 @@
+{
+    "edid": {
+        "preferred_group": "CEA",
+        "preferred_mode": 16,
+        "preferred_width": 1920,
+        "preferred_height": 1080,
+        "preferred_res": "1920x1080p",
+        "preferred_hz": 60
+    },
+    "model": "ACI-ASUS_VS247",
+    "preferred_mode": {
+        "group": "CEA",
+        "scan": "p",
+        "height": 1080,
+        "3d_modes": [],
+        "width": 1920,
+        "rate": 60,
+        "mode": 16,
+        "aspect_ratio": "16:9"
+    },
+    "optimal_mode": {
+        "group": "CEA",
+        "scan": "p",
+        "height": 720,
+        "3d_modes": [],
+        "width": 1280,
+        "rate": 60,
+        "mode": 4,
+        "aspect_ratio": "16:9"
+    },
+    "cea_modes": [
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 480,
+            "3d_modes": [],
+            "width": 640,
+            "rate": 60,
+            "mode": 1,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 480,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 60,
+            "mode": 2,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 480,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 60,
+            "mode": 3,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 720,
+            "3d_modes": [],
+            "width": 1280,
+            "rate": 60,
+            "mode": 4,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "i",
+            "height": 1080,
+            "3d_modes": [],
+            "width": 1920,
+            "rate": 60,
+            "mode": 5,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 480,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 60,
+            "mode": 14,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 480,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 60,
+            "mode": 15,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 1080,
+            "3d_modes": [],
+            "width": 1920,
+            "rate": 60,
+            "mode": 16,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 576,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 50,
+            "mode": 17,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 576,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 50,
+            "mode": 18,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 720,
+            "3d_modes": [],
+            "width": 1280,
+            "rate": 50,
+            "mode": 19,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "i",
+            "height": 1080,
+            "3d_modes": [],
+            "width": 1920,
+            "rate": 50,
+            "mode": 20,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 576,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 50,
+            "mode": 29,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 576,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 50,
+            "mode": 30,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 1080,
+            "3d_modes": [],
+            "width": 1920,
+            "rate": 50,
+            "mode": 31,
+            "aspect_ratio": "16:9"
+        }
+    ],
+    "dmt_modes": [
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 480,
+            "3d_modes": [],
+            "width": 640,
+            "rate": 60,
+            "mode": 4,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 480,
+            "3d_modes": [],
+            "width": 640,
+            "rate": 75,
+            "mode": 6,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 600,
+            "3d_modes": [],
+            "width": 800,
+            "rate": 56,
+            "mode": 8,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 600,
+            "3d_modes": [],
+            "width": 800,
+            "rate": 60,
+            "mode": 9,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 600,
+            "3d_modes": [],
+            "width": 800,
+            "rate": 72,
+            "mode": 10,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 600,
+            "3d_modes": [],
+            "width": 800,
+            "rate": 75,
+            "mode": 11,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 768,
+            "3d_modes": [],
+            "width": 1024,
+            "rate": 60,
+            "mode": 16,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 768,
+            "3d_modes": [],
+            "width": 1024,
+            "rate": 70,
+            "mode": 17,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 768,
+            "3d_modes": [],
+            "width": 1024,
+            "rate": 75,
+            "mode": 18,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 864,
+            "3d_modes": [],
+            "width": 1152,
+            "rate": 75,
+            "mode": 21,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 800,
+            "3d_modes": [],
+            "width": 1280,
+            "rate": 60,
+            "mode": 28,
+            "aspect_ratio": "16:10"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 960,
+            "3d_modes": [],
+            "width": 1280,
+            "rate": 60,
+            "mode": 32,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 1024,
+            "3d_modes": [],
+            "width": 1280,
+            "rate": 60,
+            "mode": 35,
+            "aspect_ratio": "5:4"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 1024,
+            "3d_modes": [],
+            "width": 1280,
+            "rate": 75,
+            "mode": 36,
+            "aspect_ratio": "5:4"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 900,
+            "3d_modes": [],
+            "width": 1440,
+            "rate": 60,
+            "mode": 47,
+            "aspect_ratio": "16:10"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 1050,
+            "3d_modes": [],
+            "width": 1680,
+            "rate": 60,
+            "mode": 58,
+            "aspect_ratio": "16:10"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 1080,
+            "3d_modes": [],
+            "width": 1920,
+            "rate": 60,
+            "mode": 82,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 720,
+            "3d_modes": [],
+            "width": 1280,
+            "rate": 60,
+            "mode": 85,
+            "aspect_ratio": "16:9"
+        }
+    ]
+}
