@@ -8,18 +8,15 @@
 #
 
 
-import unittest
-import sys
 import os
+import unittest
 
-sys.path.insert(1, os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..')))
+import kano.utils as utils
 
 import kano_settings.system.locale as locale
 import kano_settings.system.keyboard_layouts as keyboard_layouts
-import kano.utils as utils
 
-from tests.tools import test_print, mock_file, require_rpi
+from tests.conftest import mock_file, require_rpi
 
 
 print '''
@@ -74,7 +71,6 @@ class StandardLocaleToGenfileEntry(unittest.TestCase):
                          r'en_GB[\.\s]UTF-8(\sUTF-8)?')
 
 
-
 class IsLocaleValid(unittest.TestCase):
     '''
     These calculate validity through the `/usr/share/i18n/SUPPORTED' file which
@@ -125,11 +121,11 @@ class InstallLocale(unittest.TestCase):
         locale_already_installed = locale.is_locale_installed(test_locale)
 
         if locale_already_installed:
-            test_print("Locale already installed so uninstalling...")
+            print "Locale already installed so uninstalling..."
             locale.uninstall_locale(test_locale)
 
             if locale.is_locale_installed(test_locale):
-                test_print("ERROR: Locale could not be removed")
+                print "ERROR: Locale could not be removed"
                 return
 
         locale.install_locale(test_locale)
@@ -138,7 +134,7 @@ class InstallLocale(unittest.TestCase):
 
         # Revert the state
         if not locale_already_installed:
-            test_print("Restoring original locale state")
+            print "Restoring original locale state"
             locale.uninstall_locale(test_locale)
 
 
@@ -150,11 +146,11 @@ class UninstallLocale(unittest.TestCase):
         locale_already_installed = locale.is_locale_installed(test_locale)
 
         if not locale_already_installed:
-            test_print("Locale not installed so installing...")
+            print "Locale not installed so installing..."
             locale.install_locale(test_locale)
 
             if not locale.is_locale_installed(test_locale):
-                test_print("ERROR: Locale could not be installed")
+                print "ERROR: Locale could not be installed"
                 return
 
         locale.uninstall_locale(test_locale)
@@ -163,7 +159,7 @@ class UninstallLocale(unittest.TestCase):
 
         # Revert the state
         if locale_already_installed:
-            test_print("Restoring original locale state")
+            print "Restoring original locale state"
             locale.install_locale(test_locale)
 
 
@@ -317,14 +313,12 @@ class CountryCodeToLayoutKeys(CountryCodeManipulations):
         self.assertEqual(country, 'United Kingdom')
         self.assertEqual(continent, 'europe')
 
-
     def test_invalid_country_code(self):
         continent, country = locale.country_code_to_layout_keys('XXX')
         self.verify_layout_keys_exist(continent, country)
 
         self.assertEqual(country, 'United States')
         self.assertEqual(continent, 'america')
-
 
 
 class LocaleToLayoutKeys(CountryCodeManipulations):
@@ -342,7 +336,6 @@ class LocaleToLayoutKeys(CountryCodeManipulations):
 
         self.assertEqual(country, 'United Kingdom')
         self.assertEqual(continent, 'europe')
-
 
     def test_invalid_locale(self):
         continent, country = locale.locale_to_layout_keys('XXX_XX')

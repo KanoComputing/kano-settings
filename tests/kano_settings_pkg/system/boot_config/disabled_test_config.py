@@ -6,24 +6,21 @@
 #
 # This module tests boot_config.py
 #
+# TODO: This test class has been disabled since it requires sudo to run
+#       and because the tests for it take over 2 minutes.
 
 
-import unittest
-import sys
 import os
-from kano.utils import is_number
-
-sys.path.insert(1, os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '..')))
-
-import kano_settings.system.locale as locale
-import kano.utils as utils
-
-from tests.tools import test_print, mock_file, require_rpi
 import re
-import shutil
+import sys
 import copy
 import random
+import unittest
+
+from kano.utils import is_number
+
+from tests.tools import mock_file, require_rpi
+
 
 print '''
 ***************************
@@ -50,7 +47,6 @@ class config_vals:
         self.comment_values = comment_values  # for lines of the form ### foo: bar
         self.comments = comments  # All other lines
         self.comment_keys = comment_keys
-
 
     def copy(self):
         return config_vals(copy.copy(self.values),
@@ -138,7 +134,6 @@ class configSetTest(unittest.TestCase):
 
         unittest.TestCase.__init__(self, x)
 
-
     @require_rpi
     @unittest.skipIf('-fast' in sys.argv, 'Skipping because tests are in fast mode')
     def test_set_config(self):
@@ -155,13 +150,12 @@ class configSetTest(unittest.TestCase):
                     key = str(random.randint(0, 10000000))
             return key
 
-
         def is_locked():
             # Check whether the lock is effective. Return true if the lock is held
 
             import os
             py = os.path.join(os.path.dirname(__file__), 'try_lock.py')
-            return os.system('python '+py) != 0
+            return os.system('python ' + py) != 0
 
         def test_read(configs):
             # Test all read methods
@@ -286,7 +280,6 @@ class configSetTest(unittest.TestCase):
 
                 self.backup_config_exists = False
 
-
                 self.assertTrue(compare(configs['backup'], configs['written']))
 
             after_write = read_config()
@@ -323,7 +316,6 @@ class configSetTest(unittest.TestCase):
             self.assertTrue(boot_config._trans().state == 0)
             self.assertTrue(not is_locked())
 
-
         with mock_file(config_path, dummy_config_data):
 
             self.assertTrue(not is_locked())
@@ -341,10 +333,10 @@ class configSetTest(unittest.TestCase):
 
             for trial in range(numtests):
                 print "test number ", trial
-                #os.system('cat /boot/config.txt')
-                #print "___"
-                #os.system('cat '+boot_config._trans().temp_config.path)
-                #print "___"
+                # os.system('cat /boot/config.txt')
+                # print "___"
+                # os.system('cat '+boot_config._trans().temp_config.path)
+                # print "___"
 
                 rwc = random.randint(0, 3)
 
