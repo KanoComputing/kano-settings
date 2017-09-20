@@ -12,6 +12,7 @@ kano-settings (4.0.2-0) unstable; urgency=low
   * Removed hdmi_drive=2 config option for old monitors
   * Added display configuration in config.txt for all our SKs
   * Added tests for display functions with an EDID dataset
+  * Added CKC v1.1 EDID to tests and detection functions
 
  -- Team Kano <dev@kano.me>  Thu, 7 Sep 2017 18:11:09 +0100
 
