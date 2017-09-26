@@ -6,6 +6,13 @@ kano-settings (4.0.2-1) unstable; urgency=low
 
 kano-settings (4.0.2-0) unstable; urgency=low
 
+  * Added Volume Boost option in Settings > Audio for CKCv1
+  * Ensured volume levels at bootup for CKCv1 only
+
+ -- Team Kano <dev@kano.me>  Tue, 26 Sep 2017 19:26:00 +0100
+
+kano-settings (4.0.2-0) unstable; urgency=low
+
   * Changes for Kano OS 3.12.0:
   * Ensuring maximum volume level on CKC and other
   * Fixed resolution policy to account for preferred hdmi_group
