@@ -351,6 +351,7 @@ def ensure_correct_volume_levels():
     """
     ck2_pro_hat = CK2ProHat()
     ck2_pro_hat.initialise()
+    changes = False
 
     if ck2_pro_hat.is_connected():
         changes = set_alsa_config_max_dB(DEFAULT_CKC_MAX_DB)
