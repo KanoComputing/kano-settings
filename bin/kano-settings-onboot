@@ -46,7 +46,9 @@ if __name__ == '__main__' and __package__ is None:
 from kano.utils.shell import run_cmd
 from kano.utils.hardware import get_rpi_model, get_board_property
 from kano.logging import logger
-from kano_pi_hat.ck2_pro_hat import CK2ProHat
+from kano_peripherals.wrappers.detection import is_ck2_pro, get_ck2_pro_version
+
+from kano_peripherals.wrappers.detection import CKC_V_1_1_0
 
 from kano_settings.system.display import get_status, get_edid_name, \
     get_edid, list_supported_modes, override_models, compare_and_set_full_range, \
@@ -58,11 +60,9 @@ from kano_settings.system.audio import is_HDMI, set_to_HDMI, restart_alsa, \
     set_alsa_config_max_dB
 from kano_settings.system.overclock_chip_support import check_clock_config_matches_chip
 
+from kano_settings.system.audio import DEFAULT_CKC_V1_MAX_DB
 from kano_settings.return_codes import RC_SUCCESS, RC_REQUIRES_ROOT, RC_INCORRECT_ARGS, \
     RC_EDID_NO_MODEL, RC_EDID_NO_STATUS, RC_EDID_NO_SUPPORTED, RC_NO_EDID
-
-
-DEFAULT_CKC_MAX_DB = -11.9
 
 
 def main(args):
@@ -147,13 +147,13 @@ def ensure_correct_volume_levels():
     """
     Sets the default max_dB option in ALSA for CKC only.
     """
-    ck2_pro_hat = CK2ProHat()
-    ck2_pro_hat.initialise()
+    is_ckc = is_ck2_pro(with_dbus=False)
+    ckc_version = get_ck2_pro_version()
     changes = False
 
-    if ck2_pro_hat.is_connected():
-        changes = set_alsa_config_max_dB(DEFAULT_CKC_MAX_DB)
-        logger.debug('On CKC, ALSA max_dB changes {}'.format(changes))
+    if is_ckc and ckc_version and ckc_version < CKC_V_1_1_0:
+        changes = set_alsa_config_max_dB(DEFAULT_CKC_V1_MAX_DB)
+        logger.debug('On CKC v1, ALSA max_dB changes {}'.format(changes))
 
     if changes:
         restart_alsa()
@@ -216,7 +216,7 @@ def ensure_optimal_screen_resolution(dry_run=False, force_mode=False):
         ignore_comments=True
     )
     if was_screen_configured and not force_mode:
-        logger.debug('The unit was configured for this model already, exiting.')
+        logger.debug('This screen has been configured before, skipping.')
         return (reboot_required, RC_SUCCESS)
 
     # Sanity checks, we need current screen status, EDID info, and list of display modes.
