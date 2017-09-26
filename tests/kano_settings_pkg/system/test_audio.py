@@ -8,7 +8,7 @@
 
 from kano_settings.system import audio
 
-from tests.fixtures.alsa_config import DEFAULT_MAX_DB
+from tests.fixtures.alsa_config import DEFAULT_PARAMS
 
 
 class TestAudio(object):
@@ -49,8 +49,24 @@ class TestAudio(object):
         #  1. With the value that is already set in the config => False (no changes)
         #  2. With a new value to set => True (changes were made)
         #  3. With the value from 2 again => False (no changes)
-        no_changes_rv = audio.set_alsa_config_max_dB(DEFAULT_MAX_DB['max_dB'])
+        no_changes_rv = audio.set_alsa_config_max_dB(DEFAULT_PARAMS['max_dB'])
         changes_rv = audio.set_alsa_config_max_dB(new_dB)
         second_no_changes_rv = audio.set_alsa_config_max_dB(new_dB)
 
         assert(not no_changes_rv and changes_rv and not second_no_changes_rv)
+
+    def test_get_alsa_config_max_dB(self, asound_confs):
+        """
+        Tests that the get_alsa_config_max_dB function gets the correct value
+        from the config file.
+
+        The fixture used here does most of the work to trick the function to operate
+        on different config files. It returns the value for max_dB with which the
+        config was setup
+
+        Args:
+            asound_confs - fake ALSA config files with various max_dB values set
+        """
+        assert(
+            audio.get_alsa_config_max_dB() == asound_confs['params']['max_dB']
+        )
