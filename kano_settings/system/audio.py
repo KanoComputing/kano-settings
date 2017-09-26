@@ -11,7 +11,7 @@
 from kano.utils.shell import run_cmd, run_bg
 from kano.logging import logger
 
-from kano_peripherals.pi_hat.driver.high_level import get_pihat_interface
+from kano_peripherals.wrappers.detection import is_pi_hat_plugged
 
 from kano_settings.config_file import get_setting, set_setting
 from kano_settings.boot_config import set_config_value, end_config_transaction
@@ -32,6 +32,12 @@ amixer_get_cmd = "amixer -c 0 cget {control}".format(control=amixer_control)
 
 analogue_cmd = "amixer -c 0 cset numid=3 1"
 hdmi_cmd = "amixer -c 0 cset numid=3 2"
+
+# This value comes from the asound.conf in kano-desktop, but because the file is
+# not in this repo, the value is duplicated..
+DEFAULT_ALSA_CONFIG_MAX_DB = 4.0
+
+DEFAULT_CKC_V1_MAX_DB = -11.9
 
 
 def is_hdmi_audio_supported():
@@ -60,15 +66,9 @@ def is_analogue_audio_supported():
     through the jack. This is the only instance we need to prevent jack audio.
 
     Returns:
-        supported - True if audio can be set to play through jack, False otherwise
+        True if audio can be set to play through jack, False otherwise
     """
-    supported = True
-
-    pihat_iface = get_pihat_interface()
-    if pihat_iface and pihat_iface.is_plugged():
-        supported = False
-
-    return supported
+    return (not is_pi_hat_plugged(retry_count=0))
 
 
 def set_to_HDMI(HDMI, force=False):
@@ -176,6 +176,26 @@ def set_alsa_config_max_dB(decibel):
         asound_conf.write(''.join(asound_conf_lines))
 
     return True
+
+
+def get_alsa_config_max_dB():
+    """
+    Get the maximum volume (gain) ALSA can currently output.
+
+    Returns:
+        float - value for the max_dB option in decibels
+    """
+    max_dB = None
+
+    with open(ASOUND_CONF_PATH, 'r') as asound_conf:
+        asound_conf_lines = asound_conf.readlines()
+
+    for line in asound_conf_lines:
+        if 'max_dB' in line:
+            max_dB = line.split()[1]
+            break
+
+    return float(max_dB) if max_dB is not None else max_dB
 
 
 def restart_alsa(background=True):

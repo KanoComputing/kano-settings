@@ -2,17 +2,26 @@
 
 # set_audio.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
+# Copyright (C) 2014-2017 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
+# The Audio menu in Kano Settings.
+
 
 from gi.repository import Gtk, Gdk
+
+from kano.logging import logger
+from kano_peripherals.wrappers.detection import is_ck2_pro, get_ck2_pro_version
+
+from kano_peripherals.wrappers.detection import CKC_V_1_1_0
+
 import kano_settings.common as common
 from kano_settings.templates import Template
-from kano.logging import logger
 from kano_settings.config_file import get_setting
 from kano_settings.system.audio import set_to_HDMI, is_HDMI, is_hdmi_audio_supported, \
-    is_analogue_audio_supported
+    is_analogue_audio_supported, get_alsa_config_max_dB, set_alsa_config_max_dB
+
+from kano_settings.system.audio import DEFAULT_ALSA_CONFIG_MAX_DB, DEFAULT_CKC_V1_MAX_DB
 
 
 class SetAudio(Template):
@@ -81,7 +90,22 @@ class SetAudio(Template):
         self.horizontal_box.pack_start(self.current_img, False, False, 10)
         self.horizontal_box.pack_start(self.analogue_box, False, False, 10)
 
-        self.box.add(self.horizontal_box)
+        audio_overdrive_box = Gtk.Box()
+        audio_overdrive_box.set_halign(Gtk.Align.CENTER)
+        self.audio_overdrive_checkbutton = Gtk.CheckButton()
+        self.audio_overdrive_checkbutton.set_label(_("Boost Volume"))
+        self.audio_overdrive_checkbutton.get_style_context().add_class('bold_toggle')
+        audio_overdrive_desc_label = Gtk.Label(_("Make your kit even louder"))
+        audio_overdrive_desc_label.get_style_context().add_class('normal_label')
+        audio_overdrive_box.pack_start(self.audio_overdrive_checkbutton, False, False, 10)
+        audio_overdrive_box.pack_start(audio_overdrive_desc_label, False, False, 0)
+
+        self.vertical_box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
+        self.vertical_box.pack_start(self.horizontal_box, False, False, 0)
+        if self._show_audio_overdrive():
+            self.vertical_box.pack_start(audio_overdrive_box, False, False, 10)
+
+        self.box.add(self.vertical_box)
         self.align.set_padding(0, 0, 25, 0)
 
         # Show the current setting by electing the appropriate radio button
@@ -92,6 +116,9 @@ class SetAudio(Template):
     def apply_changes(self, widget, event):
         # If enter key is pressed or mouse button is clicked
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
+
+            audio_overdrive_changes = self._compare_and_set_audio_overdrive()
+            common.need_reboot = audio_overdrive_changes
 
             if (get_setting('Audio') == _('HDMI') and self.HDMI is True) or \
                (get_setting('Audio') == _('Analogue') and self.HDMI is False):
@@ -125,6 +152,10 @@ class SetAudio(Template):
         self.hdmi_button.set_active(hdmi_selected)
         self.analog_button.set_active(not hdmi_selected)
 
+        # Set the initial tick state of for the audio overdrive button.
+        self.initial_audio_overdrive = self._is_audio_overdrive()
+        self.audio_overdrive_checkbutton.set_active(self.initial_audio_overdrive)
+
     def on_button_toggled(self, button):
         self.HDMI = button.get_active()
 
@@ -132,3 +163,44 @@ class SetAudio(Template):
             self.current_img.set_from_file(common.media + "/Graphics/Audio-HDMI.png")
         else:
             self.current_img.set_from_file(common.media + "/Graphics/Audio-jack.png")
+
+    def _is_audio_overdrive(self):
+        """
+        Check whether the Audio Overdrive option is enabled.
+
+        Returns:
+            bool - whether or not the ALSA maximum volume is set to the default maximum
+        """
+        return (get_alsa_config_max_dB() == DEFAULT_ALSA_CONFIG_MAX_DB)
+
+    def _compare_and_set_audio_overdrive(self):
+        """
+        Sets the audio overdrive option if there was a change in the
+        checkbutton state.
+
+        Returns:
+            bool - whether or not there were any changes made
+        """
+        if self.audio_overdrive_checkbutton.get_active() != self.initial_audio_overdrive:
+            if self.audio_overdrive_checkbutton.get_active():
+                max_dB = DEFAULT_ALSA_CONFIG_MAX_DB
+            else:
+                max_dB = DEFAULT_CKC_V1_MAX_DB
+            set_alsa_config_max_dB(max_dB)
+            return True
+
+        return False
+
+    def _show_audio_overdrive(self):
+        """
+        Check whether the audio overdrive option should be shown or not.
+
+        This option is essentially for the CKCv1 to mitigate the speaker hardware.
+
+        Return:
+            bool - whether or not the option is to be shown
+        """
+        is_ckc = is_ck2_pro(retry_count=0)
+        ckc_version = get_ck2_pro_version()
+
+        return (is_ckc and ckc_version and ckc_version < CKC_V_1_1_0)
