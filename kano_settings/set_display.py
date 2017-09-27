@@ -2,23 +2,26 @@
 
 # set_display.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
+# Copyright (C) 2014-2017 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
+# The Display menu in Kano Settings.
+
 
 import os
 
 from gi.repository import Gtk, Gdk
-from kano_settings.templates import Template
+
 from kano.gtk3.buttons import OrangeButton, KanoButton
 from kano.gtk3.kano_combobox import KanoComboBox
-from kano_settings.components.heading import Heading
 from kano_profile.tracker import track_data
 
-import kano_settings.common as common
+from kano_settings import common
+from kano_settings.components.heading import Heading
+from kano_settings.templates import Template
 from kano_settings.boot_config import set_config_comment, end_config_transaction
 from kano_settings.system.display import get_model, get_screen_value, get_status, \
-    list_supported_modes, set_hdmi_mode, read_hdmi_mode, \
+    list_supported_modes, set_hdmi_mode, read_hdmi_mode, get_edid_name, \
     find_matching_mode, get_overscan_status, write_overscan_values, \
     set_overscan_status, launch_pipe, set_flip
 
@@ -38,20 +41,20 @@ def get_overscan_limit():
 class SetDisplay(Template):
     def __init__(self, win):
         # Show the Display brand and model
-        self.model = get_model()
-        info_message = _(" (Changing this requires a reboot)")
+        self.model = get_edid_name()
+        info_message = _("\nScreen Model: {}".format(self.model))
 
         # And the current display resolution
         try:
             current_resolution = get_status()['resolution']
-            info_message += _("\n\nCurrent resolution: {}").format(_(current_resolution))
+            info_message += _("\nCurrent Resolution: {}").format(_(current_resolution))
         except:
             pass
 
         Template.__init__(
             self,
             _("Display"),
-            self.model + info_message,
+            info_message,
             _("APPLY CHANGES")
         )
 
