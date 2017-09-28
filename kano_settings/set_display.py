@@ -19,8 +19,8 @@ from kano_profile.tracker import track_data
 from kano_settings import common
 from kano_settings.components.heading import Heading
 from kano_settings.templates import Template
-from kano_settings.boot_config import set_config_comment, end_config_transaction
-from kano_settings.system.display import get_model, get_screen_value, get_status, \
+from kano_settings.boot_config import end_config_transaction
+from kano_settings.system.display import get_screen_value, get_status, \
     list_supported_modes, set_hdmi_mode, read_hdmi_mode, get_edid_name, \
     find_matching_mode, get_overscan_status, write_overscan_values, \
     set_overscan_status, launch_pipe, set_flip
@@ -155,12 +155,10 @@ class SetDisplay(Template):
     def set_hdmi_mode_from_str(self, mode):
         if mode == 'auto':
             set_hdmi_mode()
-            set_config_comment('kano_screen_used', 'xxx')
             return
 
         group, number = mode.split(":")
         set_hdmi_mode(group, number)
-        set_config_comment('kano_screen_used', self.model)
 
     def go_to_overscan(self, widget, event):
         self.win.clear_win()
@@ -216,8 +214,6 @@ class OverscanTemplate(Gtk.Box):
         self.reset_button.connect('button_press_event', self.reset)
 
     def apply_changes(self, button, event):
-        # Apply changes
-        set_config_comment('kano_screen_used', get_model())
         # NB, write_overscan_values ends the transaction
         write_overscan_values(self.overscan_values)
         self.original_overscan = self.overscan_values
