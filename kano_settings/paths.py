@@ -20,7 +20,8 @@ RESOURCES_DIR = join(BASE_DIR, 'res')
 EDID_DIR = join(RESOURCES_DIR, 'edid')
 
 RAW_EDID_DIR = join(EDID_DIR, 'raw')
-RAW_EDID_PATH_PATTERN = join(RAW_EDID_DIR, '{filename}.edid')
+RAW_EDID_NAME_PATTERN = '{filename}.edid'
+RAW_EDID_PATH_PATTERN = join(RAW_EDID_DIR, RAW_EDID_NAME_PATTERN)
 
 RPI_EDID_DUMPS_DIR = join(EDID_DIR, 'rpi_dumps')
 RPI_EDID_DUMPS_PATH_PATTERN = join(RPI_EDID_DUMPS_DIR, '{filename}.dumps.json')

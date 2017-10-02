@@ -5,27 +5,57 @@
 # Copyright (C) 2017 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
-# Generate three files: raw EDID, tvservice & edidparser dumps, and expected
+# Use raw EDIDs to generate two files: tvservice & edidparser dumps, and expected
 # kano_settings.system.display function outputs. These files are then added to
 # res/edid in the project and part of our testing dataset.
 #
-# This script is intended to be run on a RPi without sudo.
+# Each raw EDID is flashed in turn to the attached display in order for the system
+# as a whole to think it's using the respective display. The original screen EDID will
+# be backed up and restored at the end (see ORIGINAL_EDID_BACKUP_PATH for the path).
+#
+# This tool requires the installation of edid-rw under /usr/bin.
+# https://github.com/bulletmark/edid-rw
+#
+# WARNING: This tool can destroy the machine and display!
+#          See edid-rw README for the dangers of using it.
+#
+# This script is intended to be run on a RPi with a screen attached.
+# Requires sudo.
+
+
+"""
+generate-rpi-edid-dumps Generate rpi_dumps and expected from raw for kano-settings/res/edid
+
+Usage:
+    generate-rpi-edid-dumps <raw-edid-dir> <output-dir> [options]
+    generate-rpi-edid-dumps -h | --help
+
+Arguments:
+    <raw-edid-dir>  Path to the directory containing raw EDID files.
+    <output-dir>    Path to the directory where the data will be output.
+
+Options:
+    -f, --override  Write over files already generated in <output-dir>.
+    -v, --verbose   Print extra information.
+    -h, --help      Show this message.
+
+Examples:
+    sudo generate-rpi-edid-dumps kano-settings/res/edid/raw/ ~/edid-dumps/ --verbose
+"""
 
 
 import os
 import sys
 import json
+import traceback
+import importlib
 import subprocess
 
 
-BASE_DIR = os.path.join(os.path.expanduser('~'), 'edid-dumps')
+REQUIRED_PYTHON_MODULES = ['docopt']
+REQUIRED_TOOLS = ['/usr/bin/edid-rw', '/usr/bin/tvservice', '/usr/bin/edidparser']
 
-# NOTE: If you change the file names below, update kano_settings.paths!
-RAW_EDID_PATH = os.path.join(BASE_DIR, '{filename}.edid')
-EDID_DUMPS_PATH = os.path.join(BASE_DIR, '{filename}.dumps.json')
-EXPECTED_EDID_DATA_PATH = os.path.join(BASE_DIR, '{filename}.expected.json')
-
-EDID_DUMPS = {
+RPI_EDID_DUMPS = {
     'parsed_edid': '',
     'device_name': '',
     'cea_modes': '',
@@ -33,7 +63,7 @@ EDID_DUMPS = {
 }
 
 EXPECTED_EDID_DATA = {
-    'edid': {},
+    'edid': {},            # write manually
     'model': '',
     'preferred_mode': {},  # write manually
     'optimal_mode': {},    # write manually
@@ -41,15 +71,16 @@ EXPECTED_EDID_DATA = {
     'dmt_modes': [],
 }
 
+RPI_HDMI_I2C_BUS_NUM = 2
+ORIGINAL_EDID_BACKUP_PATH = '/tmp/original.edid'
+
 RC_SUCCESS = 0
-RC_NOT_USER = 1
-RC_ERR_DEVICE_NAME = 2
-RC_ERR_DUMP_RAW_EDID = 3
-RC_ERR_PARSE_RAW_EDID = 4
-RC_ERR_CEA_MODES = 5
-RC_ERR_DMT_MODES = 6
-RC_ERR_HDMI_STATUS = 7
-RC_ERR_MD5 = 8
+RC_WRONG_PERMISSIONS = 1
+RC_MISSING_DEPENDENCIES = 2
+RC_INCORRECT_ARGS = 3
+RC_ERR_SUBPROCESS = 4
+
+_g_verbose_mode = False
 
 
 def run_cmd(cmd):
@@ -70,107 +101,363 @@ def run_cmd(cmd):
     )
     stdout, stderr = process.communicate()
     returncode = process.returncode
+
     return stdout, stderr, returncode
 
 
-def main():
-    # Ensure the destination output directory.
-    if not os.path.exists(BASE_DIR):
-        os.makedirs(BASE_DIR)
+def flash_screen(raw_edid_path):
+    """
+    Flash a raw EDID file onto the screen attached to the RPi.
 
-    edid_dumps = EDID_DUMPS
+    WARNING: This uses the edid-rw third party tool which needs to be installed.
+    See tool READMEs for the dangers of using it. It may damage the machine and screen.
 
-    # Get the model name of the display.
-    out, err, rc = run_cmd('tvservice --name')
+    Args:
+        raw_edid_path - str full file path to the raw EDID file
+
+    Returns:
+        bool whether the operation was successful or not
+    """
+    # Write the raw EDID to the display with the edid-rw tool.
+    out, err, rc = run_cmd('cat {} | edid-rw 2 --write'.format(raw_edid_path))
     if rc:
-        print 'Could not get the screen model!\n rc = {}\n err = {}'.format(rc, err)
-        return RC_ERR_DEVICE_NAME
+        sys.stderr.write(
+            'Error: Could not flash the EDID from {}!\n rc = {}\n err = {}\n'
+            .format(raw_edid_path, rc, err)
+        )
+        return False
 
-    edid_dumps['device_name'] = out
-
-    # Get the raw EDID data from the display and create the raw EDID file.
-    out, err, rc = run_cmd('tvservice --dumpedid {}'.format(RAW_EDID_PATH.format(filename='tmp')))
+    # Restart the display in order for tvservice to update the values it sees from
+    # the screen. This step can be replaced by a manual plug/unplug of the HDMI cable.
+    out, err, rc = run_cmd('tvservice --off && sleep 15 && tvservice --preferred && sleep 5')
     if rc:
-        print 'Could not dump raw EDID!\n rc = {}\n err = {}'.format(rc, err)
-        return RC_ERR_DUMP_RAW_EDID
+        sys.stderr.write(
+            'Error: Could not restart the display!\n rc = {}\n err = {}\n'.format(rc, err)
+        )
+        return False
 
-    out, err, rc = run_cmd('md5sum {}'.format(RAW_EDID_PATH.format(filename='tmp')))
-    if rc:
-        print 'Could not get the md5 of the EDID!\n rc = {}\n err = {}'.format(rc, err)
-        return RC_ERR_MD5
+    return True
 
-    model = edid_dumps['device_name'].strip().strip('device_name=')
-    md5sum = out.split(' ', 1)[0]
-    model_md5 = '{}-{}'.format(model, md5sum)
 
-    # The filenames will be composed from the display model and md5 sum of the raw
-    # EDID. The latter is necessary because there may be different screens that
-    # report the same model name.
-    raw_edid_path = RAW_EDID_PATH.format(filename=model_md5)
-    edid_dumps_path = EDID_DUMPS_PATH.format(filename=model_md5)
-    expected_edid_data_path = EXPECTED_EDID_DATA_PATH.format(filename=model_md5)
-    os.rename(RAW_EDID_PATH.format(filename='tmp'), raw_edid_path)
+def generate_rpi_dumps(raw_edid_path, edid_dumps_path):
+    """
+    Create dumps from tvservice relevant to kano-settings and RPi.
 
-    print 'Generated {}'.format(raw_edid_path)
+    It uses the RPI_EDID_DUMPS dict as a model for the json data to be output.
+
+    Args:
+        raw_edid_path - str full file path to the raw EDID file
+        edid_dumps_path - str full file path to where the json data should be written to
+
+    Returns:
+        edid_dumps - dict copy of RPI_EDID_DUMPS with relevant values
+        False - when the function fails
+    """
+    edid_dumps = RPI_EDID_DUMPS.copy()
 
     # Get a human readable format of the raw EDID.
     out, err, rc = run_cmd('edidparser {}'.format(raw_edid_path))
     if rc:
-        print 'Could not parse the raw edid!\n rc = {}\n err = {}'.format(rc, err)
-        return RC_ERR_PARSE_RAW_EDID
+        sys.stderr.write(
+            'Error: Could not parse the raw EDID!\n rc = {}\n err = {}\n'.format(rc, err)
+        )
+        return False
 
     edid_dumps['parsed_edid'] = out
+
+    # Get the model name of the display.
+    out, err, rc = run_cmd('tvservice --name')
+    if rc:
+        sys.stderr.write(
+            'Error: Could not get the screen model!\n rc = {}\n err = {}\n'.format(rc, err)
+        )
+        return False
+
+    edid_dumps['device_name'] = out
 
     # Get the supported modes for the CEA HDMI group.
     out, err, rc = run_cmd('tvservice --modes CEA --json')
     if rc:
-        print 'Could not get the CEA modes!\n rc = {}\n err = {}'.format(rc, err)
-        return RC_ERR_CEA_MODES
+        sys.stderr.write(
+            'Error: Could not get the CEA modes!\n rc = {}\n err = {}\n'.format(rc, err)
+        )
+        return False
 
     edid_dumps['cea_modes'] = out
 
     # Get the supported modes for the DMT HDMI group.
     out, err, rc = run_cmd('tvservice --modes DMT --json')
     if rc:
-        print 'Could not get the DMT modes!\n rc = {}\n err = {}'.format(rc, err)
-        return RC_ERR_DMT_MODES
+        sys.stderr.write(
+            'Error: Could not get the DMT modes!\n rc = {}\n err = {}\n'.format(rc, err)
+        )
+        return False
 
     edid_dumps['dmt_modes'] = out
 
     with open(edid_dumps_path, 'w') as edid_dumps_file:
         json.dump(edid_dumps, edid_dumps_file, indent=4)
 
-    print 'Generated {}'.format(edid_dumps_path)
+    verbose_print('Generated {}'.format(edid_dumps_path))
 
-    # --- Generate the expected values from kano_settings.system.display ----------------
-    # NOTE: Not all values are generated here to avoid reimplementing kano-settings...
+    return edid_dumps
 
-    expected_edid_data = EXPECTED_EDID_DATA
 
-    expected_edid_data['model'] = edid_dumps['device_name'].strip('device_name=').strip()
+def generate_expected_data(edid_dumps, expected_data_path):
+    """
+    Create expected output data for display functions in kano-settings.
 
-    expected_edid_data['cea_modes'] = list()
-    for mode in json.loads(edid_dumps['cea_modes']):
-        mode['group'] = 'CEA'
-        mode['mode'] = mode['code']
-        mode.pop('code')
-        expected_edid_data['cea_modes'].append(mode)
+    It uses the EXPECTED_EDID_DATA dict as a model for the json data to be output.
 
-    expected_edid_data['dmt_modes'] = list()
-    for mode in json.loads(edid_dumps['dmt_modes']):
-        mode['group'] = 'DMT'
-        mode['mode'] = mode['code']
-        mode.pop('code')
-        expected_edid_data['dmt_modes'].append(mode)
+    Args:
+        edid_dumps - dict as returned from generate_rpi_dumps() function
+        expected_data_path - str full file path to where the json data should be written to
 
-    with open(expected_edid_data_path, 'w') as expected_edid_file:
-        json.dump(expected_edid_data, expected_edid_file, indent=4)
+    Returns:
+        expected_data - dict copy of EXPECTED_EDID_DATA with relevant values
+        False - when the function fails
+    """
+    expected_data = EXPECTED_EDID_DATA.copy()
 
-    print 'Generated {}'.format(expected_edid_data_path)
+    try:
+        expected_data['model'] = edid_dumps['device_name'].strip('device_name=').strip()
+
+        expected_data['cea_modes'] = list()
+        for mode in json.loads(edid_dumps['cea_modes']):
+            mode['group'] = 'CEA'
+            mode['mode'] = mode['code']
+            mode.pop('code')
+            expected_data['cea_modes'].append(mode)
+
+        expected_data['dmt_modes'] = list()
+        for mode in json.loads(edid_dumps['dmt_modes']):
+            mode['group'] = 'DMT'
+            mode['mode'] = mode['code']
+            mode.pop('code')
+            expected_data['dmt_modes'].append(mode)
+    except:
+        sys.stderr.write(
+            'Error: RPi dumps data model changed!\n{}\n'.format(traceback.format_exc())
+        )
+        return False
+
+    with open(expected_data_path, 'w') as expected_edid_file:
+        json.dump(expected_data, expected_edid_file, indent=4)
+
+    verbose_print('Generated {}'.format(expected_data_path))
+
+    return expected_data
+
+
+def backup_original_edid():
+    """
+    Make a temporary EDID backup of the screen plugged into the RPi.
+
+    Returns:
+        bool whether the operation was successful or not
+    """
+    out, err, rc = run_cmd('tvservice --dumpedid {}'.format(ORIGINAL_EDID_BACKUP_PATH))
+    if rc:
+        sys.stderr.write(
+            'Error: Could not backup original screen EDID!\n rc = {}\n err = {}\n'
+            .format(rc, err)
+        )
+        return False
+
+    verbose_print('Backed up screen EDID to {}'.format(ORIGINAL_EDID_BACKUP_PATH))
+    return True
+
+
+def restore_original_edid():
+    """
+    Restore the screen EDID with the temporary EDID backup.
+
+    Returns:
+        same as flash_screen() function
+    """
+    verbose_print('Restoring original screen EDID...'.format(ORIGINAL_EDID_BACKUP_PATH))
+    return flash_screen(ORIGINAL_EDID_BACKUP_PATH)
+
+
+def verbose_print(message):
+    """ Print a message to the stdout if the global flag was set """
+
+    global _g_verbose_mode
+
+    if _g_verbose_mode:
+        print message
+
+
+def main(args):
+    """
+    Main program.
+    """
+    global _g_verbose_mode
+
+    _g_verbose_mode = args['--verbose']
+    override_mode = args['--override']
+
+    flashed_screen = False
+
+    raw_edid_dir = args['<raw-edid-dir>']
+    edid_dumps_dir = os.path.join(args['<output-dir>'], 'rpi_dumps')
+    expected_data_dir = os.path.join(args['<output-dir>'], 'expected')
+
+    # NOTE: If you change the file names below, update kano_settings.paths!
+    raw_edid_path_pattern = os.path.join(raw_edid_dir, '{filename}.edid')
+    edid_dumps_path_pattern = os.path.join(edid_dumps_dir, '{filename}.dumps.json')
+    expected_data_path_pattern = os.path.join(expected_data_dir, '{filename}.expected.json')
+
+    # Ensure the destination output directories.
+    if not os.path.exists(edid_dumps_dir):
+        os.makedirs(edid_dumps_dir)
+
+    if not os.path.exists(expected_data_dir):
+        os.makedirs(expected_data_dir)
+
+    if not backup_original_edid():
+        return RC_ERR_SUBPROCESS
+
+    # Get all the raw EDID filenames without their extension.
+    # These will have been produced by the rpi-dump-edid tool.
+    screen_models_with_md5 = [
+        raw_edid[:-len(os.path.basename(raw_edid_path_pattern.format(filename='')))]
+        for raw_edid in os.listdir(raw_edid_dir)
+    ]
+
+    # Generate the data from each raw EDID file.
+    for model in screen_models_with_md5:
+        raw_edid_path = raw_edid_path_pattern.format(filename=model)
+        edid_dumps_path = edid_dumps_path_pattern.format(filename=model)
+        expected_data_path = expected_data_path_pattern.format(filename=model)
+
+        # Avoid writing over existing data without user intention.
+        if not override_mode:
+            if os.path.exists(edid_dumps_path) or os.path.exists(expected_data_path):
+                verbose_print(
+                    'Not overriding {} and {}, skipping EDID.'
+                    .format(edid_dumps_path, expected_data_path)
+                )
+                continue
+
+        verbose_print('Working on {}'.format(raw_edid_path))
+
+        # Flash the screen with the current EDID.
+        if not flash_screen(raw_edid_path):
+            return RC_ERR_SUBPROCESS
+
+        flashed_screen = True
+
+        # Generate the RPi and kano-settings specific data.
+        edid_dumps = generate_rpi_dumps(raw_edid_path, edid_dumps_path)
+        if not edid_dumps:
+            return RC_ERR_SUBPROCESS
+
+        if not generate_expected_data(edid_dumps, expected_data_path):
+            return RC_ERR_SUBPROCESS
+
+    if flashed_screen:
+        if not restore_original_edid():
+            return RC_ERR_SUBPROCESS
+
+    return RC_SUCCESS
+
+
+def check_python_modules(modules):
+    """ Check that the given Python modules are installed. """
+
+    has_all_modules = True
+
+    for module in modules:
+        try:
+            importlib.import_module(module)
+        except ImportError:
+            sys.stderr.write('Error: Missing dependency on Python module {}\n'.format(module))
+            has_all_modules = False
+
+    return has_all_modules
+
+
+def check_installed_tools(binary_paths):
+    """ Check that the given binaries are installed. """
+
+    has_all_binaries = True
+
+    for binary_path in binary_paths:
+        if not os.path.exists(binary_path):
+            sys.stderr.write('Error: Missing dependency on binary {}\n'.format(binary_path))
+            has_all_binaries = False
+
+    return has_all_binaries
+
+
+def check_boot_config_txt():
+    """ Check that the /boot/config.txt is setup correctly for this tool to work. """
+
+    valid_config_txt = True
+
+    with open('/boot/config.txt', 'r') as config_txt:
+        config_txt_lines = config_txt.readlines()
+
+    if 'hdmi_force_hotplug=1\n' in config_txt_lines:
+        sys.stderr.write(
+            'Error: hdmi_force_hotplug=1 was found in /boot/config.txt\n'
+        )
+        valid_config_txt = False
+
+    if 'dtparam=i2c2_iknowwhatimdoing=on\n' not in config_txt_lines:
+        sys.stderr.write(
+            'Error: dtparam=i2c2_iknowwhatimdoing=on was not found in /boot/config.txt\n'
+        )
+        valid_config_txt = False
+
+    return valid_config_txt
+
+
+def check_i2c_bus(bus_number):
+    """ Check that the i2c device at address 3f805000.i2c is available. """
+
+    i2c_bus_available = True
+
+    import smbus
+    try:
+        smbus.SMBus(bus_number)
+    except:
+        sys.stderr.write(
+            'Error: Could not find the i2c device at address 3f805000.i2c, bus #2.'
+            ' Run sudo i2cdetect -l for more info.\n'
+        )
+        i2c_bus_available = False
+
+    return i2c_bus_available
+
+
+def check_dependencies():
+    """ Check all dependencies for this tool to run on a RPi. """
+
+    return (
+        check_python_modules(REQUIRED_PYTHON_MODULES) and
+        check_installed_tools(REQUIRED_TOOLS) and
+        check_boot_config_txt() and
+        check_i2c_bus(RPI_HDMI_I2C_BUS_NUM)
+    )
+
 
 if __name__ == '__main__':
-    if os.geteuid() == 0:
-        print 'Program must NOT be run as root.'
-        sys.exit(RC_NOT_USER)
+    if os.geteuid() != 0:
+        sys.stderr.write('Error: Program must be run as root.\n')
+        sys.exit(RC_WRONG_PERMISSIONS)
 
-    sys.exit(main() or RC_SUCCESS)
+    if not check_dependencies():
+        sys.exit(RC_MISSING_DEPENDENCIES)
+
+    import docopt
+
+    # Show the entire docstring when incorrect arguments are given.
+    try:
+        args = docopt.docopt(__doc__)
+    except docopt.DocoptExit:
+        print __doc__
+        sys.exit(RC_INCORRECT_ARGS)
+
+    sys.exit(main(args) or RC_SUCCESS)

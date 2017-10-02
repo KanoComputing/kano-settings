@@ -6,8 +6,9 @@ kano-settings (4.0.3-0) unstable; urgency=low
   * Ensured volume levels at bootup for CKCv1 only
   * Included full screen model EDID in Settings > Display
   * Removed unused kano_screen_used config comment
+  * Added edid-tools for dumping and flashing EDIDs
 
- -- Team Kano <dev@kano.me>  Thu, 28 Sep 2017 12:08:00 +0100
+ -- Team Kano <dev@kano.me>  Mon, 2 Oct 2017 18:37:45 +0100
 
 kano-settings (4.0.2-0) unstable; urgency=low
 
