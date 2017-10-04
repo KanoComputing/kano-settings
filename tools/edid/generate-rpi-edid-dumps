@@ -16,15 +16,16 @@
 # This tool requires the installation of edid-rw under /usr/bin.
 # https://github.com/bulletmark/edid-rw
 #
-# WARNING: This tool can destroy the machine and display!
-#          See edid-rw README for the dangers of using it.
-#
 # This script is intended to be run on a RPi with a screen attached.
 # Requires sudo.
 
 
 """
 generate-rpi-edid-dumps Generate rpi_dumps and expected from raw for kano-settings/res/edid
+
+WARNING:
+    This tool can destroy the machine and display!
+    See edid-rw README for the dangers of using it.
 
 Usage:
     generate-rpi-edid-dumps <raw-edid-dir> <output-dir> [options]
@@ -444,7 +445,7 @@ def check_dependencies():
 
 
 if __name__ == '__main__':
-    if os.geteuid() != 0:
+    if os.getuid() != 0:
         sys.stderr.write('Error: Program must be run as root.\n')
         sys.exit(RC_WRONG_PERMISSIONS)
 

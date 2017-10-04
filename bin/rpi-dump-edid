@@ -64,7 +64,11 @@ def main():
         )
         return RC_ERR_SUBPROCESS
 
-    md5sum = out.split(' ', 1)[0]
+    try:
+        md5sum = out.split(' ', 1)[0]
+    except:
+        md5sum = 'MD5FAILED'
+
     model_md5 = '{}-{}'.format(model, md5sum)
 
     # Rename the file to [model-name]-[md5sum].edid
