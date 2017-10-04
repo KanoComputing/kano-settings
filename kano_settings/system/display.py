@@ -22,7 +22,7 @@ from kano_settings.boot_config import set_config_value, get_config_value, \
 from kano_settings.config_file import get_setting, set_setting
 from kano_settings.system.boot_config.boot_config_filter import Filter
 
-from kano_settings.paths import TMP_EDID_DAT_PATH
+from kano_settings.paths import TMP_EDID_DAT_PATH, RAW_EDID_NAME_PATTERN
 
 
 tvservice_path = '/usr/bin/tvservice'
@@ -105,6 +105,7 @@ def get_edid_name(use_cached=True):
     cmd = '{tvservice} --name'.format(tvservice=tvservice_path)
     edid_line, dummy, rc = run_cmd(cmd)
 
+    # If the EDID is corrupt, the tvservice might return '[E] No device present'.
     if rc != 0:
         logger.error('Error getting EDID name')
         return
@@ -772,3 +773,43 @@ def get_optimal_resolution_mode(edid, supported_modes):
 
     # An optimal resolution was not found, returning the screen preferred mode.
     return preferred_mode
+
+
+def dump_raw_edid():
+    """
+    Dump the RPi attached screen's EDID to the /boot/ partition for easy access.
+
+    The EDID file name output will be in the format [model-name]-[md5sum].edid
+    Here, model-name is as returned by get_edid_name(), but can be 'UNKNOWN'
+    and md5sum can be 'MD5FAILED' on errors.
+
+    Returns:
+        str - full file path to the raw EDID generated
+        None - when the operation fails
+    """
+
+    model = get_edid_name() or 'UNKNOWN'
+
+    tmp_edid_path = os.path.join('/boot', RAW_EDID_NAME_PATTERN.format(filename=model))
+
+    # Dump the raw EDID at a temporary path.
+    out, err, rc = run_cmd('tvservice --dumpedid {}'.format(tmp_edid_path))
+    if rc != 0:
+        logger.error('Could not get the screen EDID! rc = {}, err = {}'.format(rc, err))
+        return
+
+    # Calculate the md5 sum of the raw EDID. Different screens may have the
+    # same model, but different characteristics.
+    out, err, rc = run_cmd('md5sum {}'.format(tmp_edid_path))
+    try:
+        md5sum = out.split(' ', 1)[0]
+    except:
+        md5sum = 'MD5FAILED'
+
+    model_md5 = '{}-{}'.format(model, md5sum)
+
+    # Rename the file to [model-name]-[md5sum].edid and move it to the /boot/ partition.
+    edid_path = os.path.join('/boot', RAW_EDID_NAME_PATTERN.format(filename=model_md5))
+    os.rename(tmp_edid_path, edid_path)
+
+    return edid_path

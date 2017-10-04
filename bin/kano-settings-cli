@@ -2,37 +2,44 @@
 
 # kano-settings-cli
 #
-# Copyright (C) 2014 Kano Computing Ltd.
+# Copyright (C) 2014-2017 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 
 """
 Command line tool for changing settings on the Kano
 
 Usage:
-  kano-settings-cli [options] get audio
-  kano-settings-cli [options] set audio (hdmi | analogue | default)
-  kano-settings-cli [options] get keyboard
-  kano-settings-cli [options] set keyboard (--layout <layout_code> | --load)
-  kano-settings-cli [options] get network
-  kano-settings-cli [options] get gfx_driver
-  kano-settings-cli [options] set gfx_driver (enable | disable)
-  kano-settings-cli [options] get overscan
-  kano-settings-cli [options] set overscan <top> <left> <bottom> <right>
-  kano-settings-cli -h | --help
+    kano-settings-cli [options] get audio
+    kano-settings-cli [options] set audio (hdmi | analogue | default)
+    kano-settings-cli [options] get keyboard
+    kano-settings-cli [options] set keyboard (--layout <layout_code> | --load)
+    kano-settings-cli [options] get network
+    kano-settings-cli [options] get gfx_driver
+    kano-settings-cli [options] set gfx_driver (enable | disable)
+    kano-settings-cli [options] get overscan
+    kano-settings-cli [options] set overscan <top> <left> <bottom> <right>
+    kano-settings-cli [options] dump-edid
+    kano-settings-cli -h | --help
+
+Commands:
+    get         Get the currently set property.
+    set         Configure a property to a value.
+    dump-edid   Dump attached screen's EDID to the /boot/ partition.
 
 Options:
-  --force     Force a command to perform the action.
-  --verbose   Print more debugging information.
+    --force       Force a command to perform the action.
+    --verbose     Print more debugging information.
+    -h, --help    Show this message.
 
 Values:
-  hdmi      Set the audio to HDMI
-  analogue  Set the audio to use the headphone jack
-  layout    The keyboard layout code
-  load      Set the keyboard to the value saved by Kano-Settings
-  network   Get the network info
-  verbose   Verbose mode
-  enable    enable gfx_driver driver
-  disable   disable gfx_driver driver
+    hdmi          Set the audio to HDMI
+    analogue      Set the audio to use the headphone jack
+    layout        The keyboard layout code
+    load          Set the keyboard to the value saved by Kano-Settings
+    network       Get the network info
+    verbose       Verbose mode
+    enable        enable gfx_driver driver
+    disable       disable gfx_driver driver
 """
 
 
@@ -54,27 +61,27 @@ kano_i18n.init.install('kano-settings', LOCALE_PATH)
 
 from kano_settings.system.keyboard_config import set_saved_keyboard, set_keyboard
 from kano_settings.system.display import get_gfx_driver, set_gfx_driver, \
-    read_overscan_values, write_overscan_values
+    read_overscan_values, write_overscan_values, dump_raw_edid
 from kano_settings.config_file import get_setting
 
+from kano_settings.return_codes import RC_SUCCESS, RC_UNEXPECTED_ERROR, \
+    RC_INCORRECT_ARGS, RC_WRONG_PERMISSIONS
 
-verbose = False
+
+_g_verbose = False
 
 
 def print_v(string):
-    if verbose:
+    if _g_verbose:
         print string.encode('utf-8')
 
 
 def main(args):
-    if args['--verbose']:
-        global verbose
-        verbose = True
+    global _g_verbose
+
+    _g_verbose = args['--verbose']
 
     if args['set']:
-        # Need to be root to change settings
-        if os.environ['LOGNAME'] != 'root':
-            exit(_("Error: Settings must be executed with root privileges").encode('utf-8'))
 
         if args['audio']:
             if args['hdmi']:
@@ -92,6 +99,7 @@ def main(args):
             # only import on use, because this is slow
             from kano_settings.system.audio import set_to_HDMI
             set_to_HDMI(hdmi_enabled, args['--force'])
+
         elif args['keyboard']:
             if args['--load']:
                 set_saved_keyboard()
@@ -169,7 +177,27 @@ def main(args):
         elif args['overscan']:
             print 'Overscan values: {}'.format(json.dumps(read_overscan_values()))
 
+    elif args['dump-edid']:
+        # This function was used for all screen data under kano-settings/res/edid/raw
+        # Customers can use this in order for us to help debug screen related issues.
+        edid_path = dump_raw_edid()
+
+        if not edid_path:
+            print_v(_('Could not perform operation.'))
+            return RC_UNEXPECTED_ERROR
+        else:
+            print_v(_('Generated {}').format(edid_path))
+
 
 if __name__ == "__main__":
-    args = docopt.docopt(__doc__)
-    sys.exit(main(args))
+    if os.getuid() != 0:
+        print _('Program must be run as root.')
+        sys.exit(RC_WRONG_PERMISSIONS)
+
+    try:
+        args = docopt.docopt(__doc__)
+    except docopt.DocoptExit:
+        print __doc__
+        sys.exit(RC_INCORRECT_ARGS)
+
+    sys.exit(main(args) or RC_SUCCESS)

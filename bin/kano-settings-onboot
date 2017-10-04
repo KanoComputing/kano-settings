@@ -61,7 +61,7 @@ from kano_settings.system.audio import is_HDMI, set_to_HDMI, restart_alsa, \
 from kano_settings.system.overclock_chip_support import check_clock_config_matches_chip
 
 from kano_settings.system.audio import DEFAULT_CKC_V1_MAX_DB
-from kano_settings.return_codes import RC_SUCCESS, RC_REQUIRES_ROOT, RC_INCORRECT_ARGS, \
+from kano_settings.return_codes import RC_SUCCESS, RC_WRONG_PERMISSIONS, RC_INCORRECT_ARGS, \
     RC_EDID_NO_MODEL, RC_EDID_NO_STATUS, RC_EDID_NO_SUPPORTED, RC_NO_EDID
 
 
@@ -279,7 +279,7 @@ if __name__ == '__main__':
 
     if os.getuid() != 0:
         logger.error('Program must be executed with root priviledges.')
-        sys.exit(RC_REQUIRES_ROOT)
+        sys.exit(RC_WRONG_PERMISSIONS)
 
     try:
         args = docopt.docopt(__doc__)
