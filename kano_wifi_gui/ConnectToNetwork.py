@@ -55,7 +55,7 @@ class ConnectToNetwork():
         else:
             # For now, assume the signal is too weak, because
             # the network was correctly chosen from the scan list.
-            self._weak_signal_screen()
+            self._weak_signal_screen(self._win)
 
     def _wrong_password_screen(self):
         from kano_wifi_gui.PasswordScreen import PasswordScreen
@@ -65,7 +65,7 @@ class ConnectToNetwork():
                        self._network_name, self._encryption,
                        wrong_password=True)
 
-    def _weak_signal_screen(self):
+    def _weak_signal_screen(self, win):
         '''
         The network cannot be joined because the signal is too weak.
         Show an error message dialog, so the user can easily fix and retry.
