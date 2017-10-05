@@ -12,6 +12,7 @@ from gi.repository import Gtk, GObject
 
 from kano.logging import logger
 from kano.network import KwifiCache, connect
+from kano.network import RC_CONNECTED, RC_BAD_PASSWORD, RC_AP_NOT_IN_RANGE, RC_NO_DHCP_LEASE
 
 from kano_wifi_gui.paths import img_dir
 from kano_wifi_gui.SpinnerScreen import SpinnerScreen
@@ -45,12 +46,16 @@ class ConnectToNetwork():
     def _thread_finish(self, rc):
         '''
         Callback invoked after the connect() method returns
+        Decide why the connection failed, and alert the user accordingly
         '''
-        if not rc:
+        if rc == RC_CONNECTED:
             self._success_screen()
-        else:
-            # TODO: contemplate wrong password, no signal
+        elif rc == RC_BAD_PASSWORD:
             self._wrong_password_screen()
+        else:
+            # For now, assume the signal is too weak, because
+            # the network was correctly chosen from the scan list.
+            self._weak_signal_screen()
 
     def _wrong_password_screen(self):
         from kano_wifi_gui.PasswordScreen import PasswordScreen
@@ -60,7 +65,11 @@ class ConnectToNetwork():
                        self._network_name, self._encryption,
                        wrong_password=True)
 
-    def _fail_screen(self, win):
+    def _weak_signal_screen(self):
+        '''
+        The network cannot be joined because the signal is too weak.
+        Show an error message dialog, so the user can easily fix and retry.
+        '''
         win.remove_main_widget()
         title = _("Cannot connect!")
         description = _("Maybe the signal was too weak to connect.")
