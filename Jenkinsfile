@@ -5,5 +5,5 @@ import build_deb_pkg
 
 
 stage ('Build') {
-    build_deb_pkg 'kano-settings', env.BRANCH_NAME, 'scratch'
+    autobuild_repo_pkg 'kano-settings'
 }
