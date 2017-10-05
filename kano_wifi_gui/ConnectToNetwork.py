@@ -42,10 +42,14 @@ class ConnectToNetwork():
         self._win.remove_main_widget()
         NetworkScreen(self._win, network_list)
 
-    def _thread_finish(self, success):
-        if success:
+    def _thread_finish(self, rc):
+        '''
+        Callback invoked after the connect() method returns
+        '''
+        if not rc:
             self._success_screen()
         else:
+            # TODO: contemplate wrong password, no signal
             self._wrong_password_screen()
 
     def _wrong_password_screen(self):
@@ -146,19 +150,19 @@ def _connect_thread_(wiface, network_name, passphrase, encryption,
     :param thread_finish_cb: the callback to be run when the thread is finished
     '''
 
-    success = connect(wiface, network_name, encryption, passphrase)
+    rc = connect(wiface, network_name, encryption, passphrase)
 
     # save the connection in cache so it reconnects on next system boot
     wificache = KwifiCache()
-    if success:
+    if not rc:
         wificache.save(network_name, encryption, passphrase)
     else:
         wificache.empty()
 
     logger.debug(
-        "Connecting to {} {} {}. Successful: {}".format(
-            network_name, encryption, passphrase, success
+        "Connecting to {} {} {}. Return code: {}".format(
+            network_name, encryption, passphrase, rc
         )
     )
 
-    GObject.idle_add(thread_finish_cb, success)
+    GObject.idle_add(thread_finish_cb, rc)
