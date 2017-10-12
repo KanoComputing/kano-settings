@@ -27,8 +27,7 @@ class PasswordScreen(Gtk.Box):
         wiface,
         network_name,
         encryption,
-        wrong_password=False,
-        passphrase_minlen=8
+        wrong_password=False
     ):
 
         '''
@@ -44,7 +43,6 @@ class PasswordScreen(Gtk.Box):
         self._wiface = wiface
         self._network_name = network_name
         self._encryption = encryption
-        self.passphrase_minlen = passphrase_minlen
 
         # Keep track if the user has already entered the wrong password before
         # so that we only pack the "password incorrect" label once
@@ -144,10 +142,9 @@ class PasswordScreen(Gtk.Box):
 
     def _set_button_sensitive(self, widget, event):
         '''
-        Enable the Connect button only if the passphrase is long enough
+        Enable the Connect button only if the passphrase is non empty
         '''
-        passphrase_length=widget.get_text_length()
-        self._connect_btn.set_sensitive(passphrase_length >= self.passphrase_minlen)
+        self._connect_btn.set_sensitive(widget.get_text_length() > 0)
 
     def _thread_finish(self, success):
 

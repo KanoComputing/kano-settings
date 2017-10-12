@@ -12,7 +12,8 @@ from gi.repository import Gtk, GObject
 
 from kano.logging import logger
 from kano.network import KwifiCache, connect
-from kano.network import RC_CONNECTED, RC_BAD_PASSWORD, RC_AP_NOT_IN_RANGE, RC_NO_DHCP_LEASE
+from kano.network import RC_CONNECTED, RC_BAD_PASSWORD, RC_AP_NOT_IN_RANGE, \
+   RC_NO_DHCP_LEASE, RC_INCORRECT_PASSWORD_LEN, RC_INTERNAL_ERROR
 
 from kano_wifi_gui.paths import img_dir
 from kano_wifi_gui.SpinnerScreen import SpinnerScreen
@@ -51,6 +52,8 @@ class ConnectToNetwork():
         if rc == RC_CONNECTED:
             self._success_screen()
         elif rc == RC_BAD_PASSWORD:
+            self._wrong_password_screen()
+        elif rc == RC_INCORRECT_PASSWORD_LEN:
             self._wrong_password_screen()
         else:
             # For now, assume the signal is too weak, because
