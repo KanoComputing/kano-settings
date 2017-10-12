@@ -36,3 +36,6 @@ ASOUND_CONF_BASE_PATH = '/etc'
 ASOUND_CONF_PATH = join(ASOUND_CONF_BASE_PATH, ASOUND_CONF_NAME)
 
 TMP_EDID_DAT_PATH = '/tmp/edid.dat'
+
+SYSTEM_FLAGS_DIR = '/var/cache/kano-settings/'
+CKC_V1_ONBOOT_VOLUME_FLAG = join(SYSTEM_FLAGS_DIR, 'ckc-v1-volume-lowered')

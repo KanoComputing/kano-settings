@@ -9,7 +9,7 @@ kano-settings (4.0.3-0) unstable; urgency=low
   * Added edid-tools for dumping and flashing EDIDs
   * Added check for wireless passphrase lenght in GUI connect app
 
- -- Team Kano <dev@kano.me>  Wed, 4 Oct 2017 17:17:45 +0100
+ -- Team Kano <dev@kano.me>  Thu, 12 Oct 2017 14:27:15 +0100
 
 kano-settings (4.0.2-0) unstable; urgency=low
 

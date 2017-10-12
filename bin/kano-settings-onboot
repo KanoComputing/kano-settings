@@ -61,6 +61,7 @@ from kano_settings.system.audio import is_HDMI, set_to_HDMI, restart_alsa, \
 from kano_settings.system.overclock_chip_support import check_clock_config_matches_chip
 
 from kano_settings.system.audio import DEFAULT_CKC_V1_MAX_DB
+from kano_settings.paths import SYSTEM_FLAGS_DIR, CKC_V1_ONBOOT_VOLUME_FLAG
 from kano_settings.return_codes import RC_SUCCESS, RC_WRONG_PERMISSIONS, RC_INCORRECT_ARGS, \
     RC_EDID_NO_MODEL, RC_EDID_NO_STATUS, RC_EDID_NO_SUPPORTED, RC_NO_EDID
 
@@ -103,7 +104,7 @@ def main(args):
     ensure_correct_browser(dry_run=dry_run)
 
     # Correct the maximum volume gain for CKC.
-    ensure_correct_volume_levels()
+    ensure_correct_volume_levels(dry_run=dry_run)
 
     # Gather and log data about the current screen.
     # screen_data = get_screen_information(dry_run=dry_run)
@@ -139,21 +140,34 @@ def ensure_correct_browser(dry_run=False):
     browser = 'chromium-browser' if chromium_support else 'epiphany-browser'
 
     logger.info("Set browser to be: {}".format(browser))
-    if dry_run:
+    if not dry_run:
         run_cmd('update-alternatives --set {} /usr/bin/{}'.format(browser_link, browser))
 
 
-def ensure_correct_volume_levels():
+def ensure_correct_volume_levels(dry_run=False):
     """
-    Sets the default max_dB option in ALSA for CKC only.
+    Sets the default max_dB option in ALSA for CKCv1 only once.
     """
+    was_set_once = os.path.exists(CKC_V1_ONBOOT_VOLUME_FLAG)
+    if was_set_once:
+        return
+
     is_ckc = is_ck2_pro(with_dbus=False)
+    if not is_ckc:
+        return
+
     ckc_version = get_ck2_pro_version()
     changes = False
 
-    if is_ckc and ckc_version and ckc_version < CKC_V_1_1_0:
-        changes = set_alsa_config_max_dB(DEFAULT_CKC_V1_MAX_DB)
-        logger.debug('On CKC v1, ALSA max_dB changes {}'.format(changes))
+    if ckc_version and ckc_version < CKC_V_1_1_0:
+        logger.debug('On CKC v1, setting lower ALSA max_dB only once')
+
+        if not dry_run:
+            changes = set_alsa_config_max_dB(DEFAULT_CKC_V1_MAX_DB)
+
+            if not os.path.exists(SYSTEM_FLAGS_DIR):
+                os.makedirs(os.path.dirname(SYSTEM_FLAGS_DIR))
+            open(CKC_V1_ONBOOT_VOLUME_FLAG, 'a').close()
 
     if changes:
         restart_alsa()
