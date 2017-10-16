@@ -20,6 +20,19 @@ overscan_bottom=0
 # Force RGB full range (0-255)
 hdmi_pixel_encoding=2
 
+# Enabling Turbo Mode
+# Please, beware "force_turbo=1" will set the sticky bit on your RPi unit forever.
+force_turbo=0
+
+# Set the clock speeds to the defaults to allow for overclocking.
+arm_freq=900
+core_freq=250
+sdram_freq=450
+over_voltage=0
+
+# Set memory split: amount allocated to the GPU in MB.
+gpu_mem=256
+
 # Force Kanux display size.
 #framebuffer_width=1024
 #framebuffer_height=768
@@ -28,8 +41,9 @@ hdmi_pixel_encoding=2
 hdmi_force_hotplug=1
 
 # uncomment to force a specific HDMI mode (this will force VGA)
-#hdmi_group=1
-#hdmi_mode=1
+# NB: This is set for unflashed Screen Kits out in the wild, DMT 1280x800 @ 60Hz.
+# hdmi_group=2
+# hdmi_mode=28
 
 # uncomment to force a HDMI mode rather than DVI. This can make audio work in
 # DMT (computer monitor) modes
@@ -41,19 +55,6 @@ hdmi_force_hotplug=1
 
 # uncomment for composite PAL
 #sdtv_mode=2
-
-# Enabling Turbo Mode
-# Please, beware "force_turbo=1" will set the sticky bit
-# on your RPi unit forever.
-#
-force_turbo=0
-arm_freq=900
-core_freq=250
-sdram_freq=450
-over_voltage=0
-
-# set memory split: amount allocated to the GPU in MB.
-gpu_mem=256
 
 # Toggles PiCamera on(1) and off(0)
 start_x=0
@@ -75,22 +76,67 @@ display_rotate=0
 # Decrease audio noise.
 disable_audio_dither=1
 
+# ---------------------------------------------------------------------------------------
+# Configuration Filters - RPis
 
-# for more options see http://elinux.org/RPi_config.txt
-
-# Configuration Filters
-
-[EDID=ADA-HDMI]
-# Screen kit
-display_rotate=2
-[all]
-
-[EDID=MST-HDMI1]
-# Screen kit
-display_rotate=2
+[pi2]
+# Give more current to the USB ports for the Pixel Kit.
+max_usb_current=1
 [all]
 
 [pi3]
 # for light board
 enable_uart=1
+
+# Disable temperature and low voltage overlay warnings only, safety is still ON.
+avoid_warnings=1
 [all]
+
+# ---------------------------------------------------------------------------------------
+# Configuration Filters - Screens
+
+# Kano Screen Kit
+[EDID=ADA-HDMI]
+# Set the resolution to DMT 1280x800 @ 60Hz.
+hdmi_group=2
+hdmi_mode=28
+
+# Rotate the display 180 degrees since panel is rotated.
+display_rotate=2
+[all]
+
+# Kano Screen Kit
+[EDID=MST-HDMI1]
+# Set the resolution to DMT 1280x800 @ 60Hz.
+hdmi_group=2
+hdmi_mode=28
+
+# Rotate the display 180 degrees since panel is rotated.
+display_rotate=2
+[all]
+
+# Kano Screen Kit
+[EDID=MST-HDMI]
+# Set the resolution to DMT 1280x800 @ 60Hz.
+hdmi_group=2
+hdmi_mode=28
+
+# No display rotation is needed.
+display_rotate=0
+[all]
+
+# Kano Screen Kit
+[EDID=HTC-HDMI]
+# Set the resolution to DMT 1280x800 @ 60Hz.
+hdmi_group=2
+hdmi_mode=28
+
+# No display rotation is needed.
+display_rotate=0
+[all]
+
+# ---------------------------------------------------------------------------------------
+# User Defined Options
+#
+# for more options see http://elinux.org/RPi_config.txt
+
