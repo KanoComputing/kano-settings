@@ -40,7 +40,7 @@ def safe_boot_requested(led=False):
         # so the user knows it's time to press Ctrl-Alt
         _, _, _ = run_cmd("/usr/bin/kano-led &")
 
-    _, _, rv = run_cmd("kano-keys-pressed")
+    _, _, rv = run_cmd("kano-keys-pressed -r 5 -d 10")
     return rv == 10
 
 
