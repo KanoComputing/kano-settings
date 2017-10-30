@@ -440,9 +440,11 @@ def get_whitelist():
     # Try and get the whitelist from online.  If this fails,
     # get it locally.
     try:
+        # NB: This whitelist was originally located in the `jessie` branch, any
+        #     changes should also be reflected there.
         online_whitelist = (
             "https://raw.githubusercontent.com/KanoComputing/kano-settings/"
-            "jessie/WHITELIST"
+            "master/WHITELIST"
         )
         html = urllib2.urlopen(online_whitelist).read()
         text = BeautifulSoup(html).get_text().encode('ascii', 'ignore')

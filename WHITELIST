@@ -1,6 +1,10 @@
 # This is a list of all the endings of websites we allow througH the parental lock
 # We add ^(.*) to the beginning of every site
 # So kano.me, www.kano.me, dev.kano.me, api.kano.me are all allowed
+#
+# NB: This whitelist was originally located in the `jessie` branch, any
+#     changes should also be reflected there.
+#
 
 kano.me
 amazonaws.com

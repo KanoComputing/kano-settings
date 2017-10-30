@@ -2,6 +2,7 @@ kano-settings (4.0.4-0) unstable; urgency=low
 
   * Changes for Kano OS 3.14.0:
   * Reduced execution time of kano-safeboot-mode reducing time to boot by ~3.5s
+  * Migrated parental whitelist over to use the master branch
 
  -- Team Kano <dev@kano.me>  Mon, 23 Oct 2017 14:08:15 +0100
 
