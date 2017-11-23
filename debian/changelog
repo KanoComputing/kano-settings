@@ -5,8 +5,9 @@ kano-settings (4.0.4-0) unstable; urgency=low
   * Migrated parental whitelist over to use the master branch
   * Added CKC speaker claim page to whitelist
   * Removed duplication of configuring /etc/hosts for Hack Minecraft
+  * Added sentinel file on /boot partition to use custom config.txt settings
 
- -- Team Kano <dev@kano.me>  Mon, 30 Oct 2017 12:21:15 +0100
+ -- Team Kano <dev@kano.me>  Thu, 23 Nov 2017 12:07:04 +0100
 
 kano-settings (4.0.3-0) unstable; urgency=low
 

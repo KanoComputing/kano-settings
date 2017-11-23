@@ -22,6 +22,10 @@ Audio output can be set to Analog (speaker or headphones) or HDMI (tv).
 
 The resolution of the display can be configured from this setting. The list of modes offered depend directly on the screen/monitor used.
 
+If your screen requires special settings or lacks EDID information and you need to manually set them,
+create a file in the boot partition as well with the name "/boot/no-config-writes". This will tell Kano OS not to try to optimize
+your modes or resolution.
+
 ### WiFi
 
 Tool to configure your internet connection: ethernet, wifi or smartphone USB tethering.

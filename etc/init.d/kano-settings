@@ -27,8 +27,16 @@ case "$1" in
             /usr/bin/kano-dashboard-onboot
         fi
 
-	log_action_begin_msg "Running kano-settings-onboot"
-	/usr/bin/kano-settings-onboot
+        # If you have a special screen or hardware that needs custom config.txt settings,
+        # create this sentinel file to avoid system reboots and eventual black screens.
+        onboot_sentinel_file="/boot/no-config-writes"
+        if [ ! -f "$onboot_sentinel_file" ]; then
+            log_action_begin_msg "Running kano-settings-onboot"
+            /usr/bin/kano-settings-onboot
+        else
+            log_action_begin_msg "Disabling kano-settings-onboot due to $onboot_sentinel_file"
+        fi
+
         # Fix for noobs:
         /sbin/setcap cap_net_raw+ep /bin/ping6 || true
         /sbin/setcap cap_net_raw+ep /bin/ping || true
