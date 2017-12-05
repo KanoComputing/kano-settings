@@ -110,6 +110,14 @@ def main(args):
     # If necessary, write /boot/cpuid.txt
     write_cpu_id()
 
+    # Prevent the LXDE login screen from appearing
+    try:
+        # FIXME: Kano Settings shouldn't really depend on Kano Init
+        from kano_init.utils import ensure_lightdm_conf
+        ensure_lightdm_conf()
+    except ImportError:
+        logger.warn('Could not load Kano Init to check LightDm existence')
+
     # Gather and log data about the current screen.
     # screen_data = get_screen_information(dry_run=dry_run)
     # if verbose or dump_mode:
