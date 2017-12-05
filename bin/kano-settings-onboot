@@ -33,6 +33,7 @@ Options:
 """
 
 
+import time
 import os
 import sys
 import docopt
@@ -44,7 +45,7 @@ if __name__ == '__main__' and __package__ is None:
         sys.path.insert(0, dir_path)
 
 from kano.utils.shell import run_cmd
-from kano.utils.hardware import get_rpi_model, get_board_property
+from kano.utils.hardware import get_rpi_model, get_board_property, get_cpu_id
 from kano.logging import logger
 from kano_peripherals.wrappers.detection import is_ck2_pro, get_ck2_pro_version
 
@@ -106,6 +107,9 @@ def main(args):
     # Correct the maximum volume gain for CKC.
     ensure_correct_volume_levels(dry_run=dry_run)
 
+    # If necessary, write /boot/cpuid.txt
+    write_cpu_id()
+
     # Gather and log data about the current screen.
     # screen_data = get_screen_information(dry_run=dry_run)
     # if verbose or dump_mode:
@@ -124,6 +128,25 @@ def main(args):
         reboot(dry_run=dry_run)
 
     return rc or RC_SUCCESS
+
+def write_cpu_id():
+    # Get the unit CPU Serial number and send it, save a local copy
+    cpuid = get_cpu_id()
+    cpuid_filename_boot = '/boot/cpuid.txt'.format(cpuid)
+    utc_time = time.asctime(time.gmtime(time.time()))
+
+    if os.path.isfile(cpuid_filename_boot):
+        pass
+    else:
+        try:
+            with open(cpuid_filename_boot, 'w') as f:
+                f.write('RaspberryPI model: {}\n{}\n{}\n'.format(
+                    get_rpi_model(),
+                    utc_time,
+                    cpuid))
+        except:
+            logger.error('Error writing boot cpuid')
+
 
 
 def ensure_correct_browser(dry_run=False):
