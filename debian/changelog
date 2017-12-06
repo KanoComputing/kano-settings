@@ -6,6 +6,8 @@ kano-settings (4.0.4-0) unstable; urgency=low
   * Added CKC speaker claim page to whitelist
   * Removed duplication of configuring /etc/hosts for Hack Minecraft
   * Added sentinel file on /boot partition to use custom config.txt settings
+  * Write /boot/cpuid.txt
+
 
  -- Team Kano <dev@kano.me>  Thu, 23 Nov 2017 12:07:04 +0100
 

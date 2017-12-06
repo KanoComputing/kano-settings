@@ -132,7 +132,7 @@ def main(args):
 def write_cpu_id():
     # Get the unit CPU Serial number and send it, save a local copy
     cpuid = get_cpu_id()
-    cpuid_filename_boot = '/boot/cpuid.txt'.format(cpuid)
+    cpuid_filename_boot = '/boot/cpuid.txt'
     utc_time = time.asctime(time.gmtime(time.time()))
 
     if os.path.isfile(cpuid_filename_boot):
