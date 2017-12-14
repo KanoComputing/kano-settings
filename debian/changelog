@@ -16,6 +16,7 @@ kano-settings (4.0.4-0) unstable; urgency=low
   * Added sentinel file on /boot partition to use custom config.txt settings
   * Write /boot/cpuid.txt
   * Ensure that the LightDM configuration exists on boot and regenerate if needed
+  * Add kano zendesk to the parental control whitelist.
 
  -- Team Kano <dev@kano.me>  Tue, 5 Dec 2017 17:22:00 +0100
 
