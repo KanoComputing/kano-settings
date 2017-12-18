@@ -61,11 +61,11 @@ class SetNotifications(RadioButtonTemplate):
             from kano_peripherals.pi_hat.driver.high_level import \
                 get_pihat_interface
 
-            speaker_led_api = get_speakerleds_interface()
+            speaker_led_api = get_speakerleds_interface(retry_count=0)
             if speaker_led_api:  # can be None
                 is_led_speaker_plugged = speaker_led_api.detect()
 
-            pi_hat_api = get_pihat_interface()
+            pi_hat_api = get_pihat_interface(retry_count=0)
             if pi_hat_api:  # can be None
                 is_pi_hat_plugged = pi_hat_api.detect()
 
