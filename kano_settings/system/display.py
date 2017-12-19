@@ -303,6 +303,9 @@ def set_safeboot_mode():
     set_screen_value('hdmi_drive', None)
     set_config_value('hdmi_drive', None)
 
+    set_screen_value('hdmi_drive', None)
+    set_config_value('hdmi_drive', None)
+
     set_screen_value('disable_overscan', 1)
     set_screen_value('overscan_left', 0)
     set_screen_value('overscan_right', 0)
