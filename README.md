@@ -1,5 +1,6 @@
 # kano-settings
 
+[![Coverage](http://dev.kano.me/public/status-badges/kano-settings-coverage.svg)](https://jenkins.kano.me/job/Core%20Kit/job/kano-settings/job/master/cobertura)
 
 Kano Settings is like a Swiss Army knife: crammed with lots of useful applications, all conveniently packaged together for ease of use and topped off with a lovely UI. It’s a great tool, especially for beginners, to get started quickly without having to tinker with different config files. Set up your wifi, keyboard, mouse, audio, display, account, wallpaper, and overclock your Raspberry Pi, all with one handy utility.
 

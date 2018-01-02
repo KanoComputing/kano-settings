@@ -1,0 +1,6 @@
+behave
+coverage-badge
+pyfakefs
+pytest
+pytest-cov
+pytest-tap

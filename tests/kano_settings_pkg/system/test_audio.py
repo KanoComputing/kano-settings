@@ -6,11 +6,6 @@
 # Tests for the kano_settings.system.audio module.
 
 
-from kano_settings.system import audio
-
-from tests.fixtures.alsa_config import DEFAULT_PARAMS
-
-
 class TestAudio(object):
     """
     Tests for the kano_settings.system.audio module.
@@ -25,6 +20,9 @@ class TestAudio(object):
             asound_conf - fake ALSA config file to mock the system file
             max_dB_arg - parameterised fixture containing max_dB values
         """
+
+        from kano_settings.system import audio
+
         expected_line = 'max_dB {0:0.1f}'.format(max_dB_arg)
 
         # Call the function to be tested.
@@ -35,7 +33,7 @@ class TestAudio(object):
 
         assert(expected_line in asound_conf_lines)
 
-    def test_set_alsa_config_max_dB_valid_rv(self, asound_conf):
+    def test_set_alsa_config_max_dB_valid_rv(self, asound_conf, DEFAULT_PARAMS):
         """
         Tests that the set_alsa_config_max_dB function reports correctly if
         there were changes made.
@@ -43,6 +41,9 @@ class TestAudio(object):
         Args:
             asound_conf - fake ALSA config file to mock the system file
         """
+
+        from kano_settings.system import audio
+
         new_dB = 1234567
 
         # Call the function 3 times:
@@ -67,6 +68,9 @@ class TestAudio(object):
         Args:
             asound_confs - fake ALSA config files with various max_dB values set
         """
+
+        from kano_settings.system import audio
+
         assert(
             audio.get_alsa_config_max_dB() == asound_confs['params']['max_dB']
         )

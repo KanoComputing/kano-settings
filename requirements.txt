@@ -1,0 +1,2 @@
+pycountry==1.8
+pyyaml

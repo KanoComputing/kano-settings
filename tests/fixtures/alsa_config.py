@@ -8,9 +8,6 @@
 
 import pytest
 
-from kano_settings.system.audio import DEFAULT_ALSA_CONFIG_MAX_DB, DEFAULT_CKC_V1_MAX_DB
-from kano_settings.paths import ASOUND_CONF_PATH
-
 
 ASOUND_CONF_PATTERN = ("""
 pcm.master {{
@@ -48,19 +45,39 @@ pcm.!default {{
 """)
 
 
-DEFAULT_PARAMS = {
-    'max_dB': DEFAULT_ALSA_CONFIG_MAX_DB,
-}
 
-CKC_V1_MAX_DB_PARAMS = {
-    'max_dB': DEFAULT_CKC_V1_MAX_DB,
-}
+@pytest.fixture(scope='function')
+def DEFAULT_PARAMS(fs):
+    try:
+        from kano_settings.system.audio import DEFAULT_ALSA_CONFIG_MAX_DB
+    except ImportError as err:
+        pytest.skip(
+            "Could not import kano_settings.system.audio: {}".format(err)
+        )
+
+    return {
+        'max_dB': DEFAULT_ALSA_CONFIG_MAX_DB,
+    }
+
+
+@pytest.fixture(scope='function')
+def CKC_V1_MAX_DB_PARAMS(fs):
+    try:
+        from kano_settings.system.audio import DEFAULT_CKC_V1_MAX_DB
+    except ImportError as err:
+        pytest.skip(
+            "Could not import kano_settings.system.audio: {}".format(err)
+        )
+
+    return {
+        'max_dB': DEFAULT_CKC_V1_MAX_DB,
+    }
 
 MAX_DB_VALUES = [4.0, -3.5432, 0]
 
 
 @pytest.fixture(scope='function')
-def asound_conf(fs, request):
+def asound_conf(fs, request, DEFAULT_PARAMS):
     """
     A FakeFile object constructed with pyfakefs which contains the system
     ALSA configuration file.
@@ -68,6 +85,8 @@ def asound_conf(fs, request):
     Python functions that operate on this file on the system will do so on
     this mocked file instead of the system file.
     """
+    from kano_settings.paths import ASOUND_CONF_PATH
+
     fake_asound_conf = fs.CreateFile(ASOUND_CONF_PATH)
 
     # Format the config pattern with all the items in the params dict and set
@@ -81,7 +100,7 @@ def asound_conf(fs, request):
 
 
 @pytest.fixture(scope='function')
-def asound_confs(asound_conf, max_dB_arg):
+def asound_confs(asound_conf, max_dB_arg, DEFAULT_PARAMS):
     """
     Sets up multiple fake ALSA configuration files with the use of asound_conf and
     max_dB_arg fixtures (add more as needed here).

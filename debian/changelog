@@ -5,8 +5,10 @@ kano-settings (4.0.5-0) unstable; urgency=low
   * Disabled hdmi_drive config option when going into Safe Mode
   * Add splash animation for Settings app
   * Fixed the Wi-Fi refresh screen on connection failure
+  * Create test coverage report
+  * Run tests on push
 
- -- Team Kano <dev@kano.me>  Tue, 19 Dec 2017 18:28:00 +0100
+ -- Team Kano <dev@kano.me>  Thu, 21 Dec 2017 14:35:00 +0100
 
 kano-settings (4.0.4-1) unstable; urgency=low
 
