@@ -1,0 +1,175 @@
+{
+    "edid": {
+        "preferred_group": "CEA",
+        "preferred_mode": 19,
+        "preferred_width": 1280,
+        "preferred_height": 720,
+        "preferred_res": "1280x720p",
+        "preferred_hz": 50
+    },
+    "model": "FNI-FUNAI_TV",
+    "preferred_mode": {
+        "group": "CEA",
+        "mode": 19,
+        "scan": "p",
+        "height": 720,
+        "3d_modes": [],
+        "width": 1280,
+        "rate": 50,
+        "aspect_ratio": "16:9"
+    },
+    "optimal_mode": {
+        "group": "CEA",
+        "mode": 19,
+        "scan": "p",
+        "height": 720,
+        "3d_modes": [],
+        "width": 1280,
+        "rate": 50,
+        "aspect_ratio": "16:9"
+    },
+    "cea_modes": [
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 480,
+            "3d_modes": [],
+            "width": 640,
+            "rate": 60,
+            "mode": 1,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 480,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 60,
+            "mode": 2,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 480,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 60,
+            "mode": 3,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 720,
+            "3d_modes": [],
+            "width": 1280,
+            "rate": 60,
+            "mode": 4,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "i",
+            "height": 1080,
+            "3d_modes": [],
+            "width": 1920,
+            "rate": 60,
+            "mode": 5,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "i",
+            "height": 480,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 60,
+            "mode": 6,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "CEA",
+            "scan": "i",
+            "height": 480,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 60,
+            "mode": 7,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 576,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 50,
+            "mode": 17,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 576,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 50,
+            "mode": 18,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "p",
+            "height": 720,
+            "3d_modes": [],
+            "width": 1280,
+            "rate": 50,
+            "mode": 19,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "i",
+            "height": 1080,
+            "3d_modes": [],
+            "width": 1920,
+            "rate": 50,
+            "mode": 20,
+            "aspect_ratio": "16:9"
+        },
+        {
+            "group": "CEA",
+            "scan": "i",
+            "height": 576,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 50,
+            "mode": 21,
+            "aspect_ratio": "4:3"
+        },
+        {
+            "group": "CEA",
+            "scan": "i",
+            "height": 576,
+            "3d_modes": [],
+            "width": 720,
+            "rate": 50,
+            "mode": 22,
+            "aspect_ratio": "16:9"
+        }
+    ],
+    "dmt_modes": [
+        {
+            "group": "DMT",
+            "scan": "p",
+            "height": 480,
+            "3d_modes": [],
+            "width": 640,
+            "rate": 60,
+            "mode": 4,
+            "aspect_ratio": "4:3"
+        }
+    ]
+}
