@@ -294,8 +294,11 @@ def set_safeboot_mode():
     set_screen_value('hdmi_force_hotplug', 1)
     set_screen_value('config_hdmi_boost', 4)
 
-    set_screen_value('hdmi_group', 2)
-    set_screen_value('hdmi_mode', 16)
+    set_config_value('hdmi_group', None)
+    set_config_value('hdmi_mode', None)
+
+    set_screen_value('hdmi_group', None)
+    set_screen_value('hdmi_mode', None)
 
     set_screen_value('hdmi_drive', None)
     set_config_value('hdmi_drive', None)
