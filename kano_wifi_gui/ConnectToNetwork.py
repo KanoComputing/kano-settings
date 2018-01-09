@@ -38,11 +38,10 @@ class ConnectToNetwork():
         SpinnerScreen(self._win, title, description,
                       self._launch_connect_thread)
 
-    def _go_to_network_screen(self, network_list):
-        from kano_wifi_gui.NetworkScreen import NetworkScreen
+    def _go_to_spinner_screen(self, button=None, event=None):
+        from kano_wifi_gui.RefreshNetworks import RefreshNetworks
 
-        self._win.remove_main_widget()
-        NetworkScreen(self._win, network_list)
+        RefreshNetworks(self._win)
 
     def _thread_finish(self, rc):
         '''
@@ -58,7 +57,7 @@ class ConnectToNetwork():
         else:
             # For now, assume the signal is too weak, because
             # the network was correctly chosen from the scan list.
-            self._weak_signal_screen(self._win)
+            self._weak_signal_screen()
 
     def _wrong_password_screen(self):
         from kano_wifi_gui.PasswordScreen import PasswordScreen
@@ -68,7 +67,7 @@ class ConnectToNetwork():
                        self._network_name, self._encryption,
                        wrong_password=True)
 
-    def _weak_signal_screen(self, win):
+    def _weak_signal_screen(self):
         '''
         The network cannot be joined because the signal is too weak.
         Show an error message dialog, so the user can easily fix and retry.
@@ -85,7 +84,7 @@ class ConnectToNetwork():
                 'type': 'KanoButton',
                 'color': 'green',
                 # Go to the network refresh screen
-                'callback': self._go_to_network_screen
+                'callback': self._go_to_spinner_screen
             },
             {
                 'label': _("QUIT"),
@@ -95,12 +94,12 @@ class ConnectToNetwork():
         ]
         img_path = os.path.join(img_dir, "no-wifi.png")
 
-        win.set_main_widget(
+        self._win.set_main_widget(
             Template(
                 title,
                 description,
                 buttons,
-                win.is_plug(),
+                self._win.is_plug(),
                 img_path
             )
         )
