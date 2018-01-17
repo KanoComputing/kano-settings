@@ -44,11 +44,17 @@ def safe_boot_requested(led=False):
 
 def set_safeboot_token():
     try:
-        # Make a token which indicates that we are in safe mode because a key was pressed
-        run_cmd("mkdir -p {}".format(TOKEN_PATH))
-        run_cmd("touch {}".format(TOKEN_FILENAME))
-    except:
-        pass  # No errors in this function should prevent the main point of this script
+        # Make a token which indicates that we are in safe mode because a key
+        # was pressed
+        if not os.path.exists(TOKEN_PATH):
+            os.makedirs(TOKEN_PATH)
+
+        with open(TOKEN_FILENAME, 'a'):
+            os.utime(TOKEN_FILENAME, None)
+    except Exception:
+        # No errors in this function should prevent the main point of this
+        # script
+        pass
 
 
 def is_token_set():
