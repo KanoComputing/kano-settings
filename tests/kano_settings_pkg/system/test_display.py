@@ -252,3 +252,45 @@ class TestDisplay(object):
             # Check that the EDID was not changed by the function when there are
             # no options to override.
             assert(overriden_expected_edid == edid['expected']['edid'])
+
+    def test_set_safeboot_mode(self, screen_config):
+        import kano_settings.system.display
+        kano_settings.system.display.set_safeboot_mode()
+
+        import kano_settings.boot_config
+        kano_settings.boot_config.end_config_transaction()
+
+        assert screen_config.get_line('hdmi_group', filtered=True).is_comment
+        assert screen_config.get_line('hdmi_group', filtered=False).is_comment
+
+        assert screen_config.get_line('hdmi_mode', filtered=True).is_comment
+        assert screen_config.get_line('hdmi_mode', filtered=False).is_comment
+
+        assert screen_config.get_line('hdmi_drive', filtered=True).is_comment
+        assert screen_config.get_line('hdmi_drive', filtered=False).is_comment
+
+    def test_set_safeboot_modes(self, screen_config, safe_mode):
+        import kano_settings.system.display
+        kano_settings.system.display.set_safeboot_mode(
+            group=safe_mode.hdmi_group,
+            mode=safe_mode.hdmi_mode
+        )
+
+        import kano_settings.boot_config
+        kano_settings.boot_config.end_config_transaction()
+
+        screen_config.check_key(
+            'hdmi_group',
+            val=safe_mode.hdmi_group,
+            is_comment=not safe_mode.hdmi_group
+        )
+        screen_config.check_key(
+            'hdmi_mode',
+            val=safe_mode.hdmi_mode,
+            is_comment=not safe_mode.hdmi_mode
+        )
+        screen_config.check_key('hdmi_drive', is_comment=True)
+
+        hotplug = screen_config.get_line('hdmi_force_hotplug', filtered=True)
+        assert not hotplug.is_comment
+        assert hotplug.value == 1
