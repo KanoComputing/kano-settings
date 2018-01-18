@@ -20,6 +20,14 @@ SCREEN_MODELS_WITH_MD5 = [
     for raw_edid in listdir(RAW_EDID_DIR)
 ]
 
+# FIXME: When the edid_loader fixture is combined with the fakefs fixture the
+#        implementation of open() can be patched to use the fake fs before this
+#        fixture has been able to initialise, causing it to attempt to load its
+#        data from the (empty) fake filesystem rather than the real one.
+#        Circumvent this problem by grabbing a reference to the original
+#        implementation but a general solution to this problem should be found
+unpatched_open = open
+
 
 @pytest.fixture(scope='session')
 def edid_loader(request):
@@ -39,13 +47,13 @@ def edid_loader(request):
         rpi_edid_dumps_path = RPI_EDID_DUMPS_PATH_PATTERN.format(filename=model)
         edid_expected_path = EDID_EXPECTED_PATH_PATTERN.format(filename=model)
 
-        with open(raw_edid_path, 'r') as raw_edid_file:
+        with unpatched_open(raw_edid_path, 'r') as raw_edid_file:
             edid[model]['raw'] = raw_edid_file.read()
 
-        with open(rpi_edid_dumps_path, 'r') as rpi_edid_dumps_file:
+        with unpatched_open(rpi_edid_dumps_path, 'r') as rpi_edid_dumps_file:
             edid[model]['rpi_dumps'] = json.load(rpi_edid_dumps_file)
 
-        with open(edid_expected_path, 'r') as edid_expected_file:
+        with unpatched_open(edid_expected_path, 'r') as edid_expected_file:
             edid[model]['expected'] = json.load(edid_expected_file)
 
     yield edid
