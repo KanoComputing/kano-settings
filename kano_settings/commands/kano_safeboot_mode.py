@@ -21,7 +21,7 @@ from kano.utils.user import enforce_root
 from kano.logging import logger
 from kano_settings.boot_config import enforce_pi, is_safe_boot, \
     safe_mode_backup_config, end_config_transaction
-from kano_settings.system.display import set_safeboot_mode
+from kano_settings.system.display import SafemodeHotkeys, set_safeboot_mode
 
 
 TOKEN_PATH = '/var/cache/kano-settings'
@@ -30,8 +30,15 @@ TOKEN_FILENAME = os.path.join(TOKEN_PATH, TOKEN_NAME)
 SAFEBOOT_SOUND = "/usr/share/kano-settings/media/sounds/kano_safeboot.wav"
 
 
-def safe_boot_requested(led=False):
-    """ Test whether the CTRL+ALT keys were pressed. """
+def get_requested_safe_mode(led=False):
+    """
+    Test whether any CTRL+ALT hotkeys were pressed.
+
+    Returns:
+        -1 when no hotkeys are pressed
+        a positive integer when they are, with the hotkey given by one of the
+        kano_settings.system.display.SafemodeHotkeys variables
+    """
 
     if led:
         # Start a board LED blink in the background for a few seconds
@@ -39,7 +46,8 @@ def safe_boot_requested(led=False):
         _, _, _ = run_cmd("/usr/bin/kano-led &")
 
     _, _, rv = run_cmd("kano-keys-pressed -r 5 -d 10")
-    return rv == 10
+
+    return rv
 
 
 def set_safeboot_token():
@@ -77,13 +85,25 @@ def main():
 
     # Reconfigure and reboot if the user requested safe mode
     # Or if the cable appears not to have been plugged in.
-    if safe_boot_requested(led=blink_led) and not is_safe_boot():
+    requested_mode = get_requested_safe_mode(led=blink_led)
+
+    if requested_mode > 0 and not is_safe_boot():
         logger.warn("Safe boot requested")
 
         # Backup the config file
         safe_mode_backup_config()
 
-        set_safeboot_mode()
+        if requested_mode == SafemodeHotkeys.CTRL_ALT:
+            group = None
+            mode = None
+        elif requested_mode == SafemodeHotkeys.CTRL_ALT_1:
+            group = 1
+            mode = 16
+        elif requested_mode == SafemodeHotkeys.CTRL_ALT_7:
+            group = 1
+            mode = 4
+
+        set_safeboot_mode(group=group, mode=mode)
 
         end_config_transaction()
 

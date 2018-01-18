@@ -25,6 +25,13 @@ from kano_settings.system.boot_config.boot_config_filter import Filter
 from kano_settings.paths import TMP_EDID_DAT_PATH, RAW_EDID_NAME_PATTERN
 
 
+class SafemodeHotkeys(object):
+    NO_HOTKEY = -1
+    CTRL_ALT = 1
+    CTRL_ALT_1 = 2
+    CTRL_ALT_7 = 3
+
+
 tvservice_path = '/usr/bin/tvservice'
 fbset_path = '/bin/fbset'
 xrefresh_path = '/usr/bin/xrefresh'
@@ -288,17 +295,17 @@ def set_flip(display_rotate=None):
         set_screen_value('display_rotate', 0)
 
 
-def set_safeboot_mode():
+def set_safeboot_mode(group=None, mode=None):
     logger.warn("Safe boot requested")
 
     set_screen_value('hdmi_force_hotplug', 1)
     set_screen_value('config_hdmi_boost', 4)
 
-    set_config_value('hdmi_group', None)
-    set_config_value('hdmi_mode', None)
+    set_config_value('hdmi_group', group)
+    set_config_value('hdmi_mode', mode)
 
-    set_screen_value('hdmi_group', None)
-    set_screen_value('hdmi_mode', None)
+    set_screen_value('hdmi_group', group)
+    set_screen_value('hdmi_mode', mode)
 
     set_screen_value('hdmi_drive', None)
     set_config_value('hdmi_drive', None)

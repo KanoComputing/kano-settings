@@ -18,7 +18,11 @@ from contextlib import contextmanager
 import kano.utils.hardware as hw
 
 from tests.fixtures.alsa_config import *
+from tests.fixtures.boot_config import *
+from tests.fixtures.display import *
 from tests.fixtures.edid_data import *
+from tests.fixtures.kano_keys_pressed import *
+from tests.fixtures.run_cmd import *
 
 
 REASON_NOT_IMPLEMENTED = '' \
