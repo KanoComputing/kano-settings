@@ -2,7 +2,7 @@
 
 # set_display.py
 #
-# Copyright (C) 2014-2017 Kano Computing Ltd.
+# Copyright (C) 2014-2018 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 # The Display menu in Kano Settings.
@@ -111,8 +111,10 @@ class SetDisplay(Template):
         flip_button = Gtk.CheckButton(_("Flip Screen"))
         flip_button.set_can_focus(False)
         flip_button.props.valign = Gtk.Align.CENTER
-        flip_button.set_active(get_screen_value('display_rotate') == 2)
-        flip_button.connect('clicked', self.flip)
+        self.flip_preference_start = (get_screen_value('display_rotate') == 2)
+        self.flip_preference_end = self.flip_preference_start
+        flip_button.set_active(self.flip_preference_start)
+        flip_button.connect('clicked', self.on_flip_screen_clicked)
 
         self.box.pack_start(flip_button, False, False, 0)
         self.kano_button.set_sensitive(False)
@@ -125,7 +127,13 @@ class SetDisplay(Template):
         # If enter key is pressed or mouse button is clicked
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
 
-            # Check if we have done any change
+            # Check if there was a change to the Flip Screen state.
+            if self.flip_preference_start != self.flip_preference_end:
+                set_flip(self.flip_preference_end)
+                end_config_transaction()
+                common.need_reboot = True
+
+            # Check if there was resolution change.
             if self.init_item != self.mode_index:
                 # Set HDMI mode
                 # Get mode:group string
@@ -139,7 +147,6 @@ class SetDisplay(Template):
                 })
 
                 end_config_transaction()
-
                 common.need_reboot = True
 
             self.win.go_to_home()
@@ -171,11 +178,9 @@ class SetDisplay(Template):
         else:
             SetSimpleOverscan(self.win, overscan_values)
 
-    def flip(self, button):
-        set_flip(button.get_active())
+    def on_flip_screen_clicked(self, button):
+        self.flip_preference_end = button.get_active()
         self.kano_button.set_sensitive(True)
-        end_config_transaction()
-        common.need_reboot = True
 
 
 class OverscanTemplate(Gtk.Box):
