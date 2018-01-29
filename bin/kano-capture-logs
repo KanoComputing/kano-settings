@@ -1,15 +1,18 @@
 #!/usr/bin/env python
-# kano-capture_logs
+
+# kano-capture-logs
 #
-# Copyright (C) 2016 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2016-2018 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Copy logs to /boot if there is enough space
 # Then play a sound to indicate that it has happened
 
+
 import os
 import subprocess
 from kano.utils.audio import play_sound
+
 
 LOG_DEST = "/tmp/support_logs.tgz"
 LOG_OUTPUT = "/tmp/support_logs_log.txt"
@@ -25,8 +28,12 @@ def store_logging_error():
 
 
 def get_logs():
-    rc = os.system("USER=root LOGNAME=root HOME=/root kano-feedback-cli {} >{} 2>&1".format(
-        LOG_DEST, LOG_OUTPUT))
+    rc = os.system(
+        'USER=root LOGNAME=root HOME=/root'
+        ' kano-feedback-cli --output {} --title "Kano OS: kano-capture-logs"'
+        ' >{} 2>&1'
+        .format(LOG_DEST, LOG_OUTPUT)
+    )
     if rc != 0:
         rc = store_logging_error()
     return rc
@@ -38,13 +45,16 @@ def get_log_size():
 
 def get_boot_space():
     lines = subprocess.check_output(
-        "df -k /boot/ --output=avail".split(" ")).split("\n")
+        "df -k /boot/ --output=avail".split(" ")
+    ).split("\n")
     return int(lines[1])
 
 
-get_logs()
+if __name__ == '__main__':
 
-if (get_boot_space()-get_log_size()) > SPACE_MARGIN:
-    os.system("cp {} /boot".format(LOG_DEST))
-    os.system("syncfs </boot/config.txt")
-    play_sound(SOUND_FILE)
+    get_logs()
+
+    if (get_boot_space() - get_log_size()) > SPACE_MARGIN:
+        os.system("cp {} /boot".format(LOG_DEST))
+        os.system("syncfs </boot/config.txt")
+        play_sound(SOUND_FILE)
