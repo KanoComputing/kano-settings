@@ -9,6 +9,9 @@ bin/kano-checked-reboot /usr/bin
 bin/kano-boot-check /usr/bin
 bin/kano-capture-logs /usr/bin
 bin/check-enable-ssh /usr/bin
+bin/system-integrity /usr/bin
+
+conf/* /usr/share/kano-settings
 
 kano_settings/* /usr/lib/python2.7/dist-packages/kano_settings
 media/kano-settings/* /usr/share/kano-settings/media

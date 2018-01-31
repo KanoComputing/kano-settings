@@ -137,6 +137,7 @@ def main(args):
 
     return rc or RC_SUCCESS
 
+
 def write_cpu_id():
     # Get the unit CPU Serial number and send it, save a local copy
     cpuid = get_cpu_id()
@@ -154,7 +155,6 @@ def write_cpu_id():
                     cpuid))
         except:
             logger.error('Error writing boot cpuid')
-
 
 
 def ensure_correct_browser(dry_run=False):

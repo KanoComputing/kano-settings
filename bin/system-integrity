@@ -1,0 +1,452 @@
+#!/usr/bin/env python
+
+# system-integrity
+#
+# Copyright (C) 2018 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
+
+"""
+system-integrity is a small tool to list modified debian packages.
+
+Usage:
+    system-integrity [-e | -k=<known-issues-filepath>] [options]
+    system-integrity -h | --help
+
+Options:
+    -e, --exclude-known
+        Ignores known issues recorded on a previously released OS image (v4.0.0).
+    -k, --known-issues=<known-issues-filepath>
+        Ignores known issues from a given file.
+    -j, --json
+        Output report in JSON format. When excluding known issues, this will also
+        print all issues found.
+    -h, --help
+        Show this message.
+
+Arguments:
+    <known-issues-filepath>
+        The full path to the known issues file being supplied. It's format is
+        that of the --json output.
+"""
+
+
+import sys
+import json
+import copy
+
+import docopt
+
+from kano.utils.file_operations import read_json
+from kano.utils.shell import run_cmd
+
+KNOWN_ISSUES_PATH = '/usr/share/kano-settings/known_system_integrity_issues.json'
+
+RC_SUCCESS = 0
+RC_INCORRECT_ARGS = 1
+RC_FILES_MODIFIED = 2
+
+
+class DebianPackage(object):
+    """"""
+
+    TYPE_ID = 'debianpackage'
+
+    def __init__(self):
+        self.data = dict()
+        self.data['issues'] = list()
+
+    def load(self, name):
+        """"""
+        output, _, _ = run_cmd("dpkg-query --show --showformat='${binary:Package} ${source:Version} ${db:Status-Abbrev}\n'")
+        self._do_initialise(output)
+
+    def initialise_from_raw(self, raw_data):
+        """"""
+        if not raw_data or not isinstance(raw_data, basestring):
+            raise TypeError(
+                "DebianPackage: initialise_from_raw: raw_data '{}' is not"
+                " a non-empty string".format(raw_data)
+            )
+        try:
+            self._do_initialise(raw_data)
+        except IndexError:
+            raise ValueError(
+                "DpkgStatusIssue: initialise_from_raw: Could not initialise"
+                " from raw_data '{}'".format(raw_data)
+            )
+
+    def _do_initialise(self, raw_data):
+        """"""
+        raw_data = raw_data.strip().split()
+        self.data['type'] = DebianPackage.TYPE_ID
+        self.data['name'] = raw_data[0]
+        self.data['version'] = raw_data[1]
+        self.data['status'] = raw_data[2]
+        self.data['issues'] = list()
+
+    def initialise(self, data):
+        """"""
+        if not data or not isinstance(data, dict):
+            raise TypeError(
+                "DebianPackage: initialise: data '{}' is not a dict".format(data)
+            )
+
+        if ('type' not in data or
+            data['type'] != DebianPackage.TYPE_ID or
+            'name' not in data or
+            'version' not in data or
+            'status' not in data):
+            raise ValueError(
+                "DebianPackage: initialise: Could not initialise"
+                " from data '{}'".format(data)
+            )
+        self.data = data
+
+    def serialise(self):
+        """Convert the object into data."""
+        return copy.deepcopy(self.data)
+
+    def get_name(self):
+        """"""
+        return self.data['name']
+
+    def get_version(self):
+        """"""
+        return self.data['version']
+
+    def get_status(self):
+        """"""
+        return self.data['status']
+
+    def set_issues(self, issues):
+        """"""
+        self.data['issues'] = issues
+
+    def add_issue(self, issue_data):
+        """"""
+        self.data['issues'].append(issue_data)
+
+    def get_issues(self):
+        """"""
+        return self.data['issues']
+
+    def has_issues(self):
+        """"""
+        return bool(self.data['issues'])
+
+
+class DpkgIntegrityIssue(object):
+    """
+    A wrapper for output from the `dpkg --verify --verify-format rpm` command.
+    Used in conjunction with the DpkgIntegrityChecker.
+    """
+
+    TYPE_ID = 'integrityissue'
+
+    def __init__(self):
+        self.data = dict()
+
+    def initialise_from_raw(self, raw_data):
+        """Initialise the object with a raw dpkg output line.
+
+        Examples of raw_data:
+        ??5??????   /sbin/wpa_supplicant
+        ??5?????? c /etc/logrotate.d/inetutils-syslogd
+
+        Args:
+            raw_data (str): A raw output line from the dpkg command:
+                `dpkg --verify --verify-format rpm`
+
+        Raises:
+            TypeError: If raw_data is not a string.
+            ValueError: If raw_data could not be processed properly.
+        """
+        if not raw_data or not isinstance(raw_data, basestring):
+            raise TypeError(
+                "DpkgIntegrityIssue: initialise_from_raw: raw_data '{}' is not"
+                " a string".format(raw_data)
+            )
+        try:
+            self.data['type'] = DpkgIntegrityIssue.TYPE_ID
+            self.data['raw_rpm_checks'] = raw_data[0:9]
+            self.data['failed_md5sum'] = (raw_data[2] == '5')
+            self.data['is_conf'] = (raw_data[10] == 'c')
+            self.data['path'] = raw_data[12:]
+        except IndexError:
+            raise ValueError(
+                "DpkgIntegrityIssue: initialise_from_raw: Could not initialise"
+                " from raw_data '{}'".format(raw_data)
+            )
+
+    def initialise(self, data):
+        """Initialise the object with the data returned by a previous serialise.
+
+        Raises:
+            TypeError: If data is not a dictionary.
+            ValueError: If data could not be processed properly.
+        """
+        if not data or not isinstance(data, dict):
+            raise TypeError(
+                "DpkgIntegrityIssue: initialise: data '{}' is not"
+                " a dict".format(data)
+            )
+
+        if ('type' not in data or
+            data['type'] != DpkgIntegrityIssue.TYPE_ID or
+            'raw_rpm_checks' not in data or
+            'failed_md5sum' not in data or
+            'is_conf' not in data or
+            'path' not in data):
+            raise ValueError(
+                "DpkgIntegrityIssue: initialise: Could not initialise"
+                " from data '{}'".format(data)
+            )
+        self.data = data
+
+    def serialise(self):
+        """Convert the object into data."""
+        return copy.deepcopy(self.data)
+
+    def failed_md5sum(self):
+        """Check if the md5sum of the file failed."""
+        return self.data['failed_md5sum']
+
+    def is_conf(self):
+        """Check if the file is a configuration file."""
+        return self.data['is_conf']
+
+    def get_path(self):
+        """Get the path of the affected file."""
+        return self.data['path']
+
+
+class DpkgStatusIssue(object):
+    """"""
+
+    TYPE_ID = 'statusissue'
+
+    def __init__(self):
+        self.data = dict()
+
+    def initialise_from_raw(self, raw_data):
+        """"""
+        if not raw_data or not isinstance(raw_data, basestring):
+            raise TypeError(
+                "DpkgStatusIssue: initialise_from_raw: raw_data '{}' is not"
+                " a non-empty string".format(raw_data)
+            )
+        try:
+            self.data['type'] = DpkgStatusIssue.TYPE_ID
+            self.data['raw_status'] = raw_data
+            self.data['is_stable'] = (self.data['raw_status'] == "ii")
+        except IndexError:
+            raise ValueError(
+                "DpkgStatusIssue: initialise_from_raw: Could not initialise"
+                " from raw_data '{}'".format(raw_data)
+            )
+
+    def initialise(self, data):
+        """"""
+        if not data or not isinstance(data, dict):
+            raise TypeError(
+                "DpkgStatusIssue: initialise: data '{}' is not a dict".format(data)
+            )
+
+        if ('type' not in data or
+            data['type'] != DpkgStatusIssue.TYPE_ID or
+            'is_stable' not in data):
+            raise ValueError(
+                "DpkgStatusIssue: initialise: Could not initialise"
+                " from data '{}'".format(data)
+            )
+        self.data = data
+
+    def serialise(self):
+        """Convert the object into data."""
+        return copy.deepcopy(self.data)
+
+    def is_stable(self):
+        """"""
+        return self.data['is_stable']
+
+
+class DpkgIntegrityChecker(object):
+    """
+    Essentially, a wrapper for the `dpkg --verify --verify-format rpm` command.
+    """
+
+    def __init__(self):
+        self.package = DebianPackage()
+        self.integrity_issue = DpkgIntegrityIssue()
+        self.status_issue = DpkgStatusIssue()
+
+    def verify_all(self):
+        """Verify the integrity of all debian packages installed on the system.
+
+        Returns:
+            dict: Associations between package name and a list of serialised
+                `DpkgIntegrityIssue` objects, e.g.
+                {
+                    "passwd": [
+                        {
+                            "failed_md5sum": true,
+                            "is_conf": true,
+                            "path": "/etc/default/useradd",
+                            "raw_rpm_checks": "??5??????",
+                            "type": "integrityissue"
+                        }
+                    ]
+                }
+        """
+        packages = self.get_debian_packages()
+        issues = dict()
+
+        for package_name, raw_data in packages.iteritems():
+            self.package.initialise_from_raw(raw_data)
+            self._verify_loaded_package()
+
+            if self.package.has_issues():
+                issues[package_name] = self.package.serialise()
+
+        return issues
+
+    def verify_package(self, package_name):
+        """
+        """
+        self.package.load(package_name)
+        self._verify_loaded_package()
+        return self.package.serialise()
+
+    def _verify_loaded_package(self):
+        """"""
+
+        output, _, _ = run_cmd('dpkg --verify --verify-format=rpm {}'.format(self.package.get_name()))
+        raw_integrity_issues = output.strip().split('\n')
+
+        for raw_data in raw_integrity_issues:
+            if not raw_data:
+                continue
+
+            self.integrity_issue.initialise_from_raw(raw_data)
+            self.package.add_issue(self.integrity_issue.serialise())
+
+        self.status_issue.initialise_from_raw(self.package.get_status())
+        if not self.status_issue.is_stable():
+            self.package.add_issue(self.status_issue.serialise())
+
+    def get_debian_packages(self):
+        """Get all debian packages installed on the system.
+
+        Returns:
+            list: Debian package names.
+        """
+        output, _, _ = run_cmd("dpkg-query --show --showformat='${binary:Package} ${source:Version} ${db:Status-Abbrev}\n'")
+        raw_packages = output.strip().split('\n')
+        packages = dict()
+
+        for raw_data in raw_packages:
+            package_name = raw_data.strip().split()[0]
+            packages[package_name] = raw_data
+
+        return packages
+
+    @staticmethod
+    def get_outstanding_issues(latest_issues, known_issues):
+        """Get the data from latest_issues that is not in known_issues."""
+
+        outstanding_issues = dict()
+        latest_package = DebianPackage()
+        known_package = DebianPackage()
+
+        for package_name, package_data in latest_issues.iteritems():
+            if package_name not in known_issues:
+                outstanding_issues[package_name] = package_data
+                continue
+
+            latest_package.initialise(package_data)
+            known_package.initialise(known_issues[package_name])
+
+            issues = list()
+            for issue_data in latest_package.get_issues():
+                if issue_data not in known_package.get_issues():
+                    issues.append(issue_data)
+                    print issue_data, "is not in", known_package.get_issues()
+
+            if not issues:
+                continue
+
+            latest_package.set_issues(issues)
+            outstanding_issues[package_name] = latest_package.serialise()
+
+        return outstanding_issues
+
+
+def print_integrity_report(issues):
+    package = DebianPackage()
+    integrity_issue = DpkgIntegrityIssue()
+    status_issue = DpkgStatusIssue()
+
+    print "--------------------------------"
+    print "Debian Packages Integrity Report"
+    print "--------------------------------"
+
+    for package_name, package_data in sorted(issues.iteritems()):
+        package.initialise(package_data)
+        print "Package {} version {}".format(package.get_name(), package.get_version())
+
+        for issue_data in package.get_issues():
+
+            if issue_data['type'] == DpkgIntegrityIssue.TYPE_ID:
+                integrity_issue.initialise(issue_data)
+                print "  File: {} failed_md5sum: {}".format(
+                    integrity_issue.get_path(), integrity_issue.failed_md5sum()
+                )
+
+            elif issue_data['type'] == DpkgStatusIssue.TYPE_ID:
+                status_issue.initialise(issue_data)
+                print "  Status: '{}' is_stable: {}".format(
+                    package.get_status(), status_issue.is_stable()
+                )
+
+
+def main(args):
+    rc = RC_SUCCESS
+
+    checker = DpkgIntegrityChecker()
+    issues = checker.verify_all()
+
+    known_issues = dict()
+
+    if args['--exclude-known']:
+        known_issues = read_json(KNOWN_ISSUES_PATH, silent=False)
+    elif args['--known-issues']:
+        known_issues = read_json(args['--known-issues'], silent=False)
+
+    if known_issues:
+        all_issues = copy.deepcopy(issues)
+        issues = DpkgIntegrityChecker.get_outstanding_issues(issues, known_issues)
+
+    if issues:
+        print_integrity_report(issues)
+        if args['--json']:
+            print '-----------------------------------'
+            print 'Outstanding issues data:'
+            print json.dumps(issues, indent=4, sort_keys=True)
+            if known_issues:
+                print 'Known issues data:'
+                print json.dumps(known_issues, indent=4, sort_keys=True)
+                print 'All issues data:'
+                print json.dumps(all_issues, indent=4, sort_keys=True)
+
+        rc = RC_FILES_MODIFIED
+
+    return rc
+
+
+if __name__ == "__main__":
+    try:
+        args = docopt.docopt(__doc__)
+    except docopt.DocoptExit:
+        print __doc__
+        sys.exit(RC_INCORRECT_ARGS)
+    sys.exit(main(args) or RC_SUCCESS)

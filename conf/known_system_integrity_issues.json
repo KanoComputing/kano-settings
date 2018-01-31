@@ -1,0 +1,454 @@
+{
+    "apt": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/apt/apt.conf.d/01autoremove",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "apt",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "1.4.8"
+    },
+    "base-files": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/issue",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "base-files",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "9.9+rpi1+deb9u4"
+    },
+    "bash": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/bash.bashrc",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            },
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/skel/.bashrc",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "bash",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "4.4-5"
+    },
+    "chromium-browser": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/default/chromium-browser",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "chromium-browser",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "60.0.3112.89-0ubuntu0.14.04.1.1010+1"
+    },
+    "inetutils-syslogd": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/logrotate.d/inetutils-syslogd",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            },
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/syslog.conf",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "inetutils-syslogd",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "2:1.9.4-2"
+    },
+    "kano-feedback": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/sudoers.d/kano-feedback_conf",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "kano-feedback",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "4.0.0-0.20180622"
+    },
+    "kano-greeter": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": false,
+                "path": "/var/lib/lightdm/.kdeskrc",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "kano-greeter",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "4.0.0-0.20180604build3"
+    },
+    "kano-init": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": false,
+                "path": "/usr/share/kano-init/systemd_ttys/kanoautologin@.service",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "kano-init",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "4.0.0-0.20180619build1"
+    },
+    "kano-peripherals": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/sudoers.d/kano-peripherals_conf",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "kano-peripherals",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "4.0.0-0.20180717build1"
+    },
+    "kano-profile": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": false,
+                "path": "/usr/share/applications/defaults.list",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "kano-profile",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "4.0.0-1.20180702"
+    },
+    "kano-settings": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/polkit-1/localauthority/50-local.d/10-udisks.pkla",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            },
+            {
+                "failed_md5sum": true,
+                "is_conf": false,
+                "path": "/usr/share/kano-settings/media/Parental/parental-hosts-blacklist.gz",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "kano-settings",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "4.0.6-0.20180706build2"
+    },
+    "kano-toolset": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/network/interfaces",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "kano-toolset",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "4.0.0-0.20180706build2"
+    },
+    "kano-video": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": false,
+                "path": "/usr/share/applications/auto_video-cli.desktop",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "kano-video",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "4.0.0-0.20180628"
+    },
+    "lightdm": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/lightdm/lightdm.conf",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "lightdm",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "1.18.3-1"
+    },
+    "login": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/pam.d/login",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "login",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "1:4.4-4.1"
+    },
+    "make-light": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/sudoers.d/make-light-powerup_conf",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            },
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/sudoers.d/make-light_conf",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "make-light",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "4.0.0-0.20180628"
+    },
+    "make-music": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/sudoers.d/make_music_conf",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "make-music",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "4.0.0-0.20180613"
+    },
+    "openbox": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/xdg/openbox/rc.xml",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "openbox",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "3.6.1-4+rpi6"
+    },
+    "openbox-lxde-session": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/xdg/lxsession/LXDE/autostart",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            },
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/xdg/openbox/LXDE/rc.xml",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "openbox-lxde-session",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "0.99.2-3"
+    },
+    "passwd": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/default/useradd",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "passwd",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "1:4.4-4.1"
+    },
+    "preload": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/preload.conf",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "preload",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "0.6.4-2"
+    },
+    "procps": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/sysctl.conf",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "procps",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "2:3.3.12-3+deb9u1"
+    },
+    "raspberrypi-sys-mods": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/sudoers.d/010_pi-nopasswd",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "raspberrypi-sys-mods",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "20180328+1"
+    },
+    "rpi-chromium-mods": {
+        "issues": [
+            {
+                "is_stable": false,
+                "raw_status": "rc",
+                "type": "statusissue"
+            }
+        ],
+        "name": "rpi-chromium-mods",
+        "status": "rc",
+        "type": "debianpackage",
+        "version": "20180509"
+    },
+    "sudo": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/sudoers",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            },
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/sudoers.d/README",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "sudo",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "1.8.19p1-2.1"
+    },
+    "systemd": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": true,
+                "path": "/etc/systemd/system.conf",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "systemd",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "232-25+deb9u2"
+    },
+    "wpasupplicant": {
+        "issues": [
+            {
+                "failed_md5sum": true,
+                "is_conf": false,
+                "path": "/sbin/wpa_cli",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            },
+            {
+                "failed_md5sum": true,
+                "is_conf": false,
+                "path": "/sbin/wpa_supplicant",
+                "raw_rpm_checks": "??5??????",
+                "type": "integrityissue"
+            }
+        ],
+        "name": "wpasupplicant",
+        "status": "ii",
+        "type": "debianpackage",
+        "version": "2:2.6-15"
+    }
+}
