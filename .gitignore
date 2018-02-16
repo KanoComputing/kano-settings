@@ -1,7 +1,6 @@
 # Test files
 reports
 
-
 # Created by https://www.gitignore.io/api/vim,macos,emacs,python,sublimetext,visualstudiocode
 
 ### Emacs ###
@@ -100,7 +99,6 @@ Temporary Items
 ### Python ###
 # Byte-compiled / optimized / DLL files
 __pycache__/
-.cache
 *.py[cod]
 *$py.class
 
@@ -111,7 +109,6 @@ __pycache__/
 .Python
 build/
 develop-eggs/
-dist/
 downloads/
 eggs/
 .eggs/
@@ -243,7 +240,6 @@ GitHub.sublime-settings
 Session.vim
 # temporary
 .netrwhist
-*~
 # auto-generated tag files
 tags
 

@@ -1,6 +1,6 @@
 # ConnectToNetwork.py
 #
-# Copyright (C) 2015 Kano Computing Ltd.
+# Copyright (C) 2015-2018 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Show spinner screen while connecting to a network
@@ -72,7 +72,7 @@ class ConnectToNetwork():
         The network cannot be joined because the signal is too weak.
         Show an error message dialog, so the user can easily fix and retry.
         '''
-        win.remove_main_widget()
+        self._win.remove_main_widget()
         title = _("Cannot connect!")
         description = _("Maybe the signal was too weak to connect.")
         buttons = [

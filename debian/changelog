@@ -16,8 +16,9 @@ kano-settings (4.0.4-1) unstable; urgency=low
   * Changes for Kano OS 3.14.1:
   * Disabled hdmi_drive config option when going into Safe Mode
   * Make safe mode use the preferred mode of the screen
+  * Fixed bug that causes no timeout on Wi-Fi failure
 
- -- Team Kano <dev@kano.me>  Mon, 8 Jan 2018 12:19:00 +0100
+ -- Team Kano <dev@kano.me>  Tue, 16 Feb 2018 15:39:30 +0100
 
 kano-settings (4.0.4-0) unstable; urgency=low
 
