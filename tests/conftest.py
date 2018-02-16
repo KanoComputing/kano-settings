@@ -29,8 +29,11 @@ REASON_REQUIRES_KANO_OS = '' \
     ' be executed in that environment, e.g. systemd, config files, etc.'
 
 
-require_rpi = unittest.skipIf(hw.get_rpi_model() == 'Error getting model name',
-                              'Test must be run on a RPi')
+require_rpi = unittest.skipIf(
+    hw.get_rpi_model().lower().startswith('error') or
+    hw.get_rpi_model().lower().startswith('unknown'),
+    'Test must be run on a RPi'
+)
 
 
 @contextmanager
