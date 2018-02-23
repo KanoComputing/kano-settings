@@ -21,12 +21,6 @@ case "$1" in
         # A new line, to position the shell prompt underneath
         echo "" > /dev/tty1
 
-        # If Dashboard Onboot is installed (soft dependency),
-        # call him now. He enforces the kit to always go to Dashboard/Greeter.
-        if [ -x "/usr/bin/kano-dashboard-onboot" ]; then
-            /usr/bin/kano-dashboard-onboot
-        fi
-
         # If you have a special screen or hardware that needs custom config.txt settings,
         # create this sentinel file to avoid system reboots and eventual black screens.
         onboot_sentinel_file="/boot/no-config-writes"
