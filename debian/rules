@@ -11,4 +11,7 @@ override_dh_auto_build:
 	cd overscan && bash compile.sh
 	cd syncfs && bash compile.sh
 
+override_dh_python2:
+	dh_python2 --no-shebang-rewrite
+
 override_dh_auto_test:
