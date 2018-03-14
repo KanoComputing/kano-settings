@@ -1,15 +1,21 @@
-#!/usr/bin/env python
-
 # account.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
+# Copyright (C) 2014-2018 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 #
 # Contains the account screen backend functions
 
+
 import os
-import pam
-from kano.utils import get_user_unsudoed, run_cmd
+
+# When this module was transitioned from pip (0.1.4) to deb (0.4.2-13.1), the
+# version in Raspbian contained an all caps name for the module.
+try:
+    import PAM as pam
+except ImportError:
+    import pam
+
+from kano.utils import run_cmd
 from kano_world.functions import has_token
 
 
