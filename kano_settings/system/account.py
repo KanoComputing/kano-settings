@@ -8,12 +8,7 @@
 
 import os
 
-# When this module was transitioned from pip (0.1.4) to deb (0.4.2-13.1), the
-# version in Raspbian contained an all caps name for the module.
-try:
-    import PAM as pam
-except ImportError:
-    import pam
+import pam
 
 from kano.utils import run_cmd
 from kano_world.functions import has_token
