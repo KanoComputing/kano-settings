@@ -1,9 +1,12 @@
+#
 # locale.py
 #
-# Copyright (C) 2015 Kano Computing Ltd.
+# Copyright (C) 2015 - 2018 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 
+from gi import require_version
+require_version('Gtk', '3.0')
 
 from gi.repository import Gtk
 from kano.gtk3.kano_combobox import KanoComboBox

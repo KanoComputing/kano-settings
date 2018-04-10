@@ -1,12 +1,15 @@
-#!/usr/bin/env python
-
+#
 # set_keyboard.py
 #
-# Copyright (C) 2014, 2015 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2014 - 2018 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPLv2
 #
 
 import threading
+
+from gi import require_version
+require_version('Gtk', '3.0')
+
 from gi.repository import Gtk, GObject
 
 import kano_settings.system.keyboard_layouts as keyboard_layouts

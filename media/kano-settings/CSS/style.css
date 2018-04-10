@@ -1,35 +1,37 @@
-
-/*
-
-# Copyright (C) 2014 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
-#
-# This controls the styles specific to kano-settings */
-
+/**
+ * style.css
+ *
+ * Copyright (C) 2014 - 2018 Kano Computing Ltd.
+ * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPLv2
+ *
+ * This controls the styles specific to kano-settings
+ */
 
 /* Top wiriting in internet status box */
 .internet_status_top {
     padding:0px 10px;
     color: @title_color;
-    font: Bariol bold 16;
+    font-family: Bariol Bold;
+    font-size: 16pt;
 }
 
 /* Bottom wiriting in internet status box */
 .internet_status_bottom {
     padding:0px 10px;
     color: @subheading_color;
-    font: Bariol 14;
+    font-family: Bariol;
+    font-size: 14pt;
 }
 
 .connected {
     background: @kano_green;
-    font-weight:bold;
+    font-family: Bariol Bold;
     margin:10px;
 }
 
 .not_connected {
     background: #F76868;
-    font-weight:bold;
+    font-family: Bariol Bold;
     margin:10px;
 }
 
@@ -80,32 +82,37 @@
 /* Styling used on labels in set_overclock and set_mouse */
 /* */
 .bold_toggle GtkLabel {
-    font: Bariol Bold 13;
+    font-family: Bariol Bold;
+    font-size: 13pt;
 }
 .normal_label {
-    font: Bariol 13;
+    font-family: Bariol;
+    font-size: 13pt;
     color: @subheading_color;
 }
 
 .slider_label {
-    font: Bariol 13;
+    font-family: Bariol;
+    font-size: 13pt;
     color: @subheading_color;
 }
 
 /* Info from the about screen */
 .about_version {
-    font: Bariol Bold 18;
+    font-family: Bariol Bold;
+    font-size: 18pt;
     color: @title_color;
 }
 
 .about_label {
-    font: Bariol 15;
+    font-family: Bariol;
+    font-size: 15pt;
     color: @subheading_color;
 }
 
 .parental_activated {
     color: @kano_green;
-    font-weight:bold;
+    font-family: Bariol Bold;
 }
 
 .parental_desc_activated {
@@ -127,7 +134,7 @@ GtkVScale, GtkScale {
     border-radius: 3px;
 }
 
-GtkScale.slider:insensitive {
+GtkScale.slider:disabled {
     background: #bbbbbb;
 }
 
@@ -136,7 +143,8 @@ GtkVScale.slider, GtkScale.slider {
 }
 
 .checkbutton_label {
-    font: Bariol bold 14;
+    font-family: Bariol Bold;
+    font-size: 14pt;
     color: #333333;
 }
 
@@ -171,7 +179,8 @@ GtkNotebook tab {
 }
 
 GtkNotebook tab GtkLabel {
-    font: Bariol bold 13;
+    font-family: Bariol Bold;
+    font-size: 13pt;
     color: #323232;
     /* Preferably want inactive tab to have color writing #6e6e6e
     but can't get it to work*/

@@ -1,15 +1,18 @@
-#!/usr/bin/env python
-
+#
 # set_about.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2014 - 2018 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPLv2
 #
-
 # -*- coding: utf-8 -*-
+#
 
 import os
 import subprocess
+
+from gi import require_version
+require_version('Gtk', '3.0')
+
 from gi.repository import Gtk
 from kano.gtk3.kano_dialog import KanoDialog
 from kano.gtk3.buttons import OrangeButton, KanoButton

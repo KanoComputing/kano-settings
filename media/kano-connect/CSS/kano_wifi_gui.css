@@ -1,11 +1,19 @@
-
+/**
+ * kano_wifi_gui.css
+ *
+ * Copyright (C) 2014 - 2018 Kano Computing Ltd.
+ * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPLv2
+ *
+ * Styling for WiFi buttons
+ */
 
 .network_btn {
     background: #ffffff;
 }
 
 .network_btn GtkLabel {
-    font: Bariol Bold 14;
+    font-family: Bariol Bold;
+    font-size: 14pt;
     color: #222222;
     padding: 5px 10px;
 }
@@ -23,7 +31,8 @@
 }
 
 .no_networks_label {
-    font: Bariol Bold 16;
+    font-family: Bariol Bold;
+    font-size: 16pt;
     color: #222222;
 }
 
@@ -38,16 +47,18 @@ GtkScrolledWindow.border {
 }
 
 .password_entry {
-    font: Bariol Bold 15;
+    font-family: Bariol Bold;
+    font-size: 15pt;
     color: #222222;
 }
 
 .show_password GtkLabel {
     color: @kano_orange;
-    font: Bariol bold 13;
+    font-family: Bariol Bold;
+    font-size: 13pt;
 }
 
-.show_password GtkLabel:insensitive {
+.show_password GtkLabel:disabled {
     color: @kano_grey;
     background: transparent;
 }
@@ -63,7 +74,8 @@ GtkScrolledWindow.border {
 }
 
 .wrong_password_label {
-    font: Bariol bold 15px;
+    font-family: Bariol Bold;
+    font-size: 15px;
     color: #e57273;
 }
 
@@ -101,7 +113,8 @@ GtkScrolledWindow.border {
 
 /* label with different color */
 .plug .wrong_password_label {
-    font: Bariol bold 15px;
+    font-family: Bariol Bold;
+    font-size: 15px;
     color: #e57273;
 }
 
@@ -128,7 +141,8 @@ GtkScrolledWindow.border {
 }
 
 .plug .network_btn GtkLabel {
-    font: Bariol Bold 14;
+    font-family: Bariol Bold;
+    font-size: 14pt;
     color: #ffffff;
     padding: 5px 10px;
 }
@@ -147,5 +161,6 @@ GtkScrolledWindow.border {
 
 .plug .show_password GtkLabel {
     color: #ffffff;
-    font: Bariol bold 13;
+    font-family: Bariol Bold;
+    font-size: 13pt;
 }

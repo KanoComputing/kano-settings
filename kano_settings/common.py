@@ -1,16 +1,17 @@
-#!/usr/bin/env python
-
+#
 # common.py
 #
-# Copyright (C) 2014 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2014 - 2018 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPLv2
 #
 # Keeps common variables in a central place
 
 import os
 import sys
 
-rel_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../media/kano-settings'))
+rel_path = os.path.abspath(
+    os.path.join(os.path.dirname(__file__), '../media/kano-settings')
+)
 abs_path = '/usr/share/kano-settings/media'
 
 if os.path.exists(rel_path):

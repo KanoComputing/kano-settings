@@ -1,10 +1,12 @@
-#!/usr/bin/env python
-
+#
 # set_overclock.py
 #
-# Copyright (C) 2014-2016 Kano Computing Ltd.
+# Copyright (C) 2014-2018 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
+
+from gi import require_version
+require_version('Gtk', '3.0')
 
 from gi.repository import Gdk
 

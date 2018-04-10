@@ -5,7 +5,7 @@ Priority: optional
 Standards-Version: 3.9.2
 Build-Depends: debhelper (>= 9), build-essential, pkg-config, libgtk2.0-dev,
                lxpanel (>= 0.7.0), libfm-dev, libkdesk-dev,
-               libkano-networking-dev
+               libkano-networking-dev, lxpanel-dev
 
 Package: kano-settings
 Architecture: any
@@ -13,7 +13,7 @@ Depends: ${shlibs:Depends}, ${misc:Depends}, kano-connect (= ${binary:Version}),
          python, python-gi, dante-client, kano-toolset (>= 3.7.0-1),
          kano-profile (>= 2.1-1), gir1.2-gtk-3.0, libkdesk-dev, sentry (>= 0.5-1),
          python-bs4, python-pycountry, kano-i18n, libnss-mdns, avahi-daemon,
-         kano-content, bluetooth, pi-bluetooth, policykit-1
+         kano-content, bluetooth, pi-bluetooth, policykit-1, lxpanel
 Recommends: kano-fonts
 Breaks: kano-init (<<3.2.0-1)
 Description: Graphical tool to set different system settings

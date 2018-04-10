@@ -1,3 +1,12 @@
+/**
+ * small_white_button.css
+ *
+ * Copyright (C) 2014 - 2018 Kano Computing Ltd.
+ * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPLv2
+ *
+ * Styling for small white buttons
+ */
+
 .small_white_button {
     background: transparent;
     padding: 0px;
@@ -5,10 +14,11 @@
 
 .small_white_button GtkLabel {
     color: #ffffff;
-    font: Bariol Bold 13px;
+    font-family: Bariol Bold;
+    font-size: 13px;
 }
 
-.small_white_button GtkLabel:insensitive {
+.small_white_button GtkLabel:disabled {
     color: @kano_grey;
     background: transparent;
 }

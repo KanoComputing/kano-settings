@@ -1,6 +1,18 @@
+#
+# misc.py
+#
+# Copyright (C) 2014 - 2018 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPLv2
+#
+# Miscellaneous functions
+#
+
+import os
+
+from gi import require_version
+require_version('Gtk', '3.0')
 
 from gi.repository import Gtk, GdkPixbuf
-import os
 
 from kano.paths import common_images_dir
 

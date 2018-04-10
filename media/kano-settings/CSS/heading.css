@@ -1,3 +1,12 @@
+/**
+ * heading.css
+ *
+ * Copyright (C) 2014 - 2018 Kano Computing Ltd.
+ * License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPLv2
+ *
+ * Styling for headings
+ */
+
 /***********************************************
  * Migrate the Heading class to kano-settings
  ***********************************************/
@@ -5,28 +14,27 @@
 /* The title of the current level*/
 .title {
     color: #323232;
-    /*padding-top:30px;*/
-    font: Bariol Bold 20px;
+    font-family: Bariol Bold;
+    font-size: 20px;
 }
 /* Description of current project */
 .description {
     color: #6e6e6e;
-    /*padding-left: 30px;
-    padding-right: 30px;*/
-    font: Bariol 14;
+    font-family: Bariol;
+    font-size: 14pt;
 }
 
 .plug .title {
     color: #ffffff;
     /*padding-top:30px;*/
-    font: Bariol Bold 20px;
+    font-family: Bariol Bold;
+    font-size: 20px;
 }
 
 .plug .description {
     color: #dedfde;
-    /*padding-left: 30px;
-    padding-right: 30px;*/
-    font: Bariol 14;
+    font-family: Bariol;
+    font-size: 14pt;
 }
 
 .plug .back_button {

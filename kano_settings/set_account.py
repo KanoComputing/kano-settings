@@ -1,11 +1,14 @@
-#!/usr/bin/env python
 #
 # account.py
 #
-# Copyright (C) 2014, 2015 Kano Computing Ltd.
+# Copyright (C) 2014 - 2018 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Controls the UI of the account setting
+#
+
+from gi import require_version
+require_version('Gtk', '3.0')
 
 from gi.repository import Gtk, Gdk, GObject
 import threading

@@ -1,5 +1,9 @@
 #!/usr/bin/make -f
 
+# FIXME: Move the locating of this library to the build root
+LXPANEL_PATH := /usr/lib/arm-linux-gnueabihf/lxpanel
+export LD_LIBRARY_PATH := $(LD_LIBRARY_PATH):$(LXPANEL_PATH)
+
 %:
 	dh $@ --with python2
 

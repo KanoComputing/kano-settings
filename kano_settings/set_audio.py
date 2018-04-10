@@ -1,12 +1,14 @@
-#!/usr/bin/env python
-
+#
 # set_audio.py
 #
-# Copyright (C) 2014-2017 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2014 - 2018 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # The Audio menu in Kano Settings.
+#
 
+from gi import require_version
+require_version('Gtk', '3.0')
 
 from gi.repository import Gtk, Gdk
 

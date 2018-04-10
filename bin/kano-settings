@@ -1,11 +1,12 @@
 #!/usr/bin/kano-splash loader-animation /usr/bin/env python
-
+#
 # kano-settings
 #
-# Copyright (C) 2014-2017 Kano Computing Ltd.
+# Copyright (C) 2014 - 2018 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Kano Settings executable
+#
 
 
 """
@@ -26,6 +27,9 @@ Options:
 import os
 import sys
 import docopt
+
+from gi import require_version
+require_version('Gtk', '3.0')
 
 from gi.repository import Gtk, GObject
 GObject.threads_init()

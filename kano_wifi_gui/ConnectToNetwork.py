@@ -1,3 +1,4 @@
+#
 # ConnectToNetwork.py
 #
 # Copyright (C) 2015-2018 Kano Computing Ltd.
@@ -8,6 +9,10 @@
 
 import os
 import threading
+
+from gi import require_version
+require_version('Gtk', '3.0')
+
 from gi.repository import Gtk, GObject
 
 from kano.logging import logger

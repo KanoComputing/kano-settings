@@ -1,13 +1,18 @@
+#
 # bluetooth_config.py
 #
-# Copyright (C) 2016 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
+# Copyright (C) 2016 - 2018 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPLv2
 #
 # Bluetooth setup screen
 #
 
 import os
 import threading
+
+from gi import require_version
+require_version('Gtk', '3.0')
+
 from gi.repository import Gtk, GObject
 
 from kano.gtk3.scrolled_window import ScrolledWindow

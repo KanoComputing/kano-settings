@@ -1,10 +1,11 @@
+#
 # paths.py
 #
-# Copyright (C) 2017 Kano Computing Ltd.
+# Copyright (C) 2017 - 2018 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # All the necessary paths used in this project.
-
+#
 
 from os.path import abspath, dirname, join
 
