@@ -1,3 +1,11 @@
+kano-settings (4.0.6-0) unstable; urgency=low
+
+  * Changes for Kano OS 4.0.0:
+  * Fixed an issue with automatic resolution setting for screens with aspect
+    ratios that are not 4:3, 16:9, 16:10
+
+ -- Team Kano <dev@kano.me>  Tue, 17 Apr 2018 10:17:00 +0100
+
 kano-settings (4.0.5-0) unstable; urgency=low
 
   * Changes for Kano OS 3.15.0:

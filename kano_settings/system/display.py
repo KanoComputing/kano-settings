@@ -1,8 +1,6 @@
-#!/usr/bin/env python
-
 # display.py
 #
-# Copyright (C) 2014-2017 Kano Computing Ltd.
+# Copyright (C) 2014-2018 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
 #
 # Change screen resolution and other settings.
@@ -763,7 +761,7 @@ def get_optimal_resolution_mode(edid, supported_modes):
         return
 
     # Go through the optimal resolutions list for the aspect ratio...
-    for resolution in OPTIMAL_RESOLUTIONS[edid['preferred_aspect_ratio']]:
+    for resolution in OPTIMAL_RESOLUTIONS.get(edid['preferred_aspect_ratio'], list()):
 
         # If preferred mode has the optimal resolution, return it.
         if resolution['width'] == preferred_mode['width'] and \
