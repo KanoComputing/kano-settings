@@ -135,6 +135,16 @@ hdmi_mode=28
 display_rotate=0
 [all]
 
+# CKT
+[EDID=HCK-HDMI]
+# Set the resolution to DMT 1280x800 @ 60Hz.
+hdmi_group=2
+hdmi_mode=28
+
+# Rotated
+display_rotate=2
+[all]
+
 # ---------------------------------------------------------------------------------------
 # User Defined Options
 #
