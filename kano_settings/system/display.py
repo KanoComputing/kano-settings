@@ -51,6 +51,7 @@ SCREEN_KIT_NAMES = [
     'MST-HDMI1',
     'MST-HDMI',
     'HTC-HDMI',
+    'HCK-HDMI',
 ]
 
 # NOTE: There is a risk here that indexing EDIDs by model alone will eventually produce
@@ -83,6 +84,11 @@ EDID_OVERRIDES = {
         'is_monitor': True
     },
     'HTC-HDMI': {
+        'preferred_group': 'DMT',
+        'preferred_mode': 28,
+        'is_monitor': True
+    },
+    'HCK-HDMI': {
         'preferred_group': 'DMT',
         'preferred_mode': 28,
         'is_monitor': True
