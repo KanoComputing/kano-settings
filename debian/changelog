@@ -4,8 +4,9 @@ kano-settings (4.0.6-0) unstable; urgency=low
   * Fixed an issue with automatic resolution setting for screens with aspect
     ratios that are not 4:3, 16:9, 16:10
   * Fix support for Gtk packages included with Stretch
+  * Fixed Safe Mode configuration sometimes not getting applied correctly
 
- -- Team Kano <dev@kano.me>  Tue, 17 Apr 2018 10:17:00 +0100
+ -- Team Kano <dev@kano.me>  Fri, 22 Jun 2018 10:17:00 +0100
 
 kano-settings (4.0.5-0) unstable; urgency=low
 

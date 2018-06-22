@@ -4,7 +4,7 @@
 # Provides:         kano-safeboot
 # Required-Start:   $local_fs
 # Required-Stop:
-# X-Start-Before:   
+# X-Start-Before:   kano-settings
 # Default-Start:    2
 # Default-Stop:
 ### END INIT INFO
