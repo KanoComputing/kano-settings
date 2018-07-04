@@ -98,7 +98,7 @@ class SetAccount(Gtk.Box):
             _("Add an Account"),
             _("To add an account, you need to reboot. If you have any files open, you should cancel and save your files first. Add and reboot now?"),
             [
-                {"label": _("ADD and REBOOT NOW"), "return_value": True, "color": "orange"},
+                {"label": _("REBOOT NOW"), "return_value": True, "color": "orange"},
                 {"label": _("CANCEL"), "return_value": False, "color": "green"}
             ]
         )
