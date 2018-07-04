@@ -93,10 +93,25 @@ class SetAccount(Gtk.Box):
             self.win.clear_win()
             SetPassword(self.win)
 
+    def add_account_dialog(self):
+            kdialog = kano_dialog.KanoDialog(
+                _("Add an Account"),
+                _("To add an account, you need to reboot. If you have any files open, you should cancel and save your files first. Add and reboot now?"),
+                [
+                    {"label": _("ADD and REBOOT NOW"), "return_value": True, "color": "orange"},
+                    {"label": _("CANCEL"), "return_value": False, "color": "green"}
+                ]
+            )
+            return kdialog.run()
+
+
     # Gets executed when ADD button is clicked
     def add_account(self, widget=None, event=None):
         if not hasattr(event, 'keyval') or event.keyval == Gdk.KEY_Return:
             kdialog = None
+
+            if not self.add_account_dialog():
+                return
 
             try:
                 # add new user command
@@ -107,18 +122,11 @@ class SetAccount(Gtk.Box):
                     str(e),
                     parent_window=self.win
                 )
+                kdialog.run()
+                self.disable_buttons()
             else:
-                kdialog = kano_dialog.KanoDialog(
-                    _("Reboot the system"),
-                    _("A new account will be created next time you reboot."),
-                    parent_window=self.win
-                )
+                os.system("sudo systemctl reboot")
 
-                # Tell user to reboot to see changes
-                common.need_reboot = True
-
-            kdialog.run()
-            self.disable_buttons()
 
     # Gets executed when REMOVE button is clicked
     def remove_account_dialog(self, widget=None, event=None):
