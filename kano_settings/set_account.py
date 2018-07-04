@@ -94,15 +94,15 @@ class SetAccount(Gtk.Box):
             SetPassword(self.win)
 
     def add_account_dialog(self):
-            kdialog = kano_dialog.KanoDialog(
-                _("Add an Account"),
-                _("To add an account, you need to reboot. If you have any files open, you should cancel and save your files first. Add and reboot now?"),
-                [
-                    {"label": _("ADD and REBOOT NOW"), "return_value": True, "color": "orange"},
-                    {"label": _("CANCEL"), "return_value": False, "color": "green"}
-                ]
-            )
-            return kdialog.run()
+        kdialog = kano_dialog.KanoDialog(
+            _("Add an Account"),
+            _("To add an account, you need to reboot. If you have any files open, you should cancel and save your files first. Add and reboot now?"),
+            [
+                {"label": _("ADD and REBOOT NOW"), "return_value": True, "color": "orange"},
+                {"label": _("CANCEL"), "return_value": False, "color": "green"}
+            ]
+        )
+        return kdialog.run()
 
 
     # Gets executed when ADD button is clicked
