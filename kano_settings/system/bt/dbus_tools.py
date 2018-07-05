@@ -22,14 +22,28 @@ DEVICE_OBJ_PATH_TEMPLATE = '{base_dev_path}/dev_{{addr}}'.format(
 )
 DEVICE_IFACE_NAME = 'org.bluez.Device1'
 
-ROOT_PROXY = BUS.get_object(SERVICE_NAME, ROOT_OBJ_PATH)
-BASE_DEVICE_PROXY = BUS.get_object(SERVICE_NAME, BASE_DEVICE_OBJ_PATH)
-ADAPTOR_IFACE = dbus.Interface(BASE_DEVICE_PROXY, ADAPTER_IFACE_NAME)
+_ROOT_PROXY = None
+_ADAPTOR_IFACE = None
+
+
+def get_root_proxy():
+    global _ROOT_PROXY
+    if _ROOT_PROXY is None:
+        _ROOT_PROXY = BUS.get_object(SERVICE_NAME, ROOT_OBJ_PATH)
+    return _ROOT_PROXY
+
+
+def get_adaptor_iface():
+    global _ADAPTOR_IFACE
+    if _ADAPTOR_IFACE is None:
+        BASE_DEVICE_PROXY = BUS.get_object(SERVICE_NAME, BASE_DEVICE_OBJ_PATH)
+        _ADAPTOR_IFACE = dbus.Interface(BASE_DEVICE_PROXY, ADAPTER_IFACE_NAME)
+    return _ADAPTOR_IFACE
 
 
 def get_dbus_object_paths():
     introspect_iface = dbus.Interface(
-        ROOT_PROXY, 'org.freedesktop.DBus.ObjectManager'
+        get_root_proxy(), 'org.freedesktop.DBus.ObjectManager'
     )
     obj_paths = introspect_iface.GetManagedObjects()
 

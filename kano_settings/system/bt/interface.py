@@ -12,7 +12,7 @@ import threading
 from kano.logging import logger
 
 from kano_settings.system.bt.dbus_tools import BUS, SERVICE_NAME, \
-    DEVICE_OBJ_PATH_TEMPLATE, DEVICE_IFACE_NAME, ADAPTOR_IFACE, \
+    DEVICE_OBJ_PATH_TEMPLATE, DEVICE_IFACE_NAME, get_adaptor_iface, \
     BASE_DEVICE_OBJ_PATH, get_dbus_object_paths, get_device_object_paths
 from kano_settings.system.bt.device import BluetoothDevice
 
@@ -39,6 +39,7 @@ def get_available_devices(discard_unsupported=True):
         dev for dev in devices if not discard_unsupported or dev.is_supported()
     ]
 
+
 def get_device_interface(device_addr, async=False):
     dbus_proxy = BUS.get_object(
         SERVICE_NAME,
@@ -59,7 +60,7 @@ def clear_all_devices(retain_connected=True, retain_trusted=True):
         if retain_trusted and device.trusted:
             continue
 
-        ADAPTOR_IFACE.RemoveDevice(device.dbus_dev_obj_path)
+        get_adaptor_iface().RemoveDevice(device.dbus_dev_obj_path)
 
 
 def discover_devices():
@@ -68,7 +69,7 @@ def discover_devices():
         return
 
     try:
-        ADAPTOR_IFACE.StartDiscovery()
+        get_adaptor_iface().StartDiscovery()
     except dbus.DBusException as e:
         logger.error("Error entering bluetooth discovery mode. " \
                      "This is likely because DBus isn't ready",
@@ -81,7 +82,7 @@ def stop_discovering_devices():
         return
 
     try:
-        ADAPTOR_IFACE.StopDiscovery()
+        get_adaptor_iface().StopDiscovery()
     except dbus.DBusException as e:
         logger.error("Error exiting bluetooth discovery mode. " \
                      "This is likely because DBus isn't ready",

@@ -6,6 +6,7 @@ kano-settings (4.0.6-0) unstable; urgency=low
   * Fix support for Gtk packages included with Stretch
   * Fixed Safe Mode configuration sometimes not getting applied correctly
   * Changed to require immediate reboot when adding an account.
+  * Avoid traceback if bluetooth service failed to start.
 
  -- Team Kano <dev@kano.me>  Fri, 22 Jun 2018 10:17:00 +0100
 
