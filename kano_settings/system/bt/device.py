@@ -35,8 +35,11 @@ class BluetoothDevice(object):
         self.icon = props.get('Icon', '')
         self.class_id = props.get('Class', '')
 
-    def __str__(self):
+    def __unicode__(self):
         return u'{} ({})'.format(self.name, self.addr)
+
+    def __str__(self):
+        return unicode(self).encode('utf-8')
 
     def is_supported(self):
         return bool(self.class_id)
