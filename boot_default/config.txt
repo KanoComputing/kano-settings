@@ -24,12 +24,6 @@ hdmi_pixel_encoding=2
 # Please, beware "force_turbo=1" will set the sticky bit on your RPi unit forever.
 force_turbo=0
 
-# Set the clock speeds to the defaults to allow for overclocking.
-arm_freq=900
-core_freq=250
-sdram_freq=450
-over_voltage=0
-
 # Set memory split: amount allocated to the GPU in MB.
 gpu_mem=256
 

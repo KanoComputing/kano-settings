@@ -1,8 +1,9 @@
 kano-settings (4.1.0-0) unstable; urgency=low
 
   * Added a simplistic system integrity script to verify debian packages.
+  * Removed default RPi2 CPU frequency settings from config.txt
 
- -- Team Kano <dev@kano.me>  Thu, 2 Aug 2018 15:17:00 +0100
+ -- Team Kano <dev@kano.me>  Mon, 13 Aug 2018 15:17:00 +0100
 
 kano-settings (4.0.6-0) unstable; urgency=low
 
