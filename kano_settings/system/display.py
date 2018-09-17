@@ -119,9 +119,12 @@ def get_edid_name(use_cached=True):
     return _g_monitor_edid_name
 
 
-def set_screen_value(key, value):
+def set_screen_value(key, value, and_global=False):
     monitor_edid_filter = Filter.get_edid_filter(get_edid_name())
     set_config_value(key, value, config_filter=monitor_edid_filter)
+
+    if and_global:
+        set_config_value(key, value)
 
 
 def get_screen_value(key, fallback=True):
@@ -287,9 +290,9 @@ def set_flip(display_rotate=None):
     Flip screen 180.
     """
     if display_rotate:
-        set_screen_value('display_rotate', 2)
+        set_screen_value('display_rotate', 2, and_global=is_screen_kit())
     else:
-        set_screen_value('display_rotate', 0)
+        set_screen_value('display_rotate', 0, and_global=is_screen_kit())
 
 
 def set_safeboot_mode():
