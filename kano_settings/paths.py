@@ -40,3 +40,4 @@ TMP_EDID_DAT_PATH = '/tmp/edid.dat'
 
 SYSTEM_FLAGS_DIR = '/var/cache/kano-settings/'
 CKC_V1_ONBOOT_VOLUME_FLAG = join(SYSTEM_FLAGS_DIR, 'ckc-v1-volume-lowered')
+DISPLAY_ROTATE_GLOBAL_FLAG = join(SYSTEM_FLAGS_DIR, 'diplay-rotate-global')

@@ -36,6 +36,7 @@ import time
 import os
 import sys
 import docopt
+import traceback
 
 # Allows for testing this module from a local repository clone
 if __name__ == '__main__' and __package__ is None:
@@ -52,15 +53,18 @@ from kano_peripherals.wrappers.detection import CKC_V_1_1_0
 
 from kano_settings.system.display import get_status, get_edid_name, \
     get_edid, list_supported_modes, override_models, compare_and_set_full_range, \
-    compare_and_set_overscan, compare_and_set_optimal_resolution
+    compare_and_set_overscan, compare_and_set_optimal_resolution, is_screen_kit, \
+    get_screen_value
 from kano_settings.system.boot_config.boot_config_filter import Filter
 from kano_settings.boot_config import is_safe_boot, safe_mode_restore_config, \
-    remove_noobs_defaults, end_config_transaction, check_corrupt_config, get_config_value
+    remove_noobs_defaults, end_config_transaction, check_corrupt_config, \
+    get_config_value, set_config_value
 from kano_settings.system.audio import is_HDMI, set_to_HDMI, restart_alsa, \
     set_alsa_config_max_dB
 
 from kano_settings.system.audio import DEFAULT_CKC_V1_MAX_DB
-from kano_settings.paths import SYSTEM_FLAGS_DIR, CKC_V1_ONBOOT_VOLUME_FLAG
+from kano_settings.paths import SYSTEM_FLAGS_DIR, CKC_V1_ONBOOT_VOLUME_FLAG, \
+    DISPLAY_ROTATE_GLOBAL_FLAG
 from kano_settings.return_codes import RC_SUCCESS, RC_WRONG_PERMISSIONS, RC_INCORRECT_ARGS, \
     RC_EDID_NO_MODEL, RC_EDID_NO_STATUS, RC_EDID_NO_SUPPORTED, RC_NO_EDID
 
@@ -113,6 +117,8 @@ def main(args):
     # screen_data = get_screen_information(dry_run=dry_run)
     # if verbose or dump_mode:
     #     print json.dumps(screen_data, indent=4)
+
+    ensure_screen_kit_rotation_global()
 
     # Lower the screen preferred resolution.
     (rv, rc) = ensure_optimal_screen_resolution(dry_run=dry_run, force_mode=force_mode)
@@ -215,6 +221,32 @@ def ensure_correct_volume_levels(dry_run=False):
     #         json.dump(info, f, sort_keys=True, indent=4, separators=(',', ': '))
 
     # return info
+
+
+def ensure_screen_kit_rotation_global():
+    """
+    Ensure the screen kit orientation setting is also set globally.
+
+    This simply mirrors the display_rotate option for the current SK to the
+    global space for the unlikely case where an SK loses its EDID.
+    """
+    try:
+        was_set_once = os.path.exists(DISPLAY_ROTATE_GLOBAL_FLAG)
+        if was_set_once:
+            return
+
+        if is_screen_kit():
+            rotation = get_screen_value('display_rotate')
+            set_config_value('display_rotate', rotation)
+
+            if not os.path.exists(SYSTEM_FLAGS_DIR):
+                os.makedirs(os.path.dirname(SYSTEM_FLAGS_DIR))
+            open(DISPLAY_ROTATE_GLOBAL_FLAG, 'a').close()
+    except:
+        logger.error(
+            'ensure_screen_kit_rotation_global: {}'
+            .format(traceback.format_exc())
+        )
 
 
 def ensure_optimal_screen_resolution(dry_run=False, force_mode=False):
