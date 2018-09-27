@@ -3,8 +3,10 @@ kano-settings (4.1.0-0) unstable; urgency=low
   * Added a simplistic system integrity script to verify debian packages.
   * Removed default RPi2 CPU frequency settings from config.txt
   * Mechanism to ensure SK display orientation consistency if EDID is lost
+  * Fix inconsistent Settings > Display > Resolution: Auto behaviour for
+    displays with corrupted EDID
 
- -- Team Kano <dev@kano.me>  Mon, 17 Sep 2018 12:11:00 +0100
+ -- Team Kano <dev@kano.me>  Thu, 27 Sep 2018 12:11:00 +0100
 
 kano-settings (4.0.6-0) unstable; urgency=low
 

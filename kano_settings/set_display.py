@@ -26,7 +26,7 @@ from kano_settings.boot_config import end_config_transaction
 from kano_settings.system.display import get_screen_value, get_status, \
     list_supported_modes, set_hdmi_mode, read_hdmi_mode, get_edid_name, \
     find_matching_mode, get_overscan_status, write_overscan_values, \
-    set_overscan_status, launch_pipe, set_flip
+    set_overscan_status, launch_pipe, set_flip, set_unflashed_sk_resolution
 
 
 def get_overscan_limit():
@@ -164,7 +164,10 @@ class SetDisplay(Template):
 
     def set_hdmi_mode_from_str(self, mode):
         if mode == 'auto':
-            set_hdmi_mode()
+            if get_edid_name():
+                set_hdmi_mode()
+            else:
+                set_unflashed_sk_resolution()
             return
 
         group, number = mode.split(":")

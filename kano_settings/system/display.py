@@ -373,6 +373,28 @@ def is_screen_kit(use_cached=False):
     return get_edid_name(use_cached=use_cached) in SCREEN_KIT_NAMES
 
 
+def set_unflashed_sk_resolution():
+    """
+    Set the resolution globally for a screen that has corrupted EDID data.
+    These are specific to the Kano screens.
+
+    Returns:
+        bool - Whether or not changes were made and a reboot is required.
+    """
+    hdmi_group = 2
+    hdmi_mode = 28
+
+    changes_required = (
+        get_config_value('hdmi_group') != hdmi_group or
+        get_config_value('hdmi_mode') != hdmi_mode
+    )
+    if changes_required:
+        set_config_value('hdmi_group', hdmi_group)
+        set_config_value('hdmi_mode', hdmi_mode)
+
+    return changes_required
+
+
 def get_model():
     """
     Get the display device model name
