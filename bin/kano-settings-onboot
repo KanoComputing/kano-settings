@@ -78,7 +78,7 @@ def main(args):
 
     # Check for corrupt config file.
     if check_corrupt_config():
-        logger.warning('Found corrupt config file! Restored to default.')
+        logger.warn('Found corrupt config file! Restored to default.')
         reboot(dry_run=dry_run)
         return RC_SUCCESS
 

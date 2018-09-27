@@ -400,7 +400,7 @@ class ConfigTransaction:
 
         if self.state > 1:
             self.close()
-            raise OpenTransactionError()
+            raise OpenTransactionError('Transaction file left open')
 
     def abort(self):
         os.remove(self.temp_path)

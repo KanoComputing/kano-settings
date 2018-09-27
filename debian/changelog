@@ -6,6 +6,7 @@ kano-settings (4.1.0-0) unstable; urgency=low
   * Fix inconsistent Settings > Display > Resolution: Auto behaviour for
     displays with corrupted EDID
   * Switch to use the "dtparam" value to check for config.txt corruption
+  * Fix corrupt config.txt logging message
 
  -- Team Kano <dev@kano.me>  Thu, 27 Sep 2018 12:11:00 +0100
 
