@@ -104,14 +104,22 @@ class BootConfig:
         except:
             return True
 
-        must_contain = set(['overscan_bottom', 'over_voltage'])
+        must_contain = set(['dtparam'])
         found = set()
 
         for l in lines:
             for m in must_contain:
                 if m in l:
                     found.add(m)
-        return must_contain != found
+
+        if must_contain == found:
+            return False
+
+        logger.warn(
+            'Parameters {} not found in config.txt, assuming corrupt'
+            .format(must_contain)
+        )
+        return True
 
     def set_value(self, name, value=None, config_filter=Filter.ALL):
         # if the value argument is None, the option will be commented out

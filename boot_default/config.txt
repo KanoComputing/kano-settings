@@ -57,6 +57,11 @@ start_x=0
 # Note: RaspberryPI model B+ only
 max_usb_current=0
 
+
+# Note: kano_settings.boot_config.check_corrupt() checks for presence of
+#       "dtparam" to determine if this file is corrupt, don't remove without
+#       updating that function
+
 # Enable I2C to allow speaker LEDs to work.
 dtparam=i2c_arm=on
 dtparam=i2c1=on
