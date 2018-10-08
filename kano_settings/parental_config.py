@@ -132,6 +132,7 @@ class ParentalConfig(Template):
         self.win.go_to_home()
 
     def go_to_blacklist(self, button, event):
+        self.apply_changes(None, None)
         self.win.clear_win()
         AllowedSites(self.win)
 
