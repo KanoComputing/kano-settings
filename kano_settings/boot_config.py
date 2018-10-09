@@ -97,8 +97,11 @@ class BootConfig:
             os.fsync(boot_config_file.fileno())
 
     def check_corrupt(self):
-        # Quick check for corrpution in config file.
+        # Quick check for corruption in config file.
         # Check that is has at least some expected data
+        if not os.path.exists(self.path):
+            return True
+
         try:
             lines = read_file_contents_as_lines(self.path)
         except:
@@ -241,8 +244,7 @@ class ConfigTransaction:
         self.base = os.path.basename(path)
         self.dir = os.path.dirname(path)
 
-        self.lockpath = os.path.join(lock_dir,
-                                     'kano_config_'+self.base+'.lock')
+        self.lockpath = os.path.join(lock_dir, 'kano_config_' + self.base + '.lock')
 
         self.state = None
         self.set_state_idle()
@@ -301,7 +303,7 @@ class ConfigTransaction:
                                                prefix="config_tmp_",
                                                dir=self.dir)
             self.temp_path = temp.name
-            logger.info("Enable modifications in  config transaction: {}".format(self.temp_path))
+            logger.info("Enable modifications in config transaction: {}".format(self.temp_path))
             temp.close()
             shutil.copyfile(self.path, self.temp_path)
 
@@ -488,5 +490,6 @@ def check_corrupt_config():
 
 def _clean_up_exit():
     _trans()._clean_up_exit()
+
 
 atexit.register(_clean_up_exit)
