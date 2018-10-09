@@ -2,8 +2,9 @@ kano-settings (4.2.0-0) unstable; urgency=low
 
   * Fixed an issue in Parental Controls when going from Ultimate to High and
     then selecting to configure the security level
+  * Fixed corrupt config.txt recovery errors when file is missing
 
- -- Team Kano <dev@kano.me>  Mon, 8 Oct 2018 16:48:00 +0100
+ -- Team Kano <dev@kano.me>  Tue, 9 Oct 2018 16:48:00 +0100
 
 kano-settings (4.1.0-0) unstable; urgency=low
 
