@@ -79,6 +79,7 @@ def main(args):
     # Check for corrupt config file.
     if check_corrupt_config():
         logger.warn('Found corrupt config file! Restored to default.')
+        end_config_transaction()
         reboot(dry_run=dry_run)
         return RC_SUCCESS
 
@@ -238,6 +239,7 @@ def ensure_screen_kit_rotation_global():
         if is_screen_kit():
             rotation = get_screen_value('display_rotate')
             set_config_value('display_rotate', rotation)
+            end_config_transaction()
 
             if not os.path.exists(SYSTEM_FLAGS_DIR):
                 os.makedirs(os.path.dirname(SYSTEM_FLAGS_DIR))
