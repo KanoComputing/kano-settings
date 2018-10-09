@@ -292,7 +292,6 @@ class ConfigTransaction:
             self.lock = open_locked(self.lockpath, 'w', timeout=lock_timeout)
 
     def set_state_writable(self):
-
         if self.state == 0:
             self.raise_state_to_locked()
 
@@ -305,7 +304,11 @@ class ConfigTransaction:
             self.temp_path = temp.name
             logger.info("Enable modifications in config transaction: {}".format(self.temp_path))
             temp.close()
-            shutil.copyfile(self.path, self.temp_path)
+            if os.path.exists(self.path):
+                shutil.copy2(self.path, self.temp_path)
+            else:
+                logger.warn("Could not make a copy of config.txt, using default")
+                shutil.copy2(default_config_path, self.temp_path)
 
             # create temporary
             self.temp_config = BootConfig(self.temp_path)
