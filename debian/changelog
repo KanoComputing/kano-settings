@@ -5,8 +5,9 @@ kano-settings (4.2.0-0) unstable; urgency=low
   * Fixed corrupt config.txt recovery errors when file is missing
   * Fixed tbk caused by not closing config transaction during 
     kano-settings-onboot
+  * Enable styling settings on Dashboard
 
- -- Team Kano <dev@kano.me>  Tue, 9 Oct 2018 16:48:00 +0100
+ -- Team Kano <dev@kano.me>  Mon, 19 Nov 2018 16:48:00 +0100
 
 kano-settings (4.1.0-0) unstable; urgency=low
 

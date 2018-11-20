@@ -114,7 +114,6 @@ SCREENS = ScreenCollection([
            setting_param='Overclocking'),
     Screen('account', N_("Account"), SetAccount, screen_no=6),
     Screen('appearance', N_("Style"), SetStyle, screen_no=7,
-           on_home_screen=os.environ.get('DESKTOP_MODE'),
            setting_param='Wallpaper'),
     Screen('font', N_("Font"), SetFont, screen_no=8, setting_param='Font'),
     Screen('advanced', N_("Advanced"), SetAdvanced, screen_no=9),
