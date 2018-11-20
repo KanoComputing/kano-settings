@@ -1,5 +1,5 @@
 #!/bin/sh
-# 
+#
 # kano-expand-rootfs
 #
 # Copyright (C) 2017 Kano Computing Ltd.
@@ -9,7 +9,7 @@
 
 ### BEGIN INIT INFO
 # Provides:         kano-expand-rootfs
-# Required-Start:   $local_fs $all kano-settings kano-safeboot
+# Required-Start:   $local_fs $all kano-settings
 # Required-Stop:
 # X-Start-Before:
 # Default-Start:    2 3 4 5

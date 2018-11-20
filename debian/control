@@ -3,17 +3,41 @@ Maintainer: Team Kano <dev@kano.me>
 Section: admin
 Priority: optional
 Standards-Version: 3.9.2
-Build-Depends: debhelper (>= 9), build-essential, pkg-config, libgtk2.0-dev,
-               lxpanel (>= 0.7.0), libfm-dev, libkdesk-dev,
-               libkano-networking-dev, lxpanel-dev
+Build-Depends:
+    build-essential,
+    debhelper (>= 9),
+    libfm-dev,
+    libgtk2.0-dev,
+    libkano-networking-dev,
+    libkdesk-dev,
+    lxpanel (>= 0.7.0),
+    lxpanel-dev,
+    pkg-config
 
 Package: kano-settings
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, kano-connect (= ${binary:Version}),
-         python, python-gi, dante-client, kano-toolset (>= 3.7.0-1),
-         kano-profile (>= 2.1-1), gir1.2-gtk-3.0, libkdesk-dev, sentry (>= 0.5-1),
-         python-bs4, python-pycountry, kano-i18n, libnss-mdns, avahi-daemon,
-         kano-content, bluetooth, pi-bluetooth, policykit-1, lxpanel
+Depends:
+    ${misc:Depends},
+    ${shlibs:Depends},
+    avahi-daemon,
+    bluetooth,
+    dante-client,
+    gir1.2-gtk-3.0,
+    kano-connect (= ${binary:Version}),
+    kano-content,
+    kano-i18n,
+    kano-profile (>= 2.1-1),
+    kano-toolset (>= 3.7.0-1),
+    libkdesk-dev,
+    libnss-mdns,
+    lxpanel,
+    pi-bluetooth,
+    policykit-1,
+    python,
+    python-bs4,
+    python-gi,
+    python-pycountry,
+    sentry (>= 0.5-1)
 Recommends: kano-fonts
 Breaks: kano-init (<<3.2.0-1)
 Description: Graphical tool to set different system settings
@@ -22,8 +46,15 @@ Description: Graphical tool to set different system settings
 
 Package: kano-connect
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, python, dhcpcd5,
-         rxvt-unicode-256color, kano-toolset, libkdesk-dev, libkano-networking
+Depends:
+    ${misc:Depends},
+    ${shlibs:Depends},
+    dhcpcd5,
+    kano-toolset,
+    libkano-networking,
+    libkdesk-dev,
+    python,
+    rxvt-unicode-256color
 Description: Software to make Kanux connect over Wireless networks
  automatically.
 

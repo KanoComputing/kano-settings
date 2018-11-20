@@ -1,14 +1,12 @@
+bin/check-enable-ssh /usr/bin
+bin/kano-boot-check /usr/bin
+bin/kano-checked-reboot /usr/bin
 bin/kano-settings /usr/bin
 bin/kano-settings-cli /usr/bin
-bin/startmouse /usr/bin
 bin/kano-settings-onboot /usr/bin
-bin/kano-safeboot-mode /usr/bin
 bin/regenerate-ssh-keys /usr/bin
 bin/start-sentry-server /usr/bin
-bin/kano-checked-reboot /usr/bin
-bin/kano-boot-check /usr/bin
-bin/kano-capture-logs /usr/bin
-bin/check-enable-ssh /usr/bin
+bin/startmouse /usr/bin
 bin/system-integrity /usr/bin
 
 conf/* /usr/share/kano-settings

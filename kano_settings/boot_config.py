@@ -27,7 +27,6 @@ BACKUP_BOOT_CONFIG_TEMPLATE = "/boot/config_{model}_backup.txt"
 default_config_path = "/usr/share/kano-settings/boot_default/config.txt"
 
 tvservice_path = '/usr/bin/tvservice'
-boot_config_safemode_backup_path = '/boot/config.txt.orig'
 lock_dir = '/run/lock'
 noobs_line = "# NOOBS Auto-generated Settings:"
 
@@ -461,28 +460,20 @@ def remove_noobs_defaults():
     return _trans().remove_noobs_defaults()
 
 
+def config_copy_to(path):
+    return _trans().copy_to(path)
+
+
+def config_copy_from(path):
+    return _trans().copy_from(path)
+
+
 def end_config_transaction():
     _trans().close()
 
 
 def end_config_transaction_no_writeback():
     _trans().abort()
-
-
-def is_safe_boot():
-    """ Test whether the unit is booting in the safe mode already. """
-
-    return os.path.isfile(boot_config_safemode_backup_path)
-
-
-def safe_mode_backup_config():
-    _trans().copy_to(boot_config_safemode_backup_path)
-
-
-def safe_mode_restore_config():
-    _trans().copy_from(boot_config_safemode_backup_path)
-    # remove backup file to indicate we are not in safe mode any more
-    os.unlink(boot_config_safemode_backup_path)
 
 
 def check_corrupt_config():

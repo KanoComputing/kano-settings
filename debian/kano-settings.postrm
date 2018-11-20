@@ -25,9 +25,6 @@ case "$1" in
         # remove kano-settings-onboot from startup
         systemctl disable kano-settings
 
-        # remove kano-safeboot-mode from startup
-        systemctl disable kano-safeboot
-
         # remove kano-bootup-sound from startup
         systemctl disable kano-bootup-sound
 

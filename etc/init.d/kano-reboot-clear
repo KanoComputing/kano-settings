@@ -1,5 +1,5 @@
 #!/bin/sh
-# 
+#
 # kano-reboot-clear
 #
 # Copyright (C) 2016 Kano Computing Ltd.
@@ -9,9 +9,9 @@
 
 ### BEGIN INIT INFO
 # Provides:         kano-reboot-clear
-# Required-Start:   $local_fs $all kano-settings kano-safeboot
+# Required-Start:   $local_fs $all kano-settings
 # Required-Stop:
-# X-Start-Before:   
+# X-Start-Before:
 # Default-Start:    2 3 4 5
 # Default-Stop:
 ### END INIT INFO
@@ -32,8 +32,8 @@ case "$1" in
         # Display a welcome message to the bootup terminal
 	log_action_begin_msg "Running kano-reboot-clear"
 	(
-	    sleep 333 ;	rm -rf /boot/kano_reboots	
-	) & 
+	    sleep 333 ;	rm -rf /boot/kano_reboots
+	) &
 	log_action_end_msg $?
 	;;
     stop)

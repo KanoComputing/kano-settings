@@ -1,13 +1,15 @@
 kano-settings (4.2.0-0) unstable; urgency=low
 
-  * Fixed an issue in Parental Controls when going from Ultimate 
+  * Fixed an issue in Parental Controls when going from Ultimate
     to High and then selecting to configure the security level
   * Fixed corrupt config.txt recovery errors when file is missing
-  * Fixed tbk caused by not closing config transaction during 
+  * Fixed tbk caused by not closing config transaction during
     kano-settings-onboot
   * Enable styling settings on Dashboard
+  * Migrated Safe Mode functionality to its own project
+  * Added config_copy_to() and config_copy_from() transaction functions
 
- -- Team Kano <dev@kano.me>  Mon, 19 Nov 2018 16:48:00 +0100
+ -- Team Kano <dev@kano.me>  Tue, 20 Nov 2018 12:58:00 +0000
 
 kano-settings (4.1.0-0) unstable; urgency=low
 

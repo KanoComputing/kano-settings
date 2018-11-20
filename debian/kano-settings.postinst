@@ -50,9 +50,6 @@ case "$1" in
         # add kano-settings-onboot to startup
         systemctl enable kano-settings
 
-        # add kano-safeboot-mode to startup
-        systemctl enable kano-safeboot
-
         # TODO: Re enable the bootup sound when we find a way to enable
         # the sound driver at boot time (see kano-peripherals repo)
         # add kano-bootup-sound to startup

@@ -134,28 +134,6 @@ def get_screen_value(key, fallback=True):
     )
 
 
-def switch_display_safe_mode():
-    # NB this function appears to be unused
-
-    # Finds the first available display resolution that is safe
-    # and switches to this mode immediately
-    safe_resolution = '1024x768'
-
-    try:
-        modes = list_supported_modes()
-        for m in modes:
-            resolution = m.split()[1]
-            if resolution == safe_resolution:
-                group = m.split()[0].split(':')[0]
-                mode = m.split()[0].split(':')[1]
-            logger.info(
-                "Switching display to safe resolution {} (group={} mode={})"
-                .format(resolution, group, mode))
-            set_hdmi_mode_live(group, mode)
-    except:
-        logger.error("Error switching display to safe mode")
-
-
 def launch_pipe():
     overscan_pipe = "/dev/mailbox"
     # Launch pipeline
@@ -293,28 +271,6 @@ def set_flip(display_rotate=None):
         set_screen_value('display_rotate', 2, and_global=is_screen_kit())
     else:
         set_screen_value('display_rotate', 0, and_global=is_screen_kit())
-
-
-def set_safeboot_mode():
-    logger.warn("Safe boot requested")
-
-    set_screen_value('hdmi_force_hotplug', 1)
-    set_screen_value('config_hdmi_boost', 4)
-
-    set_screen_value('hdmi_group', None)
-    set_config_value('hdmi_group', None)
-
-    set_screen_value('hdmi_mode', None)
-    set_config_value('hdmi_mode', None)
-
-    set_screen_value('hdmi_drive', None)
-    set_config_value('hdmi_drive', None)
-
-    set_screen_value('disable_overscan', 1)
-    set_screen_value('overscan_left', 0)
-    set_screen_value('overscan_right', 0)
-    set_screen_value('overscan_top', 0)
-    set_screen_value('overscan_bottom', 0)
 
 
 def get_status():
