@@ -9,6 +9,11 @@
 # - automatically connect to a cached wireless network
 #
 
+# FIXME: On a Kano OS 4.2.0 only, to fix a timing issue
+#        that restores wireless connections at boot time
+#
+/bin/sleep 10
+
 # Is the wireless dongle plugged in?
 device_type="wlan"
 wlan_device=`grep --max-count=1 $device_type /proc/net/dev | \
