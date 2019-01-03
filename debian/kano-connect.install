@@ -12,3 +12,5 @@ lxpanel-plugin-internet/kano_internet.so usr/lib/arm-linux-gnueabihf/lxpanel/plu
 etc/modprobe.d /usr/share/kano-network/etc
 
 media/kano-connect/* /usr/share/kano-connect/media
+
+etc_override/dhcpcd.conf /etc

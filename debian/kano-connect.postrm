@@ -21,6 +21,10 @@ case "$1" in
 
         # remove the control file to force kano-connect into multihomed
         rm -rf /var/opt/kano-connect/
+
+        # Restore ownsership of dhcpcd.conf file
+        dpkg-divert --remove --package kano-connect --rename /etc/dhcpcd.conf
+        
         ;;
 esac
 

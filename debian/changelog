@@ -1,6 +1,6 @@
 kano-settings (4.2.1-0) unstable; urgency=low
 
-  * Fixed temporary solution to restore wireless connection on boot
+  * Fixed Race condition for automatic wireless connection on boot
 
  -- Team Kano <dev@kano.me>  Fri, 28 Nov 2018 18:47:00 +0100
 

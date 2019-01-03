@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# preinst
+#
+# Copyright (C) 2018 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+
+case "$1" in
+    install|upgrade)
+        # Tell APT that the dhcpcd.conf file is handled by our package until uninstallation - see postrm
+        # https://askubuntu.com/questions/116768/providing-a-customized-config-file-for-another-package
+        dpkg-divert --add --package kano-connect --rename --divert /etc/dhcpcd.conf.disabled /etc/dhcpcd.conf
+        ;;
+        
+esac
+
+#DEBHELPER#
+
+exit 0
