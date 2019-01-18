@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# preinst
+#
+# Copyright (C) 2018 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+#
+
+case "$1" in
+    install|upgrade)
+        #
+        # Tell APT that the wpa_supplicant.conf file is now handled by kano-connect until uninstallation (see postrm)
+        #
+        # https://askubuntu.com/questions/116768/providing-a-customized-config-file-for-another-package
+        # https://wiki.debian.org/Adding%20and%20removing%20diversions
+        #
+        dpkg-divert --add --package kano-connect --rename --divert \
+            /etc/wpa_supplicant/wpa_supplicant.conf.disabled /etc/wpa_supplicant/wpa_supplicant.conf
+        ;;
+        
+esac
+
+#DEBHELPER#
+
+exit 0

@@ -17,7 +17,6 @@
 # NB audio is no longer controlled here, we just rely on alsa-(re)store.
 #
 
-/etc/rc.network
 /etc/rc.overclock
 /etc/rc.others
 

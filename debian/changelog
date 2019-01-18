@@ -1,3 +1,9 @@
+kano-settings (4.2.1-0) unstable; urgency=low
+
+  * Fixed race condition at boot preventing Wi-Fi from reconnecting to existing network
+
+ -- Team Kano <dev@kano.me>  Wed, 16 Jan 2019 13:34:00 +0100
+
 kano-settings (4.2.0-0) unstable; urgency=low
 
   * Fixed an issue in Parental Controls when going from Ultimate

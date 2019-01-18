@@ -37,6 +37,11 @@ case "$1" in
         # remove kano-expand-rootfs from startup
         systemctl disable kano-expand-rootfs
 
+        # remove now obsoleted rc.network
+        if [ -f /etc/rc.network ]; then
+            rm -f /etc/rc.network
+        fi
+
         systemctl disable check-enable-ssh
         ;;
 esac

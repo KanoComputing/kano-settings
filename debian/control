@@ -50,7 +50,7 @@ Depends:
     ${misc:Depends},
     ${shlibs:Depends},
     dhcpcd5,
-    kano-toolset,
+    kano-toolset (>= 4.2.1-0),
     libkano-networking,
     libkdesk-dev,
     python,

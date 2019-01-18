@@ -11,6 +11,11 @@ interfaces_file_backup=/etc/network/interfaces-backup
 
 TMP_FILE=/tmp/kano-connect_conf
 
+# Variables used to transition from Kano supplied WPA configuration file,
+# into the original WPA Supplicant folder - see dpkg-divert preinst / postrm
+KANO_WPACONF="/etc/kano_wpa_connect.conf"
+SUPPLICANT_WPACONF="/etc/wpa_supplicant/wpa_supplicant.conf"
+
 case "$1" in
     configure)
 
@@ -41,6 +46,14 @@ case "$1" in
                 rm -f $interfaces_file_backup
             fi
         fi
+
+        # For kano systems upgrading for the first time,
+        # populate our configuration file into the wpa supplicant folder
+        if [ -e "$KANO_WPACONF" ]; then
+            cp -f "$KANO_WPACONF" "$SUPPLICANT_WPACONF"
+            rm -f "$KANO_WPACONF"
+        fi
+
 	;;
 
 esac

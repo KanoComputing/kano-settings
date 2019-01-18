@@ -7,7 +7,11 @@
 #
 
 case "$1" in
-    remove|upgrade)
+    remove)
+        # Restore ownsership of the supplicant configuration file to the original system package
+        dpkg-divert --remove --package kano-connect --rename /etc/wpa_supplicant/wpa_supplicant.conf
+
+    upgrade)
         # Remove config file
         rm /etc/sudoers.d/kano-connect_conf
 
@@ -21,6 +25,7 @@ case "$1" in
 
         # remove the control file to force kano-connect into multihomed
         rm -rf /var/opt/kano-connect/
+
         ;;
 esac
 
