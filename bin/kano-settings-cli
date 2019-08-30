@@ -2,7 +2,7 @@
 
 # kano-settings-cli
 #
-# Copyright (C) 2014-2017 Kano Computing Ltd.
+# Copyright (C) 2014-2019 Kano Computing Ltd.
 # License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
 
 """
@@ -18,6 +18,7 @@ Usage:
     kano-settings-cli [options] set gfx_driver (enable | disable)
     kano-settings-cli [options] get overscan
     kano-settings-cli [options] set overscan <top> <left> <bottom> <right>
+    kano-settings-cli [options] set parental --level=<level> <password>
     kano-settings-cli [options] dump-edid
     kano-settings-cli -h | --help
 
@@ -40,6 +41,15 @@ Values:
     verbose       Verbose mode
     enable        enable gfx_driver driver
     disable       disable gfx_driver driver
+    level         The level of Parental Controls (-1: disabled, 0: low,
+                  1: medium, 2: high, 3: ultimate)
+
+Examples:
+    kano-settings-cli set parental --level=3 "kano"
+        Sets parental controls for the user executing the command to Ultimate
+        with "kano" as the parental password to change the setting.
+    kano-settings-cli set parental --level=-1 "kano"
+        Disables parental controls for the user executing the command.
 """
 
 
@@ -62,6 +72,8 @@ kano_i18n.init.install('kano-settings', LOCALE_PATH)
 from kano_settings.system.keyboard_config import set_saved_keyboard, set_keyboard
 from kano_settings.system.display import get_gfx_driver, set_gfx_driver, \
     read_overscan_values, write_overscan_values, dump_raw_edid
+from kano_settings.system.advanced import set_parental_enabled, \
+    set_parental_level
 from kano_settings.config_file import get_setting
 
 from kano_settings.return_codes import RC_SUCCESS, RC_UNEXPECTED_ERROR, \
@@ -94,7 +106,7 @@ def main(args):
                 setting = 'default'
                 hdmi_enabled = False
 
-            print_v(_("setting audio to {}").format(_(setting)))
+            print_v(_("setting audio to {}").format(_(setting)))  # noqa
 
             # only import on use, because this is slow
             from kano_settings.system.audio import set_to_HDMI
@@ -103,7 +115,7 @@ def main(args):
         elif args['keyboard']:
             if args['--load']:
                 set_saved_keyboard()
-                print_v(_("Setting keyboard to value loaded from settings"))
+                print_v(_("Setting keyboard to value loaded from settings"))  # noqa
             elif args['--layout']:
                 layout_code = args['<layout_code>']
                 layout_code_list = layout_code.split(' ')
@@ -119,7 +131,7 @@ def main(args):
                     variant = 'generic'
 
                 set_keyboard(locale, variant, save=True)
-                print_v(_("Setting keyboard to {} {}").format(_(locale), _(variant)))
+                print_v(_("Setting keyboard to {} {}").format(_(locale), _(variant)))  # noqa
 
         elif args['gfx_driver']:
             if args['enable']:
@@ -136,17 +148,30 @@ def main(args):
             }
             write_overscan_values(overscan_values)
 
+        elif args['parental']:
+            if int(args['--level']) == -1:
+                print_v(
+                    _("Disabling parental controls: {}").format(  # noqa
+                    set_parental_enabled(False, args['<password>']))
+                )
+            else:
+                print_v(
+                    _("Enabling parental controls: {}").format(  # noqa
+                    set_parental_enabled(True, args['<password>']))
+                )
+                set_parental_level(int(args['--level']))
+
     elif args['get']:
         if args['audio']:
             print_v(
-                _("Audio settings:\n\n"
+                _("Audio settings:\n\n"  # noqa
                   "Audio mode: {}").format(
                     get_setting('Audio')
                 )
             )
         elif args['network']:
             print_v(
-                _("Network settings:\n\n"
+                _("Network settings:\n\n"  # noqa
                   "WiFi: {}, WiFi Connection Attempted: {},\n"
                   "Proxy port : {}, Proxy IP: {}, "
                   "Proxy username : {}, Proxy type : {}").format(
@@ -160,7 +185,7 @@ def main(args):
             )
         elif args['keyboard']:
             print_v(
-                _("Keyboard settings:\n\n"
+                _("Keyboard settings:\n\n"  # noqa
                   "Continent: {}, Country: {}, Variant: {}\n"
                   "(indicies - Continent: {}, Country: {}, Variant: {})").format(
                     get_setting('Keyboard-continent-human'),
@@ -183,15 +208,15 @@ def main(args):
         edid_path = dump_raw_edid()
 
         if not edid_path:
-            print_v(_('Could not perform operation.'))
+            print_v(_('Could not perform operation.'))  # noqa
             return RC_UNEXPECTED_ERROR
         else:
-            print_v(_('Generated {}').format(edid_path))
+            print_v(_('Generated {}').format(edid_path))  # noqa
 
 
 if __name__ == "__main__":
     if os.getuid() != 0:
-        print _('Program must be run as root.')
+        print _('Program must be run as root.')  # noqa
         sys.exit(RC_WRONG_PERMISSIONS)
 
     try:
