@@ -17,7 +17,6 @@ case "$1" in
         dpkg-divert --add --package kano-connect --rename --divert \
             /etc/wpa_supplicant/wpa_supplicant.conf.disabled /etc/wpa_supplicant/wpa_supplicant.conf
         ;;
-        
 esac
 
 #DEBHELPER#

@@ -10,6 +10,7 @@ case "$1" in
     remove)
         # Restore ownsership of the supplicant configuration file to the original system package
         dpkg-divert --remove --package kano-connect --rename /etc/wpa_supplicant/wpa_supplicant.conf
+        ;;
 
     upgrade)
         # Remove config file
