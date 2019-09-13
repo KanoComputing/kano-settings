@@ -2,8 +2,8 @@
 
 # advanced.py
 #
-# Copyright (C) 2014-2017 Kano Computing Ltd.
-# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU General Public License v2
+# Copyright (C) 2014-2019 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPLv2
 #
 # Contains the advanced backend functions
 
@@ -21,13 +21,14 @@ import re
 from kano.logging import logger
 from kano_settings.system.get_username import get_first_username
 
-from kano_settings.common import settings_dir
-from kano.utils import read_file_contents, write_file_contents, \
-    read_file_contents_as_lines, read_json, write_json, ensure_dir, \
-    get_user_unsudoed
 from kano.network import set_dns, restore_dns_interfaces, \
     clear_dns_interfaces, refresh_resolvconf
+from kano_settings.common import settings_dir
 from kano_settings.config_file import get_setting, set_setting
+from kano.utils.file_operations import ensure_dir, read_file_contents, \
+    write_file_contents, read_file_contents_as_lines, read_json, write_json
+from kano.utils.shell import run_bg
+from kano.utils.user import get_user_unsudoed
 
 password_file = "/etc/kano-parental-lock"
 hosts_file = '/etc/hosts'
@@ -44,14 +45,18 @@ google_servers = ['8.8.8.8', '8.8.4.4']
 # http://en.wikipedia.org/wiki/Second-level_domain
 # http://en.wikipedia.org/wiki/List_of_Google_domains
 second_level_domains = [
-    'com.af', 'com.af', 'com.ag', 'com.ai', 'co.ao', 'com.ar', 'com.au', 'com.bd', 'com.bh', 'com.bn', 'com.bo', 'com.br',
-    'co.bw', 'com.bz', 'com.kh', 'co.ck', 'g.cn', 'com.co', 'co.cr', 'com.cu', 'com.cy', 'com.do', 'com.ec', 'com.eg',
-    'com.et', 'com.fj', 'com.gh', 'com.gi', 'com.gt', 'com.hk', 'co.id', 'co.il', 'co.in', 'com.jm', 'co.jp',
-    'co.ke', 'co.kr', 'com.kw', 'com.lb', 'com.lc', 'co.ls', 'com.ly', 'co.ma', 'com.mm', 'com.mt', 'com.mx',
-    'com.my', 'com.mz', 'com.na', 'com.nf', 'com.ng', 'com.ni', 'com.np', 'co.nz', 'com.om', 'com.pa', 'com.pe',
-    'com.ph', 'com.pk', 'com.pg', 'com.pr', 'com.py', 'com.qa', 'com.sa', 'com.sb', 'com.sg', 'com.sl', 'com.sv',
-    'co.th', 'com.tj', 'com.tn', 'com.tr', 'com.tw', 'co.tz', 'com.ua', 'co.ug', 'co.uk', 'com.uy', 'co.uz',
-    'com.vc', 'co.ve', 'co.vi', 'com.vn', 'co.za', 'co.zm', 'co.zw']
+    'com.af', 'com.af', 'com.ag', 'com.ai', 'co.ao', 'com.ar', 'com.au',
+    'com.bd', 'com.bh', 'com.bn', 'com.bo', 'com.br', 'co.bw', 'com.bz',
+    'com.kh', 'co.ck', 'g.cn', 'com.co', 'co.cr', 'com.cu', 'com.cy', 'com.do',
+    'com.ec', 'com.eg', 'com.et', 'com.fj', 'com.gh', 'com.gi', 'com.gt',
+    'com.hk', 'co.id', 'co.il', 'co.in', 'com.jm', 'co.jp', 'co.ke', 'co.kr',
+    'com.kw', 'com.lb', 'com.lc', 'co.ls', 'com.ly', 'co.ma', 'com.mm',
+    'com.mt', 'com.mx', 'com.my', 'com.mz', 'com.na', 'com.nf', 'com.ng',
+    'com.ni', 'com.np', 'co.nz', 'com.om', 'com.pa', 'com.pe', 'com.ph',
+    'com.pk', 'com.pg', 'com.pr', 'com.py', 'com.qa', 'com.sa', 'com.sb',
+    'com.sg', 'com.sl', 'com.sv', 'co.th', 'com.tj', 'com.tn', 'com.tr',
+    'com.tw', 'co.tz', 'com.ua', 'co.ug', 'co.uk', 'com.uy', 'co.uz', 'com.vc',
+    'co.ve', 'co.vi', 'com.vn', 'co.za', 'co.zm', 'co.zw']
 
 
 username = get_user_unsudoed()
@@ -466,32 +471,13 @@ def redirect_traffic_to_localhost():
 
 
 def launch_sentry_server(filename):
-    subprocess.Popen(
-        ["sentry -c {}".format(filename)], shell=True,
-        stdin=subprocess.PIPE, stdout=subprocess.PIPE
-    )
+    # Requires sudo.
+    run_bg("systemctl start sentry.service")
 
 
 def kill_server():
-    # Search for "sentry -c /home/$USERNAME/.kano-settings/CONFIG"
-    # in "ps aux | grep -r sentry" output
-    ps_cmd = ["ps", "-A"]
-    search_string = "sentry"
-
-    ps_process = subprocess.Popen(ps_cmd, stdout=subprocess.PIPE)
-    output, err = ps_process.communicate()
-    lines = output.split('\n')
-
-    # Could be very intensive
-    for line in lines:
-        # If the line contains the output we're looking for (i.e. is running
-        # the process we're interested in)
-        if search_string in line:
-            pid = int(filter(None, line.split(" "))[0])
-            os.kill(pid, signal.SIGKILL)
-            break
-
-####################################################
+    # Requires sudo.
+    run_bg("systemctl stop sentry.service")
 
 
 def set_chromium_policies(policies):

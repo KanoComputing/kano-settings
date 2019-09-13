@@ -1,0 +1,18 @@
+# sentry.service
+#
+# Copyright (C) 2019 Kano Computing Ltd.
+# License: http://www.gnu.org/licenses/gpl-2.0.txt GNU GPL v2
+#
+# Service for a sentry DNS server. This is provided by kano-settings to
+# offer Parental Controls features and restrict Internet browsing.
+
+
+[Unit]
+Description=Sentry
+DefaultDependencies=no
+IgnoreOnIsolate=true
+
+[Service]
+ExecStart=/usr/bin/sentry -c /usr/share/kano-settings/config/sentry
+Restart=always
+RestartSec=10
