@@ -1,3 +1,10 @@
+kano-settings (4.3.3-0) unstable; urgency=low
+
+  * Moved the DNS Sentry server to a system systemd service
+    and refactored lib
+
+ -- Team Kano <dev@kano.me>  Mon, 16 Sep 2019 11:15:00 +0100
+
 kano-settings (4.3.2-0) unstable; urgency=low
 
   * Added parental settings to kano-settings-cli
